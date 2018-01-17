@@ -12,11 +12,42 @@ Parser::~Parser()
     //dtor
 }
 
+bool Parser::IsBool(const std::string &data)
+{
+    bool value = false;
+    std::istringstream ss(data);
+    ss>>value;
+    return ss.eof();
+}
+
+bool Parser::IsInt(const std::string &data)
+{
+    int value = false;
+    std::istringstream ss(data);
+    ss>>value;
+    return ss.eof();
+}
+
+bool Parser::IsFloat(const std::string &data)
+{
+    float value = false;
+    std::istringstream ss(data);
+    ss>>value;
+    return ss.eof();
+}
+
 bool  Parser::ParseBool(const std::string& data)
 {
     bool value = false;
     std::istringstream ss(data);
     ss>>value;
+    if(!ss.eof())
+    {
+        if(data == "true")
+            return (true);
+        else
+            return (false);
+    }
     return value;
 }
 

@@ -22,8 +22,6 @@ using namespace std;
 
 int main()
 {
-    cout << "Hello world!" << endl;
-
     alag::GApp app("ALAG");
 
     return app.Run(TestingState::Instance());

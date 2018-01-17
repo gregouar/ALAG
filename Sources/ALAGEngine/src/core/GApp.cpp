@@ -29,6 +29,7 @@ const char *GApp::DEFAULT_CONFIG_FILE = "config.ini";
 
 const char *GApp::DEFAULT_WINDOW_WIDTH = "800";
 const char *GApp::DEFAULT_WINDOW_HEIGHT = "600";
+const char *GApp::DEFAULT_SRGB = "false";
 
 
 
@@ -71,8 +72,11 @@ bool GApp::InitRenderer()
         }
     }
 
+    sf::ContextSettings contextSettings;
+    contextSettings.depthBits = 24;
+    contextSettings.sRgbCapable = m_config.GetBool("window","srgb",DEFAULT_SRGB); //SHOULD PUT THIS IN OPTION
 
-    m_window.create(videoMode, m_name, sf::Style::Close);
+    m_window.create(videoMode, m_name, sf::Style::Close, contextSettings);
 
     return (true);
 }
@@ -121,7 +125,7 @@ int GApp::Loop()
         else {
             m_stateManager.HandleEvents(&m_eventManager);
             m_stateManager.Update(elapsed_time);
-            m_stateManager.Draw();
+            m_stateManager.Draw(&m_window);
         }
 
         m_window.display();

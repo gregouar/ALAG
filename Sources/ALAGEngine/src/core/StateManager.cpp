@@ -74,10 +74,10 @@ void StateManager::Update(sf::Time time)
         m_states[i]->Update(time);
 }
 
-void StateManager::Draw()
+void StateManager::Draw(sf::RenderTarget* renderer)
 {
     for(std::size_t i = 0; i < m_states.size() ; i++)
-        m_states[i]->Draw();
+        m_states[i]->Draw(renderer);
 }
 
 }

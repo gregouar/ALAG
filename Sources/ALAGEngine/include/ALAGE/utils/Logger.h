@@ -5,7 +5,7 @@
 #include <sstream>
 #include "ALAGE/utils/Singleton.h"
 
-class Logger : public Singleton<Logger>
+class Logger : Singleton<Logger>
 {
     public:
         friend class Singleton<Logger>;

@@ -19,7 +19,7 @@ class Config
         bool        GetBool(const std::string& s, const std::string& n, const std::string& d=0);
         int         GetInt(const std::string& s, const std::string& n, const std::string& d=0);
         float       GetFloat(const std::string& s, const std::string& n, const std::string& d=0);
-        std::string GetString(const std::string& s, const std::string& n, const std::string& d=0);
+        const std::string& GetString(const std::string& s, const std::string& n, const std::string& d=0);
 
     protected:
 

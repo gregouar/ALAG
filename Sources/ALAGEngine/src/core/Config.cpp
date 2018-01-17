@@ -39,9 +39,13 @@ bool Config::GetBool(const std::string& s, const std::string& n, const std::stri
     return Parser::ParseBool(GetString(s,n,d));
 }
 
-int Config::GetInt(const std::string& s, const std::string& n, const std::string& d)
+int Config::GetInt(const std::string& section, const std::string& name, const std::string& dflt)
 {
-    return Parser::ParseInt(GetString(s,n,d));
+    const std::string &data = GetString(section,name,dflt);
+    if(Parser::IsInt(data))
+        return Parser::ParseInt(data);
+    else
+        return Parser::ParseInt(dflt);
 }
 
 float Config::GetFloat(const std::string& s, const std::string& n, const std::string& d)
@@ -49,7 +53,7 @@ float Config::GetFloat(const std::string& s, const std::string& n, const std::st
     return Parser::ParseFloat(GetString(s,n,d));
 }
 
-std::string Config::GetString(const std::string& s, const std::string& n, const std::string& d)
+const std::string &Config::GetString(const std::string& s, const std::string& n, const std::string& d)
 {
      std::map<std::string, ConfigSection>::iterator  section_it= m_sections.find(s);
 

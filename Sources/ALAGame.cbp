@@ -17,8 +17,11 @@
 					<Add directory="ALAGE/include/ALAGE" />
 					<Add directory="ALAGEngine/include/ALAGE/core" />
 					<Add directory="include/states" />
+					<Add directory="ALAGEngine/include/ALAGE/utils" />
+					<Add directory="ALAGEngine/include/ALAGE/gfx" />
 				</Compiler>
 				<Linker>
+					<Add library="sfml-graphics" />
 					<Add library="sfml-window" />
 					<Add library="sfml-system" />
 					<Add library="opengl32" />
@@ -37,9 +40,12 @@
 					<Add directory="ALAGE/include/ALAGE" />
 					<Add directory="ALAGEngine/include/ALAGE/core" />
 					<Add directory="include/states" />
+					<Add directory="ALAGEngine/include/ALAGE/utils" />
+					<Add directory="ALAGEngine/include/ALAGE/gfx" />
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
+					<Add library="sfml-graphics" />
 					<Add library="sfml-window" />
 					<Add library="sfml-system" />
 					<Add library="opengl32" />
@@ -57,13 +63,29 @@
 		<Linker>
 			<Add directory="SFML/lib" />
 		</Linker>
+		<Unit filename="ALAGEngine/include/ALAGE/core/Asset.h" />
+		<Unit filename="ALAGEngine/include/ALAGE/core/AssetHandler.cpp" />
+		<Unit filename="ALAGEngine/include/ALAGE/core/AssetHandler.h" />
+		<Unit filename="ALAGEngine/include/ALAGE/core/Config.h" />
+		<Unit filename="ALAGEngine/include/ALAGE/core/EventManager.h" />
 		<Unit filename="ALAGEngine/include/ALAGE/core/GApp.h" />
 		<Unit filename="ALAGEngine/include/ALAGE/core/GState.h" />
 		<Unit filename="ALAGEngine/include/ALAGE/core/StateManager.h" />
+		<Unit filename="ALAGEngine/include/ALAGE/gfx/GfxEngine.h" />
+		<Unit filename="ALAGEngine/include/ALAGE/gfx/TextureAsset.h" />
+		<Unit filename="ALAGEngine/include/ALAGE/utils/Logger.h" />
+		<Unit filename="ALAGEngine/include/ALAGE/utils/Parser.h" />
 		<Unit filename="ALAGEngine/include/ALAGE/utils/singleton.h" />
+		<Unit filename="ALAGEngine/src/core/Asset.cpp" />
+		<Unit filename="ALAGEngine/src/core/Config.cpp" />
+		<Unit filename="ALAGEngine/src/core/EventManager.cpp" />
 		<Unit filename="ALAGEngine/src/core/GApp.cpp" />
 		<Unit filename="ALAGEngine/src/core/GState.cpp" />
 		<Unit filename="ALAGEngine/src/core/StateManager.cpp" />
+		<Unit filename="ALAGEngine/src/gfx/GfxEngine.cpp" />
+		<Unit filename="ALAGEngine/src/gfx/TextureAsset.cpp" />
+		<Unit filename="ALAGEngine/src/utils/Logger.cpp" />
+		<Unit filename="ALAGEngine/src/utils/Parser.cpp" />
 		<Unit filename="include/states/TestingState.h" />
 		<Unit filename="main.cpp" />
 		<Unit filename="src/states/TestingState.cpp" />

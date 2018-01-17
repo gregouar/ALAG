@@ -18,7 +18,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #ifndef GSTATE_H
 #define GSTATE_H
 
-#include <SFML/System.hpp>
+#include <SFML/Graphics.hpp>
 #include "ALAGE/utils/singleton.h"
 
 namespace alag
@@ -40,7 +40,7 @@ class GState
 
         virtual void HandleEvents(alag::EventManager *) = 0;
         virtual void Update(sf::Time) = 0;
-        virtual void Draw() = 0;
+        virtual void Draw(sf::RenderTarget*) = 0;
 
         void SetManager(StateManager *);
 

@@ -19,7 +19,7 @@ class TestingState : public alag::GState, public Singleton<TestingState>
 
         void HandleEvents(alag::EventManager*);
         void Update(sf::Time);
-        void Draw();
+        void Draw(sf::RenderTarget*);
 
     protected:
         TestingState();

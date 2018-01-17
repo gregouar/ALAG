@@ -50,7 +50,7 @@ void TestingState::Update(sf::Time time)
         m_manager->Switch(NULL);*/
 }
 
-void TestingState::Draw()
+void TestingState::Draw(sf::RenderTarget* renderer)
 {
     //std::cout<<m_totalTime.asSeconds()<<std::endl;
 }
