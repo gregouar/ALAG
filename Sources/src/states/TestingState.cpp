@@ -11,6 +11,7 @@ using namespace alag;
 TestingState::TestingState()
 {
     //ctor
+    showfirstsecond= true;
 }
 
 TestingState::~TestingState()
@@ -23,9 +24,21 @@ void TestingState::Entered()
     m_totalTime = sf::Time::Zero;
 
     AssetHandler<TextureAsset>* TextureHandler =  AssetHandler<TextureAsset>::Instance();
-    TextureHandler->LoadAssetFromFile(TextureHandler->GenerateID(),"../data/sarco-color.png");
-    TextureHandler->LoadAssetFromFile(TextureHandler->GenerateID(),"../data/sarco-normal.png",LoadTypeInThread);
-    TextureHandler->LoadAssetFromFile(TextureHandler->GenerateID(),"../data/sarco-heightmap.png",LoadTypeInThread);
+    TextureHandler->LoadAssetFromFile(TextureHandler->GenerateID(),
+                                      "../data/sarco-color.png");
+    TextureHandler->LoadAssetFromFile(TextureHandler->GenerateID(),
+                                      "../data/sarco-normal.png");
+
+    AssetTypeID newID = TextureHandler->GenerateID();
+    TextureHandler->LoadAssetFromFile(newID,"../data/sarco-heightmap.png",LoadTypeInThread);
+    TextureHandler->AddToObsolescenceList(newID,2);
+
+    TextureHandler->LoadAssetFromFile(TextureHandler->GenerateID(),
+                                      "../data/abbaye_color.png",LoadTypeInThread);
+    TextureHandler->LoadAssetFromFile(TextureHandler->GenerateID(),
+                                      "../data/abbaye_heightmap.png",LoadTypeInThread);
+    TextureHandler->LoadAssetFromFile(TextureHandler->GenerateID(),
+                                      "../data/abbaye_normal.png",LoadTypeInThread);
 }
 
 void TestingState::Leaving()
@@ -63,6 +76,14 @@ void TestingState::Update(sf::Time time)
 
 void TestingState::Draw(sf::RenderTarget* renderer)
 {
-    if(m_totalTime.asSeconds() < .2)
-    std::cout<<m_totalTime.asSeconds()<<std::endl;
+    if(m_totalTime.asSeconds() < .2 && showfirstsecond)
+        std::cout<<m_totalTime.asSeconds()<<std::endl;
+
+
+    if(m_totalTime.asSeconds() > 1)
+    {
+        showfirstsecond = false;
+        m_totalTime = sf::Time::Zero;
+        AssetHandler<TextureAsset>::Instance()->DescreaseObsolescenceLife();
+    }
 }

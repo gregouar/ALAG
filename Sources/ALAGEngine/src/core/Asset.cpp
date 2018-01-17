@@ -18,7 +18,7 @@ Asset::~Asset()
     //dtor
 }
 
-bool Asset::LoadFromFile(const std::string &filePath)
+bool Asset::LoadFromFile(const std::string &filePath, AssetLoadType loadType)
 {
     if(!m_allowLoadFromFile)
     {
@@ -29,11 +29,13 @@ bool Asset::LoadFromFile(const std::string &filePath)
     m_loadSource = LoadSourceFile;
     m_filePath = filePath;
 
-    m_loaded = LoadNow();
+    if(loadType == LoadTypeNow)
+        m_loaded = LoadNow();
+
     return m_loaded;
 }
 
-bool Asset::LoadFromMemory(void *data, std::size_t dataSize)
+bool Asset::LoadFromMemory(void *data, std::size_t dataSize, AssetLoadType loadType)
 {
     if(!m_allowLoadFromMemory)
     {
@@ -45,11 +47,13 @@ bool Asset::LoadFromMemory(void *data, std::size_t dataSize)
     m_loadData = data;
     m_loadDataSize = dataSize;
 
-    m_loaded = LoadNow();
+    if(loadType == LoadTypeNow)
+        m_loaded = LoadNow();
+
     return m_loaded;
 }
 
-bool Asset::LoadFromStream(sf::InputStream *stream)
+bool Asset::LoadFromStream(sf::InputStream *stream, AssetLoadType loadType)
 {
     if(!m_allowLoadFromStream)
     {
@@ -60,7 +64,9 @@ bool Asset::LoadFromStream(sf::InputStream *stream)
     m_loadSource = LoadSourceStream;
     m_loadStream = stream;
 
-    m_loaded = LoadNow();
+    if(loadType == LoadTypeNow)
+        m_loaded = LoadNow();
+
     return m_loaded;
 }
 

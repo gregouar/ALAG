@@ -27,6 +27,7 @@ class TestingState : public alag::GState, public Singleton<TestingState>
 
     private:
         sf::Time m_totalTime;
+        bool showfirstsecond;
 };
 
 #endif // TESTINGSTATE_H

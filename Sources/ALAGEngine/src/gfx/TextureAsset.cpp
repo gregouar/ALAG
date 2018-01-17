@@ -13,7 +13,7 @@ TextureAsset::TextureAsset()
 
 TextureAsset::~TextureAsset()
 {
-    //dtor
+    std::cout<<"Texture deleted"<<std::endl;
 }
 
 bool TextureAsset::LoadNow()

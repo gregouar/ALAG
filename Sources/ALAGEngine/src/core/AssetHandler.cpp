@@ -45,7 +45,7 @@ Asset* AssetHandler<AssetType>::LoadAssetFromFile(const AssetTypeID& id,
                                         const std::string &filePath, AssetLoadType loadType)
 {
     Asset* newAsset = AddAsset(id);
-    newAsset->LoadFromFile(filePath);
+    newAsset->LoadFromFile(filePath, loadType);
     if(loadType == LoadTypeNow)
         newAsset->LoadNow();
     else
@@ -59,7 +59,7 @@ Asset* AssetHandler<AssetType>::LoadAssetFromMemory(const AssetTypeID& id,
                                         void *data, std::size_t dataSize, AssetLoadType loadType)
 {
     Asset* newAsset = AddAsset(id);
-    newAsset->LoadFromMemory(data, dataSize);
+    newAsset->LoadFromMemory(data, dataSize, loadType);
     if(loadType == LoadTypeNow)
         newAsset->LoadNow();
     else
@@ -73,7 +73,7 @@ Asset* AssetHandler<AssetType>::LoadAssetFromStream(const AssetTypeID& id,
                                         sf::InputStream *stream, AssetLoadType loadType)
 {
     Asset* newAsset = AddAsset(id);
-    newAsset->LoadFromStream(stream);
+    newAsset->LoadFromStream(stream, loadType);
     if(loadType == LoadTypeNow)
         newAsset->LoadNow();
     else
@@ -130,7 +130,7 @@ void AssetHandler<AssetType>::AddToLoadingThread(Asset* asset)
 template<typename AssetType>
 void AssetHandler<AssetType>:: AddToObsolescenceList(const AssetTypeID &assetID,int lifeSpan)
 {
-
+    m_obsolescenceList[assetID] = lifeSpan;
 }
 
 template<typename AssetType>
@@ -148,10 +148,10 @@ void AssetHandler<AssetType>:: DescreaseObsolescenceLife()
     std::map<AssetTypeID, int>::iterator iter;
     for(iter = m_obsolescenceList.begin() ; iter != m_obsolescenceList.end() ; iter++)
     {
-        iter->second()--;
-        if(iter->second()-- <= 0)
+        iter->second--;
+        if(iter->second-- <= 0)
         {
-            DeleteAsset(iter->first());
+            DeleteAsset(iter->first);
             m_obsolescenceList.erase(iter);
         }
     }
@@ -166,9 +166,9 @@ void AssetHandler<AssetType>::DeleteAsset(const AssetTypeID &assetID)
 
     if(iter != m_assets.end())
     {
-        if(iter->second() != NULL)
+        if(iter->second != NULL)
         {
-            delete iter->second();
+            delete iter->second;
             m_assets.erase(iter);
         }
     } else

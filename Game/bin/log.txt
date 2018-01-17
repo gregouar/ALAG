@@ -2,6 +2,10 @@ Initializing renderer
 Texture loaded from file: ../data/sarco-color.png
 Texture loaded from file: ../data/sarco-color.png
 Texture loaded from file: ../data/sarco-normal.png
-Texture loaded from file: ../data/sarco-heightmap.png
+Texture loaded from file: ../data/sarco-normal.png
 Starting application
+Texture loaded from file: ../data/sarco-heightmap.png
+Texture loaded from file: ../data/abbaye_color.png
+Texture loaded from file: ../data/abbaye_heightmap.png
+Texture loaded from file: ../data/abbaye_normal.png
 Stopping application

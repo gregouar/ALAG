@@ -15,9 +15,9 @@ class Asset
         Asset();
         virtual ~Asset();
 
-        virtual bool LoadFromFile(const std::string &);
-        virtual bool LoadFromMemory(void *data, std::size_t size);
-        virtual bool LoadFromStream(sf::InputStream *stream);
+        virtual bool LoadFromFile(const std::string &, AssetLoadType = LoadTypeNow);
+        virtual bool LoadFromMemory(void *data, std::size_t size, AssetLoadType = LoadTypeNow);
+        virtual bool LoadFromStream(sf::InputStream *stream, AssetLoadType = LoadTypeNow);
 
         virtual bool LoadNow() = 0;
 

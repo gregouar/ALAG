@@ -32,7 +32,7 @@
 	<vector>
 	"GState.h"
 
-1516206840 source:c:\c++\alag\sources\src\states\testingstate.cpp
+1516213301 source:c:\c++\alag\sources\src\states\testingstate.cpp
 	"TestingState.h"
 	"ALAGE/core/EventManager.h"
 	"ALAGE/core/StateManager.h"
@@ -40,7 +40,7 @@
 	"ALAGE/gfx/TextureAsset.h"
 	"../src/core/AssetHandler.cpp"
 
-1516133648 c:\c++\alag\sources\include\states\testingstate.h
+1516213602 c:\c++\alag\sources\include\states\testingstate.h
 	<ALAGE/core/GState.h>
 	"ALAGE/utils/singleton.h"
 
@@ -485,16 +485,16 @@
 	<vector>
 	<SFML/System.hpp>
 
-1516207090 c:\c++\alag\sources\alagengine\include\alage\core\asset.h
+1516212805 c:\c++\alag\sources\alagengine\include\alage\core\asset.h
 	"ALAGE/Types.h"
 	<iostream>
 	<SFML/System.hpp>
 
-1516207100 source:c:\c++\alag\sources\alagengine\src\core\asset.cpp
+1516212805 source:c:\c++\alag\sources\alagengine\src\core\asset.cpp
 	"Asset.h"
 	"ALAGE/utils/Logger.h"
 
-1516207241 source:c:\c++\alag\sources\alagengine\src\gfx\textureasset.cpp
+1516213551 source:c:\c++\alag\sources\alagengine\src\gfx\textureasset.cpp
 	"TextureAsset.h"
 	"ALAGE/utils/Logger.h"
 
@@ -511,7 +511,7 @@
 1516200275 c:\c++\alag\sources\alagengine\include\alage\types.h
 	<iostream>
 
-1516207151 source:c:\c++\alag\sources\alagengine\src\core\assethandler.cpp
+1516213399 source:c:\c++\alag\sources\alagengine\src\core\assethandler.cpp
 	"ALAGE/core/AssetHandler.h"
 	"ALAGE/utils/Logger.h"
 
@@ -523,7 +523,7 @@
 	"ALAGE/Types.h"
 	<vector>
 
-1516207151 c:\c++\alag\sources\alagengine\src\core\assethandler.cpp
+1516213399 c:\c++\alag\sources\alagengine\src\core\assethandler.cpp
 	"ALAGE/core/AssetHandler.h"
 	"ALAGE/utils/Logger.h"
 
