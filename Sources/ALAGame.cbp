@@ -63,26 +63,31 @@
 		<Linker>
 			<Add directory="SFML/lib" />
 		</Linker>
+		<Unit filename="ALAGEngine/include/ALAGE/Types.h" />
 		<Unit filename="ALAGEngine/include/ALAGE/core/Asset.h" />
-		<Unit filename="ALAGEngine/include/ALAGE/core/AssetHandler.cpp" />
 		<Unit filename="ALAGEngine/include/ALAGE/core/AssetHandler.h" />
 		<Unit filename="ALAGEngine/include/ALAGE/core/Config.h" />
 		<Unit filename="ALAGEngine/include/ALAGE/core/EventManager.h" />
 		<Unit filename="ALAGEngine/include/ALAGE/core/GApp.h" />
 		<Unit filename="ALAGEngine/include/ALAGE/core/GState.h" />
 		<Unit filename="ALAGEngine/include/ALAGE/core/StateManager.h" />
+		<Unit filename="ALAGEngine/include/ALAGE/gfx/AnimatedSprite.h" />
 		<Unit filename="ALAGEngine/include/ALAGE/gfx/GfxEngine.h" />
+		<Unit filename="ALAGEngine/include/ALAGE/gfx/Texture3DAsset.h" />
 		<Unit filename="ALAGEngine/include/ALAGE/gfx/TextureAsset.h" />
 		<Unit filename="ALAGEngine/include/ALAGE/utils/Logger.h" />
 		<Unit filename="ALAGEngine/include/ALAGE/utils/Parser.h" />
 		<Unit filename="ALAGEngine/include/ALAGE/utils/singleton.h" />
 		<Unit filename="ALAGEngine/src/core/Asset.cpp" />
+		<Unit filename="ALAGEngine/src/core/AssetHandler.cpp" />
 		<Unit filename="ALAGEngine/src/core/Config.cpp" />
 		<Unit filename="ALAGEngine/src/core/EventManager.cpp" />
 		<Unit filename="ALAGEngine/src/core/GApp.cpp" />
 		<Unit filename="ALAGEngine/src/core/GState.cpp" />
 		<Unit filename="ALAGEngine/src/core/StateManager.cpp" />
+		<Unit filename="ALAGEngine/src/gfx/AnimatedSprite.cpp" />
 		<Unit filename="ALAGEngine/src/gfx/GfxEngine.cpp" />
+		<Unit filename="ALAGEngine/src/gfx/Texture3DAsset.cpp" />
 		<Unit filename="ALAGEngine/src/gfx/TextureAsset.cpp" />
 		<Unit filename="ALAGEngine/src/utils/Logger.cpp" />
 		<Unit filename="ALAGEngine/src/utils/Parser.cpp" />

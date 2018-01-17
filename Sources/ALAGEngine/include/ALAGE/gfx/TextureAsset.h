@@ -7,13 +7,15 @@
 namespace alag
 {
 
-class TextureAsset : Asset
+class TextureAsset : public Asset
 {
     public:
         TextureAsset();
         virtual ~TextureAsset();
 
-        bool LoadFromFile(const std::string&);
+        bool LoadNow();
+
+        sf::Texture* GetTexture();
 
     protected:
 

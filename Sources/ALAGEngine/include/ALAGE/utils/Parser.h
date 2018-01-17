@@ -3,7 +3,7 @@
 
 #include "ALAGE/utils/singleton.h"
 
-class Parser:Singleton<Parser>
+class Parser : public Singleton<Parser>
 {
     public:
         friend class Singleton<Parser>;

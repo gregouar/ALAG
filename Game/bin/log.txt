@@ -1,3 +1,7 @@
 Initializing renderer
+Texture loaded from file: ../data/sarco-color.png
+Texture loaded from file: ../data/sarco-color.png
+Texture loaded from file: ../data/sarco-normal.png
+Texture loaded from file: ../data/sarco-heightmap.png
 Starting application
 Stopping application

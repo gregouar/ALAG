@@ -2,6 +2,12 @@
 #include "ALAGE/core/EventManager.h"
 #include "ALAGE/core/StateManager.h"
 
+#include "ALAGE/core/AssetHandler.h"
+#include "ALAGE/gfx/TextureAsset.h"
+#include "../src/core/AssetHandler.cpp"
+
+using namespace alag;
+
 TestingState::TestingState()
 {
     //ctor
@@ -15,6 +21,11 @@ TestingState::~TestingState()
 void TestingState::Entered()
 {
     m_totalTime = sf::Time::Zero;
+
+    AssetHandler<TextureAsset>* TextureHandler =  AssetHandler<TextureAsset>::Instance();
+    TextureHandler->LoadAssetFromFile(TextureHandler->GenerateID(),"../data/sarco-color.png");
+    TextureHandler->LoadAssetFromFile(TextureHandler->GenerateID(),"../data/sarco-normal.png",LoadTypeInThread);
+    TextureHandler->LoadAssetFromFile(TextureHandler->GenerateID(),"../data/sarco-heightmap.png",LoadTypeInThread);
 }
 
 void TestingState::Leaving()
@@ -52,5 +63,6 @@ void TestingState::Update(sf::Time time)
 
 void TestingState::Draw(sf::RenderTarget* renderer)
 {
-    //std::cout<<m_totalTime.asSeconds()<<std::endl;
+    if(m_totalTime.asSeconds() < .2)
+    std::cout<<m_totalTime.asSeconds()<<std::endl;
 }
