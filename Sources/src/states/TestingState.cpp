@@ -39,6 +39,8 @@ void TestingState::Entered()
                                       "../data/abbaye_heightmap.png",LoadTypeInThread);
     TextureHandler->LoadAssetFromFile(TextureHandler->GenerateID(),
                                       "../data/abbaye_normal.png",LoadTypeInThread);
+    TextureHandler->LoadAssetFromFile(TextureHandler->GenerateID(),
+                                      "../data/abbaye_color.png",LoadTypeInThread);
 
 
 

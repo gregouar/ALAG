@@ -14,6 +14,11 @@ Asset::Asset()
     m_loaded = false;
 }
 
+Asset::Asset(const AssetTypeID &id) : Asset()
+{
+    m_id=id;
+}
+
 Asset::~Asset()
 {
     //dtor

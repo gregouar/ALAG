@@ -50,6 +50,7 @@ template<class AssetType> class AssetHandler : public Singleton<AssetHandler<Ass
     private:
         std::map<AssetTypeID, Asset*> m_assets;
         std::map<AssetTypeID, int> m_obsolescenceList;
+        std::map<std::string, AssetTypeID> m_filesList;
 
         sf::Thread* m_loadThread;
         std::vector<Asset*> m_assetsToLoadInThread;

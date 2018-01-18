@@ -49,12 +49,19 @@ template<typename AssetType>
 Asset* AssetHandler<AssetType>::LoadAssetFromFile(const AssetTypeID& id,
                                         const std::string &filePath, AssetLoadType loadType)
 {
+	std::map<std::string, AssetTypeID>::iterator filesIter;
+	filesIter = m_filesList.find(filePath);
+	if(filesIter != m_filesList.end())
+		return GetAsset(filesIter->second);
+
     Asset* newAsset = AddAsset(id);
     newAsset->LoadFromFile(filePath, loadType);
     if(loadType == LoadTypeNow)
         newAsset->LoadNow();
     else
         AddToLoadingThread(newAsset);
+
+	m_filesList[filePath] = id;
 
     return newAsset;
 }

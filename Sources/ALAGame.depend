@@ -33,7 +33,7 @@
 	<vector>
 	"GState.h"
 
-1516309180 source:c:\c++\alag\sources\src\states\testingstate.cpp
+1516309739 source:c:\c++\alag\sources\src\states\testingstate.cpp
 	"states/TestingState.h"
 	"ALAGE/core/EventManager.h"
 	"ALAGE/core/StateManager.h"
@@ -481,7 +481,7 @@
 1516179549 source:c:\c++\alag\sources\alagengine\include\alage\core\assethandler.cpp
 	"AssetHandler.h"
 
-1516308841 c:\c++\alag\sources\alagengine\include\alage\core\assethandler.h
+1516313852 c:\c++\alag\sources\alagengine\include\alage\core\assethandler.h
 	"ALAGE/Types.h"
 	"ALAGE/core/Asset.h"
 	"ALAGE/utils/Singleton.h"
@@ -490,12 +490,12 @@
 	<SFML/System.hpp>
 	"../src/core/AssetHandler.inc"
 
-1516309109 c:\c++\alag\sources\alagengine\include\alage\core\asset.h
+1516313578 c:\c++\alag\sources\alagengine\include\alage\core\asset.h
 	"ALAGE/Types.h"
 	<iostream>
 	<SFML/System.hpp>
 
-1516309095 source:c:\c++\alag\sources\alagengine\src\core\asset.cpp
+1516313578 source:c:\c++\alag\sources\alagengine\src\core\asset.cpp
 	"ALAGE/core/Asset.h"
 	"ALAGE/utils/Parser.h"
 	"ALAGE/utils/Logger.h"
@@ -586,6 +586,6 @@
 	"extlibs/tinyxml.h"
 	<windows.h>
 
-1516308841 c:\c++\alag\sources\alagengine\src\core\assethandler.inc
+1516313910 c:\c++\alag\sources\alagengine\src\core\assethandler.inc
 	"ALAGE/utils/Logger.h"
 

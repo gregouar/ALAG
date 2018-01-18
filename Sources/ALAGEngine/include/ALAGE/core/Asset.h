@@ -13,6 +13,7 @@ class Asset
 {
     public:
         Asset();
+        Asset(const AssetTypeID &);
         virtual ~Asset();
 
         virtual bool LoadFromFile(const std::string &, AssetLoadType = LoadTypeNow);
@@ -43,6 +44,7 @@ class Asset
         std::string m_name;
 
     private:
+        AssetTypeID m_id;
 };
 
 
