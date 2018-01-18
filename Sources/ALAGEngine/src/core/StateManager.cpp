@@ -1,6 +1,6 @@
 #include <stdexcept>
 
-#include "StateManager.h"
+#include "ALAGE/core/StateManager.h"
 
 namespace alag
 {

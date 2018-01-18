@@ -1,4 +1,4 @@
-#include "TextureAsset.h"
+#include "ALAGE/gfx/TextureAsset.h"
 #include "ALAGE/utils/Logger.h"
 
 namespace alag
@@ -13,7 +13,6 @@ TextureAsset::TextureAsset()
 
 TextureAsset::~TextureAsset()
 {
-    std::cout<<"Texture deleted"<<std::endl;
 }
 
 bool TextureAsset::LoadNow()

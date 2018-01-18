@@ -26,6 +26,7 @@ class Asset
     protected:
         bool m_allowLoadFromFile;
         std::string m_filePath;
+        std::string m_fileDirectory;
 
         bool m_allowLoadFromMemory;
         void *m_loadData;
@@ -35,8 +36,11 @@ class Asset
         sf::InputStream *m_loadStream;
 
         AssetLoadSource m_loadSource;
+        AssetLoadType m_loadType;
 
         bool m_loaded;
+
+        std::string m_name;
 
     private:
 };

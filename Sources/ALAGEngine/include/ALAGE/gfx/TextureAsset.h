@@ -13,14 +13,14 @@ class TextureAsset : public Asset
         TextureAsset();
         virtual ~TextureAsset();
 
-        bool LoadNow();
+        virtual bool LoadNow();
 
         sf::Texture* GetTexture();
 
     protected:
+        sf::Texture m_texture;
 
     private:
-        sf::Texture m_texture;
 };
 
 }

@@ -1,4 +1,4 @@
-#include "Logger.h"
+#include "ALAGE/utils/Logger.h"
 
 const char *Logger::DEFAULT_LOG_PATH = "log.txt";
 
@@ -26,7 +26,7 @@ void Logger::Write(const std::string& s)
 void Logger::Error(const std::string& s)
 {
     if(Logger::Instance()->m_consoleActive)
-        std::cout<<"ERROR : "<<s<<std::endl;
+        std::cerr<<"ERROR : "<<s<<std::endl;
 
    *Logger::Instance()->m_fileStream<<"ERROR : "<<s<<std::endl;
 }
@@ -34,7 +34,7 @@ void Logger::Error(const std::string& s)
 void Logger::FatalError(const std::string& s)
 {
     if(Logger::Instance()->m_consoleActive)
-        std::cout<<"ERROR : "<<s<<std::endl;
+        std::cerr<<"ERROR : "<<s<<std::endl;
 
    *Logger::Instance()->m_fileStream<<"FATAL ERROR : "<<s<<", stopping application"<<std::endl;
 }

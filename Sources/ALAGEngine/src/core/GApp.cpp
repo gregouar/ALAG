@@ -16,9 +16,10 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 #include <SFML/System.hpp>
 
-#include "GApp.h"
+#include "ALAGE/core/GApp.h"
 #include "ALAGE/utils/Logger.h"
 #include "ALAGE/utils/Parser.h"
+#include "ALAGE/gfx/GfxEngine.h"
 
 namespace alag
 {
@@ -78,6 +79,8 @@ bool GApp::InitRenderer()
 
     m_window.create(videoMode, m_name, sf::Style::Close, contextSettings);
 
+    GfxEngine::Instance()->InitRenderer();
+
     return (true);
 }
 
@@ -128,6 +131,7 @@ int GApp::Loop()
             m_stateManager.Draw(&m_window);
         }
 
+        GfxEngine::Instance()->RenderWorld(&m_window);
         m_window.display();
     }
 

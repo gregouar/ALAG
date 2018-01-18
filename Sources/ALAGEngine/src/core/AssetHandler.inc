@@ -1,4 +1,3 @@
-#include "ALAGE/core/AssetHandler.h"
 #include "ALAGE/utils/Logger.h"
 
 namespace alag
@@ -40,6 +39,13 @@ Asset* AssetHandler<AssetType>::GetAsset(const AssetTypeID& assetID)
 
 
 template<typename AssetType>
+Asset* AssetHandler<AssetType>::LoadAssetFromFile(
+                                        const std::string &filePath, AssetLoadType loadType)
+{
+    return LoadAssetFromFile(GenerateID(), filePath, loadType);
+}
+
+template<typename AssetType>
 Asset* AssetHandler<AssetType>::LoadAssetFromFile(const AssetTypeID& id,
                                         const std::string &filePath, AssetLoadType loadType)
 {
@@ -51,6 +57,14 @@ Asset* AssetHandler<AssetType>::LoadAssetFromFile(const AssetTypeID& id,
         AddToLoadingThread(newAsset);
 
     return newAsset;
+}
+
+
+template<typename AssetType>
+Asset* AssetHandler<AssetType>::LoadAssetFromMemory(
+                                        void *data, std::size_t dataSize, AssetLoadType loadType)
+{
+    return LoadAssetFromMemory(GenerateID(), data, dataSize, loadType);
 }
 
 template<typename AssetType>
@@ -65,6 +79,14 @@ Asset* AssetHandler<AssetType>::LoadAssetFromMemory(const AssetTypeID& id,
         AddToLoadingThread(newAsset);
 
     return newAsset;
+}
+
+
+template<typename AssetType>
+Asset* AssetHandler<AssetType>::LoadAssetFromStream(
+                                        sf::InputStream *stream, AssetLoadType loadType)
+{
+    return LoadAssetFromStream(GenerateID(), stream, loadType);
 }
 
 template<typename AssetType>

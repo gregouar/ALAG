@@ -21,6 +21,10 @@ template<class AssetType> class AssetHandler : public Singleton<AssetHandler<Ass
 
         Asset* GetAsset(const AssetTypeID &assetID);
 
+        Asset* LoadAssetFromFile(const std::string &, AssetLoadType = LoadTypeNow);
+        Asset* LoadAssetFromMemory(void *data, std::size_t dataSize, AssetLoadType = LoadTypeNow);
+        Asset* LoadAssetFromStream(sf::InputStream *stream, AssetLoadType = LoadTypeNow);
+
         Asset* LoadAssetFromFile(const AssetTypeID& id,const std::string &, AssetLoadType = LoadTypeNow);
         Asset* LoadAssetFromMemory(const AssetTypeID& id, void *data, std::size_t dataSize, AssetLoadType = LoadTypeNow);
         Asset* LoadAssetFromStream(const AssetTypeID& id,sf::InputStream *stream, AssetLoadType = LoadTypeNow);
@@ -54,5 +58,9 @@ template<class AssetType> class AssetHandler : public Singleton<AssetHandler<Ass
 };
 
 }
+
+
+#include "../src/core/AssetHandler.inc"
+
 
 #endif // ASSETHANDLER_H

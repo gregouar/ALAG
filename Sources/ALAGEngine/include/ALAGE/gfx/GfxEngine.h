@@ -3,6 +3,7 @@
 
 #include "ALAGE/utils/singleton.h"
 #include <SFML/Graphics.hpp>
+#include <SFML/OpenGL.hpp>
 
 namespace alag
 {
@@ -12,6 +13,8 @@ class GfxEngine : public Singleton<GfxEngine>
     public:
         friend class Singleton<GfxEngine>;
 
+        void InitRenderer();
+
         void RenderWorld(sf::RenderTarget*);
         void SetView(const sf::View&);
 
@@ -20,6 +23,7 @@ class GfxEngine : public Singleton<GfxEngine>
         virtual ~GfxEngine();
 
     private:
+        sf::View m_view;
 };
 
 }

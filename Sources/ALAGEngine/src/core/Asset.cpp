@@ -1,4 +1,5 @@
-#include "Asset.h"
+#include "ALAGE/core/Asset.h"
+#include "ALAGE/utils/Parser.h"
 #include "ALAGE/utils/Logger.h"
 
 namespace alag
@@ -28,9 +29,8 @@ bool Asset::LoadFromFile(const std::string &filePath, AssetLoadType loadType)
 
     m_loadSource = LoadSourceFile;
     m_filePath = filePath;
-
-    if(loadType == LoadTypeNow)
-        m_loaded = LoadNow();
+    m_fileDirectory = Parser::FindFileDirectory(m_filePath);
+    m_loadType = loadType;
 
     return m_loaded;
 }
@@ -46,9 +46,7 @@ bool Asset::LoadFromMemory(void *data, std::size_t dataSize, AssetLoadType loadT
     m_loadSource = LoadSourceMemory;
     m_loadData = data;
     m_loadDataSize = dataSize;
-
-    if(loadType == LoadTypeNow)
-        m_loaded = LoadNow();
+    m_loadType = loadType;
 
     return m_loaded;
 }
@@ -63,9 +61,7 @@ bool Asset::LoadFromStream(sf::InputStream *stream, AssetLoadType loadType)
 
     m_loadSource = LoadSourceStream;
     m_loadStream = stream;
-
-    if(loadType == LoadTypeNow)
-        m_loaded = LoadNow();
+    m_loadType = loadType;
 
     return m_loaded;
 }

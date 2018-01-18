@@ -1,4 +1,5 @@
-#include "Parser.h"
+#include "ALAGE/utils/Parser.h"
+#include "ALAGE/utils/Logger.h"
 
 #include <sstream>
 
@@ -65,4 +66,14 @@ float Parser::ParseFloat(const std::string& data)
     std::istringstream ss(data);
     ss>>value;
     return value;
+}
+
+std::string Parser::FindFileDirectory(const std::string& filePath)
+{
+    std::size_t p = filePath.find_last_of("/\\");
+    if(p != std::string::npos)
+        return filePath.substr(0,p+1);
+
+    Logger::Error("Cannot find directory of "+filePath);
+    return filePath;
 }

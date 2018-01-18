@@ -1,4 +1,4 @@
-#include "AnimatedSprite.h"
+#include "ALAGE/gfx/AnimatedSprite.h"
 
 namespace alag
 {

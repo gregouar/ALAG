@@ -1,8 +1,9 @@
 #ifndef TESTINGSTATE_H
 #define TESTINGSTATE_H
 
-#include <ALAGE/core/GState.h>
+#include "ALAGE/core/GState.h"
 #include "ALAGE/utils/singleton.h"
+#include "ALAGE/gfx/GfxEngine.h"
 
 
 class TestingState : public alag::GState, public Singleton<TestingState>
@@ -28,6 +29,8 @@ class TestingState : public alag::GState, public Singleton<TestingState>
     private:
         sf::Time m_totalTime;
         bool showfirstsecond;
+
+        alag::GfxEngine* m_gfxEngine;
 };
 
 #endif // TESTINGSTATE_H

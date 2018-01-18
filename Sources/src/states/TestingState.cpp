@@ -1,10 +1,10 @@
-#include "TestingState.h"
+#include "states/TestingState.h"
 #include "ALAGE/core/EventManager.h"
 #include "ALAGE/core/StateManager.h"
 
 #include "ALAGE/core/AssetHandler.h"
 #include "ALAGE/gfx/TextureAsset.h"
-#include "../src/core/AssetHandler.cpp"
+#include "ALAGE/gfx/Texture3DAsset.h"
 
 using namespace alag;
 
@@ -24,14 +24,14 @@ void TestingState::Entered()
     m_totalTime = sf::Time::Zero;
 
     AssetHandler<TextureAsset>* TextureHandler =  AssetHandler<TextureAsset>::Instance();
-    TextureHandler->LoadAssetFromFile(TextureHandler->GenerateID(),
+    /*TextureHandler->LoadAssetFromFile(TextureHandler->GenerateID(),
                                       "../data/sarco-color.png");
     TextureHandler->LoadAssetFromFile(TextureHandler->GenerateID(),
                                       "../data/sarco-normal.png");
 
     AssetTypeID newID = TextureHandler->GenerateID();
     TextureHandler->LoadAssetFromFile(newID,"../data/sarco-heightmap.png",LoadTypeInThread);
-    TextureHandler->AddToObsolescenceList(newID,2);
+    TextureHandler->AddToObsolescenceList(newID,2);*/
 
     TextureHandler->LoadAssetFromFile(TextureHandler->GenerateID(),
                                       "../data/abbaye_color.png",LoadTypeInThread);
@@ -39,6 +39,12 @@ void TestingState::Entered()
                                       "../data/abbaye_heightmap.png",LoadTypeInThread);
     TextureHandler->LoadAssetFromFile(TextureHandler->GenerateID(),
                                       "../data/abbaye_normal.png",LoadTypeInThread);
+
+
+
+    AssetHandler<Texture3DAsset>* Texture3DHandler =  AssetHandler<Texture3DAsset>::Instance();
+    Texture3DHandler->LoadAssetFromFile(Texture3DHandler->GenerateID(),
+                                      "../data/sarcoXML.txt");
 }
 
 void TestingState::Leaving()
@@ -76,10 +82,6 @@ void TestingState::Update(sf::Time time)
 
 void TestingState::Draw(sf::RenderTarget* renderer)
 {
-    if(m_totalTime.asSeconds() < .2 && showfirstsecond)
-        std::cout<<m_totalTime.asSeconds()<<std::endl;
-
-
     if(m_totalTime.asSeconds() > 1)
     {
         showfirstsecond = false;

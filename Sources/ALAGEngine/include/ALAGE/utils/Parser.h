@@ -16,6 +16,8 @@ class Parser : public Singleton<Parser>
         static int   ParseInt(const std::string&);
         static float ParseFloat(const std::string&);
 
+        static std::string FindFileDirectory(const std::string&);
+
     protected:
         Parser();
         virtual ~Parser();

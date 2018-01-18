@@ -14,11 +14,8 @@
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-g" />
-					<Add directory="ALAGE/include/ALAGE" />
-					<Add directory="ALAGEngine/include/ALAGE/core" />
-					<Add directory="include/states" />
-					<Add directory="ALAGEngine/include/ALAGE/utils" />
-					<Add directory="ALAGEngine/include/ALAGE/gfx" />
+					<Add directory="ALAGEngine/include" />
+					<Add directory="include" />
 				</Compiler>
 				<Linker>
 					<Add library="sfml-graphics" />

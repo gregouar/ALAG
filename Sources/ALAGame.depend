@@ -4,11 +4,12 @@
 	"ALAGE/core/GApp.h"
 	"include/states/TestingState.h"
 
-1516139674 source:c:\c++\alag\sources\alagengine\src\core\gapp.cpp
+1516304411 source:c:\c++\alag\sources\alagengine\src\core\gapp.cpp
 	<SFML/System.hpp>
-	"GApp.h"
+	"ALAGE/core/GApp.h"
 	"ALAGE/utils/Logger.h"
 	"ALAGE/utils/Parser.h"
+	"ALAGE/gfx/GfxEngine.h"
 
 1516137160 c:\c++\alag\sources\alagengine\include\alage\core\gapp.h
 	<SFML/Graphics.hpp>
@@ -16,33 +17,34 @@
 	"ALAGE/core/EventManager.h"
 	"ALAGE/core/StateManager.h"
 
-1515966639 source:c:\c++\alag\sources\alagengine\src\core\gstate.cpp
-	"GState.h"
+1516304415 source:c:\c++\alag\sources\alagengine\src\core\gstate.cpp
+	"ALAGE/core/GState.h"
 
 1516133659 c:\c++\alag\sources\alagengine\include\alage\core\gstate.h
 	<SFML/Graphics.hpp>
 	"ALAGE/utils/singleton.h"
 
-1516133648 source:c:\c++\alag\sources\alagengine\src\core\statemanager.cpp
+1516304418 source:c:\c++\alag\sources\alagengine\src\core\statemanager.cpp
 	<stdexcept>
-	"StateManager.h"
+	"ALAGE/core/StateManager.h"
 
 1516133648 c:\c++\alag\sources\alagengine\include\alage\core\statemanager.h
 	<SFML/System.hpp>
 	<vector>
 	"GState.h"
 
-1516213301 source:c:\c++\alag\sources\src\states\testingstate.cpp
-	"TestingState.h"
+1516309180 source:c:\c++\alag\sources\src\states\testingstate.cpp
+	"states/TestingState.h"
 	"ALAGE/core/EventManager.h"
 	"ALAGE/core/StateManager.h"
 	"ALAGE/core/AssetHandler.h"
 	"ALAGE/gfx/TextureAsset.h"
-	"../src/core/AssetHandler.cpp"
+	"ALAGE/gfx/Texture3DAsset.h"
 
-1516213602 c:\c++\alag\sources\include\states\testingstate.h
-	<ALAGE/core/GState.h>
+1516302003 c:\c++\alag\sources\include\states\testingstate.h
+	"ALAGE/core/GState.h"
 	"ALAGE/utils/singleton.h"
+	"ALAGE/gfx/GfxEngine.h"
 
 1486736398 c:\c++\alag\sources\sfml\include\sfml\system.hpp
 	<SFML/Config.hpp>
@@ -166,8 +168,8 @@
 1515967445 c:\c++\alag\sources\alagengine\include\alage\utils\singleton.h
 	<iostream>
 
-1516053305 source:c:\c++\alag\sources\alagengine\src\core\eventmanager.cpp
-	"EventManager.h"
+1516304405 source:c:\c++\alag\sources\alagengine\src\core\eventmanager.cpp
+	"ALAGE/core/EventManager.h"
 
 1516053287 c:\c++\alag\sources\alagengine\include\alage\core\eventmanager.h
 	<SFML/Window.hpp>
@@ -441,8 +443,8 @@
 	<string>
 	<vector>
 
-1516139975 source:c:\c++\alag\sources\alagengine\src\core\config.cpp
-	"Config.h"
+1516304401 source:c:\c++\alag\sources\alagengine\src\core\config.cpp
+	"ALAGE/core/Config.h"
 	<iostream>
 	<fstream>
 	"ALAGE/utils/Logger.h"
@@ -452,78 +454,138 @@
 	<iostream>
 	<map>
 
-1516205087 c:\c++\alag\sources\alagengine\include\alage\utils\parser.h
+1516308272 c:\c++\alag\sources\alagengine\include\alage\utils\parser.h
 	"ALAGE/utils/singleton.h"
 
-1516139899 source:c:\c++\alag\sources\alagengine\src\utils\parser.cpp
-	"Parser.h"
+1516309270 source:c:\c++\alag\sources\alagengine\src\utils\parser.cpp
+	"ALAGE/utils/Parser.h"
+	"ALAGE/utils/Logger.h"
 	<sstream>
 
-1516052093 source:c:\c++\alag\sources\alagengine\src\utils\logger.cpp
-	"Logger.h"
+1516305763 source:c:\c++\alag\sources\alagengine\src\utils\logger.cpp
+	"ALAGE/utils/Logger.h"
 
 1516205087 c:\c++\alag\sources\alagengine\include\alage\utils\logger.h
 	<fstream>
 	<sstream>
 	"ALAGE/utils/Singleton.h"
 
-1516178349 source:c:\c++\alag\sources\alagengine\src\gfx\gfxengine.cpp
-	"GfxEngine.h"
+1516304432 source:c:\c++\alag\sources\alagengine\src\gfx\gfxengine.cpp
+	"ALAGE/gfx/GfxEngine.h"
 
-1516182865 c:\c++\alag\sources\alagengine\include\alage\gfx\gfxengine.h
+1516302899 c:\c++\alag\sources\alagengine\include\alage\gfx\gfxengine.h
 	"ALAGE/utils/singleton.h"
 	<SFML/Graphics.hpp>
+	<SFML/OpenGL.hpp>
 
 1516179549 source:c:\c++\alag\sources\alagengine\include\alage\core\assethandler.cpp
 	"AssetHandler.h"
 
-1516207139 c:\c++\alag\sources\alagengine\include\alage\core\assethandler.h
+1516308841 c:\c++\alag\sources\alagengine\include\alage\core\assethandler.h
 	"ALAGE/Types.h"
 	"ALAGE/core/Asset.h"
 	"ALAGE/utils/Singleton.h"
 	<map>
 	<vector>
 	<SFML/System.hpp>
+	"../src/core/AssetHandler.inc"
 
-1516212805 c:\c++\alag\sources\alagengine\include\alage\core\asset.h
+1516309109 c:\c++\alag\sources\alagengine\include\alage\core\asset.h
 	"ALAGE/Types.h"
 	<iostream>
 	<SFML/System.hpp>
 
-1516212805 source:c:\c++\alag\sources\alagengine\src\core\asset.cpp
-	"Asset.h"
+1516309095 source:c:\c++\alag\sources\alagengine\src\core\asset.cpp
+	"ALAGE/core/Asset.h"
+	"ALAGE/utils/Parser.h"
 	"ALAGE/utils/Logger.h"
 
-1516213551 source:c:\c++\alag\sources\alagengine\src\gfx\textureasset.cpp
-	"TextureAsset.h"
+1516304444 source:c:\c++\alag\sources\alagengine\src\gfx\textureasset.cpp
+	"ALAGE/gfx/TextureAsset.h"
 	"ALAGE/utils/Logger.h"
 
-1516205136 c:\c++\alag\sources\alagengine\include\alage\gfx\textureasset.h
+1516303741 c:\c++\alag\sources\alagengine\include\alage\gfx\textureasset.h
 	"ALAGE/core/Asset.h"
 	<SFML/Graphics.hpp>
 
-1516183120 source:c:\c++\alag\sources\alagengine\src\gfx\texture3dasset.cpp
-	"Texture3DAsset.h"
+1516309713 source:c:\c++\alag\sources\alagengine\src\gfx\texture3dasset.cpp
+	"ALAGE/core/AssetHandler.h"
+	"ALAGE/gfx/Texture3DAsset.h"
+	"ALAGE/utils/Parser.h"
+	"ALAGE/utils/Logger.h"
+	<istream>
 
-1516183138 c:\c++\alag\sources\alagengine\include\alage\gfx\texture3dasset.h
+1516309591 c:\c++\alag\sources\alagengine\include\alage\gfx\texture3dasset.h
 	"ALAGE/gfx/TextureAsset.h"
+	"extlibs/tinyxml.h"
 
 1516200275 c:\c++\alag\sources\alagengine\include\alage\types.h
 	<iostream>
 
-1516213399 source:c:\c++\alag\sources\alagengine\src\core\assethandler.cpp
+1516228884 source:c:\c++\alag\sources\alagengine\src\core\assethandler.cpp
 	"ALAGE/core/AssetHandler.h"
 	"ALAGE/utils/Logger.h"
 
-1516197342 source:c:\c++\alag\sources\alagengine\src\gfx\animatedsprite.cpp
-	"AnimatedSprite.h"
+1516304425 source:c:\c++\alag\sources\alagengine\src\gfx\animatedsprite.cpp
+	"ALAGE/gfx/AnimatedSprite.h"
 
 1516203760 c:\c++\alag\sources\alagengine\include\alage\gfx\animatedsprite.h
 	"ALAGE/gfx/TextureAsset.h"
 	"ALAGE/Types.h"
 	<vector>
 
-1516213399 c:\c++\alag\sources\alagengine\src\core\assethandler.cpp
+1516228884 c:\c++\alag\sources\alagengine\src\core\assethandler.cpp
 	"ALAGE/core/AssetHandler.h"
+	"ALAGE/utils/Logger.h"
+
+1486736398 c:\c++\alag\sources\sfml\include\sfml\opengl.hpp
+	<SFML/Config.hpp>
+	<windows.h>
+	<GL/gl.h>
+	<GLES/gl.h>
+	<GLES/glext.h>
+	<GL/gl.h>
+	<OpenGL/gl.h>
+	<OpenGLES/ES1/gl.h>
+	<OpenGLES/ES1/glext.h>
+	<GLES/gl.h>
+	<GLES/glext.h>
+	<GLES2/gl2ext.h>
+
+1269288996 c:\c++\alag\sources\alagengine\include\extlibs\tinyxml.h
+	<ctype.h>
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<assert.h>
+	<string>
+	<iostream>
+	<sstream>
+	"tinystr.h"
+
+1269288996 c:\c++\alag\sources\alagengine\include\extlibs\tinystr.h
+	<assert.h>
+	<string.h>
+
+1516304208 source:c:\c++\alag\sources\alagengine\src\extlibs\tinystr.cpp
+	"extlibs/tinystr.h"
+
+1516304212 source:c:\c++\alag\sources\alagengine\src\extlibs\tinyxml.cpp
+	<ctype.h>
+	<sstream>
+	<iostream>
+	<iostream>
+	"extlibs/tinyxml.h"
+
+1516304217 source:c:\c++\alag\sources\alagengine\src\extlibs\tinyxmlerror.cpp
+	"extlibs/tinyxml.h"
+
+1516304221 source:c:\c++\alag\sources\alagengine\src\extlibs\tinyxmlparser.cpp
+	<ctype.h>
+	<stddef.h>
+	"extlibs/tinyxml.h"
+	<windows.h>
+
+1516308841 c:\c++\alag\sources\alagengine\src\core\assethandler.inc
 	"ALAGE/utils/Logger.h"
 

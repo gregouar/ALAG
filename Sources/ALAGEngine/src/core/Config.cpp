@@ -1,4 +1,4 @@
-#include "Config.h"
+#include "ALAGE/core/Config.h"
 
 #include <iostream>
 #include <fstream>
