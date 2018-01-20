@@ -64,6 +64,8 @@
 		<Unit filename="ALAGEngine/include/ALAGE/core/StateManager.h" />
 		<Unit filename="ALAGEngine/include/ALAGE/gfx/AnimatedSprite.h" />
 		<Unit filename="ALAGEngine/include/ALAGE/gfx/GfxEngine.h" />
+		<Unit filename="ALAGEngine/include/ALAGE/gfx/IsometricScene.h" />
+		<Unit filename="ALAGEngine/include/ALAGE/gfx/SceneManager.h" />
 		<Unit filename="ALAGEngine/include/ALAGE/gfx/Texture3DAsset.h" />
 		<Unit filename="ALAGEngine/include/ALAGE/gfx/TextureAsset.h" />
 		<Unit filename="ALAGEngine/include/ALAGE/utils/Logger.h" />
@@ -86,6 +88,8 @@
 		<Unit filename="ALAGEngine/src/extlibs/tinyxmlparser.cpp" />
 		<Unit filename="ALAGEngine/src/gfx/AnimatedSprite.cpp" />
 		<Unit filename="ALAGEngine/src/gfx/GfxEngine.cpp" />
+		<Unit filename="ALAGEngine/src/gfx/IsometricScene.cpp" />
+		<Unit filename="ALAGEngine/src/gfx/SceneManager.cpp" />
 		<Unit filename="ALAGEngine/src/gfx/Texture3DAsset.cpp" />
 		<Unit filename="ALAGEngine/src/gfx/TextureAsset.cpp" />
 		<Unit filename="ALAGEngine/src/utils/Logger.cpp" />

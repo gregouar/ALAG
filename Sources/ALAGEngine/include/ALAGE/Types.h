@@ -3,6 +3,7 @@
 #define   ALAG_TYPES
 
 #include <iostream>
+#include <SFML/Graphics.hpp>
 
 enum AssetLoadType
 {
@@ -21,6 +22,9 @@ enum AssetLoadSource
 
 typedef unsigned int AssetTypeID;
 typedef std::string AnimationTypeID;
+
+const std::string emptyString;
+const sf::Texture emptyTexture;
 
 
 #endif

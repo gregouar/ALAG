@@ -11,7 +11,8 @@ using namespace alag;
 TestingState::TestingState()
 {
     //ctor
-    showfirstsecond= true;
+    showfirstsecond = true;
+    m_firstEntering = true;
 }
 
 TestingState::~TestingState()
@@ -19,10 +20,8 @@ TestingState::~TestingState()
     //dtor
 }
 
-void TestingState::Entered()
+void TestingState::Init()
 {
-    m_totalTime = sf::Time::Zero;
-
     AssetHandler<TextureAsset>* TextureHandler =  AssetHandler<TextureAsset>::Instance();
     /*TextureHandler->LoadAssetFromFile(TextureHandler->GenerateID(),
                                       "../data/sarco-color.png");
@@ -45,8 +44,20 @@ void TestingState::Entered()
 
 
     AssetHandler<Texture3DAsset>* Texture3DHandler =  AssetHandler<Texture3DAsset>::Instance();
-    Texture3DHandler->LoadAssetFromFile(Texture3DHandler->GenerateID(),
+    Texture3DAsset *t3D =  Texture3DHandler->LoadAssetFromFile(Texture3DHandler->GenerateID(),
                                       "../data/sarcoXML.txt");
+
+    m_mainScene.InitRenderer();
+
+    m_firstEntering = false;
+}
+
+void TestingState::Entered()
+{
+    m_totalTime = sf::Time::Zero;
+
+    if(m_firstEntering)
+        Init();
 }
 
 void TestingState::Leaving()
@@ -90,4 +101,6 @@ void TestingState::Draw(sf::RenderTarget* renderer)
         m_totalTime = sf::Time::Zero;
         AssetHandler<TextureAsset>::Instance()->DescreaseObsolescenceLife();
     }
+
+    m_mainScene.RenderScene(renderer);
 }

@@ -48,12 +48,14 @@ GApp::~GApp()
 {
 }
 
-bool GApp::InitRenderer()
+bool GApp::Init()
 {
-    Logger::Write("Initializing renderer");
+    Config::Instance()->Load(DEFAULT_CONFIG_FILE);
 
-    sf::VideoMode videoMode = sf::VideoMode(m_config.GetInt("window","width",DEFAULT_WINDOW_WIDTH),
-                                            m_config.GetInt("window","height",DEFAULT_WINDOW_HEIGHT));
+    Logger::Write("Initializing application");
+
+    sf::VideoMode videoMode = sf::VideoMode(Config::GetInt("window","width",DEFAULT_WINDOW_WIDTH),
+                                            Config::GetInt("window","height",DEFAULT_WINDOW_HEIGHT));
 
     if(!videoMode.isValid())
     {
@@ -75,11 +77,11 @@ bool GApp::InitRenderer()
 
     sf::ContextSettings contextSettings;
     contextSettings.depthBits = 24;
-    contextSettings.sRgbCapable = m_config.GetBool("window","srgb",DEFAULT_SRGB); //SHOULD PUT THIS IN OPTION
+    contextSettings.sRgbCapable = Config::GetBool("window","srgb",DEFAULT_SRGB);
 
     m_window.create(videoMode, m_name, sf::Style::Close, contextSettings);
 
-    GfxEngine::Instance()->InitRenderer();
+    //GfxEngine::Instance()->InitRenderer();
 
     return (true);
 }
@@ -88,16 +90,13 @@ int GApp::Run(GState *state)
 {
     m_running = true;
 
-    m_config.Load(DEFAULT_CONFIG_FILE);
-
-    if(!InitRenderer())
+    if(!Init())
     {
-        Logger::FatalError("Could not initialize renderer");
+        Logger::FatalError("Could not initialize application");
         return 1;
     }
 
     m_stateManager.Switch(state);
-
 
     Logger::Write("Starting application");
 
@@ -131,7 +130,7 @@ int GApp::Loop()
             m_stateManager.Draw(&m_window);
         }
 
-        GfxEngine::Instance()->RenderWorld(&m_window);
+        //GfxEngine::Instance()->RenderWorld(&m_window);
         m_window.display();
     }
 

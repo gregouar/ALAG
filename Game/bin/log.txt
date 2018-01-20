@@ -1,4 +1,4 @@
-Initializing renderer
+Initializing application
 Texture loaded from file: ../data/sarco-color.png
 Texture loaded from file: ../data/sarco-normal.png
 Texture loaded from file: ../data/sarco-heightmap.png

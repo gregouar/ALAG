@@ -34,7 +34,7 @@ class GApp
         GApp(const std::string&);
         virtual ~GApp();
 
-        bool InitRenderer();
+        bool Init();
 
         int Run(GState *);
         void Stop();
@@ -49,7 +49,7 @@ class GApp
 
         sf::RenderWindow m_window;
 
-        alag::Config m_config;
+       // alag::Config m_config;
         alag::StateManager m_stateManager;
         alag::EventManager m_eventManager;
 

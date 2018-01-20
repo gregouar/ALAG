@@ -14,6 +14,10 @@ Texture3DAsset::Texture3DAsset()
     m_allowLoadFromStream = false;
 
     m_default_height = 0;
+
+    m_colorMap  = NULL;
+    m_normalMap = NULL;
+    m_heightMap = NULL;
 }
 
 Texture3DAsset::~Texture3DAsset()
@@ -24,7 +28,7 @@ Texture3DAsset::~Texture3DAsset()
 
 bool Texture3DAsset::LoadNow()
 {
-    m_loaded = true;
+    bool loaded = true;
 
     if(m_loadSource == LoadSourceFile)
     {
@@ -36,21 +40,22 @@ bool Texture3DAsset::LoadNow()
             std::ostringstream errorReport;
             errorReport << "Because: "<<file.ErrorDesc();
             Logger::Error(errorReport.str());
-            m_loaded = false;
+            loaded = false;
         } else {
             TiXmlHandle hdl(&file);
             hdl = hdl.FirstChildElement();
-            m_loaded = LoadFromXML(&hdl);
+            loaded = LoadFromXML(&hdl);
         }
 
-        if(m_loaded)
+        if(loaded)
             Logger::Write("Texture3D loaded from file: "+m_filePath);
 
     } else {
         Logger::Error("Cannot load asset");
-        m_loaded = false;
+        loaded = false;
     }
 
+    m_loaded = loaded;
     return (m_loaded);
 }
 
@@ -68,18 +73,46 @@ bool Texture3DAsset::LoadFromXML(TiXmlHandle *hdl)
     while(textElem != NULL)
     {
         if(std::string(textElem->Attribute("type")).compare("color") == 0)
-            m_colorMap = (TextureAsset*) AssetHandler<TextureAsset>::Instance()
+            m_colorMap = AssetHandler<TextureAsset>::Instance()
                             ->LoadAssetFromFile(m_fileDirectory+textElem->GetText(),m_loadType);
         else if(std::string(textElem->Attribute("type")).compare("normal") == 0)
-            m_normalMap = (TextureAsset*) AssetHandler<TextureAsset>::Instance()
+            m_normalMap = AssetHandler<TextureAsset>::Instance()
                             ->LoadAssetFromFile(m_fileDirectory+textElem->GetText(),m_loadType);
         else if(std::string(textElem->Attribute("type")).compare("depth") == 0)
-            m_heightMap = (TextureAsset*) AssetHandler<TextureAsset>::Instance()
+            m_heightMap = AssetHandler<TextureAsset>::Instance()
                             ->LoadAssetFromFile(m_fileDirectory+textElem->GetText(),m_loadType);
         textElem = textElem->NextSiblingElement("texture");
     }
 
     return (true);
 }
+
+
+const sf::Texture& Texture3DAsset::GetTexture()
+{
+    return GetColorMap();
+}
+
+const sf::Texture& Texture3DAsset::GetColorMap()
+{
+    if(m_loaded && m_colorMap != NULL)
+        return m_colorMap->GetTexture();
+    return (emptyTexture);
+}
+
+const sf::Texture& Texture3DAsset::GetNormalMap()
+{
+    if(m_loaded && m_normalMap != NULL)
+        return m_normalMap->GetTexture();
+    return (emptyTexture);
+}
+
+const sf::Texture& Texture3DAsset::GetHeightMap()
+{
+    if(m_loaded && m_heightMap != NULL)
+        return m_heightMap->GetTexture();
+    return (emptyTexture);
+}
+
 
 }

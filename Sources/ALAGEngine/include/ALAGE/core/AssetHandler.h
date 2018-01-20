@@ -19,18 +19,18 @@ template<class AssetType> class AssetHandler : public Singleton<AssetHandler<Ass
         friend class Singleton<AssetHandler<AssetType> >;
 
 
-        Asset* GetAsset(const AssetTypeID &assetID);
+        AssetType* GetAsset(const AssetTypeID &assetID);
 
-        Asset* LoadAssetFromFile(const std::string &, AssetLoadType = LoadTypeNow);
-        Asset* LoadAssetFromMemory(void *data, std::size_t dataSize, AssetLoadType = LoadTypeNow);
-        Asset* LoadAssetFromStream(sf::InputStream *stream, AssetLoadType = LoadTypeNow);
+        AssetType* LoadAssetFromFile(const std::string &, AssetLoadType = LoadTypeNow);
+        AssetType* LoadAssetFromMemory(void *data, std::size_t dataSize, AssetLoadType = LoadTypeNow);
+        AssetType* LoadAssetFromStream(sf::InputStream *stream, AssetLoadType = LoadTypeNow);
 
-        Asset* LoadAssetFromFile(const AssetTypeID& id,const std::string &, AssetLoadType = LoadTypeNow);
-        Asset* LoadAssetFromMemory(const AssetTypeID& id, void *data, std::size_t dataSize, AssetLoadType = LoadTypeNow);
-        Asset* LoadAssetFromStream(const AssetTypeID& id,sf::InputStream *stream, AssetLoadType = LoadTypeNow);
+        AssetType* LoadAssetFromFile(const AssetTypeID& id,const std::string &, AssetLoadType = LoadTypeNow);
+        AssetType* LoadAssetFromMemory(const AssetTypeID& id, void *data, std::size_t dataSize, AssetLoadType = LoadTypeNow);
+        AssetType* LoadAssetFromStream(const AssetTypeID& id,sf::InputStream *stream, AssetLoadType = LoadTypeNow);
 
-        Asset* AddAsset(const AssetTypeID &assetID, bool plannedObsolescence=false, int lifeSpan=1);
-        void AddToLoadingThread(Asset*);
+        AssetType* AddAsset(const AssetTypeID &assetID, bool plannedObsolescence=false, int lifeSpan=1);
+        void AddToLoadingThread(AssetType*);
 
         AssetTypeID GenerateID();
 
@@ -48,12 +48,12 @@ template<class AssetType> class AssetHandler : public Singleton<AssetHandler<Ass
         void LoadInThread();
 
     private:
-        std::map<AssetTypeID, Asset*> m_assets;
+        std::map<AssetTypeID, AssetType*> m_assets;
         std::map<AssetTypeID, int> m_obsolescenceList;
         std::map<std::string, AssetTypeID> m_filesList;
 
         sf::Thread* m_loadThread;
-        std::vector<Asset*> m_assetsToLoadInThread;
+        std::vector<AssetType*> m_assetsToLoadInThread;
 
         int m_curNewId;
 };

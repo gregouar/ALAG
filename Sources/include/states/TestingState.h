@@ -3,7 +3,7 @@
 
 #include "ALAGE/core/GState.h"
 #include "ALAGE/utils/singleton.h"
-#include "ALAGE/gfx/GfxEngine.h"
+#include "ALAGE/gfx/IsometricScene.h"
 
 
 class TestingState : public alag::GState, public Singleton<TestingState>
@@ -22,15 +22,18 @@ class TestingState : public alag::GState, public Singleton<TestingState>
         void Update(sf::Time);
         void Draw(sf::RenderTarget*);
 
+        void Init();
+
     protected:
         TestingState();
         virtual ~TestingState();
 
     private:
         sf::Time m_totalTime;
+        bool m_firstEntering;
         bool showfirstsecond;
 
-        alag::GfxEngine* m_gfxEngine;
+        alag::IsometricScene m_mainScene;
 };
 
 #endif // TESTINGSTATE_H

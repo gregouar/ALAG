@@ -36,12 +36,12 @@ bool Config::Load(const std::string& filePath)
 
 bool Config::GetBool(const std::string& s, const std::string& n, const std::string& d)
 {
-    return Parser::ParseBool(GetString(s,n,d));
+    return Parser::ParseBool(Config::GetString(s,n,d));
 }
 
 int Config::GetInt(const std::string& section, const std::string& name, const std::string& dflt)
 {
-    const std::string &data = GetString(section,name,dflt);
+    const std::string &data = Config::GetString(section,name,dflt);
     if(Parser::IsInt(data))
         return Parser::ParseInt(data);
     else
@@ -50,14 +50,15 @@ int Config::GetInt(const std::string& section, const std::string& name, const st
 
 float Config::GetFloat(const std::string& s, const std::string& n, const std::string& d)
 {
-    return Parser::ParseFloat(GetString(s,n,d));
+    return Parser::ParseFloat(Config::GetString(s,n,d));
 }
 
 const std::string &Config::GetString(const std::string& s, const std::string& n, const std::string& d)
 {
-     std::map<std::string, ConfigSection>::iterator  section_it= m_sections.find(s);
+     std::map<std::string, ConfigSection>::iterator  section_it;
+        section_it = Config::Instance()->m_sections.find(s);
 
-    if(section_it != m_sections.end())
+    if(section_it != Config::Instance()->m_sections.end())
     {
         ConfigSection::iterator option_it = section_it->second.find(n);
 

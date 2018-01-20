@@ -76,4 +76,16 @@ bool Asset::IsLoaded()
     return (m_loaded);
 }
 
+const std::string &Asset::GetFilePath()
+{
+    if(m_loadSource == LoadSourceFile)
+        return m_filePath;
+    return emptyString;
+}
+
+const AssetTypeID &Asset::GetID()
+{
+    return m_id;
+}
+
 }

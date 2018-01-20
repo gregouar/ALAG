@@ -1,25 +1,26 @@
-#include "ALAGE/gfx/GfxEngine.h"
+#include "ALAGE/gfx/IsometricScene.h"
 
 namespace alag
 {
 
-GfxEngine::GfxEngine()
+IsometricScene::IsometricScene()
 {
     //ctor
 }
 
-GfxEngine::~GfxEngine()
+IsometricScene::~IsometricScene()
 {
     //dtor
 }
 
-void GfxEngine::InitRenderer()
+
+bool IsometricScene::InitRenderer()
 {
     glEnable(GL_DEPTH_TEST);
     glDepthMask(GL_TRUE);
 }
 
-void GfxEngine::RenderWorld(sf::RenderTarget* w)
+void IsometricScene::RenderScene(sf::RenderTarget* w)
 {
     if(w != NULL)
     {
@@ -27,11 +28,8 @@ void GfxEngine::RenderWorld(sf::RenderTarget* w)
         glClearDepth(1.f);
         w->setView(m_view);
 
-
-
         w->setView(oldView);
     }
 }
-
 
 }

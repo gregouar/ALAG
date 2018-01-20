@@ -17,34 +17,42 @@ TextureAsset::~TextureAsset()
 
 bool TextureAsset::LoadNow()
 {
-    m_loaded = true;
+    bool loaded = true;
 
     if(m_loadSource == LoadSourceFile)
     {
         if(!m_texture.loadFromFile(m_filePath))
         {
             Logger::Error("Cannot load texture from file: "+m_filePath);
-            m_loaded = false;
+            loaded = false;
         } else
             Logger::Write("Texture loaded from file: "+m_filePath);
     } else if(m_loadSource == LoadSourceMemory) {
         if(!m_texture.loadFromMemory(m_loadData,m_loadDataSize))
         {
             Logger::Error("Cannot load texture from memory");
-            m_loaded = false;
+            loaded = false;
         }
     } else if(m_loadSource == LoadSourceStream) {
         if(!m_texture.loadFromStream(*m_loadStream))
         {
             Logger::Error("Cannot load texture from stream");
-            m_loaded = false;
+            loaded = false;
         }
     } else {
         Logger::Error("Cannot load asset");
-        m_loaded = false;
+        loaded = false;
     }
 
+    m_loaded = loaded;
     return (m_loaded);
+}
+
+const sf::Texture &TextureAsset::GetTexture()
+{
+    if(m_loaded)
+        return m_texture;
+    return (emptyTexture);
 }
 
 }

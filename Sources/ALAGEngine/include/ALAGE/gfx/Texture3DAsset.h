@@ -7,7 +7,7 @@
 namespace alag
 {
 
-class Texture3DAsset : public Asset
+class Texture3DAsset : public TextureAsset
 {
     public:
         Texture3DAsset();
@@ -15,9 +15,11 @@ class Texture3DAsset : public Asset
 
         virtual bool LoadNow();
 
-        sf::Texture* GetColorMap();
-        sf::Texture* GetNormalMap();
-        sf::Texture* GetHeightMap();
+
+        const sf::Texture& GetTexture();
+        const sf::Texture& GetColorMap();
+        const sf::Texture& GetNormalMap();
+        const sf::Texture& GetHeightMap();
 
     protected:
         bool LoadFromXML(TiXmlHandle *);

@@ -23,6 +23,9 @@ class Asset
         virtual bool LoadNow() = 0;
 
         bool IsLoaded();
+        const std::string& GetFilePath();
+
+        const AssetTypeID &GetID();
 
     protected:
         bool m_allowLoadFromFile;
