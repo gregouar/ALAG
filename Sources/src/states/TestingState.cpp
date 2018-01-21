@@ -49,8 +49,8 @@ void TestingState::Init()
     m_mainScene.InitRenderer();
 
     SceneNode *rectNode = m_mainScene.GetRootNode()->CreateChildNode();
-    RectEntity *rectEntity = m_mainScene.CreateRectEntity(sf::Rect(0,0,128,128));
-    rectEntity.SetTexture(t3D);
+    RectEntity *rectEntity = m_mainScene.CreateRectEntity(sf::FloatRect(0,0,128,128));
+    rectEntity->SetTexture(t3D);
     rectNode->AttachEntity(rectEntity);
 
     m_firstEntering = false;
@@ -68,6 +68,7 @@ void TestingState::Leaving()
 {
     AssetHandler<Texture3DAsset>::Instance()->CleanAll();
     AssetHandler<TextureAsset>::Instance()->CleanAll();
+    m_mainScene.CleanAll();
 }
 
 void TestingState::Revealed()

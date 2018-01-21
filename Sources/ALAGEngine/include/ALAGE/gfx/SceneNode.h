@@ -12,11 +12,11 @@ class SceneNode
 {
     public:
         SceneNode(const NodeTypeID&);
-        SceneNode(SceneNode* parent, const NodeTypeID&);
+        SceneNode(const NodeTypeID&, SceneNode* parent);
         virtual ~SceneNode();
 
-        void AddChildNode();
-        void AddChildNode(const NodeTypeID &id);
+        void AddChildNode(SceneNode*);
+        void AddChildNode(const NodeTypeID &id, SceneNode*);
 
         SceneNode* RemoveChildNode(SceneNode*);
         SceneNode* RemoveChildNode(const NodeTypeID &id);
@@ -24,10 +24,10 @@ class SceneNode
         SceneNode* CreateChildNode();
         SceneNode* CreateChildNode(const NodeTypeID &id);
 
-        SceneNode* DestroyChildNode(SceneNode*);
-        SceneNode* DestroyChildNode(const NodeTypeID &id);
+        bool DestroyChildNode(SceneNode*);
+        bool DestroyChildNode(const NodeTypeID &id);
 
-        void RemoveAndDestroyAll(bool destroyNonCreatedChilds = false);
+        void RemoveAndDestroyAllChilds(bool destroyNonCreatedChilds = false);
 
         void AttachEntity(SceneEntity *);
         void DetachEntity(SceneEntity *);
@@ -42,13 +42,15 @@ class SceneNode
         sf::Vector3f GetPosition();
 
         const NodeTypeID& GetID();
-        const NodeTypeID& GenerateID();
+        SceneNode* GetParent();
 
         void Update();
 
     protected:
         void SetParent(SceneNode *);
+        void SetID(const NodeTypeID &);
         size_t FindChildCreated(const NodeTypeID&);
+        NodeTypeID GenerateID();
 
         sf::Vector3f m_position;
 

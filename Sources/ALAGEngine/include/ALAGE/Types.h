@@ -24,6 +24,7 @@ enum AssetLoadSource
 
 typedef unsigned int AssetTypeID;
 typedef unsigned int NodeTypeID;
+typedef unsigned int EntityTypeID;
 typedef std::string AnimationTypeID;
 
 const std::string emptyString;

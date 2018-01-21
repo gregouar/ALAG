@@ -1,5 +1,7 @@
 #include "ALAGE/gfx/SceneNode.h"
 
+#include "ALAGE/utils/Logger.h"
+
 namespace alag
 {
 
@@ -10,27 +12,43 @@ SceneNode::SceneNode(const NodeTypeID &id) : SceneNode(id, nullptr)
 SceneNode::SceneNode(const NodeTypeID &id, SceneNode *p)
 {
     m_parent = p;
+    m_id = id;
     m_curNewId = 0;
 }
 
 SceneNode::~SceneNode()
 {
-    RemoveAndDestroyAll();
+    RemoveAndDestroyAllChilds();
 }
 
 
 void SceneNode::AddChildNode(SceneNode* node)
 {
-    AddChildNode(GenerateID(), node);
+    NodeTypeID id = GenerateID();
+    AddChildNode(id, node);
+    if(node != nullptr)
+        node->SetID(id);
 }
 
 void SceneNode::AddChildNode(const NodeTypeID &id, SceneNode* node)
 {
+    std::map<NodeTypeID, SceneNode*>::iterator childsIt;
+    childsIt = m_childs.find(id);
+
+    if(childsIt != m_childs.end())
+    {
+        std::ostringstream warn_report;
+        warn_report << "Adding child of same id as another one (ID="<<id<<")";
+        Logger::Warning(warn_report);
+    }
+
     m_childs[id] = node;
 }
 
-void SceneNode::RemoveChildNode(const NodeTypeID &id)
+SceneNode* SceneNode::RemoveChildNode(const NodeTypeID &id)
 {
+    SceneNode* node = nullptr;
+
     std::map<NodeTypeID, SceneNode*>::iterator childsIt;
     childsIt = m_childs.find(id);
 
@@ -39,18 +57,25 @@ void SceneNode::RemoveChildNode(const NodeTypeID &id)
         std::ostringstream error_report;
         error_report << "Cannot remove child node (ID="<<id<<")";
         Logger::Error(error_report);
+
+        return (nullptr);
     }
 
-    if(FindChildCreated(id) == m_createdChildsList.size())
+    node = childsIt->second;
+
+    if(FindChildCreated(id) != m_createdChildsList.size())
         Logger::Warning("Removing created child without destroying it");
 
     m_childs.erase(childsIt);
+
+    return node;
 }
 
-void SceneNode::RemoveChildNode(SceneNode* node)
+SceneNode* SceneNode::RemoveChildNode(SceneNode* node)
 {
     if(node != nullptr && node->GetParent() == this)
-        RemoveChildNode(node->GetID());
+        return RemoveChildNode(node->GetID());
+    return (nullptr);
 }
 
 SceneNode* SceneNode::CreateChildNode()
@@ -71,21 +96,23 @@ SceneNode* SceneNode::CreateChildNode(const NodeTypeID &id)
         return childsIt->second;
     }
 
-    SceneNode* newNode = new SceneNode(this, id);
+    SceneNode* newNode = new SceneNode(id, this);
     m_childs[id] = newNode;
-    m_createdChildsList.add(newNode);
+    m_createdChildsList.push_back(id);
+
+    return newNode;
 }
 
-
-void SceneNode::DestroyChildNode(SceneNode* node)
+bool SceneNode::DestroyChildNode(SceneNode* node)
 {
     if(node != nullptr && node->GetParent() == this)
-        DestroyChildNode(node->GetID());
+        return DestroyChildNode(node->GetID());
+    return (nullptr);
 }
 
-void SceneNode::DestroyChildNode(const NodeTypeID& id)
+bool SceneNode::DestroyChildNode(const NodeTypeID& id)
 {
-    int foundedCreatedChild = FindChildCreated(id);
+    size_t foundedCreatedChild = FindChildCreated(id);
     if(foundedCreatedChild == m_createdChildsList.size())
         Logger::Warning("Destroying non-created child");
     else
@@ -93,27 +120,33 @@ void SceneNode::DestroyChildNode(const NodeTypeID& id)
 
     std::map<NodeTypeID, SceneNode*>::iterator childsIt;
     childsIt = m_childs.find(id);
-    if(childsIt != m_childs.end())
+    if(childsIt == m_childs.end())
     {
         std::ostringstream error_report;
         error_report << "Cannot destroy child (ID="<<id<<")";
         Logger::Error(error_report);
-    } else {
-        delete m_childs[id];
-        RemoveChildNode(id);
+
+        return (false);
     }
+
+    if(childsIt->second != nullptr)
+        delete childsIt->second;
+    RemoveChildNode(id);
+
+    return (true);
 }
 
-void SceneNode::RemoveAndDestroyAll(bool destroyNonCreatedChilds)
+void SceneNode::RemoveAndDestroyAllChilds(bool destroyNonCreatedChilds)
 {
     std::map<NodeTypeID, SceneNode*>::iterator childsIt;
 
     if(!destroyNonCreatedChilds)
         for(size_t i = 0 ; i < m_createdChildsList.size() ; i++)
         {
-            childsIt = m_childs.find(m_createdChildsList[i]);
+            DestroyChildNode(m_createdChildsList[i]);
+            /*childsIt = m_childs.find(m_createdChildsList[i]);
             if(childsIt != m_childs.end() && childsIt->second != nullptr)
-                delete childsIt->second;
+                delete childsIt->second;*/
         }
 
     if(destroyNonCreatedChilds)
@@ -123,7 +156,7 @@ void SceneNode::RemoveAndDestroyAll(bool destroyNonCreatedChilds)
         {
             if(childsIt->second != nullptr)
             {
-                childsIt->second->RemoveAndDestroyAll(destroyNonCreatedChilds);
+                childsIt->second->RemoveAndDestroyAllChilds(destroyNonCreatedChilds);
                 delete childsIt->second;
             }
         }
@@ -135,7 +168,7 @@ void SceneNode::RemoveAndDestroyAll(bool destroyNonCreatedChilds)
 
 void SceneNode::AttachEntity(SceneEntity *e)
 {
-    m_entities.add(e);
+    m_entities.push_back(e);
 }
 
 void SceneNode::Move(sf::Vector2f p)
@@ -174,11 +207,32 @@ sf::Vector3f SceneNode::GetGlobalPosition()
 }
 
 
+const NodeTypeID& SceneNode::GetID()
+{
+    return m_id;
+}
+
+SceneNode* SceneNode::GetParent()
+{
+    return m_parent;
+}
+
+
+
+void SceneNode::SetID(const NodeTypeID &id)
+{
+    m_id = id;
+}
+
+void SceneNode::SetParent(SceneNode *p)
+{
+    m_parent = p;
+}
+
 NodeTypeID SceneNode::GenerateID()
 {
     return m_curNewId++;
 }
-
 
 size_t SceneNode::FindChildCreated(const NodeTypeID& id)
 {
