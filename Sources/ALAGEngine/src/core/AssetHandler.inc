@@ -31,7 +31,7 @@ AssetType* AssetHandler<AssetType>::GetAsset(const AssetTypeID& assetID)
     if(assetIter == m_assets.end())
     {
         Logger::Error("Cannot find asset");
-        return (NULL);
+        return (nullptr);
     }
 
     return assetIter->second;
@@ -114,7 +114,7 @@ AssetType* AssetHandler<AssetType>::LoadAssetFromStream(const AssetTypeID& id,
 template<typename AssetType>
 AssetType* AssetHandler<AssetType>::AddAsset(const AssetTypeID &assetID, bool plannedObsolescence, int lifeSpan)
 {
-    AssetType* newAsset = NULL;
+    AssetType* newAsset = nullptr;
     typename std::map<AssetTypeID, AssetType*>::iterator assetIter;
 
     assetIter = m_assets.find(assetID);
@@ -146,7 +146,7 @@ AssetTypeID AssetHandler<AssetType>::GenerateID()
 template<typename AssetType>
 void AssetHandler<AssetType>::AddToLoadingThread(AssetType* asset)
 {
-    if(asset != NULL && !asset->IsLoaded())
+    if(asset != nullptr && !asset->IsLoaded())
     {
         m_assetsToLoadInThread.push_back(asset);
         if(m_assetsToLoadInThread.size() == 1)
@@ -158,7 +158,7 @@ void AssetHandler<AssetType>::AddToLoadingThread(AssetType* asset)
 template<typename AssetType>
 void AssetHandler<AssetType>:: AddToObsolescenceList(const AssetTypeID &assetID,int lifeSpan)
 {
-    if(GetAsset(assetID) != NULL)
+    if(GetAsset(assetID) != nullptr)
         m_obsolescenceList[assetID] = lifeSpan;
 }
 
@@ -195,7 +195,7 @@ void AssetHandler<AssetType>::DeleteAsset(const AssetTypeID &assetID)
 
     if(iter != m_assets.end())
     {
-        if(iter->second != NULL)
+        if(iter->second != nullptr)
         {
             if(!iter->second->GetFilePath().empty())
                 m_filesList.erase(m_filesList.find(iter->second->GetFilePath()));
@@ -225,7 +225,7 @@ void AssetHandler<AssetType>::LoadInThread()
 {
     while(!m_assetsToLoadInThread.empty())
     {
-        if(m_assetsToLoadInThread.front() != NULL)
+        if(m_assetsToLoadInThread.front() != nullptr)
         {
             if(!m_assetsToLoadInThread.front()->IsLoaded())
                 m_assetsToLoadInThread.front()->LoadNow();

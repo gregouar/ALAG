@@ -15,9 +15,9 @@ Texture3DAsset::Texture3DAsset()
 
     m_default_height = 0;
 
-    m_colorMap  = NULL;
-    m_normalMap = NULL;
-    m_heightMap = NULL;
+    m_colorMap  = nullptr;
+    m_normalMap = nullptr;
+    m_heightMap = nullptr;
 }
 
 Texture3DAsset::~Texture3DAsset()
@@ -39,7 +39,7 @@ bool Texture3DAsset::LoadNow()
             Logger::Error("Cannot load texture3D from file: "+m_filePath);
             std::ostringstream errorReport;
             errorReport << "Because: "<<file.ErrorDesc();
-            Logger::Error(errorReport.str());
+            Logger::Error(errorReport);
             loaded = false;
         } else {
             TiXmlHandle hdl(&file);
@@ -61,16 +61,16 @@ bool Texture3DAsset::LoadNow()
 
 bool Texture3DAsset::LoadFromXML(TiXmlHandle *hdl)
 {
-    if(hdl == NULL) return (false);
+    if(hdl == nullptr) return (false);
 
-    if(hdl->FirstChildElement("name").Element() != NULL)
+    if(hdl->FirstChildElement("name").Element() != nullptr)
         m_name = hdl->FirstChildElement("name").Element()->GetText();
 
-    if(hdl->FirstChildElement("height").Element() != NULL)
+    if(hdl->FirstChildElement("height").Element() != nullptr)
         m_default_height = Parser::ParseInt(hdl->FirstChildElement("height").Element()->GetText());
 
     TiXmlElement* textElem = hdl->FirstChildElement("texture").Element();
-    while(textElem != NULL)
+    while(textElem != nullptr)
     {
         if(std::string(textElem->Attribute("type")).compare("color") == 0)
             m_colorMap = AssetHandler<TextureAsset>::Instance()
@@ -95,21 +95,21 @@ const sf::Texture& Texture3DAsset::GetTexture()
 
 const sf::Texture& Texture3DAsset::GetColorMap()
 {
-    if(m_loaded && m_colorMap != NULL)
+    if(m_loaded && m_colorMap != nullptr)
         return m_colorMap->GetTexture();
     return (emptyTexture);
 }
 
 const sf::Texture& Texture3DAsset::GetNormalMap()
 {
-    if(m_loaded && m_normalMap != NULL)
+    if(m_loaded && m_normalMap != nullptr)
         return m_normalMap->GetTexture();
     return (emptyTexture);
 }
 
 const sf::Texture& Texture3DAsset::GetHeightMap()
 {
-    if(m_loaded && m_heightMap != NULL)
+    if(m_loaded && m_heightMap != nullptr)
         return m_heightMap->GetTexture();
     return (emptyTexture);
 }

@@ -37,7 +37,7 @@ bool Asset::LoadFromFile(const std::string &filePath, AssetLoadType loadType)
     m_fileDirectory = Parser::FindFileDirectory(m_filePath);
     m_loadType = loadType;
 
-    return m_loaded;
+    return (true);
 }
 
 bool Asset::LoadFromMemory(void *data, std::size_t dataSize, AssetLoadType loadType)
@@ -53,7 +53,7 @@ bool Asset::LoadFromMemory(void *data, std::size_t dataSize, AssetLoadType loadT
     m_loadDataSize = dataSize;
     m_loadType = loadType;
 
-    return m_loaded;
+    return (true);
 }
 
 bool Asset::LoadFromStream(sf::InputStream *stream, AssetLoadType loadType)
@@ -68,7 +68,7 @@ bool Asset::LoadFromStream(sf::InputStream *stream, AssetLoadType loadType)
     m_loadStream = stream;
     m_loadType = loadType;
 
-    return m_loaded;
+    return (true);
 }
 
 bool Asset::IsLoaded()

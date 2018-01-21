@@ -15,6 +15,21 @@ Logger::~Logger()
     delete m_fileStream;
 }
 
+void Logger::Write(const std::ostringstream& s)
+{
+    Logger::Write(s.str());
+}
+
+void Logger::Error(const std::ostringstream& s)
+{
+    Logger::Error(s.str())
+}
+
+void Logger::FatalError(const std::ostringstream& s)
+{
+    Logger::FatalError(s.str())
+}
+
 void Logger::Write(const std::string& s)
 {
     if(Logger::Instance()->m_consoleActive)

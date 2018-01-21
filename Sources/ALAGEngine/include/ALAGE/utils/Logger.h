@@ -10,6 +10,10 @@ class Logger : public Singleton<Logger>
     public:
         friend class Singleton<Logger>;
 
+        static void Write(const std::ostringstream&);
+        static void Error(const std::ostringstream&);
+        static void FatalError(const std::ostringstream&);
+
         static void Write(const std::string&);
         static void Error(const std::string&);
         static void FatalError(const std::string&);

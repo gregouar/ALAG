@@ -19,7 +19,6 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include "ALAGE/core/GApp.h"
 #include "ALAGE/utils/Logger.h"
 #include "ALAGE/utils/Parser.h"
-#include "ALAGE/gfx/GfxEngine.h"
 
 namespace alag
 {
@@ -61,7 +60,7 @@ bool GApp::Init()
     {
         std::ostringstream error_report;
         error_report<<"Invalid resolution "<<videoMode.width<<"x"<<videoMode.height;
-        Logger::Error(error_report.str());
+        Logger::Error(error_report);
 
         videoMode = sf::VideoMode(Parser::ParseInt(DEFAULT_WINDOW_WIDTH),
                                   Parser::ParseInt(DEFAULT_WINDOW_HEIGHT));
@@ -70,7 +69,7 @@ bool GApp::Init()
         {
             std::ostringstream error_report;
             error_report<<"Invalid default resolution "<<videoMode.width<<"x"<<videoMode.height;
-            Logger::FatalError(error_report.str());
+            Logger::FatalError(error_report);
             return (false);
         }
     }
@@ -122,7 +121,7 @@ int GApp::Loop()
 
         m_eventManager.Update(&m_window);
 
-        if(m_stateManager.Peek() == NULL)
+        if(m_stateManager.Peek() == nullptr)
             Stop();
         else {
             m_stateManager.HandleEvents(&m_eventManager);

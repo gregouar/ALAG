@@ -41,13 +41,17 @@ void TestingState::Init()
     TextureHandler->LoadAssetFromFile(TextureHandler->GenerateID(),
                                       "../data/abbaye_color.png",LoadTypeInThread);
 
-
-
     AssetHandler<Texture3DAsset>* Texture3DHandler =  AssetHandler<Texture3DAsset>::Instance();
     Texture3DAsset *t3D =  Texture3DHandler->LoadAssetFromFile(Texture3DHandler->GenerateID(),
                                       "../data/sarcoXML.txt");
 
+    m_mainScene.SetViewAngle({.xyAngle = 45, .zAngle=30});
     m_mainScene.InitRenderer();
+
+    SceneNode *rectNode = m_mainScene.GetRootNode()->CreateChildNode();
+    RectEntity *rectEntity = m_mainScene.CreateRectEntity(sf::Rect(0,0,128,128));
+    rectEntity.SetTexture(t3D);
+    rectNode->AttachEntity(rectEntity);
 
     m_firstEntering = false;
 }
@@ -62,7 +66,8 @@ void TestingState::Entered()
 
 void TestingState::Leaving()
 {
-
+    AssetHandler<Texture3DAsset>::Instance()->CleanAll();
+    AssetHandler<TextureAsset>::Instance()->CleanAll();
 }
 
 void TestingState::Revealed()
@@ -78,19 +83,16 @@ void TestingState::Obscuring()
 void TestingState::HandleEvents(alag::EventManager *event_manager)
 {
     if(event_manager->KeyReleased(sf::Keyboard::Escape))
-        m_manager->Switch(NULL);
+        m_manager->Switch(nullptr);
 
 
     if(event_manager->IsAskingToClose())
-        m_manager->Switch(NULL);
+        m_manager->Switch(nullptr);
 }
 
 void TestingState::Update(sf::Time time)
 {
     m_totalTime += time;
-
-    /*if(m_totalTime.asSeconds() > 1)
-        m_manager->Switch(NULL);*/
 }
 
 void TestingState::Draw(sf::RenderTarget* renderer)

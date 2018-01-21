@@ -5,6 +5,8 @@
 #include <iostream>
 #include <SFML/Graphics.hpp>
 
+#define PI 3.14159265
+
 enum AssetLoadType
 {
     LoadTypeNow = 0,
@@ -21,6 +23,7 @@ enum AssetLoadSource
 
 
 typedef unsigned int AssetTypeID;
+typedef unsigned int NodeTypeID;
 typedef std::string AnimationTypeID;
 
 const std::string emptyString;

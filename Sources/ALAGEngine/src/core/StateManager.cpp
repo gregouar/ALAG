@@ -22,7 +22,7 @@ void StateManager::Switch(GState* state)
 
     m_states.clear();
 
-    if(state != NULL)
+    if(state != nullptr)
     {
         m_states.push_back(state);
         m_states.back()->SetManager(this);
@@ -48,7 +48,7 @@ GState* StateManager::Pop()
     m_states.pop_back();
 
     if(m_states.empty())
-        return (NULL);
+        return (nullptr);
 
     m_states.back()->Revealed();
     return m_states.back();
@@ -57,7 +57,7 @@ GState* StateManager::Pop()
 GState* StateManager::Peek()
 {
     if(m_states.empty())
-        return (NULL);
+        return (nullptr);
     return m_states.back();
 }
 
