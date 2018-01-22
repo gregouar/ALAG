@@ -8,11 +8,14 @@
 
 namespace alag{
 
+class SceneManager;
+
 class SceneNode
 {
     public:
         SceneNode(const NodeTypeID&);
         SceneNode(const NodeTypeID&, SceneNode* parent);
+        SceneNode(const NodeTypeID&, SceneNode* parent, SceneManager* sceneManager);
         virtual ~SceneNode();
 
         void AddChildNode(SceneNode*);
@@ -29,30 +32,44 @@ class SceneNode
 
         void RemoveAndDestroyAllChilds(bool destroyNonCreatedChilds = false);
 
+        SceneNodeIterator GetChildIterator();
+
         void AttachEntity(SceneEntity *);
         void DetachEntity(SceneEntity *);
         void DetachAllEntities();
+        SceneEntityIterator GetEntityIterator();
 
+        void Move(float, float);
+        void Move(float, float, float);
         void Move(sf::Vector2f );
         void Move(sf::Vector3f );
+        void SetPosition(float, float);
+        void SetPosition(float, float, float);
         void SetPosition(sf::Vector2f );
         void SetPosition(sf::Vector3f );
 
         sf::Vector3f GetGlobalPosition();
         sf::Vector3f GetPosition();
 
+        sf::FloatRect GetGlobalBounds();
+        sf::FloatRect GetBounds();
+
         const NodeTypeID& GetID();
         SceneNode* GetParent();
+        SceneManager*  GetSceneManager();
 
         void Update();
 
     protected:
         void SetParent(SceneNode *);
+        void SetSceneManager(SceneManager *);
         void SetID(const NodeTypeID &);
         size_t FindChildCreated(const NodeTypeID&);
         NodeTypeID GenerateID();
 
         sf::Vector3f m_position;
+
+        SceneManager* m_sceneManager;
 
     private:
         NodeTypeID m_id;

@@ -45,14 +45,19 @@ bool TextureAsset::LoadNow()
     }
 
     m_loaded = loaded;
-    return (m_loaded);
+
+    return Asset::LoadNow();
 }
 
-const sf::Texture &TextureAsset::GetTexture()
+sf::Texture *TextureAsset::GetTexture(SceneEntity* entityToNotify)
 {
     if(m_loaded)
-        return m_texture;
-    return (emptyTexture);
+        return &m_texture;
+
+    if(entityToNotify != nullptr)
+        AskForLoadedNotification(entityToNotify);
+
+    return (nullptr);
 }
 
 }

@@ -17,7 +17,7 @@ Texture3DAsset::Texture3DAsset()
 
     m_colorMap  = nullptr;
     m_normalMap = nullptr;
-    m_heightMap = nullptr;
+    m_depthMap = nullptr;
 }
 
 Texture3DAsset::~Texture3DAsset()
@@ -56,7 +56,7 @@ bool Texture3DAsset::LoadNow()
     }
 
     m_loaded = loaded;
-    return (m_loaded);
+    return Asset::LoadNow();
 }
 
 bool Texture3DAsset::LoadFromXML(TiXmlHandle *hdl)
@@ -79,7 +79,7 @@ bool Texture3DAsset::LoadFromXML(TiXmlHandle *hdl)
             m_normalMap = AssetHandler<TextureAsset>::Instance()
                             ->LoadAssetFromFile(m_fileDirectory+textElem->GetText(),m_loadType);
         else if(std::string(textElem->Attribute("type")).compare("depth") == 0)
-            m_heightMap = AssetHandler<TextureAsset>::Instance()
+            m_depthMap = AssetHandler<TextureAsset>::Instance()
                             ->LoadAssetFromFile(m_fileDirectory+textElem->GetText(),m_loadType);
         textElem = textElem->NextSiblingElement("texture");
     }
@@ -88,30 +88,42 @@ bool Texture3DAsset::LoadFromXML(TiXmlHandle *hdl)
 }
 
 
-const sf::Texture& Texture3DAsset::GetTexture()
+sf::Texture* Texture3DAsset::GetTexture(SceneEntity* entityToNotify)
 {
     return GetColorMap();
 }
 
-const sf::Texture& Texture3DAsset::GetColorMap()
+sf::Texture* Texture3DAsset::GetColorMap(SceneEntity* entityToNotify)
 {
     if(m_loaded && m_colorMap != nullptr)
         return m_colorMap->GetTexture();
-    return (emptyTexture);
+
+    if(entityToNotify != nullptr)
+        AskForLoadedNotification(entityToNotify);
+
+    return (nullptr);
 }
 
-const sf::Texture& Texture3DAsset::GetNormalMap()
+sf::Texture* Texture3DAsset::GetNormalMap(SceneEntity* entityToNotify)
 {
     if(m_loaded && m_normalMap != nullptr)
         return m_normalMap->GetTexture();
-    return (emptyTexture);
+
+    if(entityToNotify != nullptr)
+        AskForLoadedNotification(entityToNotify);
+
+    return (nullptr);
 }
 
-const sf::Texture& Texture3DAsset::GetHeightMap()
+sf::Texture* Texture3DAsset::GetDepthMap(SceneEntity* entityToNotify)
 {
-    if(m_loaded && m_heightMap != nullptr)
-        return m_heightMap->GetTexture();
-    return (emptyTexture);
+    if(m_loaded && m_depthMap != nullptr)
+        return m_depthMap->GetTexture();
+
+    if(entityToNotify != nullptr)
+        AskForLoadedNotification(entityToNotify);
+
+    return (nullptr);
 }
 
 

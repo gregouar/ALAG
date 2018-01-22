@@ -16,10 +16,10 @@ class Texture3DAsset : public TextureAsset
         virtual bool LoadNow();
 
 
-        const sf::Texture& GetTexture();
-        const sf::Texture& GetColorMap();
-        const sf::Texture& GetNormalMap();
-        const sf::Texture& GetHeightMap();
+        sf::Texture* GetTexture(SceneEntity* entityToNotify = nullptr);
+        sf::Texture* GetColorMap(SceneEntity* entityToNotify = nullptr);
+        sf::Texture* GetNormalMap(SceneEntity* entityToNotify = nullptr);
+        sf::Texture* GetDepthMap(SceneEntity* entityToNotify = nullptr);
 
     protected:
         bool LoadFromXML(TiXmlHandle *);
@@ -29,7 +29,7 @@ class Texture3DAsset : public TextureAsset
        // sf::Texture m_heightMap;
         TextureAsset *m_colorMap;
         TextureAsset *m_normalMap;
-        TextureAsset *m_heightMap;
+        TextureAsset *m_depthMap;
 
         int m_default_height;
 };

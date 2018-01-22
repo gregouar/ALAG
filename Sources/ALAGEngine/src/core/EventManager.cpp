@@ -6,6 +6,7 @@ EventManager::EventManager()
 {
     for(size_t i = 0 ; i < sf::Keyboard::KeyCount ; i++)
     {
+        m_keyIsPressed[i] = false;
         m_keyPressed[i] = false;
         m_keyReleased[i] = false;
     }
@@ -25,7 +26,7 @@ void EventManager::Update(sf::Window *window)
     sf::Event event;
 
     for(size_t i = 0 ; i < sf::Keyboard::KeyCount ; i++)
-        m_keyReleased[i] = false;
+        m_keyReleased[i] = false, m_keyPressed[i] = false;
 
     while (window->pollEvent(event))
     {
@@ -37,10 +38,11 @@ void EventManager::Update(sf::Window *window)
 
             case sf::Event::KeyPressed:
                 m_keyPressed[event.key.code] = true;
+                m_keyIsPressed[event.key.code] = true;
                 break;
 
             case sf::Event::KeyReleased:
-                m_keyPressed[event.key.code] = false;
+                m_keyIsPressed[event.key.code] = false;
                 m_keyReleased[event.key.code] = true;
                 break;
 
@@ -58,6 +60,11 @@ void EventManager::Update(sf::Window *window)
 bool EventManager::KeyPressed(sf::Keyboard::Key key)
 {
     return m_keyPressed[key];
+}
+
+bool EventManager::KeyIsPressed(sf::Keyboard::Key key)
+{
+    return m_keyIsPressed[key];
 }
 
 bool EventManager::KeyReleased(sf::Keyboard::Key key)

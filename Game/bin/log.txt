@@ -7,4 +7,5 @@ Starting application
 Texture loaded from file: ../data/abbaye_color.png
 Texture loaded from file: ../data/abbaye_heightmap.png
 Texture loaded from file: ../data/abbaye_normal.png
+Texture loaded from file: ../data/sand.png
 Stopping application

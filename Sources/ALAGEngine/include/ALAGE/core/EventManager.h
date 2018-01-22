@@ -14,6 +14,7 @@ class EventManager
         void Update(sf::Window *);
 
         bool KeyPressed(sf::Keyboard::Key);
+        bool KeyIsPressed(sf::Keyboard::Key);
         bool KeyReleased(sf::Keyboard::Key);
 
         sf::Vector2u MousePosition();
@@ -24,6 +25,7 @@ class EventManager
 
     private:
         bool m_keyPressed[sf::Keyboard::KeyCount];
+        bool m_keyIsPressed[sf::Keyboard::KeyCount];
         bool m_keyReleased[sf::Keyboard::KeyCount];
 
         sf::Vector2u m_mousePosition;

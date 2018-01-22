@@ -20,7 +20,7 @@ class Asset
         virtual bool LoadFromMemory(void *data, std::size_t size, AssetLoadType = LoadTypeNow);
         virtual bool LoadFromStream(sf::InputStream *stream, AssetLoadType = LoadTypeNow);
 
-        virtual bool LoadNow() = 0;
+        virtual bool LoadNow();
 
         bool IsLoaded();
         const std::string& GetFilePath();
@@ -28,6 +28,8 @@ class Asset
         const AssetTypeID &GetID();
 
     protected:
+        void AskForLoadedNotification(SceneEntity *);
+
         bool m_allowLoadFromFile;
         std::string m_filePath;
         std::string m_fileDirectory;
@@ -47,7 +49,11 @@ class Asset
         std::string m_name;
 
     private:
+        void SendLoadedNotification();
+
         AssetTypeID m_id;
+        std::list<SceneEntity*> m_entitiesToNotify;
+
 };
 
 

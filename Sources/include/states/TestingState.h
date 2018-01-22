@@ -34,6 +34,10 @@ class TestingState : public alag::GState, public Singleton<TestingState>
         bool showfirstsecond;
 
         alag::IsometricScene m_mainScene;
+
+        sf::Vector2f m_camMove;
+
+        alag::SceneNode *m_sarcoNode;
 };
 
 #endif // TESTINGSTATE_H

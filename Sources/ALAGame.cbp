@@ -70,9 +70,12 @@
 		<Unit filename="ALAGEngine/include/ALAGE/gfx/SceneEntity.h" />
 		<Unit filename="ALAGEngine/include/ALAGE/gfx/SceneManager.h" />
 		<Unit filename="ALAGEngine/include/ALAGE/gfx/SceneNode.h" />
+		<Unit filename="ALAGEngine/include/ALAGE/gfx/SpriteEntity.h" />
 		<Unit filename="ALAGEngine/include/ALAGE/gfx/Texture3DAsset.h" />
 		<Unit filename="ALAGEngine/include/ALAGE/gfx/TextureAsset.h" />
+		<Unit filename="ALAGEngine/include/ALAGE/utils/ListIterator.h" />
 		<Unit filename="ALAGEngine/include/ALAGE/utils/Logger.h" />
+		<Unit filename="ALAGEngine/include/ALAGE/utils/MapIterator.h" />
 		<Unit filename="ALAGEngine/include/ALAGE/utils/Parser.h" />
 		<Unit filename="ALAGEngine/include/ALAGE/utils/singleton.h" />
 		<Unit filename="ALAGEngine/include/extlibs/tinystr.h" />
@@ -97,6 +100,7 @@
 		<Unit filename="ALAGEngine/src/gfx/SceneEntity.cpp" />
 		<Unit filename="ALAGEngine/src/gfx/SceneManager.cpp" />
 		<Unit filename="ALAGEngine/src/gfx/SceneNode.cpp" />
+		<Unit filename="ALAGEngine/src/gfx/SpriteEntity.cpp" />
 		<Unit filename="ALAGEngine/src/gfx/Texture3DAsset.cpp" />
 		<Unit filename="ALAGEngine/src/gfx/TextureAsset.cpp" />
 		<Unit filename="ALAGEngine/src/utils/Logger.cpp" />

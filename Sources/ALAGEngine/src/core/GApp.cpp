@@ -121,6 +121,8 @@ int GApp::Loop()
 
         m_eventManager.Update(&m_window);
 
+        m_window.clear();
+
         if(m_stateManager.Peek() == nullptr)
             Stop();
         else {

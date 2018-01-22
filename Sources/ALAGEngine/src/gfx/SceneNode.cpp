@@ -1,5 +1,6 @@
 #include "ALAGE/gfx/SceneNode.h"
 
+#include "ALAGE/gfx/SceneManager.h"
 #include "ALAGE/utils/Logger.h"
 
 namespace alag
@@ -11,9 +12,19 @@ SceneNode::SceneNode(const NodeTypeID &id) : SceneNode(id, nullptr)
 
 SceneNode::SceneNode(const NodeTypeID &id, SceneNode *p)
 {
+    m_sceneManager = nullptr;
     m_parent = p;
+
+    if(m_parent != nullptr)
+        SetSceneManager(m_parent->GetSceneManager());
+
     m_id = id;
     m_curNewId = 0;
+}
+
+SceneNode::SceneNode(const NodeTypeID &id, SceneNode *p, SceneManager* sceneManager) : SceneNode(id,p)
+{
+    SetSceneManager(sceneManager);
 }
 
 SceneNode::~SceneNode()
@@ -43,6 +54,12 @@ void SceneNode::AddChildNode(const NodeTypeID &id, SceneNode* node)
     }
 
     m_childs[id] = node;
+
+    if(node != nullptr)
+        node->SetSceneManager(m_sceneManager);
+
+    if(m_sceneManager != nullptr)
+        m_sceneManager->AskToComputeRenderQueue();
 }
 
 SceneNode* SceneNode::RemoveChildNode(const NodeTypeID &id)
@@ -67,6 +84,9 @@ SceneNode* SceneNode::RemoveChildNode(const NodeTypeID &id)
         Logger::Warning("Removing created child without destroying it");
 
     m_childs.erase(childsIt);
+
+    if(m_sceneManager != nullptr)
+        m_sceneManager->AskToComputeRenderQueue();
 
     return node;
 }
@@ -99,6 +119,10 @@ SceneNode* SceneNode::CreateChildNode(const NodeTypeID &id)
     SceneNode* newNode = new SceneNode(id, this);
     m_childs[id] = newNode;
     m_createdChildsList.push_back(id);
+    newNode->SetSceneManager(m_sceneManager);
+
+    if(m_sceneManager != nullptr)
+        m_sceneManager->AskToComputeRenderQueue();
 
     return newNode;
 }
@@ -141,13 +165,16 @@ void SceneNode::RemoveAndDestroyAllChilds(bool destroyNonCreatedChilds)
     std::map<NodeTypeID, SceneNode*>::iterator childsIt;
 
     if(!destroyNonCreatedChilds)
-        for(size_t i = 0 ; i < m_createdChildsList.size() ; i++)
+        while(!m_createdChildsList.empty())
+            DestroyChildNode(m_createdChildsList.back());
+       /* for(size_t i = 0 ; i < m_createdChildsList.size() ; i++)
         {
-            DestroyChildNode(m_createdChildsList[i]);
+            DestroyChildNode(m_createdChildsList[i]);*/
+
             /*childsIt = m_childs.find(m_createdChildsList[i]);
             if(childsIt != m_childs.end() && childsIt->second != nullptr)
                 delete childsIt->second;*/
-        }
+        //}
 
     if(destroyNonCreatedChilds)
     {
@@ -164,34 +191,80 @@ void SceneNode::RemoveAndDestroyAllChilds(bool destroyNonCreatedChilds)
 
     m_childs.clear();
     m_createdChildsList.clear();
+
+    if(m_sceneManager != nullptr)
+        m_sceneManager->AskToComputeRenderQueue();
 }
+
+SceneNodeIterator SceneNode::GetChildIterator()
+{
+    return SceneNodeIterator(m_childs.begin(), m_childs.end());
+}
+
 
 void SceneNode::AttachEntity(SceneEntity *e)
 {
-    m_entities.push_back(e);
+    if(e != nullptr)
+    {
+        m_entities.push_back(e);
+        if(e->SetParentNode(this) != nullptr)
+            Logger::Warning("Attaching entity which has already a parent node");
+    } else
+        Logger::Error("Cannot attach null entity");
+
+    if(m_sceneManager != nullptr)
+        m_sceneManager->AskToComputeRenderQueue();
+}
+
+SceneEntityIterator SceneNode::GetEntityIterator()
+{
+    return SceneEntityIterator(m_entities.begin(), m_entities.end());
+}
+
+void SceneNode::Move(float x, float y)
+{
+    Move(x,y,0);
+}
+
+void SceneNode::Move(float x, float y, float z)
+{
+    Move(sf::Vector3f(x,y,z));
 }
 
 void SceneNode::Move(sf::Vector2f p)
 {
-    m_position.x += p.x;
-    m_position.y += p.y;
+    Move(sf::Vector3f(p.x,p.y,0));
 }
 
 void SceneNode::Move(sf::Vector3f p)
 {
-    m_position += p;
+    sf::Vector3f newPos = GetPosition();
+    newPos += p;
+    SetPosition(newPos);
 }
 
 
+void SceneNode::SetPosition(float x, float y)
+{
+    SetPosition(sf::Vector2f(x,y));
+}
+
+void SceneNode::SetPosition(float x, float y, float z)
+{
+    SetPosition(sf::Vector3f(x, y, z));
+}
+
 void SceneNode::SetPosition(sf::Vector2f xyPos)
 {
-    m_position.x = xyPos.x;
-    m_position.y = xyPos.y;
+    SetPosition(sf::Vector3f(xyPos.x, xyPos.y,GetPosition().z));
 }
 
 void SceneNode::SetPosition(sf::Vector3f pos)
 {
     m_position = pos;
+
+    if(m_sceneManager != nullptr)
+        m_sceneManager->AskToComputeRenderQueue();
 }
 
 sf::Vector3f SceneNode::GetPosition()
@@ -212,6 +285,11 @@ const NodeTypeID& SceneNode::GetID()
     return m_id;
 }
 
+SceneManager* SceneNode::GetSceneManager()
+{
+    return m_sceneManager;
+}
+
 SceneNode* SceneNode::GetParent()
 {
     return m_parent;
@@ -222,6 +300,19 @@ SceneNode* SceneNode::GetParent()
 void SceneNode::SetID(const NodeTypeID &id)
 {
     m_id = id;
+}
+
+void SceneNode::SetSceneManager(SceneManager *sceneManager)
+{
+    m_sceneManager = sceneManager;
+    SceneNodeIterator childIt = GetChildIterator();
+    while(!childIt.IsAtTheEnd())
+    {
+        SceneNode *curChild = childIt.GetElement();
+        if(curChild != nullptr)
+            curChild->SetSceneManager(sceneManager);
+        childIt++;
+    }
 }
 
 void SceneNode::SetParent(SceneNode *p)
@@ -237,7 +328,7 @@ NodeTypeID SceneNode::GenerateID()
 size_t SceneNode::FindChildCreated(const NodeTypeID& id)
 {
     size_t i = 0;
-    while(i < m_createdChildsList.size() && m_createdChildsList[i] != id){};
+    while(i < m_createdChildsList.size() && m_createdChildsList[i] != id){i++;}
     return i;
 }
 

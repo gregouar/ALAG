@@ -4,6 +4,7 @@
 #include <SFML/Graphics.hpp>
 #include "ALAGE/gfx/SceneNode.h"
 #include "ALAGE/gfx/RectEntity.h"
+#include "ALAGE/gfx/SpriteEntity.h"
 
 namespace alag
 {
@@ -14,28 +15,41 @@ class SceneManager
         SceneManager();
         virtual ~SceneManager();
 
-        virtual bool InitRenderer() = 0;
+        virtual bool InitRenderer(int, int) = 0;
+        virtual void Update(sf::Time);
+        virtual void ComputeRenderQueue();
+        virtual void ProcessRenderQueue(sf::RenderTarget*);
         virtual void RenderScene(sf::RenderTarget*) = 0;
         virtual void CleanAll();
 
+        void AskToComputeRenderQueue();
+
         SceneNode *GetRootNode();
 
-        RectEntity* CreateRectEntity(sf::FloatRect = sf::FloatRect(0,0,0,0));
+        RectEntity* CreateRectEntity(sf::Vector2f = sf::Vector2f(0,0));
+        SpriteEntity* CreateSpriteEntity(sf::Vector2i);
+        SpriteEntity* CreateSpriteEntity(sf::IntRect = sf::IntRect(0,0,0,0));
 
         void DestroyEntity(const EntityTypeID &);
         void DestroyAllEntities();
 
-        EntityTypeID GenerateEntityID();
+        void MoveView(sf::Vector2f);
 
     protected:
+        EntityTypeID GenerateEntityID();
         void AddEntity(const EntityTypeID &, SceneEntity*);
+        void AddToRenderQueue(SceneNode*);
 
-        sf::View m_view;
+        sf::View m_view; //Should remove this and create CameraEntity
         SceneNode m_rootNode;
+
+        std::list<SceneEntity*> m_renderQueue;
 
     private:
         std::map<EntityTypeID, SceneEntity*> m_entities;
         EntityTypeID m_curNewId;
+
+        bool m_needToUpdateRenderQueue;
 
 
 };

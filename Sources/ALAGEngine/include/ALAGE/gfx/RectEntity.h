@@ -8,14 +8,20 @@
 namespace alag
 {
 
-class RectEntity : public SceneEntity, public sf::FloatRect
+class RectEntity : public SceneEntity, protected sf::RectangleShape
 {
     public:
         RectEntity();
-        RectEntity(sf::FloatRect rect);
+        RectEntity(sf::Vector2f rectSize);
         virtual ~RectEntity();
 
+        virtual void Render(sf::RenderTarget *);
+        virtual void Render(sf::RenderTarget *, const sf::Transform &);
+
         void SetTexture(TextureAsset *t);
+        void SetCenter(sf::Vector2f);
+
+        virtual void NotifyLoadedAsset(Asset*);
 
     protected:
         TextureAsset *m_texture;

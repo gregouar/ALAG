@@ -53,7 +53,7 @@ class GApp
         alag::StateManager m_stateManager;
         alag::EventManager m_eventManager;
 
-
+    public:
         static const char *DEFAULT_APP_NAME;
         static const char *DEFAULT_CONFIG_FILE;
 

@@ -20,9 +20,11 @@ class IsometricScene : public SceneManager
         IsometricScene(IsoViewAngle);
         virtual ~IsometricScene();
 
-        virtual bool InitRenderer();
+        virtual bool InitRenderer(int, int);
+        virtual void ProcessRenderQueue(sf::RenderTarget*);
         virtual void RenderScene(sf::RenderTarget*);
 
+        sf::Vector2f ConvertIsoToCartesian(float, float, float = 0);
         sf::Vector2f ConvertIsoToCartesian(sf::Vector2f);
         sf::Vector2f ConvertIsoToCartesian(sf::Vector3f);
         sf::Vector2f ConvertCartesianToIso(sf::Vector2f);
@@ -41,6 +43,7 @@ class IsometricScene : public SceneManager
         sf::Vector2f m_IsoToCart_zVector;
         sf::Vector2f m_CartToIso_xVector;
         sf::Vector2f m_CartToIso_yVector;
+        sf::Transform m_TransformIsoToCart;
 
         //sf::Vector3f m_camera; USE m_view INSTEAD
 

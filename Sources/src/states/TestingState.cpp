@@ -1,10 +1,15 @@
 #include "states/TestingState.h"
+
+#include "ALAGE/core/GApp.h"
 #include "ALAGE/core/EventManager.h"
 #include "ALAGE/core/StateManager.h"
-
 #include "ALAGE/core/AssetHandler.h"
+
 #include "ALAGE/gfx/TextureAsset.h"
 #include "ALAGE/gfx/Texture3DAsset.h"
+
+
+#include "ALAGE/core/Config.h"
 
 using namespace alag;
 
@@ -13,6 +18,9 @@ TestingState::TestingState()
     //ctor
     showfirstsecond = true;
     m_firstEntering = true;
+
+    m_camMove.x = 0;
+    m_camMove.y = 0;
 }
 
 TestingState::~TestingState()
@@ -46,12 +54,20 @@ void TestingState::Init()
                                       "../data/sarcoXML.txt");
 
     m_mainScene.SetViewAngle({.xyAngle = 45, .zAngle=30});
-    m_mainScene.InitRenderer();
+    m_mainScene.InitRenderer(Config::GetInt("window","width",GApp::DEFAULT_WINDOW_WIDTH),
+                             Config::GetInt("window","height",GApp::DEFAULT_WINDOW_HEIGHT));
 
-    SceneNode *rectNode = m_mainScene.GetRootNode()->CreateChildNode();
-    RectEntity *rectEntity = m_mainScene.CreateRectEntity(sf::FloatRect(0,0,128,128));
-    rectEntity->SetTexture(t3D);
+    SceneNode* rectNode = m_mainScene.GetRootNode()->CreateChildNode();
+    RectEntity *rectEntity = m_mainScene.CreateRectEntity(sf::Vector2f(1024,1024));
+    rectEntity->SetCenter(sf::Vector2f(512,  512));
+    rectEntity->SetTexture(TextureHandler->LoadAssetFromFile("../data/sand.png",LoadTypeInThread));
     rectNode->AttachEntity(rectEntity);
+
+    m_sarcoNode = m_mainScene.GetRootNode()->CreateChildNode();
+    m_sarcoNode->SetPosition(-400,0);
+    SpriteEntity *sarcoEntity = m_mainScene.CreateSpriteEntity(sf::Vector2i(256,256));
+    sarcoEntity->SetTexture(t3D);
+    m_sarcoNode->AttachEntity(sarcoEntity);
 
     m_firstEntering = false;
 }
@@ -86,6 +102,19 @@ void TestingState::HandleEvents(alag::EventManager *event_manager)
     if(event_manager->KeyReleased(sf::Keyboard::Escape))
         m_manager->Switch(nullptr);
 
+    if(event_manager->KeyIsPressed(sf::Keyboard::Left))
+        m_camMove.x = -1;
+    else if(event_manager->KeyIsPressed(sf::Keyboard::Right))
+        m_camMove.x = 1;
+    else
+        m_camMove.x = 0;
+
+    if(event_manager->KeyIsPressed(sf::Keyboard::Up))
+        m_camMove.y = -1;
+    else if(event_manager->KeyIsPressed(sf::Keyboard::Down))
+        m_camMove.y = 1;
+    else
+        m_camMove.y = 0;
 
     if(event_manager->IsAskingToClose())
         m_manager->Switch(nullptr);
@@ -94,6 +123,11 @@ void TestingState::HandleEvents(alag::EventManager *event_manager)
 void TestingState::Update(sf::Time time)
 {
     m_totalTime += time;
+
+    m_mainScene.MoveView(m_mainScene.ConvertCartesianToIso(m_camMove)*(100*time.asSeconds()));
+    m_sarcoNode->Move(0,0,20*time.asSeconds());
+
+    m_mainScene.Update(time);
 }
 
 void TestingState::Draw(sf::RenderTarget* renderer)

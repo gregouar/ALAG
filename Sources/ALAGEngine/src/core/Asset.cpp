@@ -1,6 +1,7 @@
 #include "ALAGE/core/Asset.h"
 #include "ALAGE/utils/Parser.h"
 #include "ALAGE/utils/Logger.h"
+#include "ALAGE/gfx/SceneEntity.h"
 
 namespace alag
 {
@@ -71,9 +72,32 @@ bool Asset::LoadFromStream(sf::InputStream *stream, AssetLoadType loadType)
     return (true);
 }
 
+bool Asset::LoadNow()
+{
+    if(IsLoaded())
+        SendLoadedNotification();
+    return (IsLoaded());
+}
+
 bool Asset::IsLoaded()
 {
     return (m_loaded);
+}
+
+void Asset::AskForLoadedNotification(SceneEntity *entity)
+{
+    m_entitiesToNotify.push_back(entity);
+    m_entitiesToNotify.unique();
+}
+
+void Asset::SendLoadedNotification()
+{
+    SceneEntityIterator entityIt(m_entitiesToNotify.begin(), m_entitiesToNotify.end());
+    while(!entityIt.IsAtTheEnd())
+    {
+        entityIt.GetElement()->NotifyLoadedAsset(this);
+        entityIt++;
+    }
 }
 
 const std::string &Asset::GetFilePath()
