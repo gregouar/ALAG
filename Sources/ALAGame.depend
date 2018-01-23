@@ -33,7 +33,7 @@
 	<vector>
 	"GState.h"
 
-1516702575 source:c:\c++\alag\sources\src\states\testingstate.cpp
+1516703262 source:c:\c++\alag\sources\src\states\testingstate.cpp
 	"states/TestingState.h"
 	"ALAGE/core/GApp.h"
 	"ALAGE/core/EventManager.h"
@@ -485,7 +485,7 @@
 1516179549 source:c:\c++\alag\sources\alagengine\include\alage\core\assethandler.cpp
 	"AssetHandler.h"
 
-1516701789 c:\c++\alag\sources\alagengine\include\alage\core\assethandler.h
+1516703812 c:\c++\alag\sources\alagengine\include\alage\core\assethandler.h
 	"ALAGE/Types.h"
 	"ALAGE/core/Asset.h"
 	"ALAGE/utils/Singleton.h"
@@ -594,7 +594,7 @@
 	"extlibs/tinyxml.h"
 	<windows.h>
 
-1516702536 c:\c++\alag\sources\alagengine\src\core\assethandler.inc
+1516703812 c:\c++\alag\sources\alagengine\src\core\assethandler.inc
 	"ALAGE/utils/Logger.h"
 
 1516702536 source:c:\c++\alag\sources\alagengine\src\gfx\isometricscene.cpp
@@ -665,6 +665,6 @@
 1516699195 c:\c++\alag\sources\alagengine\include\alage\utils\singletonscleaner.h
 	<list>
 
-1516699161 source:c:\c++\alag\sources\alagengine\src\utils\singletonscleaner.cpp
+1516703125 source:c:\c++\alag\sources\alagengine\src\utils\singletonscleaner.cpp
 	"ALAGE/utils/SingletonsCleaner.h"
 

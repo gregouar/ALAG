@@ -41,12 +41,14 @@ void TestingState::Init()
 
     TextureHandler->LoadAssetFromFile("../data/abbaye_heightmap.png",LoadTypeInThread);
     TextureHandler->LoadAssetFromFile("../data/abbaye_normal.png",LoadTypeInThread);
-    TextureHandler->LoadAssetFromFile("../data/abbaye_heightmap.png",LoadTypeInThread);
-    TextureAsset* abbeyText = TextureHandler->LoadAssetFromFile("../data/abbaye_color.png",LoadTypeInThread);
-    TextureHandler->DeleteAsset(abbeyText);
+    TextureHandler->LoadAssetFromFile("../data/abbaye_color.png",LoadTypeInThread);
 
     AssetHandler<Texture3DAsset>* Texture3DHandler =  AssetHandler<Texture3DAsset>::Instance();
     Texture3DAsset *t3D =  Texture3DHandler->LoadAssetFromFile("../data/sarcoXML.txt");
+
+    TextureHandler->LoadAssetFromFile("../data/sand_color.png",LoadTypeInThread);
+    TextureHandler->LoadAssetFromFile("../data/sand_depth.png",LoadTypeInThread);
+    TextureHandler->LoadAssetFromFile("../data/sand_normal.png",LoadTypeInThread);
 
     m_mainScene.SetViewAngle({.xyAngle = 45, .zAngle=30});
     m_mainScene.InitRenderer(Config::GetInt("window","width",GApp::DEFAULT_WINDOW_WIDTH),

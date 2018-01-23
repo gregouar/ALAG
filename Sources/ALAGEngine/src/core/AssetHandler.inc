@@ -268,11 +268,17 @@ void AssetHandler<AssetType>::LoadInThread()
         if(m_assetsToLoadInThread.front() != nullptr)
         {
             if(!m_assetsToLoadInThread.front()->IsLoaded())
-                m_assetsToLoadInThread.front()->LoadNow();
+            {
+                AssetType* curAsset = m_assetsToLoadInThread.front();
+                m_assetsToLoadInThread.erase(m_assetsToLoadInThread.begin());
+
+                UnlockLoadMutex();
+                curAsset->LoadNow();
+                LockLoadMutex();
+            }
         } else
             Logger::Error("Tried to load null asset in thread");
 
-        m_assetsToLoadInThread.erase(m_assetsToLoadInThread.begin());
         UnlockLoadMutex();
     }
 }
