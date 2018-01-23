@@ -26,6 +26,8 @@ class Asset
         const std::string& GetFilePath();
 
         const AssetTypeID &GetID();
+        const AssetLoadType GetLoadType();
+        const AssetLoadSource GetLoadSource();
 
     protected:
         void AskForLoadedNotification(SceneEntity *);

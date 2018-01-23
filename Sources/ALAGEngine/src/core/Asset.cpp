@@ -96,7 +96,7 @@ void Asset::SendLoadedNotification()
     while(!entityIt.IsAtTheEnd())
     {
         entityIt.GetElement()->NotifyLoadedAsset(this);
-        entityIt++;
+        ++entityIt;
     }
 }
 
@@ -105,6 +105,17 @@ const std::string &Asset::GetFilePath()
     if(m_loadSource == LoadSourceFile)
         return m_filePath;
     return emptyString;
+}
+
+
+const AssetLoadType Asset::GetLoadType()
+{
+    return m_loadType;
+}
+
+const AssetLoadSource Asset::GetLoadSource()
+{
+    return m_loadSource;
 }
 
 const AssetTypeID &Asset::GetID()

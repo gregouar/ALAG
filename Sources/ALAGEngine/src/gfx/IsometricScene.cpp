@@ -42,7 +42,7 @@ bool IsometricScene::InitRenderer(int w, int h)
 void IsometricScene::ProcessRenderQueue(sf::RenderTarget *w)
 {
     std::list<SceneEntity*>::iterator renderIt;
-    for(renderIt = m_renderQueue.begin() ; renderIt != m_renderQueue.end(); renderIt++)
+    for(renderIt = m_renderQueue.begin() ; renderIt != m_renderQueue.end(); ++renderIt)
     {
         sf::Transform totalTransform;
         totalTransform = sf::Transform::Identity;

@@ -167,19 +167,11 @@ void SceneNode::RemoveAndDestroyAllChilds(bool destroyNonCreatedChilds)
     if(!destroyNonCreatedChilds)
         while(!m_createdChildsList.empty())
             DestroyChildNode(m_createdChildsList.back());
-       /* for(size_t i = 0 ; i < m_createdChildsList.size() ; i++)
-        {
-            DestroyChildNode(m_createdChildsList[i]);*/
-
-            /*childsIt = m_childs.find(m_createdChildsList[i]);
-            if(childsIt != m_childs.end() && childsIt->second != nullptr)
-                delete childsIt->second;*/
-        //}
 
     if(destroyNonCreatedChilds)
     {
         childsIt = m_childs.begin();
-        for(;childsIt != m_childs.end() ; childsIt++)
+        for(;childsIt != m_childs.end() ; ++childsIt)
         {
             if(childsIt->second != nullptr)
             {
@@ -311,7 +303,7 @@ void SceneNode::SetSceneManager(SceneManager *sceneManager)
         SceneNode *curChild = childIt.GetElement();
         if(curChild != nullptr)
             curChild->SetSceneManager(sceneManager);
-        childIt++;
+        ++childIt;
     }
 }
 
@@ -328,7 +320,7 @@ NodeTypeID SceneNode::GenerateID()
 size_t SceneNode::FindChildCreated(const NodeTypeID& id)
 {
     size_t i = 0;
-    while(i < m_createdChildsList.size() && m_createdChildsList[i] != id){i++;}
+    while(i < m_createdChildsList.size() && m_createdChildsList[i] != id){++i;}
     return i;
 }
 

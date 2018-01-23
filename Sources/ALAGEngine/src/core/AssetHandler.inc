@@ -1,3 +1,4 @@
+
 #include "ALAGE/utils/Logger.h"
 
 namespace alag
@@ -114,6 +115,8 @@ AssetType* AssetHandler<AssetType>::LoadAssetFromStream(const AssetTypeID& id,
 template<typename AssetType>
 AssetType* AssetHandler<AssetType>::AddAsset(const AssetTypeID &assetID, bool plannedObsolescence, int lifeSpan)
 {
+    sf::Lock lockLoadMutex(m_loadMutex);
+
     AssetType* newAsset = nullptr;
     typename std::map<AssetTypeID, AssetType*>::iterator assetIter;
 
@@ -121,7 +124,7 @@ AssetType* AssetHandler<AssetType>::AddAsset(const AssetTypeID &assetID, bool pl
 
     if(assetIter == m_assets.end())
     {
-        newAsset = new AssetType();
+        newAsset = new AssetType(assetID);
         m_assets[assetID] = newAsset;
     } else {
         if(!plannedObsolescence)
@@ -146,6 +149,8 @@ AssetTypeID AssetHandler<AssetType>::GenerateID()
 template<typename AssetType>
 void AssetHandler<AssetType>::AddToLoadingThread(AssetType* asset)
 {
+    sf::Lock lockLoadMutex(m_loadMutex);
+
     if(asset != nullptr && !asset->IsLoaded())
     {
         m_assetsToLoadInThread.push_back(asset);
@@ -154,6 +159,26 @@ void AssetHandler<AssetType>::AddToLoadingThread(AssetType* asset)
     }
 }
 
+template<typename AssetType>
+void AssetHandler<AssetType>::RemoveFromLoadingThread(AssetType* asset)
+{
+    sf::Lock lockLoadMutex(m_loadMutex);
+
+    if(asset != nullptr)
+    {
+        typename std::list<AssetType*>::iterator loadingListIt;
+        loadingListIt = m_assetsToLoadInThread.begin();
+        while(loadingListIt != m_assetsToLoadInThread.end())
+        {
+            if(*loadingListIt == asset)
+            {
+                m_assetsToLoadInThread.erase(loadingListIt);
+                loadingListIt = m_assetsToLoadInThread.end();
+            } else
+                ++loadingListIt;
+        }
+    }
+}
 
 template<typename AssetType>
 void AssetHandler<AssetType>:: AddToObsolescenceList(const AssetTypeID &assetID,int lifeSpan)
@@ -175,7 +200,7 @@ template<typename AssetType>
 void AssetHandler<AssetType>:: DescreaseObsolescenceLife()
 {
     std::map<AssetTypeID, int>::iterator iter;
-    for(iter = m_obsolescenceList.begin() ; iter != m_obsolescenceList.end() ; iter++)
+    for(iter = m_obsolescenceList.begin() ; iter != m_obsolescenceList.end() ; ++iter)
     {
         iter->second--;
         if(iter->second-- <= 0)
@@ -190,6 +215,8 @@ void AssetHandler<AssetType>:: DescreaseObsolescenceLife()
 template<typename AssetType>
 void AssetHandler<AssetType>::DeleteAsset(const AssetTypeID &assetID)
 {
+    sf::Lock lockLoadMutex(m_loadMutex);
+
     typename std::map<AssetTypeID, AssetType*>::iterator iter;
     iter = m_assets.find(assetID);
 
@@ -199,6 +226,10 @@ void AssetHandler<AssetType>::DeleteAsset(const AssetTypeID &assetID)
         {
             if(!iter->second->GetFilePath().empty())
                 m_filesList.erase(m_filesList.find(iter->second->GetFilePath()));
+
+            if(!iter->second->IsLoaded() && iter->second->GetLoadType() == LoadTypeInThread)
+                RemoveFromLoadingThread(iter->second);
+
             delete iter->second;
             m_assets.erase(iter);
         }
@@ -208,11 +239,19 @@ void AssetHandler<AssetType>::DeleteAsset(const AssetTypeID &assetID)
 
 
 template<typename AssetType>
+void AssetHandler<AssetType>::DeleteAsset(AssetType *asset)
+{
+    if(asset != nullptr)
+        DeleteAsset(asset->GetID());
+}
+
+
+template<typename AssetType>
 void AssetHandler<AssetType>::CleanAll()
 {
     m_loadThread->wait();
     typename std::map<AssetTypeID, AssetType*>::iterator assetIter;
-    for(assetIter = m_assets.begin() ; assetIter != m_assets.end() ; assetIter++)
+    for(assetIter = m_assets.begin() ; assetIter != m_assets.end() ; ++assetIter)
         delete assetIter->second;
     m_assets.clear();
     m_obsolescenceList.clear();
@@ -225,6 +264,7 @@ void AssetHandler<AssetType>::LoadInThread()
 {
     while(!m_assetsToLoadInThread.empty())
     {
+        LockLoadMutex();
         if(m_assetsToLoadInThread.front() != nullptr)
         {
             if(!m_assetsToLoadInThread.front()->IsLoaded())
@@ -233,7 +273,21 @@ void AssetHandler<AssetType>::LoadInThread()
             Logger::Error("Tried to load null asset in thread");
 
         m_assetsToLoadInThread.erase(m_assetsToLoadInThread.begin());
+        UnlockLoadMutex();
     }
+}
+
+
+template<typename AssetType>
+void AssetHandler<AssetType>::LockLoadMutex()
+{
+    m_loadMutex.lock();
+}
+
+template<typename AssetType>
+void AssetHandler<AssetType>::UnlockLoadMutex()
+{
+    m_loadMutex.unlock();
 }
 
 }

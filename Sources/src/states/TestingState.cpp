@@ -25,7 +25,6 @@ TestingState::TestingState()
 
 TestingState::~TestingState()
 {
-    //dtor
 }
 
 void TestingState::Init()
@@ -40,18 +39,14 @@ void TestingState::Init()
     TextureHandler->LoadAssetFromFile(newID,"../data/sarco-heightmap.png",LoadTypeInThread);
     TextureHandler->AddToObsolescenceList(newID,2);*/
 
-    TextureHandler->LoadAssetFromFile(TextureHandler->GenerateID(),
-                                      "../data/abbaye_color.png",LoadTypeInThread);
-    TextureHandler->LoadAssetFromFile(TextureHandler->GenerateID(),
-                                      "../data/abbaye_heightmap.png",LoadTypeInThread);
-    TextureHandler->LoadAssetFromFile(TextureHandler->GenerateID(),
-                                      "../data/abbaye_normal.png",LoadTypeInThread);
-    TextureHandler->LoadAssetFromFile(TextureHandler->GenerateID(),
-                                      "../data/abbaye_color.png",LoadTypeInThread);
+    TextureHandler->LoadAssetFromFile("../data/abbaye_heightmap.png",LoadTypeInThread);
+    TextureHandler->LoadAssetFromFile("../data/abbaye_normal.png",LoadTypeInThread);
+    TextureHandler->LoadAssetFromFile("../data/abbaye_heightmap.png",LoadTypeInThread);
+    TextureAsset* abbeyText = TextureHandler->LoadAssetFromFile("../data/abbaye_color.png",LoadTypeInThread);
+    TextureHandler->DeleteAsset(abbeyText);
 
     AssetHandler<Texture3DAsset>* Texture3DHandler =  AssetHandler<Texture3DAsset>::Instance();
-    Texture3DAsset *t3D =  Texture3DHandler->LoadAssetFromFile(Texture3DHandler->GenerateID(),
-                                      "../data/sarcoXML.txt");
+    Texture3DAsset *t3D =  Texture3DHandler->LoadAssetFromFile("../data/sarcoXML.txt");
 
     m_mainScene.SetViewAngle({.xyAngle = 45, .zAngle=30});
     m_mainScene.InitRenderer(Config::GetInt("window","width",GApp::DEFAULT_WINDOW_WIDTH),
@@ -82,9 +77,6 @@ void TestingState::Entered()
 
 void TestingState::Leaving()
 {
-    AssetHandler<Texture3DAsset>::Instance()->CleanAll();
-    AssetHandler<TextureAsset>::Instance()->CleanAll();
-    m_mainScene.CleanAll();
 }
 
 void TestingState::Revealed()
@@ -125,7 +117,7 @@ void TestingState::Update(sf::Time time)
     m_totalTime += time;
 
     m_mainScene.MoveView(m_mainScene.ConvertCartesianToIso(m_camMove)*(100*time.asSeconds()));
-    m_sarcoNode->Move(0,0,20*time.asSeconds());
+    m_sarcoNode->Move(20*time.asSeconds(),0,0);
 
     m_mainScene.Update(time);
 }

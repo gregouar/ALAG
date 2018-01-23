@@ -11,6 +11,13 @@ TextureAsset::TextureAsset()
     m_allowLoadFromStream = true;
 }
 
+TextureAsset::TextureAsset(const AssetTypeID& id) : Asset(id)
+{
+    m_allowLoadFromFile = true;
+    m_allowLoadFromMemory = true;
+    m_allowLoadFromStream = true;
+}
+
 TextureAsset::~TextureAsset()
 {
 }

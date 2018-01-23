@@ -20,6 +20,15 @@ Texture3DAsset::Texture3DAsset()
     m_depthMap = nullptr;
 }
 
+Texture3DAsset::Texture3DAsset(const AssetTypeID& id) : TextureAsset(id)
+{
+    m_default_height = 0;
+
+    m_colorMap  = nullptr;
+    m_normalMap = nullptr;
+    m_depthMap = nullptr;
+}
+
 Texture3DAsset::~Texture3DAsset()
 {
     //dtor

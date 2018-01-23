@@ -4,7 +4,7 @@ namespace alag{
 
 EventManager::EventManager()
 {
-    for(size_t i = 0 ; i < sf::Keyboard::KeyCount ; i++)
+    for(size_t i = 0 ; i < sf::Keyboard::KeyCount ; ++i)
     {
         m_keyIsPressed[i] = false;
         m_keyPressed[i] = false;
@@ -25,7 +25,7 @@ void EventManager::Update(sf::Window *window)
 {
     sf::Event event;
 
-    for(size_t i = 0 ; i < sf::Keyboard::KeyCount ; i++)
+    for(size_t i = 0 ; i < sf::Keyboard::KeyCount ; ++i)
         m_keyReleased[i] = false, m_keyPressed[i] = false;
 
     while (window->pollEvent(event))

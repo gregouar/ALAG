@@ -77,7 +77,8 @@
 		<Unit filename="ALAGEngine/include/ALAGE/utils/Logger.h" />
 		<Unit filename="ALAGEngine/include/ALAGE/utils/MapIterator.h" />
 		<Unit filename="ALAGEngine/include/ALAGE/utils/Parser.h" />
-		<Unit filename="ALAGEngine/include/ALAGE/utils/singleton.h" />
+		<Unit filename="ALAGEngine/include/ALAGE/utils/Singleton.h" />
+		<Unit filename="ALAGEngine/include/ALAGE/utils/SingletonsCleaner.h" />
 		<Unit filename="ALAGEngine/include/extlibs/tinystr.h" />
 		<Unit filename="ALAGEngine/include/extlibs/tinyxml.h" />
 		<Unit filename="ALAGEngine/src/core/Asset.cpp" />
@@ -105,6 +106,7 @@
 		<Unit filename="ALAGEngine/src/gfx/TextureAsset.cpp" />
 		<Unit filename="ALAGEngine/src/utils/Logger.cpp" />
 		<Unit filename="ALAGEngine/src/utils/Parser.cpp" />
+		<Unit filename="ALAGEngine/src/utils/SingletonsCleaner.cpp" />
 		<Unit filename="include/states/TestingState.h" />
 		<Unit filename="main.cpp" />
 		<Unit filename="src/states/TestingState.cpp" />

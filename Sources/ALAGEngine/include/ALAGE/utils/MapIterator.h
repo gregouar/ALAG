@@ -24,7 +24,8 @@ template<class T1, class T2> class MapIterator
 
         bool IsAtTheEnd(){return (m_iterator == m_end);};
 
-        void operator++(int){ m_iterator++;};
+        void operator++(){ ++m_iterator;};
+        typename std::map<T1,T2>::iterator operator++(int){ return m_iterator++;};
 
     private:
         typename std::map<T1,T2>::iterator m_iterator;

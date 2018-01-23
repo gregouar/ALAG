@@ -19,7 +19,8 @@ template<class T> class ListIterator
 
         bool IsAtTheEnd(){return (m_iterator == m_end);};
 
-        void operator++(int){ m_iterator++;};
+        void operator++(){ ++m_iterator;};
+        typename std::list<T>::iterator operator++(int){ return m_iterator++;};
 
     private:
         typename std::list<T>::iterator m_iterator;

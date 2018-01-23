@@ -17,7 +17,7 @@ StateManager::~StateManager()
 
 void StateManager::Switch(GState* state)
 {
-    for(std::size_t i = 0; i < m_states.size() ; i++)
+    for(std::size_t i = 0; i < m_states.size() ; ++i)
         m_states[i]->Leaving();
 
     m_states.clear();
@@ -64,19 +64,19 @@ GState* StateManager::Peek()
 
 void StateManager::HandleEvents(EventManager* events_manager)
 {
-    for(std::size_t i = 0; i < m_states.size() ; i++)
+    for(std::size_t i = 0; i < m_states.size() ; ++i)
         m_states[i]->HandleEvents(events_manager);
 }
 
 void StateManager::Update(sf::Time time)
 {
-    for(std::size_t i = 0; i < m_states.size() ; i++)
+    for(std::size_t i = 0; i < m_states.size() ; ++i)
         m_states[i]->Update(time);
 }
 
 void StateManager::Draw(sf::RenderTarget* renderer)
 {
-    for(std::size_t i = 0; i < m_states.size() ; i++)
+    for(std::size_t i = 0; i < m_states.size() ; ++i)
         m_states[i]->Draw(renderer);
 }
 

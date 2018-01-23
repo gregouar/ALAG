@@ -11,6 +11,7 @@ class Texture3DAsset : public TextureAsset
 {
     public:
         Texture3DAsset();
+        Texture3DAsset(const AssetTypeID&);
         virtual ~Texture3DAsset();
 
         virtual bool LoadNow();

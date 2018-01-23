@@ -41,7 +41,7 @@ void SceneManager::AskToComputeRenderQueue()
 void SceneManager::ProcessRenderQueue(sf::RenderTarget *w)
 {
     std::list<SceneEntity*>::iterator renderIt;
-    for(renderIt = m_renderQueue.begin() ; renderIt != m_renderQueue.end(); renderIt++)
+    for(renderIt = m_renderQueue.begin() ; renderIt != m_renderQueue.end(); ++renderIt)
         (*renderIt)->Render(w);
 }
 
@@ -59,14 +59,14 @@ void SceneManager::AddToRenderQueue(SceneNode *curNode)
         while(!entityIt.IsAtTheEnd())
         {
             m_renderQueue.push_back(entityIt.GetElement());
-            entityIt++;
+            ++entityIt;
         }
 
         SceneNodeIterator nodeIt = curNode->GetChildIterator();
         while(!nodeIt.IsAtTheEnd())
         {
             AddToRenderQueue(nodeIt.GetElement());
-            nodeIt++;
+            ++nodeIt;
         }
     }
 }
@@ -133,7 +133,7 @@ void SceneManager::DestroyEntity(const EntityTypeID &id)
 void SceneManager::DestroyAllEntities()
 {
     std::map<EntityTypeID, SceneEntity*>::iterator entityIt;
-    for(entityIt = m_entities.begin() ;  entityIt != m_entities.end() ; entityIt++)
+    for(entityIt = m_entities.begin() ;  entityIt != m_entities.end() ; ++entityIt)
         DestroyEntity(entityIt->first);
 }
 
