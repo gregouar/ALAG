@@ -10,5 +10,5 @@ Texture loaded from file: ../data/abbaye_color.png
 Texture loaded from file: ../data/sand_color.png
 Texture loaded from file: ../data/sand_depth.png
 Texture loaded from file: ../data/sand_normal.png
-Texture loaded from file: ../data/sand.png
 Stopping application
+Texture loaded from file: ../data/sand.png

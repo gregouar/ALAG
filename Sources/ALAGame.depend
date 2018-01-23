@@ -33,7 +33,7 @@
 	<vector>
 	"GState.h"
 
-1516703262 source:c:\c++\alag\sources\src\states\testingstate.cpp
+1516703898 source:c:\c++\alag\sources\src\states\testingstate.cpp
 	"states/TestingState.h"
 	"ALAGE/core/GApp.h"
 	"ALAGE/core/EventManager.h"
@@ -167,8 +167,10 @@
 
 1486736398 c:\c++\alag\sources\sfml\include\sfml\system\vector3.inl
 
-1516699195 c:\c++\alag\sources\alagengine\include\alage\utils\singleton.h
+1516723036 c:\c++\alag\sources\alagengine\include\alage\utils\singleton.h
 	<iostream>
+	<mutex>
+	<atomic>
 	"ALAGE/utils/SingletonsCleaner.h"
 
 1516702536 source:c:\c++\alag\sources\alagengine\src\core\eventmanager.cpp
@@ -466,12 +468,13 @@
 	"ALAGE/utils/Logger.h"
 	<sstream>
 
-1516561145 source:c:\c++\alag\sources\alagengine\src\utils\logger.cpp
+1516723053 source:c:\c++\alag\sources\alagengine\src\utils\logger.cpp
 	"ALAGE/utils/Logger.h"
 
-1516561118 c:\c++\alag\sources\alagengine\include\alage\utils\logger.h
+1516720194 c:\c++\alag\sources\alagengine\include\alage\utils\logger.h
 	<fstream>
 	<sstream>
+	<SFML/System.hpp>
 	"ALAGE/utils/Singleton.h"
 
 1516304432 source:c:\c++\alag\sources\alagengine\src\gfx\gfxengine.cpp
@@ -657,14 +660,21 @@
 	"ALAGE/gfx/SceneNode.h"
 	<SFML/Graphics.hpp>
 
-1516658371 c:\c++\alag\sources\alagengine\include\alage\gfx\spriteentity.h
+1516719578 c:\c++\alag\sources\alagengine\include\alage\gfx\spriteentity.h
 	<SFML/Graphics.hpp>
 	"ALAGE/gfx/Texture3DAsset.h"
 	"ALAGE/gfx/SceneEntity.h"
 
-1516699195 c:\c++\alag\sources\alagengine\include\alage\utils\singletonscleaner.h
+1516723001 c:\c++\alag\sources\alagengine\include\alage\utils\singletonscleaner.h
 	<list>
 
 1516703125 source:c:\c++\alag\sources\alagengine\src\utils\singletonscleaner.cpp
 	"ALAGE/utils/SingletonsCleaner.h"
+
+1516719556 source:c:\c++\alag\sources\alagengine\src\gfx\sprite3dentity.cpp
+	"ALAGE/gfx/Sprite3DEntity.h"
+	"ALAGE/gfx/SceneNode.h"
+
+1516719541 c:\c++\alag\sources\alagengine\include\alage\gfx\sprite3dentity.h
+	"ALAGE/gfx/SpriteEntity.h"
 

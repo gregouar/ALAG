@@ -3,6 +3,7 @@
 
 #include <fstream>
 #include <sstream>
+#include <SFML/System.hpp>
 #include "ALAGE/utils/Singleton.h"
 
 class Logger : public Singleton<Logger>
@@ -26,6 +27,8 @@ class Logger : public Singleton<Logger>
     protected:
         Logger();
         virtual ~Logger();
+
+        sf::Mutex m_loggerMutex;
 
     private:
         std::ofstream *m_fileStream;

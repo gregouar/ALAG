@@ -5,13 +5,16 @@
 
 class KillableSingleton
 {
-    public:
+    friend class SingletonsCleaner;
+
+    private:
         virtual void Kill() = 0;
 };
 
 class SingletonsCleaner
 {
     public:
+       // friend  void KillableSingleton::Kill();
 
         static SingletonsCleaner* Instance(void);
         static void AddToList(KillableSingleton* singleton);
