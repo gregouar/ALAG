@@ -39,33 +39,36 @@ bool Texture3DAsset::LoadNow()
 {
     bool loaded = true;
 
-    if(m_loadSource == LoadSourceFile)
+    if(!m_loaded)
     {
-        TiXmlDocument file(m_filePath.c_str());
-
-        if(!file.LoadFile())
+        if(m_loadSource == LoadSourceFile)
         {
-            Logger::Error("Cannot load texture3D from file: "+m_filePath);
-            std::ostringstream errorReport;
-            errorReport << "Because: "<<file.ErrorDesc();
-            Logger::Error(errorReport);
-            loaded = false;
+            TiXmlDocument file(m_filePath.c_str());
+
+            if(!file.LoadFile())
+            {
+                Logger::Error("Cannot load texture3D from file: "+m_filePath);
+                std::ostringstream errorReport;
+                errorReport << "Because: "<<file.ErrorDesc();
+                Logger::Error(errorReport);
+                loaded = false;
+            } else {
+                TiXmlHandle hdl(&file);
+                hdl = hdl.FirstChildElement();
+                loaded = LoadFromXML(&hdl);
+            }
+
+            if(loaded)
+                Logger::Write("Texture3D loaded from file: "+m_filePath);
+
         } else {
-            TiXmlHandle hdl(&file);
-            hdl = hdl.FirstChildElement();
-            loaded = LoadFromXML(&hdl);
+            Logger::Error("Cannot load asset");
+            loaded = false;
         }
 
-        if(loaded)
-            Logger::Write("Texture3D loaded from file: "+m_filePath);
-
-    } else {
-        Logger::Error("Cannot load asset");
-        loaded = false;
+        if(m_loadType == LoadTypeNow)
+            m_loaded = loaded;
     }
-
-    if(m_loadType == LoadTypeNow)
-        m_loaded = loaded;
 
     //Asset::LoadNow();
     return loaded;

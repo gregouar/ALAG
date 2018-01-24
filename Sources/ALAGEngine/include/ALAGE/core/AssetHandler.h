@@ -52,6 +52,7 @@ template<class AssetType> class AssetHandler : public Singleton<AssetHandler<Ass
 
         void LockLoadMutex();
         void UnlockLoadMutex();
+        void WaitForLoadingThread(AssetType *assetToWaitFor);
 
     private:
         std::map<AssetTypeID, AssetType*> m_assets;
@@ -61,6 +62,7 @@ template<class AssetType> class AssetHandler : public Singleton<AssetHandler<Ass
         sf::Thread* m_loadThread;
         sf::Mutex m_loadMutex;
         std::list<AssetType*> m_assetsToLoadInThread;
+        AssetType* m_assetLoadingInThread;
 
         int m_curNewId;
 };

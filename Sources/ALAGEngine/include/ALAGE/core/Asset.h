@@ -30,6 +30,8 @@ class Asset : public NotificationSender
         const AssetLoadType GetLoadType();
         const AssetLoadSource GetLoadSource();
 
+        void ForceLoadType(AssetLoadType);
+
     protected:
 
         bool m_allowLoadFromFile;

@@ -47,18 +47,21 @@ void TestingState::Init()
     AssetHandler<Texture3DAsset>* Texture3DHandler =  AssetHandler<Texture3DAsset>::Instance();
     Texture3DAsset *t3D =  Texture3DHandler->LoadAssetFromFile("../data/sarcoXML.txt",LoadTypeInThread);
 
-    TextureHandler->LoadAssetFromFile("../data/sand_color.png",LoadTypeInThread);
-    TextureHandler->LoadAssetFromFile("../data/sand_depth.png",LoadTypeInThread);
-    TextureHandler->LoadAssetFromFile("../data/sand_normal.png",LoadTypeInThread);
+   // TextureHandler->LoadAssetFromFile("../data/sand_color.png",LoadTypeInThread);
+   /* TextureHandler->LoadAssetFromFile("../data/sand_depth.png",LoadTypeInThread);
+    TextureHandler->LoadAssetFromFile("../data/sand_normal.png",LoadTypeInThread);*/
 
     m_mainScene.SetViewAngle({.xyAngle = 45, .zAngle=30});
     m_mainScene.InitRenderer(Config::GetInt("window","width",GApp::DEFAULT_WINDOW_WIDTH),
                              Config::GetInt("window","height",GApp::DEFAULT_WINDOW_HEIGHT));
+    m_mainScene.SetAmbientLight(sf::Color(64,64,128));
+    m_mainScene.SetAmbientLight(sf::Color(255,255,128));
 
     SceneNode* rectNode = m_mainScene.GetRootNode()->CreateChildNode();
     RectEntity *rectEntity = m_mainScene.CreateRectEntity(sf::Vector2f(1024,1024));
     rectEntity->SetCenter(sf::Vector2f(512,  512));
-    rectEntity->SetTexture(TextureHandler->LoadAssetFromFile("../data/sand.png"));
+   // rectEntity->SetTexture(TextureHandler->LoadAssetFromFile("../data/sand_color.png",LoadTypeInThread));
+    rectEntity->SetTexture(Texture3DHandler->LoadAssetFromFile("../data/sandXML.txt",LoadTypeInThread));
     rectNode->AttachEntity(rectEntity);
 
     m_sarcoNode = m_mainScene.GetRootNode()->CreateChildNode();
@@ -73,11 +76,13 @@ void TestingState::Init()
     Sprite3DEntity *sarco3DEntity = m_mainScene.CreateSprite3DEntity(sf::Vector2i(256,256));
     sarco3DEntity->SetTexture(t3D);
     sarco3DEntity->SetCenter(128,128);
+    sarco3DEntity->DesactivateLighting();
     m_sarco3DNode->AttachEntity(sarco3DEntity);
 
 
     Sprite3DEntity *sarco3DEntitybis = m_mainScene.CreateSprite3DEntity(sf::Vector2i(256,256));
     sarco3DEntitybis->SetTexture(t3D);
+    //sarco3DEntitybis->SetTexture(Texture3DHandler->LoadAssetFromFile("../data/sandXML.txt"));
     sarco3DEntitybis->SetCenter(128,128);
     m_sarcoNode->CreateChildNode(sf::Vector2f(-15,50))->AttachEntity(sarco3DEntitybis);
 

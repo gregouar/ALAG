@@ -6,20 +6,70 @@ namespace alag
 {
 
 
+const std::string depth_fragShader = \
+    "uniform sampler2D colorMap;" \
+    "uniform sampler2D depthMap;" \
+    "uniform float height;" \
+    "uniform float zPos;" \
+    "void main()" \
+    "{" \
+    "   vec4 colorPixel = texture2D(colorMap, gl_TexCoord[0].xy);" \
+    "   vec4 depthPixel = texture2D(depthMap, gl_TexCoord[0].xy);" \
+    "   gl_FragDepth = 1.0 - depthPixel.a*(0.5+depthPixel.r*height + zPos);" \
+    "   gl_FragColor = gl_Color * colorPixel; " \
+    "}";
+
+
+const std::string depthAndIllumination_fragShader = \
+    "uniform sampler2D colorMap;" \
+    "uniform sampler2D depthMap;" \
+    "uniform float height;" \
+    "uniform float zPos;" \
+    "uniform vec3 ambient_light;" \
+    "void main()" \
+    "{" \
+    "   vec4 colorPixel = texture2D(colorMap, gl_TexCoord[0].xy);" \
+    "   vec4 depthPixel = texture2D(depthMap, gl_TexCoord[0].xy);" \
+    "   vec4 lightning = vec4(ambient_light,1.0);" \
+    "   gl_FragDepth = 1.0 - depthPixel.a*(0.5+depthPixel.r*height + zPos);" \
+    "   gl_FragColor = gl_Color * colorPixel * lightning; " \
+    "}";
+
+
+
+const std::string illumination_fragShader = \
+    "uniform sampler2D colorMap;" \
+    "uniform float zPos;" \
+    "uniform vec3 ambient_light;" \
+    "void main()" \
+    "{" \
+    "   vec4 colorPixel = texture2D(colorMap, gl_TexCoord[0].xy);" \
+    "   vec4 lightning = vec4(ambient_light,1.0);" \
+    "   gl_FragColor = gl_Color * colorPixel * lightning; " \
+    "}";
+
+
+
 //const IsoViewAngle IsometricScene::DEFAULT_ISO_VIEW_ANGLE.xyAngle = 0;
 //const IsoViewAngle IsometricScene::DEFAULT_ISO_VIEW_ANGLE.zAngle = 90;
 
 const IsoViewAngle IsometricScene::DEFAULT_ISO_VIEW_ANGLE = {.xyAngle = 0,
                                                              .zAngle = 90};
 
+
 IsometricScene::IsometricScene() : IsometricScene(DEFAULT_ISO_VIEW_ANGLE)
 {
     //ctor
 }
 
-IsometricScene::IsometricScene(IsoViewAngle viewAngle) : SceneManager()
+IsometricScene::IsometricScene(IsoViewAngle viewAngle)
 {
     SetViewAngle(viewAngle);
+
+    m_depthShader.loadFromMemory(depth_fragShader,sf::Shader::Fragment);
+    m_depthAndIlluminationShader.loadFromMemory(depthAndIllumination_fragShader,sf::Shader::Fragment);
+    m_illuminationShader.loadFromMemory(illumination_fragShader,sf::Shader::Fragment);
+    SetAmbientLight(m_ambientLight);
 }
 
 
@@ -43,16 +93,47 @@ void IsometricScene::ProcessRenderQueue(sf::RenderTarget *w)
     std::list<SceneEntity*>::iterator renderIt;
     for(renderIt = m_renderQueue.begin() ; renderIt != m_renderQueue.end(); ++renderIt)
     {
-        sf::Transform totalTransform;
-        totalTransform = sf::Transform::Identity;
+        sf::RenderStates state;
+        state.transform = sf::Transform::Identity;
+
+        sf::Vector3f globalPos(0,0,0);
 
         SceneNode *node = (*renderIt)->GetParentNode();
         if(node != nullptr)
-            totalTransform.translate(ConvertIsoToCartesian(0,0,node->GetGlobalPosition().z));
+            globalPos = node->GetGlobalPosition();
 
-        totalTransform *= m_TransformIsoToCart;
+        state.transform.translate(ConvertIsoToCartesian(0,0,globalPos.z));
+        state.transform *= m_TransformIsoToCart;
+        state.transform.translate(globalPos.x, globalPos.y);
 
-        (*renderIt)->Render(w,totalTransform);
+        sf::Shader* curShader = nullptr;
+
+        if((*renderIt)->Is3D())
+        {
+            if((*renderIt)->CanBeIlluminated())
+                curShader = &m_depthAndIlluminationShader;
+            else
+                curShader = &m_depthShader;
+
+            w->pushGLStates();
+            //w->resetGLStates();
+
+            glEnable(GL_DEPTH_TEST);
+            glDepthMask(GL_TRUE);
+
+        } else if((*renderIt)->CanBeIlluminated())
+                curShader = &m_illuminationShader;
+
+        if(curShader != nullptr)
+            curShader->setUniform("zPos",globalPos.z*DEPTH_BUFFER_NORMALISER);
+
+        (*renderIt)->PrepareShader(curShader);
+        state.shader = curShader;
+
+        (*renderIt)->Render(w,state);
+
+        if((*renderIt)->Is3D())
+            w->popGLStates();
     }
 }
 
@@ -65,9 +146,7 @@ void IsometricScene::RenderScene(sf::RenderTarget* w)
         sf::View oldView = w->getView();
         glClear(GL_DEPTH_BUFFER_BIT);
         w->setView(GenerateIsoView(m_view));
-
         ProcessRenderQueue(w);
-
         w->setView(oldView);
     }
 }
@@ -92,6 +171,19 @@ void IsometricScene::SetViewAngle(IsoViewAngle viewAngle)
 {
     m_viewAngle = viewAngle;
     ComputeTrigonometry();
+}
+
+void IsometricScene::SetAmbientLight(sf::Color light)
+{
+    SceneManager::SetAmbientLight(light);
+    m_illuminationShader.setUniform("ambient_light",sf::Vector3f(
+                                            (float)m_ambientLight.r/255.0,
+                                            (float)m_ambientLight.g/255.0,
+                                            (float)m_ambientLight.b/255.0));
+    m_depthAndIlluminationShader.setUniform("ambient_light",sf::Vector3f(
+                                            (float)m_ambientLight.r/255.0,
+                                            (float)m_ambientLight.g/255.0,
+                                            (float)m_ambientLight.b/255.0));
 }
 
 void IsometricScene::ComputeTrigonometry()

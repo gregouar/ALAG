@@ -8,6 +8,8 @@
 namespace alag
 {
 
+const float DEPTH_BUFFER_NORMALISER = 0.001f;
+
 struct IsoViewAngle
 {
     float xyAngle;
@@ -36,8 +38,9 @@ class IsometricScene : public SceneManager
         virtual sf::Vector2f ConvertMouseToScene(sf::Vector2i);
 
         void SetViewAngle(IsoViewAngle);
-        void ComputeTrigonometry();
+        void SetAmbientLight(sf::Color);
 
+        void ComputeTrigonometry();
         sf::View GenerateIsoView(const sf::View &);
 
     protected:
@@ -51,7 +54,9 @@ class IsometricScene : public SceneManager
         sf::Vector2f m_CartToIso_yVector;
         sf::Transform m_TransformIsoToCart;
 
-        //sf::Vector3f m_camera; USE m_view INSTEAD
+        sf::Shader m_depthShader;
+        sf::Shader m_depthAndIlluminationShader;
+        sf::Shader m_illuminationShader;
 
         static const IsoViewAngle DEFAULT_ISO_VIEW_ANGLE;
 };

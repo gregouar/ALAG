@@ -107,4 +107,9 @@ const AssetTypeID &Asset::GetID()
     return m_id;
 }
 
+void Asset::ForceLoadType(AssetLoadType type)
+{
+    m_loadType = type;
+}
+
 }

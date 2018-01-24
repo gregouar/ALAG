@@ -12,6 +12,8 @@ SceneManager::SceneManager() : m_rootNode(0,nullptr, this)
     m_needToUpdateRenderQueue = false;
     m_view.setCenter(0,0);
     m_last_target = nullptr;
+
+    m_ambientLight = sf::Color::White;
 }
 
 SceneManager::~SceneManager()
@@ -43,7 +45,20 @@ void SceneManager::ProcessRenderQueue(sf::RenderTarget *w)
 {
     std::list<SceneEntity*>::iterator renderIt;
     for(renderIt = m_renderQueue.begin() ; renderIt != m_renderQueue.end(); ++renderIt)
-        (*renderIt)->Render(w);
+    {
+        sf::RenderStates state;
+        state.transform = sf::Transform::Identity;
+
+        sf::Vector3f globalPos(0,0,0);
+
+        SceneNode *node = (*renderIt)->GetParentNode();
+        if(node != nullptr)
+            globalPos = node->GetGlobalPosition();
+
+        state.transform.translate(globalPos.x, globalPos.y);
+
+        (*renderIt)->Render(w,state);
+    }
 }
 
 void SceneManager::ComputeRenderQueue()
@@ -59,7 +74,8 @@ void SceneManager::AddToRenderQueue(SceneNode *curNode)
         SceneEntityIterator entityIt = curNode->GetEntityIterator();
         while(!entityIt.IsAtTheEnd())
         {
-            m_renderQueue.push_back(entityIt.GetElement());
+            if(entityIt.GetElement()->IsRenderable())
+                m_renderQueue.push_back(entityIt.GetElement());
             ++entityIt;
         }
 
@@ -133,9 +149,11 @@ void SceneManager::DestroyEntity(const EntityTypeID &id)
 
 void SceneManager::DestroyAllEntities()
 {
-    std::map<EntityTypeID, SceneEntity*>::iterator entityIt;
+    while(!m_entities.empty())
+        DestroyEntity(m_entities.begin()->first);
+    /*std::map<EntityTypeID, SceneEntity*>::iterator entityIt;
     for(entityIt = m_entities.begin() ;  entityIt != m_entities.end() ; ++entityIt)
-        DestroyEntity(entityIt->first);
+        DestroyEntity(entityIt->first);*/
 }
 
 sf::Vector2f SceneManager::GetViewCenter()
@@ -161,6 +179,14 @@ sf::Vector2f SceneManager::ConvertMouseToScene(sf::Vector2i mouse)
     }
     return scenePos;
 }
+
+
+void SceneManager::SetAmbientLight(sf::Color light)
+{
+    m_ambientLight = light;
+    m_ambientLight.a = 255;
+}
+
 
 EntityTypeID SceneManager::GenerateEntityID()
 {

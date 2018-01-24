@@ -15,7 +15,8 @@ class Sprite3DEntity : public SpriteEntity
         virtual ~Sprite3DEntity();
 
         virtual void Render(sf::RenderTarget *);
-        virtual void Render(sf::RenderTarget *, const sf::Transform &);
+        virtual void Render(sf::RenderTarget *, const sf::RenderStates &);
+        virtual void PrepareShader(sf::Shader *);
 
         virtual void SetTexture(Texture3DAsset *t);
 

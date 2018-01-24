@@ -9,6 +9,7 @@ AssetHandler<AssetType>::AssetHandler()
 {
     m_loadThread = new sf::Thread(&AssetHandler<AssetType>::LoadInThread, this);
     m_curNewId = 0;
+    m_assetLoadingInThread = nullptr;
 }
 
 
@@ -53,7 +54,19 @@ AssetType* AssetHandler<AssetType>::LoadAssetFromFile(const AssetTypeID& id,
 	std::map<std::string, AssetTypeID>::iterator filesIter;
 	filesIter = m_filesList.find(filePath);
 	if(filesIter != m_filesList.end())
-		return GetAsset(filesIter->second);
+	{
+        AssetType* foundedAsset = GetAsset(filesIter->second);
+        if(loadType == LoadTypeNow && foundedAsset != nullptr)
+        {
+            foundedAsset->ForceLoadType(loadType);
+
+            RemoveFromLoadingThread(foundedAsset);
+            WaitForLoadingThread(foundedAsset);
+
+            foundedAsset->LoadNow();
+        }
+		return foundedAsset;
+    }
 
     AssetType* newAsset = AddAsset(id);
     newAsset->LoadFromFile(filePath, loadType);
@@ -164,7 +177,7 @@ void AssetHandler<AssetType>::RemoveFromLoadingThread(AssetType* asset)
 {
     sf::Lock lockLoadMutex(m_loadMutex);
 
-    if(asset != nullptr)
+    if(asset != nullptr && asset != m_assetLoadingInThread)
     {
         typename std::list<AssetType*>::iterator loadingListIt;
         loadingListIt = m_assetsToLoadInThread.begin();
@@ -224,6 +237,8 @@ void AssetHandler<AssetType>::DeleteAsset(const AssetTypeID &assetID)
     {
         if(iter->second != nullptr)
         {
+            WaitForLoadingThread(iter->second);
+
             if(!iter->second->GetFilePath().empty())
                 m_filesList.erase(m_filesList.find(iter->second->GetFilePath()));
 
@@ -249,7 +264,9 @@ void AssetHandler<AssetType>::DeleteAsset(AssetType *asset)
 template<typename AssetType>
 void AssetHandler<AssetType>::CleanAll()
 {
-    m_loadThread->wait();
+    //m_loadThread->wait();
+    sf::Lock lockLoadMutex(m_loadMutex);
+
     typename std::map<AssetTypeID, AssetType*>::iterator assetIter;
     for(assetIter = m_assets.begin() ; assetIter != m_assets.end() ; ++assetIter)
         delete assetIter->second;
@@ -272,9 +289,13 @@ void AssetHandler<AssetType>::LoadInThread()
                 AssetType* curAsset = m_assetsToLoadInThread.front();
                 m_assetsToLoadInThread.erase(m_assetsToLoadInThread.begin());
 
+                m_assetLoadingInThread = curAsset;
+
                 UnlockLoadMutex();
                 curAsset->LoadNow();
                 LockLoadMutex();
+
+                m_assetLoadingInThread = nullptr;
             }
         } else
             Logger::Error("Tried to load null asset in thread");
@@ -295,5 +316,15 @@ void AssetHandler<AssetType>::UnlockLoadMutex()
 {
     m_loadMutex.unlock();
 }
+
+
+template<typename AssetType>
+void AssetHandler<AssetType>::WaitForLoadingThread(AssetType *asset)
+{
+
+    if(asset != nullptr)
+    while(asset == m_assetLoadingInThread);
+}
+
 
 }

@@ -33,7 +33,7 @@
 	<vector>
 	"GState.h"
 
-1516815778 source:c:\c++\alag\sources\src\states\testingstate.cpp
+1516827676 source:c:\c++\alag\sources\src\states\testingstate.cpp
 	"states/TestingState.h"
 	"ALAGE/core/GApp.h"
 	"ALAGE/core/EventManager.h"
@@ -489,7 +489,7 @@
 1516179549 source:c:\c++\alag\sources\alagengine\include\alage\core\assethandler.cpp
 	"AssetHandler.h"
 
-1516723443 c:\c++\alag\sources\alagengine\include\alage\core\assethandler.h
+1516826659 c:\c++\alag\sources\alagengine\include\alage\core\assethandler.h
 	"ALAGE/Types.h"
 	"ALAGE/core/Asset.h"
 	"ALAGE/utils/Singleton.h"
@@ -498,19 +498,19 @@
 	<SFML/System.hpp>
 	"../src/core/AssetHandler.inc"
 
-1516814160 c:\c++\alag\sources\alagengine\include\alage\core\asset.h
+1516825291 c:\c++\alag\sources\alagengine\include\alage\core\asset.h
 	"ALAGE/core/NotificationSender.h"
 	"ALAGE/Types.h"
 	<iostream>
 	<SFML/System.hpp>
 
-1516813134 source:c:\c++\alag\sources\alagengine\src\core\asset.cpp
+1516825367 source:c:\c++\alag\sources\alagengine\src\core\asset.cpp
 	"ALAGE/core/Asset.h"
 	"ALAGE/utils/Parser.h"
 	"ALAGE/utils/Logger.h"
 	"ALAGE/gfx/SceneEntity.h"
 
-1516815055 source:c:\c++\alag\sources\alagengine\src\gfx\textureasset.cpp
+1516827823 source:c:\c++\alag\sources\alagengine\src\gfx\textureasset.cpp
 	"ALAGE/gfx/TextureAsset.h"
 	"ALAGE/utils/Logger.h"
 
@@ -518,7 +518,7 @@
 	"ALAGE/core/Asset.h"
 	<SFML/Graphics.hpp>
 
-1516815055 source:c:\c++\alag\sources\alagengine\src\gfx\texture3dasset.cpp
+1516826604 source:c:\c++\alag\sources\alagengine\src\gfx\texture3dasset.cpp
 	"ALAGE/core/AssetHandler.h"
 	"ALAGE/gfx/Texture3DAsset.h"
 	"ALAGE/utils/Parser.h"
@@ -600,25 +600,25 @@
 	"extlibs/tinyxml.h"
 	<windows.h>
 
-1516743694 c:\c++\alag\sources\alagengine\src\core\assethandler.inc
+1516827124 c:\c++\alag\sources\alagengine\src\core\assethandler.inc
 	"ALAGE/utils/Logger.h"
 
-1516740303 source:c:\c++\alag\sources\alagengine\src\gfx\isometricscene.cpp
+1516827643 source:c:\c++\alag\sources\alagengine\src\gfx\isometricscene.cpp
 	"ALAGE/gfx/IsometricScene.h"
 	"ALAGE/gfx/Sprite3DEntity.h"
 
-1516739772 c:\c++\alag\sources\alagengine\include\alage\gfx\isometricscene.h
+1516822262 c:\c++\alag\sources\alagengine\include\alage\gfx\isometricscene.h
 	"ALAGE/gfx/SceneManager.h"
 	"ALAGE/gfx/Sprite3DEntity.h"
 	<SFML/OpenGL.hpp>
 
-1516739772 c:\c++\alag\sources\alagengine\include\alage\gfx\scenemanager.h
+1516818531 c:\c++\alag\sources\alagengine\include\alage\gfx\scenemanager.h
 	<SFML/Graphics.hpp>
 	"ALAGE/gfx/SceneNode.h"
 	"ALAGE/gfx/RectEntity.h"
 	"ALAGE/gfx/SpriteEntity.h"
 
-1516739785 source:c:\c++\alag\sources\alagengine\src\gfx\scenemanager.cpp
+1516827931 source:c:\c++\alag\sources\alagengine\src\gfx\scenemanager.cpp
 	"ALAGE/gfx/SceneManager.h"
 	"ALAGE/utils/Logger.h"
 
@@ -638,23 +638,25 @@
 
 1516525754 c:\c++\alag\sources\alagengine\include\alage\gfx\quadtreenode.h
 
-1516813034 c:\c++\alag\sources\alagengine\include\alage\gfx\sceneentity.h
+1516823002 c:\c++\alag\sources\alagengine\include\alage\gfx\sceneentity.h
 	<SFML/Graphics.hpp>
 	"ALAGE/core/NotificationListener.h"
 	"ALAGE/core/Asset.h"
 
-1516812991 c:\c++\alag\sources\alagengine\include\alage\gfx\rectentity.h
+1516823395 c:\c++\alag\sources\alagengine\include\alage\gfx\rectentity.h
 	<SFML/Graphics.hpp>
 	"ALAGE/gfx/Texture3DAsset.h"
 	"ALAGE/gfx/SceneEntity.h"
 
-1516815711 source:c:\c++\alag\sources\alagengine\src\gfx\rectentity.cpp
+1516827525 source:c:\c++\alag\sources\alagengine\src\gfx\rectentity.cpp
 	"ALAGE/gfx/RectEntity.h"
+	"ALAGE/gfx/IsometricScene.h"
 	"ALAGE/gfx/SceneNode.h"
 
-1516642601 source:c:\c++\alag\sources\alagengine\src\gfx\sceneentity.cpp
+1516823049 source:c:\c++\alag\sources\alagengine\src\gfx\sceneentity.cpp
 	"ALAGE/gfx/SceneEntity.h"
 	"ALAGE/gfx/SceneNode.h"
+	"ALAGE/utils/Logger.h"
 
 1516702536 c:\c++\alag\sources\alagengine\include\alage\utils\listiterator.h
 	<list>
@@ -662,12 +664,12 @@
 1516702536 c:\c++\alag\sources\alagengine\include\alage\utils\mapiterator.h
 	<map>
 
-1516815744 source:c:\c++\alag\sources\alagengine\src\gfx\spriteentity.cpp
+1516823066 source:c:\c++\alag\sources\alagengine\src\gfx\spriteentity.cpp
 	"ALAGE/gfx/SpriteEntity.h"
 	"ALAGE/gfx/SceneNode.h"
 	<SFML/Graphics.hpp>
 
-1516812991 c:\c++\alag\sources\alagengine\include\alage\gfx\spriteentity.h
+1516820069 c:\c++\alag\sources\alagengine\include\alage\gfx\spriteentity.h
 	<SFML/Graphics.hpp>
 	"ALAGE/gfx/Texture3DAsset.h"
 	"ALAGE/gfx/SceneEntity.h"
@@ -678,12 +680,13 @@
 1516703125 source:c:\c++\alag\sources\alagengine\src\utils\singletonscleaner.cpp
 	"ALAGE/utils/SingletonsCleaner.h"
 
-1516816548 source:c:\c++\alag\sources\alagengine\src\gfx\sprite3dentity.cpp
+1516823922 source:c:\c++\alag\sources\alagengine\src\gfx\sprite3dentity.cpp
+	"ALAGE/gfx/IsometricScene.h"
 	"ALAGE/gfx/Sprite3DEntity.h"
-	<SFML/Opengl.hpp>
-	"ALAGE/gfx/SceneNode.h"
+	<SFML/Graphics.hpp>
+	<SFML/OpenGL.hpp>
 
-1516812991 c:\c++\alag\sources\alagengine\include\alage\gfx\sprite3dentity.h
+1516820069 c:\c++\alag\sources\alagengine\include\alage\gfx\sprite3dentity.h
 	"ALAGE/gfx/SpriteEntity.h"
 
 1516813010 c:\c++\alag\sources\alagengine\include\alage\core\notificationsender.h

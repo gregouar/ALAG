@@ -38,6 +38,8 @@ class SceneManager
 
         virtual sf::Vector2f ConvertMouseToScene(sf::Vector2i);
 
+        virtual void SetAmbientLight(sf::Color);
+
     protected:
         EntityTypeID GenerateEntityID();
         void AddEntity(const EntityTypeID &, SceneEntity*);
@@ -46,8 +48,9 @@ class SceneManager
         sf::View m_view; //Should remove this and create CameraEntity
         SceneNode m_rootNode;
 
-        std::list<SceneEntity*> m_renderQueue;
+        sf::Color m_ambientLight;
 
+        std::list<SceneEntity*> m_renderQueue;
         sf::RenderTarget *m_last_target;
 
     private:

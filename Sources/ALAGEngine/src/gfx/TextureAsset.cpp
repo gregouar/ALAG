@@ -26,32 +26,34 @@ bool TextureAsset::LoadNow()
 {
     bool loaded = true;
 
-    if(m_loadSource == LoadSourceFile)
-    {
-        if(!m_texture.loadFromFile(m_filePath))
+    if(!m_loaded) {
+        if(m_loadSource == LoadSourceFile)
         {
-            Logger::Error("Cannot load texture from file: "+m_filePath);
-            loaded = false;
-        } else
-            Logger::Write("Texture loaded from file: "+m_filePath);
-    } else if(m_loadSource == LoadSourceMemory) {
-        if(!m_texture.loadFromMemory(m_loadData,m_loadDataSize))
-        {
-            Logger::Error("Cannot load texture from memory");
+            if(!m_texture.loadFromFile(m_filePath))
+            {
+                Logger::Error("Cannot load texture from file: "+m_filePath);
+                loaded = false;
+            } else
+                Logger::Write("Texture loaded from file: "+m_filePath);
+        } else if(m_loadSource == LoadSourceMemory) {
+            if(!m_texture.loadFromMemory(m_loadData,m_loadDataSize))
+            {
+                Logger::Error("Cannot load texture from memory");
+                loaded = false;
+            }
+        } else if(m_loadSource == LoadSourceStream) {
+            if(!m_texture.loadFromStream(*m_loadStream))
+            {
+                Logger::Error("Cannot load texture from stream");
+                loaded = false;
+            }
+        } else {
+            Logger::Error("Cannot load asset");
             loaded = false;
         }
-    } else if(m_loadSource == LoadSourceStream) {
-        if(!m_texture.loadFromStream(*m_loadStream))
-        {
-            Logger::Error("Cannot load texture from stream");
-            loaded = false;
-        }
-    } else {
-        Logger::Error("Cannot load asset");
-        loaded = false;
-    }
 
-    m_loaded = loaded;
+        m_loaded = loaded;
+    }
 
     return Asset::LoadNow();
 }

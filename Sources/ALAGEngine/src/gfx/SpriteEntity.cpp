@@ -21,6 +21,9 @@ SpriteEntity::SpriteEntity(const sf::IntRect &r)
 {
     sf::Sprite::setTextureRect(r);
     m_texture = nullptr;
+    m_isRenderable = true;
+    m_canBeLighted = true;
+    m_is3D = false;
 }
 
 
@@ -34,17 +37,9 @@ void SpriteEntity::Render(sf::RenderTarget *w)
     Render(w,sf::Transform::Identity);
 }
 
-void SpriteEntity::Render(sf::RenderTarget *w, const sf::Transform &t)
+void SpriteEntity::Render(sf::RenderTarget *w, const sf::RenderStates &state)
 {
-    sf::Transform totalTransform;
-    totalTransform = sf::Transform::Identity;
-    if(GetParentNode() != nullptr)
-    {
-        sf::Vector3f globalPos = GetParentNode()->GetGlobalPosition();
-        totalTransform.translate(t.transformPoint(globalPos.x, globalPos.y));
-    }
-
-    w->draw((*this), totalTransform);
+    w->draw((*this), state);
 }
 
 void SpriteEntity::SetTexture(TextureAsset *texture)

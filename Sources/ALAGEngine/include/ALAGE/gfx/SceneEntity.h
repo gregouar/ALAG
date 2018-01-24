@@ -20,14 +20,27 @@ class SceneEntity : public NotificationListener
         virtual ~SceneEntity();
 
         virtual void Render(sf::RenderTarget *) = 0;
-        virtual void Render(sf::RenderTarget *, const sf::Transform &) = 0;
+        virtual void Render(sf::RenderTarget *, const sf::RenderStates &) = 0;
+        virtual void PrepareShader(sf::Shader *);
+
+        bool CanBeIlluminated();
+        bool Is3D();
+        bool IsRenderable();
+
+        void ActivateLighting();
+        void DesactivateLighting();
 
         SceneNode *GetParentNode();
 
     protected:
         SceneNode* SetParentNode(SceneNode*);
-
         SceneNode *m_parentNode;
+
+        bool m_canBeLighted;
+        bool m_is3D;
+        bool m_isRenderable;
+
+        bool m_isLighted;
 
     private:
         sf::Vector3f m_bounds;
