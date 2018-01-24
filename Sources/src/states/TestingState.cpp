@@ -7,6 +7,7 @@
 
 #include "ALAGE/gfx/TextureAsset.h"
 #include "ALAGE/gfx/Texture3DAsset.h"
+#include "ALAGE/gfx/Sprite3DEntity.h"
 
 
 #include "ALAGE/core/Config.h"
@@ -44,7 +45,7 @@ void TestingState::Init()
     TextureHandler->LoadAssetFromFile("../data/abbaye_color.png",LoadTypeInThread);
 
     AssetHandler<Texture3DAsset>* Texture3DHandler =  AssetHandler<Texture3DAsset>::Instance();
-    Texture3DAsset *t3D =  Texture3DHandler->LoadAssetFromFile("../data/sarcoXML.txt");
+    Texture3DAsset *t3D =  Texture3DHandler->LoadAssetFromFile("../data/sarcoXML.txt",LoadTypeInThread);
 
     TextureHandler->LoadAssetFromFile("../data/sand_color.png",LoadTypeInThread);
     TextureHandler->LoadAssetFromFile("../data/sand_depth.png",LoadTypeInThread);
@@ -57,14 +58,36 @@ void TestingState::Init()
     SceneNode* rectNode = m_mainScene.GetRootNode()->CreateChildNode();
     RectEntity *rectEntity = m_mainScene.CreateRectEntity(sf::Vector2f(1024,1024));
     rectEntity->SetCenter(sf::Vector2f(512,  512));
-    rectEntity->SetTexture(TextureHandler->LoadAssetFromFile("../data/sand.png",LoadTypeInThread));
+    rectEntity->SetTexture(TextureHandler->LoadAssetFromFile("../data/sand.png"));
     rectNode->AttachEntity(rectEntity);
 
     m_sarcoNode = m_mainScene.GetRootNode()->CreateChildNode();
-    m_sarcoNode->SetPosition(-400,0);
-    SpriteEntity *sarcoEntity = m_mainScene.CreateSpriteEntity(sf::Vector2i(256,256));
+    m_sarcoNode->SetPosition(-100,-30);
+    Sprite3DEntity *sarcoEntity = m_mainScene.CreateSprite3DEntity(sf::Vector2i(256,256));
     sarcoEntity->SetTexture(t3D);
+    sarcoEntity->SetCenter(128,128);
     m_sarcoNode->AttachEntity(sarcoEntity);
+
+    m_sarco3DNode = m_mainScene.GetRootNode()->CreateChildNode();
+    m_sarco3DNode->SetPosition(0,0);
+    Sprite3DEntity *sarco3DEntity = m_mainScene.CreateSprite3DEntity(sf::Vector2i(256,256));
+    sarco3DEntity->SetTexture(t3D);
+    sarco3DEntity->SetCenter(128,128);
+    m_sarco3DNode->AttachEntity(sarco3DEntity);
+
+
+    Sprite3DEntity *sarco3DEntitybis = m_mainScene.CreateSprite3DEntity(sf::Vector2i(256,256));
+    sarco3DEntitybis->SetTexture(t3D);
+    sarco3DEntitybis->SetCenter(128,128);
+    m_sarcoNode->CreateChildNode(sf::Vector2f(-15,50))->AttachEntity(sarco3DEntitybis);
+
+    sarco3DEntitybis->scale(1.5,1.5);
+
+
+    Sprite3DEntity *sarco3DEntityThird = m_mainScene.CreateSprite3DEntity(sf::Vector2i(256,256));
+    sarco3DEntityThird->SetTexture(t3D);
+    sarco3DEntityThird->SetCenter(128,128);
+    m_mainScene.GetRootNode()->CreateChildNode(sf::Vector2f(-100,100))->AttachEntity(sarco3DEntityThird);
 
     m_firstEntering = false;
 }
@@ -109,6 +132,18 @@ void TestingState::HandleEvents(alag::EventManager *event_manager)
         m_camMove.y = 1;
     else
         m_camMove.y = 0;
+
+
+    if(event_manager->KeyPressed(sf::Keyboard::A))
+        m_sarco3DNode->Move(0,0,10);
+    if(event_manager->KeyPressed(sf::Keyboard::Q))
+        m_sarco3DNode->Move(0,0,-10);
+
+    if(event_manager->MouseButtonIsPressed(sf::Mouse::Left))
+    {
+        sf::Vector2i p(event_manager->MousePosition());
+        m_sarco3DNode->SetPosition(m_mainScene.ConvertMouseToScene(p));
+    }
 
     if(event_manager->IsAskingToClose())
         m_manager->Switch(nullptr);

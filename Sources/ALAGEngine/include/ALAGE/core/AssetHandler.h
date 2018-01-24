@@ -15,7 +15,6 @@ namespace alag
 template<class AssetType> class AssetHandler : public Singleton<AssetHandler<AssetType> >
 {
     public:
-        //friend AssetHandler<AssetType>* Singleton<AssetHandler<AssetType> >::Instance();
         friend class Singleton<AssetHandler<AssetType> >;
 
 

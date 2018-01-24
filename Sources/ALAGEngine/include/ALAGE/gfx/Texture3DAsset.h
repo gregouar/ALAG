@@ -7,7 +7,7 @@
 namespace alag
 {
 
-class Texture3DAsset : public TextureAsset
+class Texture3DAsset : public TextureAsset, public LoadedAssetListener
 {
     public:
         Texture3DAsset();
@@ -17,10 +17,13 @@ class Texture3DAsset : public TextureAsset
         virtual bool LoadNow();
 
 
-        sf::Texture* GetTexture(SceneEntity* entityToNotify = nullptr);
-        sf::Texture* GetColorMap(SceneEntity* entityToNotify = nullptr);
-        sf::Texture* GetNormalMap(SceneEntity* entityToNotify = nullptr);
-        sf::Texture* GetDepthMap(SceneEntity* entityToNotify = nullptr);
+        sf::Texture* GetTexture(LoadedAssetListener*  = nullptr);
+        sf::Texture* GetColorMap(LoadedAssetListener*  = nullptr);
+        sf::Texture* GetNormalMap(LoadedAssetListener*  = nullptr);
+        sf::Texture* GetDepthMap(LoadedAssetListener*  = nullptr);
+        float GetHeight();
+
+        virtual void NotifyLoadedAsset(Asset*);
 
     protected:
         bool LoadFromXML(TiXmlHandle *);
@@ -32,7 +35,7 @@ class Texture3DAsset : public TextureAsset
         TextureAsset *m_normalMap;
         TextureAsset *m_depthMap;
 
-        int m_default_height;
+        float m_default_height;
 };
 
 }

@@ -25,6 +25,7 @@ class SceneNode
         SceneNode* RemoveChildNode(const NodeTypeID &id);
 
         SceneNode* CreateChildNode();
+        SceneNode* CreateChildNode(sf::Vector2f );
         SceneNode* CreateChildNode(const NodeTypeID &id);
 
         bool DestroyChildNode(SceneNode*);

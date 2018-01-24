@@ -17,7 +17,11 @@ class EventManager
         bool KeyIsPressed(sf::Keyboard::Key);
         bool KeyReleased(sf::Keyboard::Key);
 
-        sf::Vector2u MousePosition();
+        bool MouseButtonPressed(sf::Mouse::Button);
+        bool MouseButtonIsPressed(sf::Mouse::Button);
+        bool MouseButtonReleased(sf::Mouse::Button);
+
+        sf::Vector2i MousePosition();
 
         bool IsAskingToClose();
 
@@ -28,7 +32,11 @@ class EventManager
         bool m_keyIsPressed[sf::Keyboard::KeyCount];
         bool m_keyReleased[sf::Keyboard::KeyCount];
 
-        sf::Vector2u m_mousePosition;
+        bool m_mouseButtonPressed[sf::Mouse::ButtonCount];
+        bool m_mouseButtonIsPressed[sf::Mouse::ButtonCount];
+        bool m_mouseButtonReleased[sf::Mouse::ButtonCount];
+
+        sf::Vector2i m_mousePosition;
 
         bool m_askingToClose;
 };

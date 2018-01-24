@@ -8,6 +8,13 @@
 
 namespace alag
 {
+class Asset;
+
+class LoadedAssetListener
+{
+    public:
+        virtual void NotifyLoadedAsset(Asset*) = 0;
+};
 
 class Asset
 {
@@ -29,8 +36,9 @@ class Asset
         const AssetLoadType GetLoadType();
         const AssetLoadSource GetLoadSource();
 
+        void AskForLoadedNotification(LoadedAssetListener *);
+
     protected:
-        void AskForLoadedNotification(SceneEntity *);
 
         bool m_allowLoadFromFile;
         std::string m_filePath;
@@ -54,7 +62,7 @@ class Asset
         void SendLoadedNotification();
 
         AssetTypeID m_id;
-        std::list<SceneEntity*> m_entitiesToNotify;
+        std::list<LoadedAssetListener*> m_listenerToNotify;
 
 };
 

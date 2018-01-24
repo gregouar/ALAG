@@ -16,7 +16,7 @@ template<typename AssetType>
 AssetHandler<AssetType>::~AssetHandler()
 {
     CleanAll();
-    m_loadThread->terminate();
+    //m_loadThread->terminate();
     delete m_loadThread;
 }
 

@@ -11,8 +11,6 @@ class TestingState : public alag::GState, public Singleton<TestingState>
     friend class Singleton<TestingState>;
 
     public:
-        friend TestingState* Singleton<TestingState>::Instance();
-
         void Entered();
         void Leaving();
         void Revealed();
@@ -38,6 +36,7 @@ class TestingState : public alag::GState, public Singleton<TestingState>
         sf::Vector2f m_camMove;
 
         alag::SceneNode *m_sarcoNode;
+        alag::SceneNode *m_sarco3DNode;
 };
 
 #endif // TESTINGSTATE_H

@@ -56,7 +56,7 @@ bool TextureAsset::LoadNow()
     return Asset::LoadNow();
 }
 
-sf::Texture *TextureAsset::GetTexture(SceneEntity* entityToNotify)
+sf::Texture *TextureAsset::GetTexture(LoadedAssetListener* entityToNotify)
 {
     if(m_loaded)
         return &m_texture;

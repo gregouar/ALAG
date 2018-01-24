@@ -14,8 +14,6 @@ class KillableSingleton
 class SingletonsCleaner
 {
     public:
-       // friend  void KillableSingleton::Kill();
-
         static SingletonsCleaner* Instance(void);
         static void AddToList(KillableSingleton* singleton);
         static void CleanAll();

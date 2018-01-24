@@ -64,8 +64,11 @@ bool Texture3DAsset::LoadNow()
         loaded = false;
     }
 
-    m_loaded = loaded;
-    return Asset::LoadNow();
+    if(m_loadType == LoadTypeNow)
+        m_loaded = loaded;
+
+    //Asset::LoadNow();
+    return loaded;
 }
 
 bool Texture3DAsset::LoadFromXML(TiXmlHandle *hdl)
@@ -76,20 +79,30 @@ bool Texture3DAsset::LoadFromXML(TiXmlHandle *hdl)
         m_name = hdl->FirstChildElement("name").Element()->GetText();
 
     if(hdl->FirstChildElement("height").Element() != nullptr)
-        m_default_height = Parser::ParseInt(hdl->FirstChildElement("height").Element()->GetText());
+        m_default_height = Parser::ParseFloat(hdl->FirstChildElement("height").Element()->GetText());
 
     TiXmlElement* textElem = hdl->FirstChildElement("texture").Element();
     while(textElem != nullptr)
     {
         if(std::string(textElem->Attribute("type")).compare("color") == 0)
+        {
             m_colorMap = AssetHandler<TextureAsset>::Instance()
                             ->LoadAssetFromFile(m_fileDirectory+textElem->GetText(),m_loadType);
+            m_colorMap->AskForLoadedNotification(this);
+        }
         else if(std::string(textElem->Attribute("type")).compare("normal") == 0)
+        {
             m_normalMap = AssetHandler<TextureAsset>::Instance()
                             ->LoadAssetFromFile(m_fileDirectory+textElem->GetText(),m_loadType);
+            m_normalMap->AskForLoadedNotification(this);
+
+        }
         else if(std::string(textElem->Attribute("type")).compare("depth") == 0)
+        {
             m_depthMap = AssetHandler<TextureAsset>::Instance()
                             ->LoadAssetFromFile(m_fileDirectory+textElem->GetText(),m_loadType);
+            m_depthMap->AskForLoadedNotification(this);
+        }
         textElem = textElem->NextSiblingElement("texture");
     }
 
@@ -97,43 +110,55 @@ bool Texture3DAsset::LoadFromXML(TiXmlHandle *hdl)
 }
 
 
-sf::Texture* Texture3DAsset::GetTexture(SceneEntity* entityToNotify)
+sf::Texture* Texture3DAsset::GetTexture(LoadedAssetListener* listenerToNotify)
 {
-    return GetColorMap();
+    return GetColorMap(listenerToNotify);
 }
 
-sf::Texture* Texture3DAsset::GetColorMap(SceneEntity* entityToNotify)
+sf::Texture* Texture3DAsset::GetColorMap(LoadedAssetListener* listenerToNotify)
 {
     if(m_loaded && m_colorMap != nullptr)
         return m_colorMap->GetTexture();
 
-    if(entityToNotify != nullptr)
-        AskForLoadedNotification(entityToNotify);
+    if(listenerToNotify != nullptr)
+        AskForLoadedNotification(listenerToNotify);
 
     return (nullptr);
 }
 
-sf::Texture* Texture3DAsset::GetNormalMap(SceneEntity* entityToNotify)
+sf::Texture* Texture3DAsset::GetNormalMap(LoadedAssetListener* listenerToNotify)
 {
     if(m_loaded && m_normalMap != nullptr)
         return m_normalMap->GetTexture();
 
-    if(entityToNotify != nullptr)
-        AskForLoadedNotification(entityToNotify);
+    if(listenerToNotify != nullptr)
+        AskForLoadedNotification(listenerToNotify);
 
     return (nullptr);
 }
 
-sf::Texture* Texture3DAsset::GetDepthMap(SceneEntity* entityToNotify)
+sf::Texture* Texture3DAsset::GetDepthMap(LoadedAssetListener* listenerToNotify)
 {
     if(m_loaded && m_depthMap != nullptr)
         return m_depthMap->GetTexture();
 
-    if(entityToNotify != nullptr)
-        AskForLoadedNotification(entityToNotify);
+    if(listenerToNotify != nullptr)
+        AskForLoadedNotification(listenerToNotify);
 
     return (nullptr);
 }
 
+float Texture3DAsset::GetHeight()
+{
+    return m_default_height;
+}
+
+void Texture3DAsset::NotifyLoadedAsset(Asset* asset)
+{
+    if(m_colorMap != nullptr && m_colorMap->IsLoaded())
+    if(m_depthMap != nullptr && m_depthMap->IsLoaded())
+    if(m_normalMap != nullptr && m_normalMap->IsLoaded())
+        m_loaded = true, Asset::LoadNow();
+}
 
 }

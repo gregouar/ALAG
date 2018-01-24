@@ -2,6 +2,7 @@
 #define SCENEENTITY_H
 
 #include <SFML/Graphics.hpp>
+#include "ALAGE/core/Asset.h"
 
 namespace alag
 {
@@ -9,7 +10,7 @@ namespace alag
 class SceneNode;
 class Asset;
 
-class SceneEntity
+class SceneEntity : public LoadedAssetListener
 {
     public:
         friend class SceneNode;
@@ -21,8 +22,6 @@ class SceneEntity
         virtual void Render(sf::RenderTarget *, const sf::Transform &) = 0;
 
         SceneNode *GetParentNode();
-
-        virtual void NotifyLoadedAsset(Asset*) = 0;
 
     protected:
         SceneNode* SetParentNode(SceneNode*);

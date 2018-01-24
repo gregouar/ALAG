@@ -34,6 +34,9 @@ class SceneManager
         void DestroyAllEntities();
 
         void MoveView(sf::Vector2f);
+        sf::Vector2f GetViewCenter();
+
+        virtual sf::Vector2f ConvertMouseToScene(sf::Vector2i);
 
     protected:
         EntityTypeID GenerateEntityID();
@@ -44,6 +47,8 @@ class SceneManager
         SceneNode m_rootNode;
 
         std::list<SceneEntity*> m_renderQueue;
+
+        sf::RenderTarget *m_last_target;
 
     private:
         std::map<EntityTypeID, SceneEntity*> m_entities;

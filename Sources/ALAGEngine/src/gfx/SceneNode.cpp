@@ -103,6 +103,14 @@ SceneNode* SceneNode::CreateChildNode()
     return CreateChildNode(GenerateID());
 }
 
+SceneNode* SceneNode::CreateChildNode(sf::Vector2f p)
+{
+    SceneNode* newNode = CreateChildNode(GenerateID());
+    if(newNode != nullptr)
+        newNode->SetPosition(p);
+    return newNode;
+}
+
 SceneNode* SceneNode::CreateChildNode(const NodeTypeID &id)
 {
     std::map<NodeTypeID, SceneNode*>::iterator childsIt;

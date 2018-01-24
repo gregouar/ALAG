@@ -11,7 +11,14 @@ EventManager::EventManager()
         m_keyReleased[i] = false;
     }
 
-    m_mousePosition = sf::Vector2u(0,0);
+    for(size_t i = 0 ; i < sf::Mouse::ButtonCount ; ++i)
+    {
+        m_mouseButtonPressed[i] = false;
+        m_mouseButtonIsPressed[i] = false;
+        m_mouseButtonReleased[i] = false;
+    }
+
+    m_mousePosition = sf::Vector2i(0,0);
     m_askingToClose = false;
 }
 
@@ -27,6 +34,9 @@ void EventManager::Update(sf::Window *window)
 
     for(size_t i = 0 ; i < sf::Keyboard::KeyCount ; ++i)
         m_keyReleased[i] = false, m_keyPressed[i] = false;
+
+    for(size_t i = 0 ; i < sf::Mouse::ButtonCount ; ++i)
+        m_mouseButtonPressed[i] = false,m_mouseButtonReleased[i] = false;
 
     while (window->pollEvent(event))
     {
@@ -44,6 +54,16 @@ void EventManager::Update(sf::Window *window)
             case sf::Event::KeyReleased:
                 m_keyIsPressed[event.key.code] = false;
                 m_keyReleased[event.key.code] = true;
+                break;
+
+            case sf::Event::MouseButtonPressed:
+                m_mouseButtonPressed[event.mouseButton.button] = true;
+                m_mouseButtonIsPressed[event.mouseButton.button] = true;
+                break;
+
+            case sf::Event::MouseButtonReleased:
+                m_mouseButtonIsPressed[event.mouseButton.button] = false;
+                m_mouseButtonReleased[event.mouseButton.button] = true;
                 break;
 
             case sf::Event::MouseMoved:
@@ -72,7 +92,22 @@ bool EventManager::KeyReleased(sf::Keyboard::Key key)
     return m_keyReleased[key];
 }
 
-sf::Vector2u EventManager::MousePosition()
+bool EventManager::MouseButtonPressed(sf::Mouse::Button button)
+{
+    return m_mouseButtonPressed[button];
+}
+
+bool EventManager::MouseButtonIsPressed(sf::Mouse::Button button)
+{
+    return m_mouseButtonIsPressed[button];
+}
+
+bool EventManager::MouseButtonReleased(sf::Mouse::Button button)
+{
+    return m_mouseButtonReleased[button];
+}
+
+sf::Vector2i EventManager::MousePosition()
 {
     return m_mousePosition;
 }

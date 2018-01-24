@@ -84,19 +84,20 @@ bool Asset::IsLoaded()
     return (m_loaded);
 }
 
-void Asset::AskForLoadedNotification(SceneEntity *entity)
+void Asset::AskForLoadedNotification(LoadedAssetListener *listener)
 {
-    m_entitiesToNotify.push_back(entity);
-    m_entitiesToNotify.unique();
+    m_listenerToNotify.push_back(listener);
+    m_listenerToNotify.unique();
 }
 
 void Asset::SendLoadedNotification()
 {
-    SceneEntityIterator entityIt(m_entitiesToNotify.begin(), m_entitiesToNotify.end());
-    while(!entityIt.IsAtTheEnd())
+    std::list<LoadedAssetListener*>::iterator listenerIt;
+    listenerIt = m_listenerToNotify.begin();
+    while(listenerIt != m_listenerToNotify.end())
     {
-        entityIt.GetElement()->NotifyLoadedAsset(this);
-        ++entityIt;
+        (*listenerIt)->NotifyLoadedAsset(this);
+        ++listenerIt;
     }
 }
 

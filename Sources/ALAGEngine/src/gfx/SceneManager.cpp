@@ -11,6 +11,7 @@ SceneManager::SceneManager() : m_rootNode(0,nullptr, this)
     m_curNewId = 0;
     m_needToUpdateRenderQueue = false;
     m_view.setCenter(0,0);
+    m_last_target = nullptr;
 }
 
 SceneManager::~SceneManager()
@@ -137,9 +138,28 @@ void SceneManager::DestroyAllEntities()
         DestroyEntity(entityIt->first);
 }
 
+sf::Vector2f SceneManager::GetViewCenter()
+{
+    return m_view.getCenter();
+}
+
 void SceneManager::MoveView(sf::Vector2f m)
 {
     m_view.move(m);
+}
+
+
+sf::Vector2f SceneManager::ConvertMouseToScene(sf::Vector2i mouse)
+{
+    sf::Vector2f scenePos = sf::Vector2f(mouse);
+    if(m_last_target != nullptr)
+    {
+        sf::View oldView = m_last_target->getView();
+        m_last_target->setView(m_view);
+        scenePos = m_last_target->mapPixelToCoords(mouse);
+        m_last_target->setView(oldView);
+    }
+    return scenePos;
 }
 
 EntityTypeID SceneManager::GenerateEntityID()

@@ -2,6 +2,7 @@
 #define ISOMETRICSCENE_H
 
 #include "ALAGE/gfx/SceneManager.h"
+#include "ALAGE/gfx/Sprite3DEntity.h"
 #include <SFML/OpenGL.hpp>
 
 namespace alag
@@ -24,10 +25,15 @@ class IsometricScene : public SceneManager
         virtual void ProcessRenderQueue(sf::RenderTarget*);
         virtual void RenderScene(sf::RenderTarget*);
 
+        Sprite3DEntity* CreateSprite3DEntity(sf::Vector2i);
+        Sprite3DEntity* CreateSprite3DEntity(sf::IntRect = sf::IntRect(0,0,0,0));
+
         sf::Vector2f ConvertIsoToCartesian(float, float, float = 0);
         sf::Vector2f ConvertIsoToCartesian(sf::Vector2f);
         sf::Vector2f ConvertIsoToCartesian(sf::Vector3f);
         sf::Vector2f ConvertCartesianToIso(sf::Vector2f);
+
+        virtual sf::Vector2f ConvertMouseToScene(sf::Vector2i);
 
         void SetViewAngle(IsoViewAngle);
         void ComputeTrigonometry();

@@ -9,7 +9,7 @@
 namespace alag
 {
 
-class SpriteEntity : public SceneEntity, protected sf::Sprite
+class SpriteEntity : public SceneEntity, public sf::Sprite
 {
     public:
         SpriteEntity();
@@ -21,6 +21,7 @@ class SpriteEntity : public SceneEntity, protected sf::Sprite
         virtual void Render(sf::RenderTarget *, const sf::Transform &);
 
         virtual void SetTexture(TextureAsset *t);
+        void SetCenter(float x, float y);
         void SetCenter(sf::Vector2f);
 
         virtual void NotifyLoadedAsset(Asset*);

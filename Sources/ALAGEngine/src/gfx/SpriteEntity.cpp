@@ -53,6 +53,11 @@ void SpriteEntity::SetTexture(TextureAsset *texture)
         sf::Sprite::setTexture(*texture->GetTexture(this));
 }
 
+void SpriteEntity::SetCenter(float x, float y)
+{
+    SetCenter(sf::Vector2f(x,y));
+}
+
 void SpriteEntity::SetCenter(sf::Vector2f c)
 {
     sf::Sprite::setOrigin(c);

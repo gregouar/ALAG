@@ -1,5 +1,7 @@
 #include "ALAGE/gfx/IsometricScene.h"
 
+#include "ALAGE/gfx/Sprite3DEntity.h"
+
 namespace alag
 {
 
@@ -29,9 +31,6 @@ IsometricScene::~IsometricScene()
 
 bool IsometricScene::InitRenderer(int w, int h)
 {
-    glEnable(GL_DEPTH_TEST);
-    glDepthMask(GL_TRUE);
-
     m_view.setCenter(0,0);
     m_view.setSize(w, h);
 
@@ -61,8 +60,10 @@ void IsometricScene::RenderScene(sf::RenderTarget* w)
 {
     if(w != nullptr)
     {
+        m_last_target = w;
+
         sf::View oldView = w->getView();
-        glClearDepth(1.f);
+        glClear(GL_DEPTH_BUFFER_BIT);
         w->setView(GenerateIsoView(m_view));
 
         ProcessRenderQueue(w);
@@ -70,6 +71,22 @@ void IsometricScene::RenderScene(sf::RenderTarget* w)
         w->setView(oldView);
     }
 }
+
+
+
+Sprite3DEntity* IsometricScene::CreateSprite3DEntity(sf::Vector2i spriteSize)
+{
+    return CreateSprite3DEntity(sf::IntRect(0,0,spriteSize.x,spriteSize.y));
+}
+
+Sprite3DEntity* IsometricScene::CreateSprite3DEntity(sf::IntRect textureRect)
+{
+    Sprite3DEntity *e = new Sprite3DEntity(textureRect);
+    AddEntity(GenerateEntityID(), e);
+    return e;
+}
+
+
 
 void IsometricScene::SetViewAngle(IsoViewAngle viewAngle)
 {
@@ -140,6 +157,20 @@ sf::Vector2f IsometricScene::ConvertCartesianToIso(sf::Vector2f p)
     sf::Vector2f r;
     r = m_CartToIso_xVector * p.x + m_CartToIso_yVector * p.y;
     return r;
+}
+
+sf::Vector2f IsometricScene::ConvertMouseToScene(sf::Vector2i mouse)
+{
+    sf::Vector2f scenePos = sf::Vector2f(mouse);
+    if(m_last_target != nullptr)
+    {
+        sf::View oldView = m_last_target->getView();
+        m_last_target->setView(GenerateIsoView(m_view));
+        scenePos = sf::Vector2f(m_last_target->mapPixelToCoords(mouse));
+        scenePos = ConvertCartesianToIso(scenePos);
+        m_last_target->setView(oldView);
+    }
+    return scenePos;
 }
 
 sf::View IsometricScene::GenerateIsoView(const sf::View &view)
