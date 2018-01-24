@@ -62,6 +62,8 @@
 		<Unit filename="ALAGEngine/include/ALAGE/core/EventManager.h" />
 		<Unit filename="ALAGEngine/include/ALAGE/core/GApp.h" />
 		<Unit filename="ALAGEngine/include/ALAGE/core/GState.h" />
+		<Unit filename="ALAGEngine/include/ALAGE/core/NotificationListener.h" />
+		<Unit filename="ALAGEngine/include/ALAGE/core/NotificationSender.h" />
 		<Unit filename="ALAGEngine/include/ALAGE/core/StateManager.h" />
 		<Unit filename="ALAGEngine/include/ALAGE/gfx/AnimatedSprite.h" />
 		<Unit filename="ALAGEngine/include/ALAGE/gfx/IsometricScene.h" />
@@ -90,6 +92,8 @@
 		<Unit filename="ALAGEngine/src/core/EventManager.cpp" />
 		<Unit filename="ALAGEngine/src/core/GApp.cpp" />
 		<Unit filename="ALAGEngine/src/core/GState.cpp" />
+		<Unit filename="ALAGEngine/src/core/NotificationListener.cpp" />
+		<Unit filename="ALAGEngine/src/core/NotificationSender.cpp" />
 		<Unit filename="ALAGEngine/src/core/StateManager.cpp" />
 		<Unit filename="ALAGEngine/src/extlibs/tinystr.cpp" />
 		<Unit filename="ALAGEngine/src/extlibs/tinyxml.cpp" />

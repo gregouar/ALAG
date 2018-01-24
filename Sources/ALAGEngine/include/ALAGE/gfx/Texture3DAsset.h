@@ -1,13 +1,14 @@
 #ifndef TEXTURE3DASSET_H
 #define TEXTURE3DASSET_H
 
+#include "ALAGE/core/NotificationListener.h"
 #include "ALAGE/gfx/TextureAsset.h"
 #include "extlibs/tinyxml.h"
 
 namespace alag
 {
 
-class Texture3DAsset : public TextureAsset, public LoadedAssetListener
+class Texture3DAsset : public TextureAsset, public NotificationListener
 {
     public:
         Texture3DAsset();
@@ -17,13 +18,13 @@ class Texture3DAsset : public TextureAsset, public LoadedAssetListener
         virtual bool LoadNow();
 
 
-        sf::Texture* GetTexture(LoadedAssetListener*  = nullptr);
-        sf::Texture* GetColorMap(LoadedAssetListener*  = nullptr);
-        sf::Texture* GetNormalMap(LoadedAssetListener*  = nullptr);
-        sf::Texture* GetDepthMap(LoadedAssetListener*  = nullptr);
+        sf::Texture* GetTexture();
+        sf::Texture* GetColorMap();
+        sf::Texture* GetNormalMap();
+        sf::Texture* GetDepthMap();
         float GetHeight();
 
-        virtual void NotifyLoadedAsset(Asset*);
+        virtual void Notify(NotificationSender* , NotificationType);
 
     protected:
         bool LoadFromXML(TiXmlHandle *);

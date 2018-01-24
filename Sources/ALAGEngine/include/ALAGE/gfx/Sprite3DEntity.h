@@ -19,7 +19,7 @@ class Sprite3DEntity : public SpriteEntity
 
         virtual void SetTexture(Texture3DAsset *t);
 
-        virtual void NotifyLoadedAsset(Asset*);
+        virtual void Notify(NotificationSender* , NotificationType);
 
 
     protected:

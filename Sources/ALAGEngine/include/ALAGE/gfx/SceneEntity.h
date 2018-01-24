@@ -2,6 +2,7 @@
 #define SCENEENTITY_H
 
 #include <SFML/Graphics.hpp>
+#include "ALAGE/core/NotificationListener.h"
 #include "ALAGE/core/Asset.h"
 
 namespace alag
@@ -10,7 +11,7 @@ namespace alag
 class SceneNode;
 class Asset;
 
-class SceneEntity : public LoadedAssetListener
+class SceneEntity : public NotificationListener
 {
     public:
         friend class SceneNode;

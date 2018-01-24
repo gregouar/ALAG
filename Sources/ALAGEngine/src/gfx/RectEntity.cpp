@@ -40,9 +40,19 @@ void RectEntity::Render(sf::RenderTarget *w, const sf::Transform &t)
 
 void RectEntity::SetTexture(TextureAsset *texture)
 {
-    m_texture = texture;
-    if(texture != nullptr)
-        sf::RectangleShape::setTexture(texture->GetTexture(this));
+    if(m_texture != texture)
+    {
+        if(m_texture != nullptr)
+            m_texture->RemoveFromAllNotificationList(this);
+
+        m_texture = texture;
+
+        if(texture != nullptr)
+            texture->AskForAllNotifications(this);
+    }
+
+    if(m_texture != nullptr)
+        sf::RectangleShape::setTexture(m_texture->GetTexture());
 }
 
 void RectEntity::SetCenter(sf::Vector2f c)
@@ -50,10 +60,15 @@ void RectEntity::SetCenter(sf::Vector2f c)
     sf::RectangleShape::setOrigin(c);
 }
 
-void RectEntity::NotifyLoadedAsset(Asset *asset)
+void RectEntity::Notify(NotificationSender* sender, NotificationType notification)
 {
-    if(asset == m_texture)
-        SetTexture(m_texture);
+    if(m_texture == sender)
+    {
+        if(notification == AssetLoadedNotification)
+            SetTexture(m_texture);
+        else if(notification == NotificationSenderDestroyed)
+            m_texture = nullptr;
+    }
 }
 
 }

@@ -24,7 +24,7 @@ class SpriteEntity : public SceneEntity, public sf::Sprite
         void SetCenter(float x, float y);
         void SetCenter(sf::Vector2f);
 
-        virtual void NotifyLoadedAsset(Asset*);
+        virtual void Notify(NotificationSender*, NotificationType);
 
     protected:
         TextureAsset *m_texture;

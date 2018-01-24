@@ -88,20 +88,20 @@ bool Texture3DAsset::LoadFromXML(TiXmlHandle *hdl)
         {
             m_colorMap = AssetHandler<TextureAsset>::Instance()
                             ->LoadAssetFromFile(m_fileDirectory+textElem->GetText(),m_loadType);
-            m_colorMap->AskForLoadedNotification(this);
+            m_colorMap->AskForAllNotifications(this);
         }
         else if(std::string(textElem->Attribute("type")).compare("normal") == 0)
         {
             m_normalMap = AssetHandler<TextureAsset>::Instance()
                             ->LoadAssetFromFile(m_fileDirectory+textElem->GetText(),m_loadType);
-            m_normalMap->AskForLoadedNotification(this);
+            m_normalMap->AskForAllNotifications(this);
 
         }
         else if(std::string(textElem->Attribute("type")).compare("depth") == 0)
         {
             m_depthMap = AssetHandler<TextureAsset>::Instance()
                             ->LoadAssetFromFile(m_fileDirectory+textElem->GetText(),m_loadType);
-            m_depthMap->AskForLoadedNotification(this);
+            m_depthMap->AskForAllNotifications(this);
         }
         textElem = textElem->NextSiblingElement("texture");
     }
@@ -110,40 +110,31 @@ bool Texture3DAsset::LoadFromXML(TiXmlHandle *hdl)
 }
 
 
-sf::Texture* Texture3DAsset::GetTexture(LoadedAssetListener* listenerToNotify)
+sf::Texture* Texture3DAsset::GetTexture()
 {
-    return GetColorMap(listenerToNotify);
+    return GetColorMap();
 }
 
-sf::Texture* Texture3DAsset::GetColorMap(LoadedAssetListener* listenerToNotify)
+sf::Texture* Texture3DAsset::GetColorMap()
 {
     if(m_loaded && m_colorMap != nullptr)
         return m_colorMap->GetTexture();
 
-    if(listenerToNotify != nullptr)
-        AskForLoadedNotification(listenerToNotify);
-
     return (nullptr);
 }
 
-sf::Texture* Texture3DAsset::GetNormalMap(LoadedAssetListener* listenerToNotify)
+sf::Texture* Texture3DAsset::GetNormalMap()
 {
     if(m_loaded && m_normalMap != nullptr)
         return m_normalMap->GetTexture();
 
-    if(listenerToNotify != nullptr)
-        AskForLoadedNotification(listenerToNotify);
-
     return (nullptr);
 }
 
-sf::Texture* Texture3DAsset::GetDepthMap(LoadedAssetListener* listenerToNotify)
+sf::Texture* Texture3DAsset::GetDepthMap()
 {
     if(m_loaded && m_depthMap != nullptr)
         return m_depthMap->GetTexture();
-
-    if(listenerToNotify != nullptr)
-        AskForLoadedNotification(listenerToNotify);
 
     return (nullptr);
 }
@@ -153,12 +144,37 @@ float Texture3DAsset::GetHeight()
     return m_default_height;
 }
 
-void Texture3DAsset::NotifyLoadedAsset(Asset* asset)
+
+void Texture3DAsset::Notify(NotificationSender* sender, NotificationType notification)
 {
+
+    if(notification == AssetLoadedNotification)
+    if(sender == m_colorMap || sender == m_depthMap || sender == m_normalMap)
+    {
+        if(m_colorMap != nullptr && m_colorMap->IsLoaded())
+        if(m_depthMap != nullptr && m_depthMap->IsLoaded())
+        if(m_normalMap != nullptr && m_normalMap->IsLoaded())
+            m_loaded = true, Asset::LoadNow();
+    }
+
+    if(notification == NotificationSenderDestroyed)
+    {
+        if(sender == m_colorMap)
+            m_colorMap = nullptr;
+        else if(sender == m_depthMap)
+            m_depthMap = nullptr;
+        else if(sender == m_normalMap)
+            m_normalMap = nullptr;
+    }
+}
+
+/*void Texture3DAsset::NotifyLoadedAsset(Asset* asset)
+{
+
     if(m_colorMap != nullptr && m_colorMap->IsLoaded())
     if(m_depthMap != nullptr && m_depthMap->IsLoaded())
     if(m_normalMap != nullptr && m_normalMap->IsLoaded())
         m_loaded = true, Asset::LoadNow();
-}
+}*/
 
 }

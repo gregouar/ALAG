@@ -20,6 +20,7 @@ SpriteEntity::SpriteEntity(const sf::Vector2i &v) : SpriteEntity(sf::IntRect (0,
 SpriteEntity::SpriteEntity(const sf::IntRect &r)
 {
     sf::Sprite::setTextureRect(r);
+    m_texture = nullptr;
 }
 
 
@@ -48,9 +49,19 @@ void SpriteEntity::Render(sf::RenderTarget *w, const sf::Transform &t)
 
 void SpriteEntity::SetTexture(TextureAsset *texture)
 {
-    m_texture = texture;
-    if(texture != nullptr)
-        sf::Sprite::setTexture(*texture->GetTexture(this));
+    if(m_texture != texture)
+    {
+        if(m_texture != nullptr)
+            m_texture->RemoveFromAllNotificationList(this);
+
+        m_texture = texture;
+
+        if(texture != nullptr)
+            texture->AskForAllNotifications(this);
+    }
+
+    if(m_texture != nullptr)
+        sf::Sprite::setTexture(*(texture->GetTexture()));
 }
 
 void SpriteEntity::SetCenter(float x, float y)
@@ -63,10 +74,16 @@ void SpriteEntity::SetCenter(sf::Vector2f c)
     sf::Sprite::setOrigin(c);
 }
 
-void SpriteEntity::NotifyLoadedAsset(Asset *asset)
+
+void SpriteEntity::Notify(NotificationSender* sender, NotificationType notification)
 {
-    if(asset == m_texture)
-        SetTexture(m_texture);
+    if(sender == m_texture)
+    {
+        if(notification == AssetLoadedNotification)
+            SetTexture(m_texture);
+        else if(notification == NotificationSenderDestroyed)
+            m_texture = nullptr;
+    }
 }
 
 }

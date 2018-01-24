@@ -33,7 +33,7 @@
 	<vector>
 	"GState.h"
 
-1516748108 source:c:\c++\alag\sources\src\states\testingstate.cpp
+1516815778 source:c:\c++\alag\sources\src\states\testingstate.cpp
 	"states/TestingState.h"
 	"ALAGE/core/GApp.h"
 	"ALAGE/core/EventManager.h"
@@ -498,37 +498,39 @@
 	<SFML/System.hpp>
 	"../src/core/AssetHandler.inc"
 
-1516741858 c:\c++\alag\sources\alagengine\include\alage\core\asset.h
+1516814160 c:\c++\alag\sources\alagengine\include\alage\core\asset.h
+	"ALAGE/core/NotificationSender.h"
 	"ALAGE/Types.h"
 	<iostream>
 	<SFML/System.hpp>
 
-1516743972 source:c:\c++\alag\sources\alagengine\src\core\asset.cpp
+1516813134 source:c:\c++\alag\sources\alagengine\src\core\asset.cpp
 	"ALAGE/core/Asset.h"
 	"ALAGE/utils/Parser.h"
 	"ALAGE/utils/Logger.h"
 	"ALAGE/gfx/SceneEntity.h"
 
-1516741621 source:c:\c++\alag\sources\alagengine\src\gfx\textureasset.cpp
+1516815055 source:c:\c++\alag\sources\alagengine\src\gfx\textureasset.cpp
 	"ALAGE/gfx/TextureAsset.h"
 	"ALAGE/utils/Logger.h"
 
-1516741528 c:\c++\alag\sources\alagengine\include\alage\gfx\textureasset.h
+1516815055 c:\c++\alag\sources\alagengine\include\alage\gfx\textureasset.h
 	"ALAGE/core/Asset.h"
 	<SFML/Graphics.hpp>
 
-1516745434 source:c:\c++\alag\sources\alagengine\src\gfx\texture3dasset.cpp
+1516815055 source:c:\c++\alag\sources\alagengine\src\gfx\texture3dasset.cpp
 	"ALAGE/core/AssetHandler.h"
 	"ALAGE/gfx/Texture3DAsset.h"
 	"ALAGE/utils/Parser.h"
 	"ALAGE/utils/Logger.h"
 	<istream>
 
-1516745449 c:\c++\alag\sources\alagengine\include\alage\gfx\texture3dasset.h
+1516815055 c:\c++\alag\sources\alagengine\include\alage\gfx\texture3dasset.h
+	"ALAGE/core/NotificationListener.h"
 	"ALAGE/gfx/TextureAsset.h"
 	"extlibs/tinyxml.h"
 
-1516647564 c:\c++\alag\sources\alagengine\include\alage\types.h
+1516811532 c:\c++\alag\sources\alagengine\include\alage\types.h
 	<iostream>
 	<SFML/Graphics.hpp>
 	"AlAGE/utils/MapIterator.h"
@@ -636,16 +638,17 @@
 
 1516525754 c:\c++\alag\sources\alagengine\include\alage\gfx\quadtreenode.h
 
-1516741300 c:\c++\alag\sources\alagengine\include\alage\gfx\sceneentity.h
+1516813034 c:\c++\alag\sources\alagengine\include\alage\gfx\sceneentity.h
 	<SFML/Graphics.hpp>
+	"ALAGE/core/NotificationListener.h"
 	"ALAGE/core/Asset.h"
 
-1516656811 c:\c++\alag\sources\alagengine\include\alage\gfx\rectentity.h
+1516812991 c:\c++\alag\sources\alagengine\include\alage\gfx\rectentity.h
 	<SFML/Graphics.hpp>
 	"ALAGE/gfx/Texture3DAsset.h"
 	"ALAGE/gfx/SceneEntity.h"
 
-1516659524 source:c:\c++\alag\sources\alagengine\src\gfx\rectentity.cpp
+1516815711 source:c:\c++\alag\sources\alagengine\src\gfx\rectentity.cpp
 	"ALAGE/gfx/RectEntity.h"
 	"ALAGE/gfx/SceneNode.h"
 
@@ -659,12 +662,12 @@
 1516702536 c:\c++\alag\sources\alagengine\include\alage\utils\mapiterator.h
 	<map>
 
-1516723771 source:c:\c++\alag\sources\alagengine\src\gfx\spriteentity.cpp
+1516815744 source:c:\c++\alag\sources\alagengine\src\gfx\spriteentity.cpp
 	"ALAGE/gfx/SpriteEntity.h"
 	"ALAGE/gfx/SceneNode.h"
 	<SFML/Graphics.hpp>
 
-1516746213 c:\c++\alag\sources\alagengine\include\alage\gfx\spriteentity.h
+1516812991 c:\c++\alag\sources\alagengine\include\alage\gfx\spriteentity.h
 	<SFML/Graphics.hpp>
 	"ALAGE/gfx/Texture3DAsset.h"
 	"ALAGE/gfx/SceneEntity.h"
@@ -675,11 +678,25 @@
 1516703125 source:c:\c++\alag\sources\alagengine\src\utils\singletonscleaner.cpp
 	"ALAGE/utils/SingletonsCleaner.h"
 
-1516748757 source:c:\c++\alag\sources\alagengine\src\gfx\sprite3dentity.cpp
+1516816548 source:c:\c++\alag\sources\alagengine\src\gfx\sprite3dentity.cpp
 	"ALAGE/gfx/Sprite3DEntity.h"
 	<SFML/Opengl.hpp>
 	"ALAGE/gfx/SceneNode.h"
 
-1516740176 c:\c++\alag\sources\alagengine\include\alage\gfx\sprite3dentity.h
+1516812991 c:\c++\alag\sources\alagengine\include\alage\gfx\sprite3dentity.h
 	"ALAGE/gfx/SpriteEntity.h"
+
+1516813010 c:\c++\alag\sources\alagengine\include\alage\core\notificationsender.h
+	"ALAGE/Types.h"
+
+1516813234 c:\c++\alag\sources\alagengine\include\alage\core\notificationlistener.h
+	"ALAGE/Types.h"
+
+1516816384 source:c:\c++\alag\sources\alagengine\src\core\notificationlistener.cpp
+	"ALAGE/Core/NotificationListener.h"
+	"ALAGE/core/NotificationSender.h"
+
+1516816384 source:c:\c++\alag\sources\alagengine\src\core\notificationsender.cpp
+	"ALAGE/core/NotificationSender.h"
+	"ALAGE/Core/NotificationListener.h"
 

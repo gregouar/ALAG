@@ -30,6 +30,12 @@ enum AssetLoadSource
     LoadSourceStream,
 };
 
+enum NotificationType
+{
+    NotificationSenderDestroyed,
+    AssetLoadedNotification,
+};
+
 
 typedef unsigned int AssetTypeID;
 typedef unsigned int NodeTypeID;

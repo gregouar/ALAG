@@ -16,7 +16,7 @@ class TextureAsset : public Asset
 
         virtual bool LoadNow();
 
-        virtual sf::Texture* GetTexture(LoadedAssetListener* = nullptr);
+        virtual sf::Texture* GetTexture();
 
     protected:
         sf::Texture m_texture;

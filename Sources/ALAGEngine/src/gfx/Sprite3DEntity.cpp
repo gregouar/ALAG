@@ -13,9 +13,10 @@ const std::string depth_fragShader = \
     "uniform float zPos;" \
     "void main()" \
     "{" \
-    "   vec4 pixel = texture2D(colorMap, gl_TexCoord[0].xy);" \
-    "   gl_FragDepth = 1.0 - texture2D(depthMap, gl_TexCoord[0].xy).a*(texture2D(depthMap, gl_TexCoord[0].xy).r*height + zPos);" \
-    "   gl_FragColor = gl_Color * pixel; " \
+    "   vec4 colorPixel = texture2D(colorMap, gl_TexCoord[0].xy);" \
+    "   vec4 depthPixel = texture2D(depthMap, gl_TexCoord[0].xy);" \
+    "   gl_FragDepth = 0.5 - depthPixel.a*(depthPixel.r*height + zPos);" \
+    "   gl_FragColor = gl_Color * colorPixel; " \
     "}";
 
 
@@ -32,6 +33,7 @@ Sprite3DEntity::Sprite3DEntity(const sf::Vector2i &v) : Sprite3DEntity(sf::IntRe
 
 Sprite3DEntity::Sprite3DEntity(const sf::IntRect &r) : SpriteEntity(r)
 {
+    m_texture = nullptr;
 }
 
 
@@ -83,16 +85,30 @@ void Sprite3DEntity::Render(sf::RenderTarget *w, const sf::Transform &t)
 
 void Sprite3DEntity::SetTexture(Texture3DAsset *texture)
 {
-    m_texture = texture;
-    if(texture != nullptr)
-        sf::Sprite::setTexture(*(texture->GetColorMap(this)));
+    if(m_texture != texture)
+    {
+        if(m_texture != nullptr)
+            m_texture->RemoveFromAllNotificationList(this);
+
+        m_texture = texture;
+
+        if(texture != nullptr)
+            texture->AskForAllNotifications(this);
+    }
+
+    if(m_texture != nullptr)
+        sf::Sprite::setTexture(*(texture->GetTexture()));
 }
 
-void Sprite3DEntity::NotifyLoadedAsset(Asset *asset)
+void Sprite3DEntity::Notify(NotificationSender* sender, NotificationType notification)
 {
-    if(asset == m_texture)
-        //sf::Sprite::setTexture(*(m_texture->GetColorMap()));
-        SetTexture(m_texture);
+    if(sender == m_texture)
+    {
+        if(notification == AssetLoadedNotification)
+            SetTexture(m_texture);
+        else if(notification == NotificationSenderDestroyed)
+            m_texture = nullptr;
+    }
 }
 
 }

@@ -56,13 +56,10 @@ bool TextureAsset::LoadNow()
     return Asset::LoadNow();
 }
 
-sf::Texture *TextureAsset::GetTexture(LoadedAssetListener* entityToNotify)
+sf::Texture *TextureAsset::GetTexture()
 {
     if(m_loaded)
         return &m_texture;
-
-    if(entityToNotify != nullptr)
-        AskForLoadedNotification(entityToNotify);
 
     return (nullptr);
 }

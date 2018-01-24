@@ -1,6 +1,7 @@
 #ifndef ASSET_H
 #define ASSET_H
 
+#include "ALAGE/core/NotificationSender.h"
 #include "ALAGE/Types.h"
 
 #include <iostream>
@@ -8,15 +9,8 @@
 
 namespace alag
 {
-class Asset;
 
-class LoadedAssetListener
-{
-    public:
-        virtual void NotifyLoadedAsset(Asset*) = 0;
-};
-
-class Asset
+class Asset : public NotificationSender
 {
     public:
         Asset();
@@ -35,8 +29,6 @@ class Asset
         const AssetTypeID &GetID();
         const AssetLoadType GetLoadType();
         const AssetLoadSource GetLoadSource();
-
-        void AskForLoadedNotification(LoadedAssetListener *);
 
     protected:
 
@@ -59,10 +51,7 @@ class Asset
         std::string m_name;
 
     private:
-        void SendLoadedNotification();
-
         AssetTypeID m_id;
-        std::list<LoadedAssetListener*> m_listenerToNotify;
 
 };
 

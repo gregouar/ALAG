@@ -75,30 +75,13 @@ bool Asset::LoadFromStream(sf::InputStream *stream, AssetLoadType loadType)
 bool Asset::LoadNow()
 {
     if(IsLoaded())
-        SendLoadedNotification();
+        SendNotification(AssetLoadedNotification);
     return (IsLoaded());
 }
 
 bool Asset::IsLoaded()
 {
     return (m_loaded);
-}
-
-void Asset::AskForLoadedNotification(LoadedAssetListener *listener)
-{
-    m_listenerToNotify.push_back(listener);
-    m_listenerToNotify.unique();
-}
-
-void Asset::SendLoadedNotification()
-{
-    std::list<LoadedAssetListener*>::iterator listenerIt;
-    listenerIt = m_listenerToNotify.begin();
-    while(listenerIt != m_listenerToNotify.end())
-    {
-        (*listenerIt)->NotifyLoadedAsset(this);
-        ++listenerIt;
-    }
 }
 
 const std::string &Asset::GetFilePath()
