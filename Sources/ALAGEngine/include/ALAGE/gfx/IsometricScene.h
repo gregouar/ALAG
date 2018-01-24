@@ -23,7 +23,7 @@ class IsometricScene : public SceneManager
         IsometricScene(IsoViewAngle);
         virtual ~IsometricScene();
 
-        virtual bool InitRenderer(int, int);
+        virtual sf::View GenerateView(Camera*);
         virtual void ProcessRenderQueue(sf::RenderTarget*);
         virtual void RenderScene(sf::RenderTarget*);
 
@@ -33,6 +33,7 @@ class IsometricScene : public SceneManager
         sf::Vector2f ConvertIsoToCartesian(float, float, float = 0);
         sf::Vector2f ConvertIsoToCartesian(sf::Vector2f);
         sf::Vector2f ConvertIsoToCartesian(sf::Vector3f);
+        sf::Vector2f ConvertCartesianToIso(float, float);
         sf::Vector2f ConvertCartesianToIso(sf::Vector2f);
 
         virtual sf::Vector2f ConvertMouseToScene(sf::Vector2i);
@@ -41,7 +42,6 @@ class IsometricScene : public SceneManager
         void SetAmbientLight(sf::Color);
 
         void ComputeTrigonometry();
-        sf::View GenerateIsoView(const sf::View &);
 
     protected:
 

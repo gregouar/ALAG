@@ -21,7 +21,6 @@ Sprite3DEntity::Sprite3DEntity(const sf::Vector2i &v) : Sprite3DEntity(sf::IntRe
 Sprite3DEntity::Sprite3DEntity(const sf::IntRect &r) : SpriteEntity(r)
 {
     m_texture = nullptr;
-    m_isRenderable = true;
     m_canBeLighted = true;
     m_is3D = true;
 }

@@ -80,7 +80,11 @@ SceneNode* SceneNode::RemoveChildNode(const NodeTypeID &id)
 
     node = childsIt->second;
 
-    if(FindChildCreated(id) != m_createdChildsList.size())
+    std::list<NodeTypeID>::iterator createdChildsIt;
+    createdChildsIt = std::find(m_createdChildsList.begin(),
+                                m_createdChildsList.end(), id);
+
+    if(createdChildsIt != m_createdChildsList.end())
         Logger::Warning("Removing created child without destroying it");
 
     m_childs.erase(childsIt);
@@ -144,11 +148,14 @@ bool SceneNode::DestroyChildNode(SceneNode* node)
 
 bool SceneNode::DestroyChildNode(const NodeTypeID& id)
 {
-    size_t foundedCreatedChild = FindChildCreated(id);
-    if(foundedCreatedChild == m_createdChildsList.size())
+    std::list<NodeTypeID>::iterator createdChildsIt;
+    createdChildsIt = std::find(m_createdChildsList.begin(),
+                                m_createdChildsList.end(), id);
+
+    if(createdChildsIt == m_createdChildsList.end())
         Logger::Warning("Destroying non-created child");
     else
-        m_createdChildsList.erase(m_createdChildsList.begin() + foundedCreatedChild);
+        m_createdChildsList.erase(createdChildsIt);
 
     std::map<NodeTypeID, SceneNode*>::iterator childsIt;
     childsIt = m_childs.find(id);
@@ -202,11 +209,18 @@ SceneNodeIterator SceneNode::GetChildIterator()
 }
 
 
-void SceneNode::AttachEntity(SceneEntity *e)
+void SceneNode::AttachObject(SceneObject *e)
 {
     if(e != nullptr)
     {
-        m_entities.push_back(e);
+        m_attachedObjects.push_back(e);
+
+        if(e->IsAnEntity())
+            m_entities.push_back((SceneEntity*)e);
+
+        if(e->IsALight())
+            m_lights.push_back((Light*)e);
+
         if(e->SetParentNode(this) != nullptr)
             Logger::Warning("Attaching entity which has already a parent node");
     } else
@@ -214,6 +228,17 @@ void SceneNode::AttachEntity(SceneEntity *e)
 
     if(m_sceneManager != nullptr)
         m_sceneManager->AskToComputeRenderQueue();
+}
+
+void SceneNode::DetachObject(SceneObject *e)
+{
+    m_attachedObjects.remove(e);
+
+    if(e != nullptr && e->IsAnEntity())
+        m_entities.remove((SceneEntity*)e);
+
+    if(e != nullptr && e->IsALight())
+        m_lights.remove((Light*)e);
 }
 
 SceneEntityIterator SceneNode::GetEntityIterator()
@@ -323,13 +348,6 @@ void SceneNode::SetParent(SceneNode *p)
 NodeTypeID SceneNode::GenerateID()
 {
     return m_curNewId++;
-}
-
-size_t SceneNode::FindChildCreated(const NodeTypeID& id)
-{
-    size_t i = 0;
-    while(i < m_createdChildsList.size() && m_createdChildsList[i] != id){++i;}
-    return i;
 }
 
 }

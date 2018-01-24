@@ -4,6 +4,7 @@
 #include <SFML/Graphics.hpp>
 #include "ALAGE/core/NotificationListener.h"
 #include "ALAGE/core/Asset.h"
+#include "ALAGE/gfx/SceneObject.h"
 
 namespace alag
 {
@@ -11,11 +12,9 @@ namespace alag
 class SceneNode;
 class Asset;
 
-class SceneEntity : public NotificationListener
+class SceneEntity : public NotificationListener, public SceneObject
 {
     public:
-        friend class SceneNode;
-
         SceneEntity();
         virtual ~SceneEntity();
 
@@ -25,20 +24,14 @@ class SceneEntity : public NotificationListener
 
         bool CanBeIlluminated();
         bool Is3D();
-        bool IsRenderable();
 
         void ActivateLighting();
         void DesactivateLighting();
 
-        SceneNode *GetParentNode();
-
     protected:
-        SceneNode* SetParentNode(SceneNode*);
-        SceneNode *m_parentNode;
 
         bool m_canBeLighted;
         bool m_is3D;
-        bool m_isRenderable;
 
         bool m_isLighted;
 

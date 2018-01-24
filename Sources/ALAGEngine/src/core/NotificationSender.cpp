@@ -60,22 +60,12 @@ void NotificationSender::AskForNotification(NotificationListener *listener, Noti
 
 void NotificationSender::RemoveFromNotificationList(NotificationListener *listener, NotificationType type)
 {
-    std::list<NotificationListener*>::iterator listenerIt;
-    listenerIt = std::find(m_listenerToNotify[type].begin(),
-                            m_listenerToNotify[type].end(), listener);
-
-    if(listenerIt != m_listenerToNotify[type].end())
-        m_listenerToNotify[type].erase(listenerIt);
+    m_listenerToNotify[type].remove(listener);
 }
 
 void NotificationSender::RemoveFromAllNotificationList(NotificationListener *listener)
 {
-    std::list<NotificationListener*>::iterator listenerIt;
-    listenerIt = std::find(m_listenerToNotifyEverything.begin(),
-                            m_listenerToNotifyEverything.end(), listener);
-
-    if(listenerIt != m_listenerToNotifyEverything.end())
-        m_listenerToNotifyEverything.erase(listenerIt);
+    m_listenerToNotifyEverything.remove(listener);
 
     std::map<NotificationType, std::list<NotificationListener*> >::iterator typeIt;
     for(typeIt = m_listenerToNotify.begin() ; typeIt != m_listenerToNotify.end() ; ++typeIt)

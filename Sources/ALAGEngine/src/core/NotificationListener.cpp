@@ -27,10 +27,7 @@ void NotificationListener::AddSender(NotificationSender* sender)
 
 void NotificationListener::NotifySenderDestruction(NotificationSender* sender)
 {
-    std::list<NotificationSender*>::iterator senderIt;
-    senderIt = std::find(m_senders.begin(), m_senders.end(), sender);
-    if(senderIt != m_senders.end())
-        m_senders.erase(senderIt);
+    m_senders.remove(sender);
 }
 
 }

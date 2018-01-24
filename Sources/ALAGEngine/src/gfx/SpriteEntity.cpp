@@ -21,7 +21,6 @@ SpriteEntity::SpriteEntity(const sf::IntRect &r)
 {
     sf::Sprite::setTextureRect(r);
     m_texture = nullptr;
-    m_isRenderable = true;
     m_canBeLighted = true;
     m_is3D = false;
 }

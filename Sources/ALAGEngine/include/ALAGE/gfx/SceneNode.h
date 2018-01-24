@@ -35,8 +35,8 @@ class SceneNode
 
         SceneNodeIterator GetChildIterator();
 
-        void AttachEntity(SceneEntity *);
-        void DetachEntity(SceneEntity *);
+        void AttachObject(SceneObject *);
+        void DetachObject(SceneObject *);
         void DetachAllEntities();
         SceneEntityIterator GetEntityIterator();
 
@@ -65,7 +65,6 @@ class SceneNode
         void SetParent(SceneNode *);
         void SetSceneManager(SceneManager *);
         void SetID(const NodeTypeID &);
-        size_t FindChildCreated(const NodeTypeID&);
         NodeTypeID GenerateID();
 
         sf::Vector3f m_position;
@@ -76,9 +75,11 @@ class SceneNode
         NodeTypeID m_id;
         SceneNode *m_parent;
         std::map<NodeTypeID, SceneNode*> m_childs;
-        std::vector<NodeTypeID> m_createdChildsList;
+        std::list<NodeTypeID> m_createdChildsList;
 
+        std::list<SceneObject *> m_attachedObjects;
         std::list<SceneEntity *> m_entities;
+        std::list<Light *> m_lights;
 
         int m_curNewId;
 };

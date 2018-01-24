@@ -14,7 +14,7 @@ RectEntity::RectEntity()  : RectEntity(sf::Vector2f (0,0))
 RectEntity::RectEntity(sf::Vector2f s) : sf::RectangleShape(s)
 {
     m_texture = nullptr;
-    m_isRenderable = true;
+
     m_canBeLighted = true;
     m_is3D = false;
 }

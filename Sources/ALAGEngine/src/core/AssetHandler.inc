@@ -203,10 +203,7 @@ void AssetHandler<AssetType>:: AddToObsolescenceList(const AssetTypeID &assetID,
 template<typename AssetType>
 void AssetHandler<AssetType>:: RemoveFromObsolescenceList(const AssetTypeID &assetID)
 {
-    std::map<AssetTypeID, int>::iterator iter;
-    iter = m_obsolescenceList.find(assetID);
-    if(iter != m_obsolescenceList.end())
-        m_obsolescenceList.erase(iter);
+    m_obsolescenceList.erase(assetID);
 }
 
 template<typename AssetType>

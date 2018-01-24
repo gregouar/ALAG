@@ -79,14 +79,6 @@ IsometricScene::~IsometricScene()
 }
 
 
-bool IsometricScene::InitRenderer(int w, int h)
-{
-    m_view.setCenter(0,0);
-    m_view.setSize(w, h);
-
-    return (true);
-}
-
 
 void IsometricScene::ProcessRenderQueue(sf::RenderTarget *w)
 {
@@ -139,13 +131,13 @@ void IsometricScene::ProcessRenderQueue(sf::RenderTarget *w)
 
 void IsometricScene::RenderScene(sf::RenderTarget* w)
 {
-    if(w != nullptr)
+    if(w != nullptr && m_currentCamera != nullptr)
     {
         m_last_target = w;
 
         sf::View oldView = w->getView();
         glClear(GL_DEPTH_BUFFER_BIT);
-        w->setView(GenerateIsoView(m_view));
+        w->setView(GenerateView(m_currentCamera));
         ProcessRenderQueue(w);
         w->setView(oldView);
     }
@@ -161,7 +153,7 @@ Sprite3DEntity* IsometricScene::CreateSprite3DEntity(sf::Vector2i spriteSize)
 Sprite3DEntity* IsometricScene::CreateSprite3DEntity(sf::IntRect textureRect)
 {
     Sprite3DEntity *e = new Sprite3DEntity(textureRect);
-    AddEntity(GenerateEntityID(), e);
+    AddCreatedObject(GenerateObjectID(), e);
     return e;
 }
 
@@ -244,6 +236,12 @@ sf::Vector2f IsometricScene::ConvertIsoToCartesian(sf::Vector3f p)
     return r;
 }
 
+
+sf::Vector2f IsometricScene::ConvertCartesianToIso(float x, float y)
+{
+    return ConvertCartesianToIso(sf::Vector2f(x,y));
+}
+
 sf::Vector2f IsometricScene::ConvertCartesianToIso(sf::Vector2f p)
 {
     sf::Vector2f r;
@@ -254,10 +252,10 @@ sf::Vector2f IsometricScene::ConvertCartesianToIso(sf::Vector2f p)
 sf::Vector2f IsometricScene::ConvertMouseToScene(sf::Vector2i mouse)
 {
     sf::Vector2f scenePos = sf::Vector2f(mouse);
-    if(m_last_target != nullptr)
+    if(m_last_target != nullptr && m_currentCamera != nullptr)
     {
         sf::View oldView = m_last_target->getView();
-        m_last_target->setView(GenerateIsoView(m_view));
+        m_last_target->setView(GenerateView(m_currentCamera));
         scenePos = sf::Vector2f(m_last_target->mapPixelToCoords(mouse));
         scenePos = ConvertCartesianToIso(scenePos);
         m_last_target->setView(oldView);
@@ -265,10 +263,16 @@ sf::Vector2f IsometricScene::ConvertMouseToScene(sf::Vector2i mouse)
     return scenePos;
 }
 
-sf::View IsometricScene::GenerateIsoView(const sf::View &view)
+sf::View IsometricScene::GenerateView(Camera* cam)
 {
-    sf::View v = view;
-    v.setCenter(ConvertIsoToCartesian(view.getCenter()));
+    sf::View v;
+    if(cam != nullptr)
+    {
+        v.setSize(cam->GetSize()*cam->GetZoom());
+        SceneNode *node = cam->GetParentNode();
+        if(node != nullptr)
+            v.setCenter(ConvertIsoToCartesian(node->GetGlobalPosition()));
+    }
     return v;
 }
 

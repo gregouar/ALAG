@@ -33,10 +33,13 @@ class TestingState : public alag::GState, public Singleton<TestingState>
 
         alag::IsometricScene m_mainScene;
 
-        sf::Vector2f m_camMove;
+        sf::Vector3f m_camMove;
 
+        alag::SceneNode *m_cameraNode;
         alag::SceneNode *m_sarcoNode;
         alag::SceneNode *m_sarco3DNode;
+
+        alag::Camera *m_camera;
 };
 
 #endif // TESTINGSTATE_H

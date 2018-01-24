@@ -5,6 +5,8 @@
 #include "ALAGE/gfx/SceneNode.h"
 #include "ALAGE/gfx/RectEntity.h"
 #include "ALAGE/gfx/SpriteEntity.h"
+#include "ALAGE/gfx/Camera.h"
+#include "ALAGE/gfx/Light.h"
 
 namespace alag
 {
@@ -15,37 +17,41 @@ class SceneManager
         SceneManager();
         virtual ~SceneManager();
 
-        virtual bool InitRenderer(int, int) = 0;
+        virtual void CleanAll();
+
+        //virtual bool InitRenderer(int, int) = 0;
         virtual void Update(sf::Time);
         virtual void ComputeRenderQueue();
+        virtual sf::View GenerateView(Camera*);
         virtual void ProcessRenderQueue(sf::RenderTarget*);
         virtual void RenderScene(sf::RenderTarget*) = 0;
-        virtual void CleanAll();
 
         void AskToComputeRenderQueue();
 
         SceneNode *GetRootNode();
 
-        RectEntity* CreateRectEntity(sf::Vector2f = sf::Vector2f(0,0));
-        SpriteEntity* CreateSpriteEntity(sf::Vector2i);
-        SpriteEntity* CreateSpriteEntity(sf::IntRect = sf::IntRect(0,0,0,0));
+        RectEntity*     CreateRectEntity(sf::Vector2f = sf::Vector2f(0,0));
+        SpriteEntity*   CreateSpriteEntity(sf::Vector2i);
+        SpriteEntity*   CreateSpriteEntity(sf::IntRect = sf::IntRect(0,0,0,0));
 
-        void DestroyEntity(const EntityTypeID &);
-        void DestroyAllEntities();
+        Light* CreateLight(LightType = OmniLight, sf::Vector3f = sf::Vector3f(0,0,-1), sf::Color = sf::Color::White);
+        Camera* CreateCamera(sf::Vector2f viewSize);
 
-        void MoveView(sf::Vector2f);
-        sf::Vector2f GetViewCenter();
+        void DestroyCreatedObject(const ObjectTypeID &);
+        void DestroyAllCreatedObjects();
 
         virtual sf::Vector2f ConvertMouseToScene(sf::Vector2i);
 
+        virtual void SetCurrentCamera(Camera *);
         virtual void SetAmbientLight(sf::Color);
 
     protected:
-        EntityTypeID GenerateEntityID();
-        void AddEntity(const EntityTypeID &, SceneEntity*);
+        ObjectTypeID GenerateObjectID();
+        void AddCreatedObject(const ObjectTypeID &, SceneObject*);
         void AddToRenderQueue(SceneNode*);
 
-        sf::View m_view; //Should remove this and create CameraEntity
+        //sf::View m_view; //Should remove this and create CameraEntity
+        Camera *m_currentCamera;
         SceneNode m_rootNode;
 
         sf::Color m_ambientLight;
@@ -54,8 +60,8 @@ class SceneManager
         sf::RenderTarget *m_last_target;
 
     private:
-        std::map<EntityTypeID, SceneEntity*> m_entities;
-        EntityTypeID m_curNewId;
+        std::map<ObjectTypeID, SceneObject*> m_createdObjects;
+        ObjectTypeID m_curNewId;
 
         bool m_needToUpdateRenderQueue;
 

@@ -13,6 +13,7 @@
 namespace alag
 {
 
+class SceneObject;
 class SceneEntity;
 class SceneNode;
 
@@ -36,12 +37,20 @@ enum NotificationType
     AssetLoadedNotification,
 };
 
+enum LightType
+{
+    OmniLight,
+    DirectionnalLight,
+    SpotLight,
+};
+
 
 typedef unsigned int AssetTypeID;
 typedef unsigned int NodeTypeID;
-typedef unsigned int EntityTypeID;
+typedef unsigned int ObjectTypeID;
 typedef std::string AnimationTypeID;
 
+typedef ListIterator<SceneObject*> SceneObjectIterator;
 typedef ListIterator<SceneEntity*> SceneEntityIterator;
 typedef MapIterator<NodeTypeID, SceneNode*> SceneNodeIterator;
 
