@@ -172,7 +172,7 @@ void TestingState::Update(sf::Time time)
     m_totalTime += time;
 
     m_cameraNode->Move(m_mainScene.ConvertCartesianToIso(m_camMove.x,m_camMove.y)*(100*time.asSeconds()));
-    m_cameraNode->Move(sf::Vector3f(0,0,m_camMove.z)*(100*time.asSeconds()));
+  //  m_cameraNode->Move(sf::Vector3f(0,0,m_camMove.z)*(100*time.asSeconds()));
     m_camera->Zoom((1-m_camMove.z*time.asSeconds()));
     m_sarcoNode->Move(20*time.asSeconds(),0,0);
 

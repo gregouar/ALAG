@@ -33,7 +33,7 @@
 	<vector>
 	"GState.h"
 
-1516837062 source:c:\c++\alag\sources\src\states\testingstate.cpp
+1516837790 source:c:\c++\alag\sources\src\states\testingstate.cpp
 	"states/TestingState.h"
 	"ALAGE/core/GApp.h"
 	"ALAGE/core/EventManager.h"
@@ -530,7 +530,7 @@
 	"ALAGE/gfx/TextureAsset.h"
 	"extlibs/tinyxml.h"
 
-1516834752 c:\c++\alag\sources\alagengine\include\alage\types.h
+1516839755 c:\c++\alag\sources\alagengine\include\alage\types.h
 	<iostream>
 	<SFML/Graphics.hpp>
 	"AlAGE/utils/MapIterator.h"
@@ -620,31 +620,33 @@
 	"ALAGE/gfx/Camera.h"
 	"ALAGE/gfx/Light.h"
 
-1516836537 source:c:\c++\alag\sources\alagengine\src\gfx\scenemanager.cpp
+1516839741 source:c:\c++\alag\sources\alagengine\src\gfx\scenemanager.cpp
 	"ALAGE/gfx/SceneManager.h"
 	"ALAGE/utils/Logger.h"
 
-1516833845 c:\c++\alag\sources\alagengine\include\alage\gfx\scenenode.h
+1516839931 c:\c++\alag\sources\alagengine\include\alage\gfx\scenenode.h
 	<list>
 	<SFML/Graphics.hpp>
 	"ALAGE/Types.h"
 	"ALAGE/gfx/SceneEntity.h"
 
-1516833859 source:c:\c++\alag\sources\alagengine\src\gfx\scenenode.cpp
+1516840174 source:c:\c++\alag\sources\alagengine\src\gfx\scenenode.cpp
 	"ALAGE/gfx/SceneNode.h"
 	"ALAGE/gfx/SceneManager.h"
 	"ALAGE/utils/Logger.h"
+	"ALAGE/utils/Mathematics.h"
 
 1516525730 source:c:\c++\alag\sources\alagengine\src\gfx\quadtreenode.cpp
 	"ALAGE/gfx/QuadtreeNode.h"
 
 1516525754 c:\c++\alag\sources\alagengine\include\alage\gfx\quadtreenode.h
 
-1516832392 c:\c++\alag\sources\alagengine\include\alage\gfx\sceneentity.h
+1516839797 c:\c++\alag\sources\alagengine\include\alage\gfx\sceneentity.h
 	<SFML/Graphics.hpp>
 	"ALAGE/core/NotificationListener.h"
 	"ALAGE/core/Asset.h"
 	"ALAGE/gfx/SceneObject.h"
+	"ALAGE/gfx/Light.h"
 
 1516823395 c:\c++\alag\sources\alagengine\include\alage\gfx\rectentity.h
 	<SFML/Graphics.hpp>
@@ -730,4 +732,7 @@
 
 1516832419 source:c:\c++\alag\sources\alagengine\src\gfx\sceneobject.cpp
 	"ALAGE/gfx/SceneObject.h"
+
+1516840236 c:\c++\alag\sources\alagengine\include\alage\utils\mathematics.h
+	<SFML/System.hpp>
 

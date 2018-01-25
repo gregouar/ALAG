@@ -5,6 +5,7 @@
 #include "ALAGE/core/NotificationListener.h"
 #include "ALAGE/core/Asset.h"
 #include "ALAGE/gfx/SceneObject.h"
+#include "ALAGE/gfx/Light.h"
 
 namespace alag
 {
@@ -29,11 +30,11 @@ class SceneEntity : public NotificationListener, public SceneObject
         void DesactivateLighting();
 
     protected:
-
         bool m_canBeLighted;
         bool m_is3D;
-
         bool m_isLighted;
+
+        std::map<float, Light*> m_nearbyLights;
 
     private:
         sf::Vector3f m_bounds;

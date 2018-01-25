@@ -34,11 +34,12 @@ class SceneNode
         void RemoveAndDestroyAllChilds(bool destroyNonCreatedChilds = false);
 
         SceneNodeIterator GetChildIterator();
+        SceneEntityIterator GetEntityIterator();
+        LightIterator GetLightIterator();
 
         void AttachObject(SceneObject *);
         void DetachObject(SceneObject *);
         void DetachAllEntities();
-        SceneEntityIterator GetEntityIterator();
 
         void Move(float, float);
         void Move(float, float, float);
@@ -58,6 +59,10 @@ class SceneNode
         const NodeTypeID& GetID();
         SceneNode* GetParent();
         SceneManager*  GetSceneManager();
+
+        void SearchInsideForEntities(std::list<SceneEntity*>  *renderQueue);
+        void FindNearbyLights(std::map<float, Light*> *foundedLights);
+        void SearchInsideForLights(std::map<float, Light*> *foundedLights, sf::Vector3f);
 
         void Update();
 

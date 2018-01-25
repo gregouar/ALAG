@@ -16,6 +16,7 @@ namespace alag
 class SceneObject;
 class SceneEntity;
 class SceneNode;
+class Light;
 
 enum AssetLoadType
 {
@@ -52,6 +53,7 @@ typedef std::string AnimationTypeID;
 
 typedef ListIterator<SceneObject*> SceneObjectIterator;
 typedef ListIterator<SceneEntity*> SceneEntityIterator;
+typedef ListIterator<Light*> LightIterator;
 typedef MapIterator<NodeTypeID, SceneNode*> SceneNodeIterator;
 
 const std::string emptyString;

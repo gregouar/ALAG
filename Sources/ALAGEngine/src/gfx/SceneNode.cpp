@@ -2,6 +2,8 @@
 
 #include "ALAGE/gfx/SceneManager.h"
 #include "ALAGE/utils/Logger.h"
+#include "ALAGE/utils/Mathematics.h"
+
 
 namespace alag
 {
@@ -246,6 +248,11 @@ SceneEntityIterator SceneNode::GetEntityIterator()
     return SceneEntityIterator(m_entities.begin(), m_entities.end());
 }
 
+LightIterator SceneNode::GetLightIterator()
+{
+    return LightIterator(m_lights.begin(), m_lights.end());
+}
+
 void SceneNode::Move(float x, float y)
 {
     Move(x,y,0);
@@ -348,6 +355,54 @@ void SceneNode::SetParent(SceneNode *p)
 NodeTypeID SceneNode::GenerateID()
 {
     return m_curNewId++;
+}
+
+
+void SceneNode::SearchInsideForEntities(std::list<SceneEntity*>  *renderQueue)
+{
+    if(renderQueue != nullptr)
+    {
+        SceneEntityIterator entityIt = GetEntityIterator();
+        while(!entityIt.IsAtTheEnd())
+        {
+           // if(entityIt.GetElement()->IsRenderable())
+                renderQueue->push_back(entityIt.GetElement());
+            ++entityIt;
+        }
+
+        SceneNodeIterator nodeIt = GetChildIterator();
+        while(!nodeIt.IsAtTheEnd())
+        {
+            nodeIt.GetElement()->SearchInsideForEntities(renderQueue);
+            ++nodeIt;
+        }
+    }
+}
+
+
+void SceneNode::FindNearbyLights(std::map<float,Light*> *foundedLights)
+{
+    GetSceneManager()->GetRootNode()->SearchInsideForLights(foundedLights, GetGlobalPosition());
+}
+
+void SceneNode::SearchInsideForLights(std::map<float,Light*> *foundedLights, sf::Vector3f pos)
+{
+    if(foundedLights != nullptr)
+    {
+        LightIterator lightIt = GetLightIterator();
+        while(!lightIt.IsAtTheEnd())
+        {
+            (*foundedLights)[ComputeSquareDistance(pos,GetGlobalPosition())] = lightIt.GetElement();
+            ++lightIt;
+        }
+
+        SceneNodeIterator nodeIt = GetChildIterator();
+        while(!nodeIt.IsAtTheEnd())
+        {
+            nodeIt.GetElement()->SearchInsideForLights(foundedLights, pos);
+            ++nodeIt;
+        }
+    }
 }
 
 }

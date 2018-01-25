@@ -64,10 +64,11 @@ void SceneManager::ProcessRenderQueue(sf::RenderTarget *w)
 void SceneManager::ComputeRenderQueue()
 {
     m_renderQueue.clear();
-    AddToRenderQueue(&m_rootNode);
+    //AddToRenderQueue(&m_rootNode);
+    m_rootNode.SearchInsideForEntities(&m_renderQueue);
 }
 
-void SceneManager::AddToRenderQueue(SceneNode *curNode)
+/*void SceneManager::AddToRenderQueue(SceneNode *curNode)
 {
     if(curNode != nullptr)
     {
@@ -86,7 +87,7 @@ void SceneManager::AddToRenderQueue(SceneNode *curNode)
             ++nodeIt;
         }
     }
-}
+}*/
 
 SceneNode *SceneManager::GetRootNode()
 {
