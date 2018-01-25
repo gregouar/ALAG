@@ -18,7 +18,7 @@ SceneEntity::~SceneEntity()
     //dtor
 }
 
-bool SceneEntity::CanBeIlluminated()
+bool SceneEntity::CanBeLighted()
 {
     return m_isLighted & m_canBeLighted;
 }

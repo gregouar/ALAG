@@ -1,6 +1,7 @@
 #ifndef SCENEMANAGER_H
 #define SCENEMANAGER_H
 
+#include <SFML/OpenGL.hpp>
 #include <SFML/Graphics.hpp>
 #include "ALAGE/gfx/SceneNode.h"
 #include "ALAGE/gfx/RectEntity.h"
@@ -49,6 +50,8 @@ class SceneManager
         ObjectTypeID GenerateObjectID();
         void AddCreatedObject(const ObjectTypeID &, SceneObject*);
         void AddToRenderQueue(SceneNode*);
+
+        virtual size_t UpdateLighting(std::multimap<float, Light*> &lightList, size_t = GL_MAX_LIGHTS);
 
         //sf::View m_view; //Should remove this and create CameraEntity
         Camera *m_currentCamera;

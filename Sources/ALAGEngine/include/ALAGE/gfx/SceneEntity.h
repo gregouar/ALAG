@@ -23,7 +23,7 @@ class SceneEntity : public NotificationListener, public SceneObject
         virtual void Render(sf::RenderTarget *, const sf::RenderStates &) = 0;
         virtual void PrepareShader(sf::Shader *);
 
-        bool CanBeIlluminated();
+        bool CanBeLighted();
         bool Is3D();
 
         void ActivateLighting();

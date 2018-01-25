@@ -68,6 +68,22 @@ void SceneManager::ComputeRenderQueue()
     m_rootNode.SearchInsideForEntities(&m_renderQueue);
 }
 
+
+size_t SceneManager::UpdateLighting(std::multimap<float, Light*> &lightList, size_t maxNbrLights)
+{
+    size_t curNbrLights = 0;
+
+    std::multimap<float, Light*>::iterator lightIt;
+    for(lightIt = lightList.begin() ; lightIt != lightList.end() && curNbrLights < maxNbrLights ; ++lightIt)
+    {
+
+        ++curNbrLights;
+    }
+
+    return curNbrLights;
+}
+
+
 /*void SceneManager::AddToRenderQueue(SceneNode *curNode)
 {
     if(curNode != nullptr)

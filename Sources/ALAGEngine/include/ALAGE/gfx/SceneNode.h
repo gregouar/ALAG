@@ -61,8 +61,8 @@ class SceneNode
         SceneManager*  GetSceneManager();
 
         void SearchInsideForEntities(std::list<SceneEntity*>  *renderQueue);
-        void FindNearbyLights(std::map<float, Light*> *foundedLights);
-        void SearchInsideForLights(std::map<float, Light*> *foundedLights, sf::Vector3f);
+        void FindNearbyLights(std::multimap<float, Light*> *foundedLights);
+        void SearchInsideForLights(std::multimap<float, Light*> *foundedLights, sf::Vector3f);
 
         void Update();
 

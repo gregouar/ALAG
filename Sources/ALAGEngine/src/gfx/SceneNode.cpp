@@ -380,19 +380,24 @@ void SceneNode::SearchInsideForEntities(std::list<SceneEntity*>  *renderQueue)
 }
 
 
-void SceneNode::FindNearbyLights(std::map<float,Light*> *foundedLights)
+void SceneNode::FindNearbyLights(std::multimap<float,Light*> *foundedLights)
 {
     GetSceneManager()->GetRootNode()->SearchInsideForLights(foundedLights, GetGlobalPosition());
 }
 
-void SceneNode::SearchInsideForLights(std::map<float,Light*> *foundedLights, sf::Vector3f pos)
+void SceneNode::SearchInsideForLights(std::multimap<float,Light*> *foundedLights, sf::Vector3f pos)
 {
     if(foundedLights != nullptr)
     {
         LightIterator lightIt = GetLightIterator();
         while(!lightIt.IsAtTheEnd())
         {
-            (*foundedLights)[ComputeSquareDistance(pos,GetGlobalPosition())] = lightIt.GetElement();
+            float distance = -1; //To put directional lights at the front of the list
+
+            if(lightIt.GetElement()->GetType() != DirectionnalLight)
+                distance = ComputeSquareDistance(pos,GetGlobalPosition());
+
+            foundedLights->insert(std::pair<float, Light*>(distance,lightIt.GetElement()));
             ++lightIt;
         }
 

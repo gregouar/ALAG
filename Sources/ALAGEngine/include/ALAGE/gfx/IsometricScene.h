@@ -44,6 +44,7 @@ class IsometricScene : public SceneManager
         void ComputeTrigonometry();
 
     protected:
+        size_t UpdateLighting(std::multimap<float, Light*> &lightList);
 
     private:
         IsoViewAngle m_viewAngle;
@@ -55,8 +56,8 @@ class IsometricScene : public SceneManager
         sf::Transform m_TransformIsoToCart;
 
         sf::Shader m_depthShader;
-        sf::Shader m_depthAndIlluminationShader;
-        sf::Shader m_illuminationShader;
+        sf::Shader m_depthAndLightingShader;
+        sf::Shader m_lightingShader;
 
         static const IsoViewAngle DEFAULT_ISO_VIEW_ANGLE;
 };

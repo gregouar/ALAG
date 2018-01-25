@@ -603,16 +603,17 @@
 1516833388 c:\c++\alag\sources\alagengine\src\core\assethandler.inc
 	"ALAGE/utils/Logger.h"
 
-1516836785 source:c:\c++\alag\sources\alagengine\src\gfx\isometricscene.cpp
+1516900981 source:c:\c++\alag\sources\alagengine\src\gfx\isometricscene.cpp
 	"ALAGE/gfx/IsometricScene.h"
 	"ALAGE/gfx/Sprite3DEntity.h"
 
-1516836785 c:\c++\alag\sources\alagengine\include\alage\gfx\isometricscene.h
+1516900986 c:\c++\alag\sources\alagengine\include\alage\gfx\isometricscene.h
 	"ALAGE/gfx/SceneManager.h"
 	"ALAGE/gfx/Sprite3DEntity.h"
 	<SFML/OpenGL.hpp>
 
-1516835988 c:\c++\alag\sources\alagengine\include\alage\gfx\scenemanager.h
+1516901096 c:\c++\alag\sources\alagengine\include\alage\gfx\scenemanager.h
+	<SFML/OpenGL.hpp>
 	<SFML/Graphics.hpp>
 	"ALAGE/gfx/SceneNode.h"
 	"ALAGE/gfx/RectEntity.h"
@@ -620,17 +621,17 @@
 	"ALAGE/gfx/Camera.h"
 	"ALAGE/gfx/Light.h"
 
-1516839741 source:c:\c++\alag\sources\alagengine\src\gfx\scenemanager.cpp
+1516900970 source:c:\c++\alag\sources\alagengine\src\gfx\scenemanager.cpp
 	"ALAGE/gfx/SceneManager.h"
 	"ALAGE/utils/Logger.h"
 
-1516839931 c:\c++\alag\sources\alagengine\include\alage\gfx\scenenode.h
+1516900779 c:\c++\alag\sources\alagengine\include\alage\gfx\scenenode.h
 	<list>
 	<SFML/Graphics.hpp>
 	"ALAGE/Types.h"
 	"ALAGE/gfx/SceneEntity.h"
 
-1516840174 source:c:\c++\alag\sources\alagengine\src\gfx\scenenode.cpp
+1516901003 source:c:\c++\alag\sources\alagengine\src\gfx\scenenode.cpp
 	"ALAGE/gfx/SceneNode.h"
 	"ALAGE/gfx/SceneManager.h"
 	"ALAGE/utils/Logger.h"
@@ -641,7 +642,7 @@
 
 1516525754 c:\c++\alag\sources\alagengine\include\alage\gfx\quadtreenode.h
 
-1516839797 c:\c++\alag\sources\alagengine\include\alage\gfx\sceneentity.h
+1516898936 c:\c++\alag\sources\alagengine\include\alage\gfx\sceneentity.h
 	<SFML/Graphics.hpp>
 	"ALAGE/core/NotificationListener.h"
 	"ALAGE/core/Asset.h"
@@ -658,7 +659,7 @@
 	"ALAGE/gfx/IsometricScene.h"
 	"ALAGE/gfx/SceneNode.h"
 
-1516832419 source:c:\c++\alag\sources\alagengine\src\gfx\sceneentity.cpp
+1516898982 source:c:\c++\alag\sources\alagengine\src\gfx\sceneentity.cpp
 	"ALAGE/gfx/SceneEntity.h"
 	"ALAGE/gfx/SceneNode.h"
 	"ALAGE/utils/Logger.h"
@@ -735,4 +736,7 @@
 
 1516840236 c:\c++\alag\sources\alagengine\include\alage\utils\mathematics.h
 	<SFML/System.hpp>
+
+1516840265 source:c:\c++\alag\sources\alagengine\src\utils\mathematics.cpp
+	"ALAGE/utils/Mathematics.h"
 

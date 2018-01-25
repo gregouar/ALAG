@@ -20,7 +20,7 @@ const std::string depth_fragShader = \
     "}";
 
 
-const std::string depthAndIllumination_fragShader = \
+const std::string depthAndLighting_fragShader = \
     "uniform sampler2D colorMap;" \
     "uniform sampler2D depthMap;" \
     "uniform float height;" \
@@ -37,7 +37,7 @@ const std::string depthAndIllumination_fragShader = \
 
 
 
-const std::string illumination_fragShader = \
+const std::string lighting_fragShader = \
     "uniform sampler2D colorMap;" \
     "uniform float zPos;" \
     "uniform vec3 ambient_light;" \
@@ -67,8 +67,8 @@ IsometricScene::IsometricScene(IsoViewAngle viewAngle)
     SetViewAngle(viewAngle);
 
     m_depthShader.loadFromMemory(depth_fragShader,sf::Shader::Fragment);
-    m_depthAndIlluminationShader.loadFromMemory(depthAndIllumination_fragShader,sf::Shader::Fragment);
-    m_illuminationShader.loadFromMemory(illumination_fragShader,sf::Shader::Fragment);
+    m_depthAndLightingShader.loadFromMemory(depthAndLighting_fragShader,sf::Shader::Fragment);
+    m_lightingShader.loadFromMemory(lighting_fragShader,sf::Shader::Fragment);
     SetAmbientLight(m_ambientLight);
 }
 
@@ -82,6 +82,10 @@ IsometricScene::~IsometricScene()
 
 void IsometricScene::ProcessRenderQueue(sf::RenderTarget *w)
 {
+    std::multimap<float, Light*> lightList;
+    m_rootNode.FindNearbyLights(&lightList);
+    UpdateLighting(lightList);
+
     std::list<SceneEntity*>::iterator renderIt;
     for(renderIt = m_renderQueue.begin() ; renderIt != m_renderQueue.end(); ++renderIt)
     {
@@ -102,8 +106,8 @@ void IsometricScene::ProcessRenderQueue(sf::RenderTarget *w)
 
         if((*renderIt)->Is3D())
         {
-            if((*renderIt)->CanBeIlluminated())
-                curShader = &m_depthAndIlluminationShader;
+            if((*renderIt)->CanBeLighted())
+                curShader = &m_depthAndLightingShader;
             else
                 curShader = &m_depthShader;
 
@@ -113,8 +117,8 @@ void IsometricScene::ProcessRenderQueue(sf::RenderTarget *w)
             glEnable(GL_DEPTH_TEST);
             glDepthMask(GL_TRUE);
 
-        } else if((*renderIt)->CanBeIlluminated())
-                curShader = &m_illuminationShader;
+        } else if((*renderIt)->CanBeLighted())
+                curShader = &m_lightingShader;
 
         if(curShader != nullptr)
             curShader->setUniform("zPos",globalPos.z*DEPTH_BUFFER_NORMALISER);
@@ -143,6 +147,16 @@ void IsometricScene::RenderScene(sf::RenderTarget* w)
     }
 }
 
+size_t IsometricScene::UpdateLighting(std::multimap<float, Light*> &ligtList)
+{
+    size_t nbr_lights = SceneManager::UpdateLighting(ligtList);
+
+    m_lightingShader.setUniform("NBR_LIGHTS",(int)nbr_lights);
+    m_depthAndLightingShader.setUniform("NBR_LIGHTS",(int)nbr_lights);
+
+    return nbr_lights;
+}
+
 
 
 Sprite3DEntity* IsometricScene::CreateSprite3DEntity(sf::Vector2i spriteSize)
@@ -168,11 +182,11 @@ void IsometricScene::SetViewAngle(IsoViewAngle viewAngle)
 void IsometricScene::SetAmbientLight(sf::Color light)
 {
     SceneManager::SetAmbientLight(light);
-    m_illuminationShader.setUniform("ambient_light",sf::Vector3f(
+    m_lightingShader.setUniform("ambient_light",sf::Vector3f(
                                             (float)m_ambientLight.r/255.0,
                                             (float)m_ambientLight.g/255.0,
                                             (float)m_ambientLight.b/255.0));
-    m_depthAndIlluminationShader.setUniform("ambient_light",sf::Vector3f(
+    m_depthAndLightingShader.setUniform("ambient_light",sf::Vector3f(
                                             (float)m_ambientLight.r/255.0,
                                             (float)m_ambientLight.g/255.0,
                                             (float)m_ambientLight.b/255.0));
