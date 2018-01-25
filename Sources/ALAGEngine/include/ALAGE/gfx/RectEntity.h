@@ -21,6 +21,7 @@ class RectEntity : public SceneEntity, protected sf::RectangleShape
 
         void SetTexture(TextureAsset *t);
         void SetTexture(Texture3DAsset *t);
+        void SetTextureRect(const sf::IntRect &);
         void SetCenter(sf::Vector2f);
 
         virtual void Notify(NotificationSender*, NotificationType);

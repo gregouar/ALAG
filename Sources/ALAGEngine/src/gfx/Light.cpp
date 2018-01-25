@@ -8,8 +8,10 @@ Light::Light()
     m_isALight = true;
     m_direction = sf::Vector3f(0,0,-1);
     m_diffuseColor = sf::Color::White;
-    m_linearAttenuation = 1;
-    m_quadraticAttenuation = 1;
+    m_specularColor = sf::Color::White;
+    m_constantAttenuation = 1;
+    m_linearAttenuation = 0;
+    m_quadraticAttenuation = 0;
 }
 
 Light::~Light()
@@ -30,6 +32,16 @@ sf::Vector3f Light::GetDirection()
 sf::Color Light::GetDiffuseColor()
 {
     return m_diffuseColor;
+}
+
+sf::Color Light::GetSpecularColor()
+{
+    return m_specularColor;
+}
+
+float Light::GetConstantAttenuation()
+{
+    return m_constantAttenuation;
 }
 
 float Light::GetLinearAttenuation()
@@ -56,6 +68,17 @@ void Light::SetDirection(sf::Vector3f direction)
 void Light::SetDiffuseColor(sf::Color color)
 {
     m_diffuseColor = color;
+}
+
+void Light::SetSpecularColor(sf::Color color)
+{
+    m_specularColor = color;
+}
+
+void Light::SetConstantAttenuation(float constAtt)
+{
+    if(constAtt >= 1)
+        m_constantAttenuation = constAtt;
 }
 
 void Light::SetLinearAttunation(float linAtt)

@@ -9,6 +9,8 @@ TextureAsset::TextureAsset()
     m_allowLoadFromFile = true;
     m_allowLoadFromMemory = true;
     m_allowLoadFromStream = true;
+
+    m_texture.setRepeated(true);
 }
 
 TextureAsset::TextureAsset(const AssetTypeID& id) : Asset(id)

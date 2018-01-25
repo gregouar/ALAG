@@ -1,9 +1,11 @@
 #include "ALAGE/gfx/SceneManager.h"
 
 #include "ALAGE/utils/Logger.h"
+#include "ALAGE/utils/Mathematics.h"
 
 namespace alag
 {
+
 
 SceneManager::SceneManager() : m_rootNode(0,nullptr, this)
 {
@@ -69,15 +71,51 @@ void SceneManager::ComputeRenderQueue()
 }
 
 
-size_t SceneManager::UpdateLighting(std::multimap<float, Light*> &lightList, size_t maxNbrLights)
+int SceneManager::UpdateLighting(std::multimap<float, Light*> &lightList, int maxNbrLights)
 {
-    size_t curNbrLights = 0;
+    int curNbrLights = 0;
 
     std::multimap<float, Light*>::iterator lightIt;
     for(lightIt = lightList.begin() ; lightIt != lightList.end() && curNbrLights < maxNbrLights ; ++lightIt)
     {
+        Light* curLight = lightIt->second;
+        SceneNode* node = curLight->GetParentNode();
 
-        ++curNbrLights;
+        if(node != nullptr)
+        {
+            sf::Vector3f pos(0,0,0);
+            GLfloat glPos[] = { 0,0,0,1.0 };
+            GLfloat glDirection[] = { 0,0,1 };
+            GLfloat glColor[] = {1,1,1,1};
+
+            if(curLight->GetType() == DirectionnalLight)
+            {
+                pos = curLight->GetDirection();
+                glPos[3] = 0;
+            } else
+                pos = node->GetGlobalPosition();
+
+            glPos[0] = pos.x;
+            glPos[1] = pos.y;
+            glPos[2] = pos.z;
+
+            glLightfv(GL_LIGHT0+curNbrLights, GL_POSITION, glPos);
+            SfColorToGlColor(curLight->GetDiffuseColor(), glColor);
+            glLightfv(GL_LIGHT0+curNbrLights, GL_DIFFUSE, glColor);
+            SfColorToGlColor(curLight->GetSpecularColor(), glColor);
+            glLightfv(GL_LIGHT0+curNbrLights, GL_SPECULAR, glColor);
+            glLightf(GL_LIGHT0+curNbrLights, GL_CONSTANT_ATTENUATION, curLight->GetConstantAttenuation());
+            glLightf(GL_LIGHT0+curNbrLights, GL_LINEAR_ATTENUATION, curLight->GetLinearAttenuation());
+            glLightf(GL_LIGHT0+curNbrLights, GL_QUADRATIC_ATTENUATION, curLight->GetQuadraticAttenuation());
+
+            pos = curLight->GetDirection();
+            glDirection[0] = pos.x;
+            glDirection[1] = pos.y;
+            glDirection[2] = pos.z;
+            glLightfv(GL_LIGHT0+curNbrLights, GL_SPOT_DIRECTION, glDirection);
+
+            ++curNbrLights;
+        }
     }
 
     return curNbrLights;

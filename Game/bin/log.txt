@@ -1,6 +1,9 @@
 Initializing application
-Starting application
+Texture loaded from file: ../data/sarco-color.png
+Texture loaded from file: ../data/sarco-normal.png
+Texture loaded from file: ../data/sarco-heightmap.png
 Texture3D loaded from file: ../data/sarcoXML.txt
+Starting application
 Texture3D loaded from file: ../data/sandXML.txt
 Texture loaded from file: ../data/abbaye_heightmap.png
 Texture loaded from file: ../data/abbaye_normal.png
@@ -8,7 +11,4 @@ Texture loaded from file: ../data/abbaye_color.png
 Texture loaded from file: ../data/sand_color.png
 Texture loaded from file: ../data/sand_depth.png
 Texture loaded from file: ../data/sand_normal.png
-Texture loaded from file: ../data/sarco-color.png
-Texture loaded from file: ../data/sarco-normal.png
-Texture loaded from file: ../data/sarco-heightmap.png
 Stopping application

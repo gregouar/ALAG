@@ -45,7 +45,7 @@ void TestingState::Init()
     TextureHandler->LoadAssetFromFile("../data/abbaye_color.png",LoadTypeInThread);
 
     AssetHandler<Texture3DAsset>* Texture3DHandler =  AssetHandler<Texture3DAsset>::Instance();
-    Texture3DAsset *t3D =  Texture3DHandler->LoadAssetFromFile("../data/sarcoXML.txt",LoadTypeInThread);
+    Texture3DAsset *t3D =  Texture3DHandler->LoadAssetFromFile("../data/sarcoXML.txt");
 
     TextureHandler->LoadAssetFromFile("../data/sand_color.png",LoadTypeInThread);
     TextureHandler->LoadAssetFromFile("../data/sand_depth.png",LoadTypeInThread);
@@ -68,6 +68,8 @@ void TestingState::Init()
     rectEntity->SetCenter(sf::Vector2f(512,  512));
    // rectEntity->SetTexture(TextureHandler->LoadAssetFromFile("../data/sand_color.png",LoadTypeInThread));
     rectEntity->SetTexture(Texture3DHandler->LoadAssetFromFile("../data/sandXML.txt",LoadTypeInThread));
+    //rectEntity->SetTexture(Texture3DHandler->LoadAssetFromFile("../data/cobbleXML.txt",LoadTypeInThread));
+   // rectEntity->SetTextureRect(sf::IntRect(0,0,4096,4096));
     rectNode->AttachObject(rectEntity);
 
     m_sarcoNode = m_mainScene.GetRootNode()->CreateChildNode();
@@ -99,6 +101,16 @@ void TestingState::Init()
     sarco3DEntityThird->SetTexture(t3D);
     sarco3DEntityThird->SetCenter(128,128);
     m_mainScene.GetRootNode()->CreateChildNode(sf::Vector2f(-100,100))->AttachObject(sarco3DEntityThird);
+
+    m_mainScene.GetRootNode()->AttachObject(m_mainScene.CreateLight(DirectionnalLight,sf::Vector3f(-1,.5,-1), sf::Color::Red));
+    //m_mainScene.GetRootNode()->AttachObject(m_mainScene.CreateLight(DirectionnalLight,sf::Vector3f(0,-1,0), sf::Color::Red));
+
+    m_lightNode = m_mainScene.GetRootNode()->CreateChildNode();
+    Light* light = m_mainScene.CreateLight();
+    light->SetDiffuseColor(sf::Color::Green);
+    light->SetLinearAttunation(.0001);
+    light->SetQuadraticAttenuation(.0001);
+    m_lightNode->AttachObject(light);
 
     m_firstEntering = false;
 }
@@ -157,11 +169,17 @@ void TestingState::HandleEvents(alag::EventManager *event_manager)
     if(event_manager->KeyPressed(sf::Keyboard::Q))
         m_sarco3DNode->Move(0,0,-10);
 
+
     if(event_manager->MouseButtonIsPressed(sf::Mouse::Left))
     {
         sf::Vector2i p(event_manager->MousePosition());
         m_sarco3DNode->SetPosition(m_mainScene.ConvertMouseToScene(p));
     }
+
+
+    sf::Vector2f p = m_mainScene.ConvertMouseToScene(event_manager->MousePosition());
+
+    m_lightNode->SetPosition(p.x,p.y,1);
 
     if(event_manager->IsAskingToClose())
         m_manager->Switch(nullptr);

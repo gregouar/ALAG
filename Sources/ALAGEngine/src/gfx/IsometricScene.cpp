@@ -1,21 +1,32 @@
 #include "ALAGE/gfx/IsometricScene.h"
 
 #include "ALAGE/gfx/Sprite3DEntity.h"
+#include "ALAGE/utils/Mathematics.h"
 
 namespace alag
 {
 
+const std::string vertexShader = \
+    "varying vec3 vertex; "\
+    "void main() "\
+    "{ "\
+    "    vertex = gl_Vertex.xyz; "\
+    "    gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex; "\
+    "    gl_TexCoord[0] = gl_TextureMatrix[0] * gl_MultiTexCoord0; "\
+    "    gl_FrontColor = gl_Color; "\
+    "}";
 
 const std::string depth_fragShader = \
     "uniform sampler2D colorMap;" \
     "uniform sampler2D depthMap;" \
     "uniform float height;" \
-    "uniform float zPos;" \
+    "uniform vec3 globalPos;" \
     "void main()" \
     "{" \
     "   vec4 colorPixel = texture2D(colorMap, gl_TexCoord[0].xy);" \
     "   vec4 depthPixel = texture2D(depthMap, gl_TexCoord[0].xy);" \
-    "   gl_FragDepth = 1.0 - depthPixel.a*(0.5+depthPixel.r*height + zPos);" \
+    "   float zPixel = depthPixel.r*height + globalPos.z;" \
+    "   gl_FragDepth = 1.0 - depthPixel.a*(0.5+zPixel*0.001);" \
     "   gl_FragColor = gl_Color * colorPixel; " \
     "}";
 
@@ -23,29 +34,59 @@ const std::string depth_fragShader = \
 const std::string depthAndLighting_fragShader = \
     "uniform sampler2D colorMap;" \
     "uniform sampler2D depthMap;" \
+    "uniform sampler2D normalMap;" \
+    "uniform mat3 normalProjMat;" \
     "uniform float height;" \
-    "uniform float zPos;" \
-    "uniform vec3 ambient_light;" \
+    "uniform vec3 globalPos;" \
+    "uniform vec3 normalVec;" \
+    "uniform vec4 ambient_light;" \
+    "uniform int NBR_LIGHTS;" \
+    "varying vec3 vertex; "\
     "void main()" \
     "{" \
     "   vec4 colorPixel = texture2D(colorMap, gl_TexCoord[0].xy);" \
     "   vec4 depthPixel = texture2D(depthMap, gl_TexCoord[0].xy);" \
-    "   vec4 lightning = vec4(ambient_light,1.0);" \
-    "   gl_FragDepth = 1.0 - depthPixel.a*(0.5+depthPixel.r*height + zPos);" \
-    "   gl_FragColor = gl_Color * colorPixel * lightning; " \
+	"	vec3 direction = -1.0+2.0*texture2D(normalMap, gl_TexCoord[0].xy).rgb;"
+	"   direction = direction * normalProjMat;"
+	"   vertex.z = globalPos.z;"
+    "   float zPixel = depthPixel.r*height + vertex.z;" \
+    "   gl_FragDepth = 1.0 - depthPixel.a*(0.5+zPixel*0.001);" \
+    "   gl_FragColor = gl_Color *ambient_light * colorPixel;" \
+    "int i;" \
+	"for(i = 0 ; i < NBR_LIGHTS ; i = i+1)" \
+	"{" \
+	"	float lighting = 0.0;" \
+	"	if(gl_LightSource[i].position.w == 0.0)" \
+	"	{		" \
+	"		vec3 light_direction = -gl_LightSource[i].position.xyz;" \
+	"		lighting = max(0.0, dot(direction,normalize(light_direction)));" \
+	"	}" \
+	"	else" \
+	"	{" \
+	"		vec3 light_direction = gl_LightSource[i].position.xyz - globalPos;" \
+	"		float dist = length(light_direction);" \
+	"		float attenuation = 1.0/( gl_LightSource[i].constantAttenuation +" \
+	"								  dist*gl_LightSource[i].linearAttenuation +" \
+	"								  dist*dist*gl_LightSource[i].quadraticAttenuation);" \
+	"		lighting = max(0.0, dot(direction,normalize(light_direction))) * attenuation;" \
+	"	}" \
+	"	lighting *= gl_LightSource[i].diffuse.a;" \
+	"	gl_FragColor.rgb +=  gl_Color.rgb * colorPixel.rgb * gl_LightSource[i].diffuse.rgb  * lighting;" \
+	"}" \
     "}";
 
 
 
 const std::string lighting_fragShader = \
     "uniform sampler2D colorMap;" \
-    "uniform float zPos;" \
-    "uniform vec3 ambient_light;" \
+    "uniform sampler2D normalMap;" \
+    "uniform vec3 globalPos;" \
+    "uniform vec4 ambient_light;" \
+    "uniform int NBR_LIGHTS;" \
     "void main()" \
     "{" \
     "   vec4 colorPixel = texture2D(colorMap, gl_TexCoord[0].xy);" \
-    "   vec4 lightning = vec4(ambient_light,1.0);" \
-    "   gl_FragColor = gl_Color * colorPixel * lightning; " \
+    "   gl_FragColor = gl_Color * colorPixel * ambient_light; " \
     "}";
 
 
@@ -67,7 +108,8 @@ IsometricScene::IsometricScene(IsoViewAngle viewAngle)
     SetViewAngle(viewAngle);
 
     m_depthShader.loadFromMemory(depth_fragShader,sf::Shader::Fragment);
-    m_depthAndLightingShader.loadFromMemory(depthAndLighting_fragShader,sf::Shader::Fragment);
+    //m_depthAndLightingShader.loadFromMemory(depthAndLighting_fragShader,sf::Shader::Fragment);
+    m_depthAndLightingShader.loadFromMemory(vertexShader,depthAndLighting_fragShader);
     m_lightingShader.loadFromMemory(lighting_fragShader,sf::Shader::Fragment);
     SetAmbientLight(m_ambientLight);
 }
@@ -121,7 +163,10 @@ void IsometricScene::ProcessRenderQueue(sf::RenderTarget *w)
                 curShader = &m_lightingShader;
 
         if(curShader != nullptr)
-            curShader->setUniform("zPos",globalPos.z*DEPTH_BUFFER_NORMALISER);
+        {
+            curShader->setUniform("globalPos",globalPos);
+            curShader->setUniform("normalProjMat",sf::Glsl::Mat3(m_normalProjMat));
+        }
 
         (*renderIt)->PrepareShader(curShader);
         state.shader = curShader;
@@ -147,9 +192,9 @@ void IsometricScene::RenderScene(sf::RenderTarget* w)
     }
 }
 
-size_t IsometricScene::UpdateLighting(std::multimap<float, Light*> &ligtList)
+int IsometricScene::UpdateLighting(std::multimap<float, Light*> &ligtList)
 {
-    size_t nbr_lights = SceneManager::UpdateLighting(ligtList);
+    int nbr_lights = SceneManager::UpdateLighting(ligtList);
 
     m_lightingShader.setUniform("NBR_LIGHTS",(int)nbr_lights);
     m_depthAndLightingShader.setUniform("NBR_LIGHTS",(int)nbr_lights);
@@ -182,14 +227,9 @@ void IsometricScene::SetViewAngle(IsoViewAngle viewAngle)
 void IsometricScene::SetAmbientLight(sf::Color light)
 {
     SceneManager::SetAmbientLight(light);
-    m_lightingShader.setUniform("ambient_light",sf::Vector3f(
-                                            (float)m_ambientLight.r/255.0,
-                                            (float)m_ambientLight.g/255.0,
-                                            (float)m_ambientLight.b/255.0));
-    m_depthAndLightingShader.setUniform("ambient_light",sf::Vector3f(
-                                            (float)m_ambientLight.r/255.0,
-                                            (float)m_ambientLight.g/255.0,
-                                            (float)m_ambientLight.b/255.0));
+
+    m_lightingShader.setUniform("ambient_light",sf::Glsl::Vec4(m_ambientLight));
+    m_depthAndLightingShader.setUniform("ambient_light",sf::Glsl::Vec4(m_ambientLight));
 }
 
 void IsometricScene::ComputeTrigonometry()
@@ -225,9 +265,21 @@ void IsometricScene::ComputeTrigonometry()
     m_TransformIsoToCart = sf::Transform(cosXY,         -sinXY,         0,
                                          sinXY * sinZ,   cosXY * sinZ, -cosZ,
                                          0,              0,             1);
-   /* m_TransformIsoToCart = sf::Transform::Identity;
-    m_TransformIsoToCart.rotate(m_viewAngle.xyAngle);
-    m_TransformIsoToCart.scale(1,cosZ);*/
+
+
+     m_normalProjMat[0] = cosXY;
+     m_normalProjMat[1] = sinZ * sinXY;
+     m_normalProjMat[2] = cosZ * sinXY;
+     m_normalProjMat[3] = -sinXY;
+     m_normalProjMat[4] = sinZ * cosXY;
+     m_normalProjMat[5] = cosZ * cosXY;
+     m_normalProjMat[6] = 0;
+     m_normalProjMat[7] = -cosZ;
+     m_normalProjMat[8] = sinZ;
+
+     /*m_normalProjMat = {cosXY, sinZ*sinXY , cosZ * sinXY,
+                            -sinXY, sinZ*cosXY, cosZ * cosXY,
+                            0 ,  -cosZ , sinZ};*/
 }
 
 

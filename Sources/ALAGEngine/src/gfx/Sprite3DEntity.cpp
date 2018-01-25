@@ -56,7 +56,8 @@ void Sprite3DEntity::PrepareShader(sf::Shader *shader)
     {
         shader->setUniform("colorMap",*m_texture->GetColorMap());
         shader->setUniform("depthMap",*m_texture->GetDepthMap());
-        shader->setUniform("height",m_texture->GetHeight()*getScale().y*DEPTH_BUFFER_NORMALISER);
+        shader->setUniform("normalMap",*m_texture->GetNormalMap());
+        shader->setUniform("height",m_texture->GetHeight()*getScale().y);
     }
 }
 

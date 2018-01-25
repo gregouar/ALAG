@@ -2,6 +2,7 @@
 
 #include "ALAGE/gfx/IsometricScene.h"
 #include "ALAGE/gfx/SceneNode.h"
+#include "ALAGE/utils/Mathematics.h"
 
 namespace alag
 {
@@ -53,7 +54,9 @@ void RectEntity::PrepareShader(sf::Shader *shader)
         Texture3DAsset *myTexture3D = (Texture3DAsset*) m_texture;
         shader->setUniform("colorMap",*myTexture3D->GetColorMap());
         shader->setUniform("depthMap",*myTexture3D->GetDepthMap());
-        shader->setUniform("height",myTexture3D->GetHeight()*getScale().y*DEPTH_BUFFER_NORMALISER);
+        shader->setUniform("normalMap",*myTexture3D->GetNormalMap());
+        shader->setUniform("height",myTexture3D->GetHeight()*getScale().y);
+        shader->setUniform("normalProjMat",sf::Glsl::Mat3(IdMat3X3));
     }
 }
 
@@ -95,7 +98,16 @@ void RectEntity::SetTexture(Texture3DAsset *texture)
     }
 
     if(m_texture != nullptr)
+    {
         sf::RectangleShape::setTexture(m_texture->GetTexture());
+       //. if(m_texture->GetTexture() != nullptr)
+          // m_texture->GetTexture()->setRepeated(true);
+    }
+}
+
+void RectEntity::SetTextureRect(const sf::IntRect &rect)
+{
+    setTextureRect(rect);
 }
 
 void RectEntity::SetCenter(sf::Vector2f c)

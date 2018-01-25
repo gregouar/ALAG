@@ -51,7 +51,7 @@ class SceneManager
         void AddCreatedObject(const ObjectTypeID &, SceneObject*);
         void AddToRenderQueue(SceneNode*);
 
-        virtual size_t UpdateLighting(std::multimap<float, Light*> &lightList, size_t = GL_MAX_LIGHTS);
+        virtual int UpdateLighting(std::multimap<float, Light*> &lightList, int = GL_MAX_LIGHTS);
 
         //sf::View m_view; //Should remove this and create CameraEntity
         Camera *m_currentCamera;
