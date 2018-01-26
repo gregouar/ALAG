@@ -31,29 +31,15 @@ TestingState::~TestingState()
 void TestingState::Init()
 {
     AssetHandler<TextureAsset>* TextureHandler =  AssetHandler<TextureAsset>::Instance();
-    /*TextureHandler->LoadAssetFromFile(TextureHandler->GenerateID(),
-                                      "../data/sarco-color.png");
-    TextureHandler->LoadAssetFromFile(TextureHandler->GenerateID(),
-                                      "../data/sarco-normal.png");
-
-    AssetTypeID newID = TextureHandler->GenerateID();
-    TextureHandler->LoadAssetFromFile(newID,"../data/sarco-heightmap.png",LoadTypeInThread);
-    TextureHandler->AddToObsolescenceList(newID,2);*/
-
-    TextureHandler->LoadAssetFromFile("../data/abbaye_heightmap.png",LoadTypeInThread);
-    TextureHandler->LoadAssetFromFile("../data/abbaye_normal.png",LoadTypeInThread);
-    TextureHandler->LoadAssetFromFile("../data/abbaye_color.png",LoadTypeInThread);
-
     AssetHandler<Texture3DAsset>* Texture3DHandler =  AssetHandler<Texture3DAsset>::Instance();
-    Texture3DAsset *t3D =  Texture3DHandler->LoadAssetFromFile("../data/sarcoXML.txt");
 
-    TextureHandler->LoadAssetFromFile("../data/sand_color.png",LoadTypeInThread);
-    TextureHandler->LoadAssetFromFile("../data/sand_depth.png",LoadTypeInThread);
-    TextureHandler->LoadAssetFromFile("../data/sand_normal.png",LoadTypeInThread);
+    sf::Image bluePixel;
+    bluePixel.create(1,1,sf::Color::Blue);
+    TextureHandler->SetDummyAsset(TextureAsset(bluePixel));
+    TextureHandler->GetDummyAsset()->GetTexture();
+
 
     m_mainScene.SetViewAngle({.xyAngle = 45, .zAngle=30});
-    /*m_mainScene.InitRenderer(Config::GetInt("window","width",GApp::DEFAULT_WINDOW_WIDTH),
-                             Config::GetInt("window","height",GApp::DEFAULT_WINDOW_HEIGHT));*/
     m_cameraNode = m_mainScene.GetRootNode()->CreateChildNode(sf::Vector2f(0,0));
     m_camera = m_mainScene.CreateCamera(sf::Vector2f(
                              Config::GetInt("window","width",GApp::DEFAULT_WINDOW_WIDTH),
@@ -61,14 +47,24 @@ void TestingState::Init()
     m_cameraNode->AttachObject(m_camera);
     m_mainScene.SetCurrentCamera(m_camera);
 
-    m_mainScene.SetAmbientLight(sf::Color(64,96,160));
+   // m_mainScene.SetAmbientLight(sf::Color(32,48,128));
+
+    Texture3DAsset *t3D =  Texture3DHandler->LoadAssetFromFile("../data/sarcoXML.txt");
+
+    TextureHandler->LoadAssetFromFile("../data/sand_color.png",LoadTypeInThread);
+    TextureHandler->LoadAssetFromFile("../data/sand_depth.png",LoadTypeInThread);
+    TextureHandler->LoadAssetFromFile("../data/sand_normal.png",LoadTypeInThread);
+
 
     SceneNode* rectNode = m_mainScene.GetRootNode()->CreateChildNode();
     RectEntity *rectEntity = m_mainScene.CreateRectEntity(sf::Vector2f(1024,1024));
     rectEntity->SetCenter(sf::Vector2f(512,  512));
-   // rectEntity->SetTexture(TextureHandler->LoadAssetFromFile("../data/sand_color.png",LoadTypeInThread));
-    rectEntity->SetTexture(Texture3DHandler->LoadAssetFromFile("../data/sandXML.txt",LoadTypeInThread));
+   // rectEntity->SetTexture(TextureHandler->LoadAssetFromFile("../data/cobble_color.png",LoadTypeInThread));
+    //rectEntity->SetTexture(Texture3DHandler->LoadAssetFromFile("../data/wallXML.txt",LoadTypeInThread));
     //rectEntity->SetTexture(Texture3DHandler->LoadAssetFromFile("../data/cobbleXML.txt",LoadTypeInThread));
+    rectEntity->SetTexture(Texture3DHandler->LoadAssetFromFile("../data/sandXML.txt",LoadTypeInThread));
+    //rectEntity->SetTexture(TextureHandler->LoadAssetFromFile("../data/sand_color.png",LoadTypeInThread));
+  //  rectEntity->SetTexture(TextureHandler->LoadAssetFromFile("../data/sand.png",LoadTypeInThread));
    // rectEntity->SetTextureRect(sf::IntRect(0,0,4096,4096));
     rectNode->AttachObject(rectEntity);
 
@@ -84,7 +80,7 @@ void TestingState::Init()
     Sprite3DEntity *sarco3DEntity = m_mainScene.CreateSprite3DEntity(sf::Vector2i(256,256));
     sarco3DEntity->SetTexture(t3D);
     sarco3DEntity->SetCenter(128,128);
-    sarco3DEntity->DesactivateLighting();
+   // sarco3DEntity->DesactivateLighting();
     m_sarco3DNode->AttachObject(sarco3DEntity);
 
 
@@ -105,11 +101,24 @@ void TestingState::Init()
     m_mainScene.GetRootNode()->AttachObject(m_mainScene.CreateLight(DirectionnalLight,sf::Vector3f(-1,.5,-1), sf::Color::Red));
     //m_mainScene.GetRootNode()->AttachObject(m_mainScene.CreateLight(DirectionnalLight,sf::Vector3f(0,-1,0), sf::Color::Red));
 
+    SceneNode *chene_node = m_mainScene.GetRootNode()->CreateChildNode(sf::Vector2f(150,-100));
+    Sprite3DEntity *cheneEntity = m_mainScene.CreateSprite3DEntity();
+    cheneEntity->SetTexture(Texture3DHandler->LoadAssetFromFile("../data/cheneXML.txt"));
+    cheneEntity->SetCenter(192,320);
+    chene_node->AttachObject(cheneEntity);
+
+    Sprite3DEntity *abbayeEntity = m_mainScene.CreateSprite3DEntity();
+    abbayeEntity->SetTexture(Texture3DHandler->LoadAssetFromFile("../data/abbayeXML.txt",LoadTypeInThread));
+    abbayeEntity->SetCenter(960,540);
+    m_mainScene.GetRootNode()->AttachObject(abbayeEntity);
+    //m_mainScene.GetRootNode()->CreateChildNode(sf::Vector2f(0,0))->AttachObject(abbayeEntity);
+
+
     m_lightNode = m_mainScene.GetRootNode()->CreateChildNode();
     Light* light = m_mainScene.CreateLight();
     light->SetDiffuseColor(sf::Color::Green);
-    light->SetLinearAttunation(.0001);
-    light->SetQuadraticAttenuation(.0001);
+    light->SetLinearAttunation(.00001);
+    light->SetQuadraticAttenuation(.00001);
     m_lightNode->AttachObject(light);
 
     m_firstEntering = false;
@@ -179,7 +188,7 @@ void TestingState::HandleEvents(alag::EventManager *event_manager)
 
     sf::Vector2f p = m_mainScene.ConvertMouseToScene(event_manager->MousePosition());
 
-    m_lightNode->SetPosition(p.x,p.y,1);
+    m_lightNode->SetPosition(p.x,p.y,70);
 
     if(event_manager->IsAskingToClose())
         m_manager->Switch(nullptr);
@@ -189,7 +198,7 @@ void TestingState::Update(sf::Time time)
 {
     m_totalTime += time;
 
-    m_cameraNode->Move(m_mainScene.ConvertCartesianToIso(m_camMove.x,m_camMove.y)*(100*time.asSeconds()));
+    m_cameraNode->Move(m_mainScene.ConvertCartesianToIso(m_camMove.x,m_camMove.y)*(500*time.asSeconds()));
   //  m_cameraNode->Move(sf::Vector3f(0,0,m_camMove.z)*(100*time.asSeconds()));
     m_camera->Zoom((1-m_camMove.z*time.asSeconds()));
     m_sarcoNode->Move(20*time.asSeconds(),0,0);

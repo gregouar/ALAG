@@ -30,4 +30,18 @@ void NotificationListener::NotifySenderDestruction(NotificationSender* sender)
     m_senders.remove(sender);
 }
 
+void NotificationListener::StopListeningTo(NotificationSender* sender)
+{
+    if(sender != nullptr)
+    {
+        /*std::list<NotificationSender*>::iterator senderIt;
+        senderIt = std::find(m_senders.begin(), m_senders.end(), sender);
+        if(senderIt != m_senders.end())
+            m_senders.erase(senderIt);*/
+
+        m_senders.remove(sender);
+        sender->RemoveFromAllNotificationList(this);
+    }
+}
+
 }

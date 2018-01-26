@@ -272,6 +272,22 @@ void AssetHandler<AssetType>::CleanAll()
     m_filesList.clear();
 }
 
+template<typename AssetType>
+AssetType* AssetHandler<AssetType>::GetDummyAsset()
+{
+    if(!m_hasDummyAsset)
+        return nullptr;
+    return &m_dummyAsset;
+}
+
+
+template<typename AssetType>
+void AssetHandler<AssetType>::SetDummyAsset(AssetType dummy)
+{
+    m_dummyAsset = dummy;
+    m_hasDummyAsset = true;
+}
+
 
 template<typename AssetType>
 void AssetHandler<AssetType>::LoadInThread()

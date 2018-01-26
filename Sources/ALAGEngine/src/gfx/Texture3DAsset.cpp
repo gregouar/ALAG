@@ -59,7 +59,7 @@ bool Texture3DAsset::LoadNow()
             }
 
             if(loaded)
-                Logger::Write("Texture3D loaded from file: "+m_filePath);
+                Logger::Write("Texture3D readed from file: "+m_filePath);
 
         } else {
             Logger::Error("Cannot load asset");
@@ -157,7 +157,10 @@ void Texture3DAsset::Notify(NotificationSender* sender, NotificationType notific
         if(m_colorMap != nullptr && m_colorMap->IsLoaded())
         if(m_depthMap != nullptr && m_depthMap->IsLoaded())
         if(m_normalMap != nullptr && m_normalMap->IsLoaded())
+        {
             m_loaded = true, Asset::LoadNow();
+            Logger::Write("Texture3D loaded from file: "+m_filePath);
+        }
     }
 
     if(notification == NotificationSenderDestroyed)

@@ -27,7 +27,6 @@ NotificationSender::~NotificationSender()
             (*listenerIt)->Notify(this, NotificationSenderDestroyed);
             (*listenerIt)->NotifySenderDestruction(this);
         }
-
 }
 
 

@@ -46,7 +46,7 @@ void SpriteEntity::SetTexture(TextureAsset *texture)
     if(m_texture != texture)
     {
         if(m_texture != nullptr)
-            m_texture->RemoveFromAllNotificationList(this);
+            StopListeningTo(m_texture);
 
         m_texture = texture;
 
@@ -54,7 +54,7 @@ void SpriteEntity::SetTexture(TextureAsset *texture)
             texture->AskForAllNotifications(this);
     }
 
-    if(m_texture != nullptr)
+    if(m_texture != nullptr && texture->GetTexture() != nullptr)
         sf::Sprite::setTexture(*(texture->GetTexture()));
 }
 
@@ -68,6 +68,10 @@ void SpriteEntity::SetCenter(sf::Vector2f c)
     sf::Sprite::setOrigin(c);
 }
 
+sf::Vector2f SpriteEntity::GetCenter()
+{
+    return sf::Sprite::getOrigin();
+}
 
 void SpriteEntity::Notify(NotificationSender* sender, NotificationType notification)
 {

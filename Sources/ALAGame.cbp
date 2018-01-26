@@ -106,6 +106,7 @@
 		<Unit filename="ALAGEngine/src/gfx/AnimatedSprite.cpp" />
 		<Unit filename="ALAGEngine/src/gfx/Camera.cpp" />
 		<Unit filename="ALAGEngine/src/gfx/IsometricScene.cpp" />
+		<Unit filename="ALAGEngine/src/gfx/IsometricShaders.cpp" />
 		<Unit filename="ALAGEngine/src/gfx/Light.cpp" />
 		<Unit filename="ALAGEngine/src/gfx/QuadtreeNode.cpp" />
 		<Unit filename="ALAGEngine/src/gfx/RectEntity.cpp" />

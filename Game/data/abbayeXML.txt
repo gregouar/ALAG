@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<texture3D>
+	<name>Abbaye</name>
+	<height>460</height>
+	<texture type="color">abbaye_color.png</texture>
+	<texture type="normal">abbaye_normal.png</texture>
+	<texture type="depth">abbaye_heightmap.png</texture>
+</texture3D>

@@ -24,12 +24,16 @@ class RectEntity : public SceneEntity, protected sf::RectangleShape
         void SetTextureRect(const sf::IntRect &);
         void SetCenter(sf::Vector2f);
 
+
+        sf::Vector2f GetCenter();
+
         virtual void Notify(NotificationSender*, NotificationType);
 
     protected:
         TextureAsset *m_texture;
 
     private:
+        bool m_customTextureRect;
 };
 
 }

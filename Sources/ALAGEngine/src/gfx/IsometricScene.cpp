@@ -2,94 +2,10 @@
 
 #include "ALAGE/gfx/Sprite3DEntity.h"
 #include "ALAGE/utils/Mathematics.h"
+#include "../src/gfx/IsometricShaders.cpp"
 
 namespace alag
 {
-
-const std::string vertexShader = \
-    "varying vec3 vertex; "\
-    "void main() "\
-    "{ "\
-    "    vertex = gl_Vertex.xyz; "\
-    "    gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex; "\
-    "    gl_TexCoord[0] = gl_TextureMatrix[0] * gl_MultiTexCoord0; "\
-    "    gl_FrontColor = gl_Color; "\
-    "}";
-
-const std::string depth_fragShader = \
-    "uniform sampler2D colorMap;" \
-    "uniform sampler2D depthMap;" \
-    "uniform float height;" \
-    "uniform vec3 globalPos;" \
-    "void main()" \
-    "{" \
-    "   vec4 colorPixel = texture2D(colorMap, gl_TexCoord[0].xy);" \
-    "   vec4 depthPixel = texture2D(depthMap, gl_TexCoord[0].xy);" \
-    "   float zPixel = depthPixel.r*height + globalPos.z;" \
-    "   gl_FragDepth = 1.0 - depthPixel.a*(0.5+zPixel*0.001);" \
-    "   gl_FragColor = gl_Color * colorPixel; " \
-    "}";
-
-
-const std::string depthAndLighting_fragShader = \
-    "uniform sampler2D colorMap;" \
-    "uniform sampler2D depthMap;" \
-    "uniform sampler2D normalMap;" \
-    "uniform mat3 normalProjMat;" \
-    "uniform float height;" \
-    "uniform vec3 globalPos;" \
-    "uniform vec3 normalVec;" \
-    "uniform vec4 ambient_light;" \
-    "uniform int NBR_LIGHTS;" \
-    "varying vec3 vertex; "\
-    "void main()" \
-    "{" \
-    "   vec4 colorPixel = texture2D(colorMap, gl_TexCoord[0].xy);" \
-    "   vec4 depthPixel = texture2D(depthMap, gl_TexCoord[0].xy);" \
-	"	vec3 direction = -1.0+2.0*texture2D(normalMap, gl_TexCoord[0].xy).rgb;"
-	"   direction = direction * normalProjMat;"
-	"   vertex.z = globalPos.z;"
-    "   float zPixel = depthPixel.r*height + vertex.z;" \
-    "   gl_FragDepth = 1.0 - depthPixel.a*(0.5+zPixel*0.001);" \
-    "   gl_FragColor = gl_Color *ambient_light * colorPixel;" \
-    "int i;" \
-	"for(i = 0 ; i < NBR_LIGHTS ; i = i+1)" \
-	"{" \
-	"	float lighting = 0.0;" \
-	"	if(gl_LightSource[i].position.w == 0.0)" \
-	"	{		" \
-	"		vec3 light_direction = -gl_LightSource[i].position.xyz;" \
-	"		lighting = max(0.0, dot(direction,normalize(light_direction)));" \
-	"	}" \
-	"	else" \
-	"	{" \
-	"		vec3 light_direction = gl_LightSource[i].position.xyz - globalPos;" \
-	"		float dist = length(light_direction);" \
-	"		float attenuation = 1.0/( gl_LightSource[i].constantAttenuation +" \
-	"								  dist*gl_LightSource[i].linearAttenuation +" \
-	"								  dist*dist*gl_LightSource[i].quadraticAttenuation);" \
-	"		lighting = max(0.0, dot(direction,normalize(light_direction))) * attenuation;" \
-	"	}" \
-	"	lighting *= gl_LightSource[i].diffuse.a;" \
-	"	gl_FragColor.rgb +=  gl_Color.rgb * colorPixel.rgb * gl_LightSource[i].diffuse.rgb  * lighting;" \
-	"}" \
-    "}";
-
-
-
-const std::string lighting_fragShader = \
-    "uniform sampler2D colorMap;" \
-    "uniform sampler2D normalMap;" \
-    "uniform vec3 globalPos;" \
-    "uniform vec4 ambient_light;" \
-    "uniform int NBR_LIGHTS;" \
-    "void main()" \
-    "{" \
-    "   vec4 colorPixel = texture2D(colorMap, gl_TexCoord[0].xy);" \
-    "   gl_FragColor = gl_Color * colorPixel * ambient_light; " \
-    "}";
-
-
 
 //const IsoViewAngle IsometricScene::DEFAULT_ISO_VIEW_ANGLE.xyAngle = 0;
 //const IsoViewAngle IsometricScene::DEFAULT_ISO_VIEW_ANGLE.zAngle = 90;
@@ -128,6 +44,10 @@ void IsometricScene::ProcessRenderQueue(sf::RenderTarget *w)
     m_rootNode.FindNearbyLights(&lightList);
     UpdateLighting(lightList);
 
+    w->pushGLStates();
+    glEnable(GL_DEPTH_TEST);
+    glDepthMask(GL_TRUE);
+
     std::list<SceneEntity*>::iterator renderIt;
     for(renderIt = m_renderQueue.begin() ; renderIt != m_renderQueue.end(); ++renderIt)
     {
@@ -146,7 +66,7 @@ void IsometricScene::ProcessRenderQueue(sf::RenderTarget *w)
 
         sf::Shader* curShader = nullptr;
 
-        if((*renderIt)->Is3D())
+        /*if((*renderIt)->Is3D())
         {
             if((*renderIt)->CanBeLighted())
                 curShader = &m_depthAndLightingShader;
@@ -160,12 +80,19 @@ void IsometricScene::ProcessRenderQueue(sf::RenderTarget *w)
             glDepthMask(GL_TRUE);
 
         } else if((*renderIt)->CanBeLighted())
-                curShader = &m_lightingShader;
+                curShader = &m_lightingShader;*/
+
+        if((*renderIt)->CanBeLighted())
+            curShader = &m_depthAndLightingShader;
+        else
+            curShader = &m_depthShader;
 
         if(curShader != nullptr)
         {
-            curShader->setUniform("globalPos",globalPos);
+            curShader->setUniform("zPos",globalPos.z);
             curShader->setUniform("normalProjMat",sf::Glsl::Mat3(m_normalProjMat));
+            curShader->setUniform("cartToIso2DProjMat",sf::Glsl::Mat3(m_cartToIso2DProjMat));
+            curShader->setUniform("isoToCartZFactor",m_isoToCartZFactor);
         }
 
         (*renderIt)->PrepareShader(curShader);
@@ -173,9 +100,10 @@ void IsometricScene::ProcessRenderQueue(sf::RenderTarget *w)
 
         (*renderIt)->Render(w,state);
 
-        if((*renderIt)->Is3D())
-            w->popGLStates();
+        /*if((*renderIt)->Is3D())
+            w->popGLStates();*/
     }
+    w->popGLStates();
 }
 
 void IsometricScene::RenderScene(sf::RenderTarget* w)
@@ -276,6 +204,18 @@ void IsometricScene::ComputeTrigonometry()
      m_normalProjMat[6] = 0;
      m_normalProjMat[7] = -cosZ;
      m_normalProjMat[8] = sinZ;
+
+     m_cartToIso2DProjMat[0] = cosXY;
+     m_cartToIso2DProjMat[1] = sinXY/sinZ;
+     m_cartToIso2DProjMat[2] = 0;
+     m_cartToIso2DProjMat[3] = -sinXY;
+     m_cartToIso2DProjMat[4] = cosXY/sinZ;
+     m_cartToIso2DProjMat[5] = 0;
+     m_cartToIso2DProjMat[6] = 0;
+     m_cartToIso2DProjMat[7] = 0;
+     m_cartToIso2DProjMat[8] = 0;
+
+     m_isoToCartZFactor = -cosZ;
 
      /*m_normalProjMat = {cosXY, sinZ*sinXY , cosZ * sinXY,
                             -sinXY, sinZ*cosXY, cosZ * cosXY,

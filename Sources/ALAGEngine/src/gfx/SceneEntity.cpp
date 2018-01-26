@@ -11,6 +11,7 @@ SceneEntity::SceneEntity()
     m_canBeLighted = false;
     m_isLighted = true;
     m_is3D = false;
+    m_ZDepth = 0.5;
 }
 
 SceneEntity::~SceneEntity()
@@ -45,5 +46,15 @@ void SceneEntity::PrepareShader(sf::Shader *)
 
 }
 
+float SceneEntity::GetZDepth()
+{
+    return (m_ZDepth);
+}
+
+void SceneEntity::SetZDepth(float z)
+{
+    if(z >= 0 && z <= 1)
+        m_ZDepth = z;
+}
 
 }

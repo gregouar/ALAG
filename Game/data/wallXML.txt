@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <texture3D>
 	<name>Stone wall</name>
-	<height>50</height>
+	<height>30</height>
 	<texture type="color">wall_color.png</texture>
 	<texture type="normal">wall_normal.png</texture>
 	<texture type="depth">wall_depth.png</texture>

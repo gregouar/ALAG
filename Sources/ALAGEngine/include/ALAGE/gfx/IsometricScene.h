@@ -55,6 +55,9 @@ class IsometricScene : public SceneManager
         sf::Vector2f m_CartToIso_yVector;
         sf::Transform m_TransformIsoToCart;
         GLfloat m_normalProjMat[9];
+        GLfloat m_cartToIso2DProjMat[9];
+        GLfloat m_isoToCartZFactor;
+        //GLfloat m_isoToCartToIso2DProjMat[9];
 
         sf::Shader m_depthShader;
         sf::Shader m_depthAndLightingShader;

@@ -29,6 +29,10 @@ class SceneEntity : public NotificationListener, public SceneObject
         void ActivateLighting();
         void DesactivateLighting();
 
+        float GetZDepth();
+
+        void SetZDepth(float);
+
     protected:
         bool m_canBeLighted;
         bool m_is3D;
@@ -38,6 +42,7 @@ class SceneEntity : public NotificationListener, public SceneObject
 
     private:
         sf::Vector3f m_bounds;
+        float m_ZDepth;
 };
 
 }

@@ -12,11 +12,14 @@ class TextureAsset : public Asset
     public:
         TextureAsset();
         TextureAsset(const AssetTypeID&);
+        TextureAsset(const sf::Image &img);
         virtual ~TextureAsset();
 
         virtual bool LoadNow();
 
         virtual sf::Texture* GetTexture();
+
+
 
     protected:
         sf::Texture m_texture;

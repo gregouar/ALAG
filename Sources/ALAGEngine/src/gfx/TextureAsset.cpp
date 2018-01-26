@@ -1,3 +1,4 @@
+#include "ALAGE/core/AssetHandler.h"
 #include "ALAGE/gfx/TextureAsset.h"
 #include "ALAGE/utils/Logger.h"
 
@@ -11,6 +12,7 @@ TextureAsset::TextureAsset()
     m_allowLoadFromStream = true;
 
     m_texture.setRepeated(true);
+    m_texture.setSmooth(true);
 }
 
 TextureAsset::TextureAsset(const AssetTypeID& id) : Asset(id)
@@ -18,7 +20,18 @@ TextureAsset::TextureAsset(const AssetTypeID& id) : Asset(id)
     m_allowLoadFromFile = true;
     m_allowLoadFromMemory = true;
     m_allowLoadFromStream = true;
+
+    m_texture.setRepeated(true);
+    m_texture.setSmooth(true);
 }
+
+
+TextureAsset::TextureAsset(const sf::Image &img) : TextureAsset()
+{
+    m_texture.loadFromImage(img);
+    m_loaded = true;
+}
+
 
 TextureAsset::~TextureAsset()
 {
@@ -65,7 +78,10 @@ sf::Texture *TextureAsset::GetTexture()
     if(m_loaded)
         return &m_texture;
 
-    return (nullptr);
+    if(AssetHandler<TextureAsset>::Instance()->GetDummyAsset() != nullptr)
+        return AssetHandler<TextureAsset>::Instance()->GetDummyAsset()->GetTexture();
+    else
+        return nullptr;
 }
 
 }

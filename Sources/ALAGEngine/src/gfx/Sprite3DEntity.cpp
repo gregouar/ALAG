@@ -67,7 +67,7 @@ void Sprite3DEntity::SetTexture(Texture3DAsset *texture)
     if(m_texture != texture)
     {
         if(m_texture != nullptr)
-            m_texture->RemoveFromAllNotificationList(this);
+            StopListeningTo(m_texture);
 
         m_texture = texture;
 
@@ -75,7 +75,7 @@ void Sprite3DEntity::SetTexture(Texture3DAsset *texture)
             texture->AskForAllNotifications(this);
     }
 
-    if(m_texture != nullptr)
+    if(m_texture != nullptr && texture->GetTexture() != nullptr)
         sf::Sprite::setTexture(*(texture->GetTexture()));
 }
 
