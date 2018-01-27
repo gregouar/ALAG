@@ -101,11 +101,11 @@ void TestingState::Init()
     m_mainScene.GetRootNode()->AttachObject(m_mainScene.CreateLight(DirectionnalLight,sf::Vector3f(-1,.5,-1), sf::Color::Red));
     //m_mainScene.GetRootNode()->AttachObject(m_mainScene.CreateLight(DirectionnalLight,sf::Vector3f(0,-1,0), sf::Color::Red));
 
-    SceneNode *chene_node = m_mainScene.GetRootNode()->CreateChildNode(sf::Vector2f(150,-100));
+    m_chene_node = m_mainScene.GetRootNode()->CreateChildNode(sf::Vector2f(150,-100));
     Sprite3DEntity *cheneEntity = m_mainScene.CreateSprite3DEntity();
     cheneEntity->SetTexture(Texture3DHandler->LoadAssetFromFile("../data/cheneXML.txt"));
     cheneEntity->SetCenter(192,320);
-    chene_node->AttachObject(cheneEntity);
+    m_chene_node->AttachObject(cheneEntity);
 
     Sprite3DEntity *abbayeEntity = m_mainScene.CreateSprite3DEntity();
     abbayeEntity->SetTexture(Texture3DHandler->LoadAssetFromFile("../data/abbayeXML.txt",LoadTypeInThread));
@@ -183,6 +183,12 @@ void TestingState::HandleEvents(alag::EventManager *event_manager)
     {
         sf::Vector2i p(event_manager->MousePosition());
         m_sarco3DNode->SetPosition(m_mainScene.ConvertMouseToScene(p));
+    }
+
+    if(event_manager->MouseButtonIsPressed(sf::Mouse::Right))
+    {
+        sf::Vector2i p(event_manager->MousePosition());
+        m_chene_node->SetPosition(m_mainScene.ConvertMouseToScene(p));
     }
 
 

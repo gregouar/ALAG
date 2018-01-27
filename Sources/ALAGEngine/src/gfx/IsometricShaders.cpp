@@ -28,7 +28,7 @@ const std::string depthAndLighting_fragShader = \
     "   vec4 colorPixel = texture2D(colorMap, gl_TexCoord[0].xy);" \
     "   vec4 depthPixel = texture2D(depthMap, gl_TexCoord[0].xy);" \
 	"	vec3 direction = -1.0+2.0*texture2D(normalMap, gl_TexCoord[0].xy).rgb;"
-    "   float heightPixel = depthPixel.b*height;"
+    "   float heightPixel = (depthPixel.r+depthPixel.g+depthPixel.b)*.33*height;"
 	"   direction = direction * normalProjMat;"
 	"   vertex.y -= heightPixel*isoToCartZFactor;"
 	"   vertex = vertex*cartToIso2DProjMat;"
@@ -68,7 +68,7 @@ const std::string depth_fragShader = \
     "{" \
     "   vec4 colorPixel = texture2D(colorMap, gl_TexCoord[0].xy);" \
     "   vec4 depthPixel = texture2D(depthMap, gl_TexCoord[0].xy);" \
-    "   float zPixel = depthPixel.b*height + zPos;" \
+    "   float zPixel = (depthPixel.r+depthPixel.g+depthPixel.b)*.33*height + zPos;" \
     "   gl_FragDepth = 1.0 - depthPixel.a*(0.5+zPixel*0.0001);" \
     "   gl_FragColor = gl_Color * colorPixel; " \
     "}";

@@ -261,15 +261,22 @@ void AssetHandler<AssetType>::DeleteAsset(AssetType *asset)
 template<typename AssetType>
 void AssetHandler<AssetType>::CleanAll()
 {
-    //m_loadThread->wait();
-    sf::Lock lockLoadMutex(m_loadMutex);
+    LockLoadMutex();
+
+    WaitForLoadingThread(m_assetLoadingInThread);
 
     typename std::map<AssetTypeID, AssetType*>::iterator assetIter;
     for(assetIter = m_assets.begin() ; assetIter != m_assets.end() ; ++assetIter)
         delete assetIter->second;
+
     m_assets.clear();
     m_obsolescenceList.clear();
     m_filesList.clear();
+    m_assetsToLoadInThread.clear();
+
+    UnlockLoadMutex();
+
+    m_loadThread->wait();
 }
 
 template<typename AssetType>
@@ -306,9 +313,8 @@ void AssetHandler<AssetType>::LoadInThread()
 
                 UnlockLoadMutex();
                 curAsset->LoadNow();
-                LockLoadMutex();
-
                 m_assetLoadingInThread = nullptr;
+                LockLoadMutex();
             }
         } else
             Logger::Error("Tried to load null asset in thread");
@@ -334,7 +340,6 @@ void AssetHandler<AssetType>::UnlockLoadMutex()
 template<typename AssetType>
 void AssetHandler<AssetType>::WaitForLoadingThread(AssetType *asset)
 {
-
     if(asset != nullptr)
     while(asset == m_assetLoadingInThread);
 }
