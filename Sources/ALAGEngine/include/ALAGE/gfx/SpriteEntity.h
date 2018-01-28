@@ -20,7 +20,10 @@ class SpriteEntity : public SceneEntity, public sf::Sprite
         virtual void Render(sf::RenderTarget *);
         virtual void Render(sf::RenderTarget *, const sf::RenderStates &);
 
+        virtual void PrepareShader(sf::Shader*);
+
         virtual void SetTexture(TextureAsset *t);
+        virtual void SetTexture(Texture3DAsset *t);
         void SetCenter(float x, float y);
         void SetCenter(sf::Vector2f);
 

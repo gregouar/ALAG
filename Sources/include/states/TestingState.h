@@ -3,7 +3,7 @@
 
 #include "ALAGE/core/GState.h"
 #include "ALAGE/utils/singleton.h"
-#include "ALAGE/gfx/IsometricScene.h"
+#include "ALAGE/gfx/iso/IsometricScene.h"
 
 
 class TestingState : public alag::GState, public Singleton<TestingState>

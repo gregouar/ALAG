@@ -48,7 +48,7 @@ void Sprite3DEntity::Render(sf::RenderTarget *w, const sf::RenderStates &state /
     }
 }
 
-void Sprite3DEntity::PrepareShader(sf::Shader *shader)
+void Sprite3DEntity::PrepareShader(sf::Shader *shader, float isoToCartZFactor)
 {
     if(shader != nullptr
     && m_texture != nullptr

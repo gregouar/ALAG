@@ -1,7 +1,7 @@
 #include "ALAGE/gfx/RectEntity.h"
 
 #include "ALAGE/core/AssetHandler.h"
-#include "ALAGE/gfx/IsometricScene.h"
+#include "ALAGE/gfx/iso/IsometricScene.h"
 #include "ALAGE/gfx/SceneNode.h"
 #include "ALAGE/utils/Mathematics.h"
 
@@ -58,8 +58,6 @@ void RectEntity::PrepareShader(sf::Shader *shader)
             shader->setUniform("normalMap",*AssetHandler<TextureAsset>::Instance()->GetDummyAsset()->GetTexture());
             shader->setUniform("height",0);
         }
-        shader->setUniform("normalProjMat",sf::Glsl::Mat3(IdMat3X3));
-        shader->setUniform("isoToCartZFactor",0);
     }
 }
 

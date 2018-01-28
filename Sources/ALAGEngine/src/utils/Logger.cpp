@@ -38,7 +38,7 @@ void Logger::FatalError(const std::ostringstream& s)
 
 void Logger::Write(const std::string& s)
 {
-    sf::Lock(Logger::Instance()->m_loggerMutex);
+    sf::Lock lock(Logger::Instance()->m_loggerMutex);
 
     if(Logger::Instance()->m_consoleActive)
         std::cout<<s<<std::endl;
@@ -48,7 +48,7 @@ void Logger::Write(const std::string& s)
 
 void Logger::Warning(const std::string& s)
 {
-    sf::Lock(Logger::Instance()->m_loggerMutex);
+    sf::Lock lock(Logger::Instance()->m_loggerMutex);
 
     if(Logger::Instance()->m_enableWarnings)
     {
@@ -61,7 +61,7 @@ void Logger::Warning(const std::string& s)
 
 void Logger::Error(const std::string& s)
 {
-    sf::Lock(Logger::Instance()->m_loggerMutex);
+    sf::Lock lock(Logger::Instance()->m_loggerMutex);
 
     if(Logger::Instance()->m_consoleActive)
         std::cerr<<"ERROR: "<<s<<std::endl;
@@ -71,7 +71,7 @@ void Logger::Error(const std::string& s)
 
 void Logger::FatalError(const std::string& s)
 {
-    sf::Lock(Logger::Instance()->m_loggerMutex);
+    sf::Lock lock(Logger::Instance()->m_loggerMutex);
 
     if(Logger::Instance()->m_consoleActive)
         std::cerr<<"FATAL ERROR: "<<s<<", stopping application"<<std::endl;

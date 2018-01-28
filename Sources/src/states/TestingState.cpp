@@ -7,7 +7,7 @@
 
 #include "ALAGE/gfx/TextureAsset.h"
 #include "ALAGE/gfx/Texture3DAsset.h"
-#include "ALAGE/gfx/Sprite3DEntity.h"
+#include "ALAGE/gfx/iso/IsoSpriteEntity.h"
 
 
 #include "ALAGE/core/Config.h"
@@ -36,7 +36,6 @@ void TestingState::Init()
     sf::Image bluePixel;
     bluePixel.create(1,1,sf::Color::Blue);
     TextureHandler->SetDummyAsset(TextureAsset(bluePixel));
-    TextureHandler->GetDummyAsset()->GetTexture();
 
 
     m_mainScene.SetViewAngle({.xyAngle = 45, .zAngle=30});
@@ -47,7 +46,7 @@ void TestingState::Init()
     m_cameraNode->AttachObject(m_camera);
     m_mainScene.SetCurrentCamera(m_camera);
 
-   // m_mainScene.SetAmbientLight(sf::Color(32,48,128));
+    m_mainScene.SetAmbientLight(sf::Color(32,48,128));
 
     Texture3DAsset *t3D =  Texture3DHandler->LoadAssetFromFile("../data/sarcoXML.txt");
 
@@ -70,21 +69,23 @@ void TestingState::Init()
 
     m_sarcoNode = m_mainScene.GetRootNode()->CreateChildNode();
     m_sarcoNode->SetPosition(-100,-30);
-    Sprite3DEntity *sarcoEntity = m_mainScene.CreateSprite3DEntity(sf::Vector2i(256,256));
+    IsoSpriteEntity *sarcoEntity = m_mainScene.CreateIsoSpriteEntity(sf::Vector2i(256,256));
     sarcoEntity->SetTexture(t3D);
     sarcoEntity->SetCenter(128,128);
     m_sarcoNode->AttachObject(sarcoEntity);
 
     m_sarco3DNode = m_mainScene.GetRootNode()->CreateChildNode();
     m_sarco3DNode->SetPosition(0,0);
-    Sprite3DEntity *sarco3DEntity = m_mainScene.CreateSprite3DEntity(sf::Vector2i(256,256));
+    //Sprite3DEntity *sarco3DEntity = m_mainScene.CreateSprite3DEntity(sf::Vector2i(256,256));
+    SpriteEntity *sarco3DEntity = m_mainScene.CreateIsoSpriteEntity();
+    //sarco3DEntity->SetTexture(TextureHandler->LoadAssetFromFile("../data/sarco-color.png"));
     sarco3DEntity->SetTexture(t3D);
-    sarco3DEntity->SetCenter(128,128);
+    sarco3DEntity->SetCenter(128,160);
    // sarco3DEntity->DesactivateLighting();
     m_sarco3DNode->AttachObject(sarco3DEntity);
 
 
-    Sprite3DEntity *sarco3DEntitybis = m_mainScene.CreateSprite3DEntity(sf::Vector2i(256,256));
+    IsoSpriteEntity *sarco3DEntitybis = m_mainScene.CreateIsoSpriteEntity(sf::Vector2i(256,256));
     sarco3DEntitybis->SetTexture(t3D);
     //sarco3DEntitybis->SetTexture(Texture3DHandler->LoadAssetFromFile("../data/sandXML.txt"));
     sarco3DEntitybis->SetCenter(128,128);
@@ -93,22 +94,24 @@ void TestingState::Init()
     sarco3DEntitybis->scale(.75,.75);
 
 
-    Sprite3DEntity *sarco3DEntityThird = m_mainScene.CreateSprite3DEntity(sf::Vector2i(256,256));
+    IsoSpriteEntity *sarco3DEntityThird = m_mainScene.CreateIsoSpriteEntity(sf::Vector2i(256,256));
     sarco3DEntityThird->SetTexture(t3D);
     sarco3DEntityThird->SetCenter(128,128);
     m_mainScene.GetRootNode()->CreateChildNode(sf::Vector2f(-100,100))->AttachObject(sarco3DEntityThird);
 
-    m_mainScene.GetRootNode()->AttachObject(m_mainScene.CreateLight(DirectionnalLight,sf::Vector3f(-1,.5,-1), sf::Color::Red));
+    Light* sunLight = m_mainScene.CreateLight(DirectionnalLight,sf::Vector3f(-1,.5,-1), sf::Color(255,255,160));
+    sunLight->SetConstantAttenuation(2);
+    m_mainScene.GetRootNode()->AttachObject(sunLight);
     //m_mainScene.GetRootNode()->AttachObject(m_mainScene.CreateLight(DirectionnalLight,sf::Vector3f(0,-1,0), sf::Color::Red));
 
     m_chene_node = m_mainScene.GetRootNode()->CreateChildNode(sf::Vector2f(150,-100));
-    Sprite3DEntity *cheneEntity = m_mainScene.CreateSprite3DEntity();
+    IsoSpriteEntity *cheneEntity = m_mainScene.CreateIsoSpriteEntity();
     cheneEntity->SetTexture(Texture3DHandler->LoadAssetFromFile("../data/cheneXML.txt"));
     cheneEntity->SetCenter(192,320);
     m_chene_node->AttachObject(cheneEntity);
 
-    Sprite3DEntity *abbayeEntity = m_mainScene.CreateSprite3DEntity();
-    abbayeEntity->SetTexture(Texture3DHandler->LoadAssetFromFile("../data/abbayeXML.txt",LoadTypeInThread));
+    IsoSpriteEntity *abbayeEntity = m_mainScene.CreateIsoSpriteEntity();
+    abbayeEntity->SetTexture(Texture3DHandler->LoadAssetFromFile("../data/abbayeXML.txt"));
     abbayeEntity->SetCenter(960,540);
     m_mainScene.GetRootNode()->AttachObject(abbayeEntity);
     //m_mainScene.GetRootNode()->CreateChildNode(sf::Vector2f(0,0))->AttachObject(abbayeEntity);
@@ -116,7 +119,7 @@ void TestingState::Init()
 
     m_lightNode = m_mainScene.GetRootNode()->CreateChildNode();
     Light* light = m_mainScene.CreateLight();
-    light->SetDiffuseColor(sf::Color::Green);
+    light->SetDiffuseColor(sf::Color(255,190,64));
     light->SetLinearAttunation(.00001);
     light->SetQuadraticAttenuation(.00001);
     m_lightNode->AttachObject(light);
@@ -194,7 +197,7 @@ void TestingState::HandleEvents(alag::EventManager *event_manager)
 
     sf::Vector2f p = m_mainScene.ConvertMouseToScene(event_manager->MousePosition());
 
-    m_lightNode->SetPosition(p.x,p.y,70);
+    m_lightNode->SetPosition(p.x,p.y,50);
 
     if(event_manager->IsAskingToClose())
         m_manager->Switch(nullptr);

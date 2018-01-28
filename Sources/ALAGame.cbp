@@ -67,7 +67,6 @@
 		<Unit filename="ALAGEngine/include/ALAGE/core/StateManager.h" />
 		<Unit filename="ALAGEngine/include/ALAGE/gfx/AnimatedSprite.h" />
 		<Unit filename="ALAGEngine/include/ALAGE/gfx/Camera.h" />
-		<Unit filename="ALAGEngine/include/ALAGE/gfx/IsometricScene.h" />
 		<Unit filename="ALAGEngine/include/ALAGE/gfx/Light.h" />
 		<Unit filename="ALAGEngine/include/ALAGE/gfx/QuadtreeNode.h" />
 		<Unit filename="ALAGEngine/include/ALAGE/gfx/RectEntity.h" />
@@ -75,10 +74,12 @@
 		<Unit filename="ALAGEngine/include/ALAGE/gfx/SceneManager.h" />
 		<Unit filename="ALAGEngine/include/ALAGE/gfx/SceneNode.h" />
 		<Unit filename="ALAGEngine/include/ALAGE/gfx/SceneObject.h" />
-		<Unit filename="ALAGEngine/include/ALAGE/gfx/Sprite3DEntity.h" />
 		<Unit filename="ALAGEngine/include/ALAGE/gfx/SpriteEntity.h" />
 		<Unit filename="ALAGEngine/include/ALAGE/gfx/Texture3DAsset.h" />
 		<Unit filename="ALAGEngine/include/ALAGE/gfx/TextureAsset.h" />
+		<Unit filename="ALAGEngine/include/ALAGE/gfx/iso/IsoRectEntity.h" />
+		<Unit filename="ALAGEngine/include/ALAGE/gfx/iso/IsoSpriteEntity.h" />
+		<Unit filename="ALAGEngine/include/ALAGE/gfx/iso/IsometricScene.h" />
 		<Unit filename="ALAGEngine/include/ALAGE/utils/ListIterator.h" />
 		<Unit filename="ALAGEngine/include/ALAGE/utils/Logger.h" />
 		<Unit filename="ALAGEngine/include/ALAGE/utils/MapIterator.h" />
@@ -105,8 +106,6 @@
 		<Unit filename="ALAGEngine/src/extlibs/tinyxmlparser.cpp" />
 		<Unit filename="ALAGEngine/src/gfx/AnimatedSprite.cpp" />
 		<Unit filename="ALAGEngine/src/gfx/Camera.cpp" />
-		<Unit filename="ALAGEngine/src/gfx/IsometricScene.cpp" />
-		<Unit filename="ALAGEngine/src/gfx/IsometricShaders.cpp" />
 		<Unit filename="ALAGEngine/src/gfx/Light.cpp" />
 		<Unit filename="ALAGEngine/src/gfx/QuadtreeNode.cpp" />
 		<Unit filename="ALAGEngine/src/gfx/RectEntity.cpp" />
@@ -114,10 +113,13 @@
 		<Unit filename="ALAGEngine/src/gfx/SceneManager.cpp" />
 		<Unit filename="ALAGEngine/src/gfx/SceneNode.cpp" />
 		<Unit filename="ALAGEngine/src/gfx/SceneObject.cpp" />
-		<Unit filename="ALAGEngine/src/gfx/Sprite3DEntity.cpp" />
 		<Unit filename="ALAGEngine/src/gfx/SpriteEntity.cpp" />
 		<Unit filename="ALAGEngine/src/gfx/Texture3DAsset.cpp" />
 		<Unit filename="ALAGEngine/src/gfx/TextureAsset.cpp" />
+		<Unit filename="ALAGEngine/src/gfx/iso/IsoRectEntity.cpp" />
+		<Unit filename="ALAGEngine/src/gfx/iso/IsoSpriteEntity.cpp" />
+		<Unit filename="ALAGEngine/src/gfx/iso/IsometricScene.cpp" />
+		<Unit filename="ALAGEngine/src/gfx/iso/IsometricShaders.cpp" />
 		<Unit filename="ALAGEngine/src/utils/Logger.cpp" />
 		<Unit filename="ALAGEngine/src/utils/Mathematics.cpp" />
 		<Unit filename="ALAGEngine/src/utils/Parser.cpp" />

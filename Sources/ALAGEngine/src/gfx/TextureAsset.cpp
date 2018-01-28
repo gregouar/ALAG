@@ -64,7 +64,7 @@ bool TextureAsset::LoadNow()
             }
         } else {
             Logger::Error("Cannot load asset");
-            loaded = false;
+            m_loaded = false;
         }
 
         m_loaded = loaded;
