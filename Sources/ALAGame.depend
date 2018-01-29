@@ -1,17 +1,17 @@
 # depslib dependency file v1.0
-1516699397 source:c:\c++\alag\sources\main.cpp
+1517175920 source:c:\c++\alag\sources\main.cpp
 	<iostream>
 	"ALAGE/core/GApp.h"
 	"ALAGE/utils/Logger.h"
 	"include/states/TestingState.h"
 
-1516960434 source:c:\c++\alag\sources\alagengine\src\core\gapp.cpp
+1517175920 source:c:\c++\alag\sources\alagengine\src\core\gapp.cpp
 	<SFML/System.hpp>
 	"ALAGE/core/GApp.h"
 	"ALAGE/utils/Logger.h"
 	"ALAGE/utils/Parser.h"
 
-1516654811 c:\c++\alag\sources\alagengine\include\alage\core\gapp.h
+1517175920 c:\c++\alag\sources\alagengine\include\alage\core\gapp.h
 	<SFML/Graphics.hpp>
 	"ALAGE/core/Config.h"
 	"ALAGE/core/EventManager.h"
@@ -24,16 +24,16 @@
 	<SFML/Graphics.hpp>
 	"ALAGE/utils/singleton.h"
 
-1516702536 source:c:\c++\alag\sources\alagengine\src\core\statemanager.cpp
+1517175983 source:c:\c++\alag\sources\alagengine\src\core\statemanager.cpp
 	<stdexcept>
 	"ALAGE/core/StateManager.h"
 
-1516559548 c:\c++\alag\sources\alagengine\include\alage\core\statemanager.h
+1517175928 c:\c++\alag\sources\alagengine\include\alage\core\statemanager.h
 	<SFML/System.hpp>
 	<vector>
 	"GState.h"
 
-1517162606 source:c:\c++\alag\sources\src\states\testingstate.cpp
+1517261741 source:c:\c++\alag\sources\src\states\testingstate.cpp
 	"states/TestingState.h"
 	"ALAGE/core/GApp.h"
 	"ALAGE/core/EventManager.h"
@@ -464,7 +464,7 @@
 1516308272 c:\c++\alag\sources\alagengine\include\alage\utils\parser.h
 	"ALAGE/utils/singleton.h"
 
-1516309270 source:c:\c++\alag\sources\alagengine\src\utils\parser.cpp
+1517176708 source:c:\c++\alag\sources\alagengine\src\utils\parser.cpp
 	"ALAGE/utils/Parser.h"
 	"ALAGE/utils/Logger.h"
 	<sstream>
@@ -615,7 +615,7 @@
 	"ALAGE/gfx/Sprite3DEntity.h"
 	<SFML/OpenGL.hpp>
 
-1516912425 c:\c++\alag\sources\alagengine\include\alage\gfx\scenemanager.h
+1517176004 c:\c++\alag\sources\alagengine\include\alage\gfx\scenemanager.h
 	<SFML/OpenGL.hpp>
 	<SFML/Graphics.hpp>
 	"ALAGE/gfx/SceneNode.h"
@@ -624,7 +624,7 @@
 	"ALAGE/gfx/Camera.h"
 	"ALAGE/gfx/Light.h"
 
-1516913553 source:c:\c++\alag\sources\alagengine\src\gfx\scenemanager.cpp
+1517176039 source:c:\c++\alag\sources\alagengine\src\gfx\scenemanager.cpp
 	"ALAGE/gfx/SceneManager.h"
 	"ALAGE/utils/Logger.h"
 	"ALAGE/utils/Mathematics.h"
@@ -658,7 +658,7 @@
 	"ALAGE/gfx/Texture3DAsset.h"
 	"ALAGE/gfx/SceneEntity.h"
 
-1517158688 source:c:\c++\alag\sources\alagengine\src\gfx\rectentity.cpp
+1517171946 source:c:\c++\alag\sources\alagengine\src\gfx\rectentity.cpp
 	"ALAGE/gfx/RectEntity.h"
 	"ALAGE/core/AssetHandler.h"
 	"ALAGE/gfx/iso/IsometricScene.h"
@@ -676,7 +676,7 @@
 1516702536 c:\c++\alag\sources\alagengine\include\alage\utils\mapiterator.h
 	<map>
 
-1517159968 source:c:\c++\alag\sources\alagengine\src\gfx\spriteentity.cpp
+1517171946 source:c:\c++\alag\sources\alagengine\src\gfx\spriteentity.cpp
 	"ALAGE/gfx/SpriteEntity.h"
 	"ALAGE/core/AssetHandler.h"
 	"ALAGE/gfx/SceneNode.h"
@@ -754,34 +754,38 @@
 1517140944 source:c:\c++\alag\sources\alagengine\src\gfx\isometricshaders.cpp
 	<iostream>
 
-1517157794 c:\c++\alag\sources\alagengine\include\alage\gfx\iso\isometricscene.h
+1517253932 c:\c++\alag\sources\alagengine\include\alage\gfx\iso\isometricscene.h
 	"ALAGE/gfx/SceneManager.h"
 	"ALAGE/gfx/iso/IsoSpriteEntity.h"
+	"ALAGE/gfx/iso/IsoRectEntity.h"
 	<SFML/OpenGL.hpp>
 
 1517158641 c:\c++\alag\sources\alagengine\include\alage\gfx\iso\isospriteentity.h
 	<ALAGE/gfx/SpriteEntity.h>
 
-1517162429 source:c:\c++\alag\sources\alagengine\src\gfx\iso\isometricscene.cpp
+1517264990 source:c:\c++\alag\sources\alagengine\src\gfx\iso\isometricscene.cpp
 	"ALAGE/gfx/iso/IsometricScene.h"
-	"ALAGE/gfx/iso/IsoSpriteEntity.h"
+	"ALAGE/utils/Logger.h"
 	"ALAGE/utils/Mathematics.h"
+	"ALAGE/core/Config.h"
+	"ALAGE/gfx/iso/IsoSpriteEntity.h"
 	"../src/gfx/iso/IsometricShaders.cpp"
 
-1517162841 c:\c++\alag\sources\alagengine\src\gfx\iso\isometricshaders.cpp
+1517265552 c:\c++\alag\sources\alagengine\src\gfx\iso\isometricshaders.cpp
 	<iostream>
 
-1517162841 source:c:\c++\alag\sources\alagengine\src\gfx\iso\isometricshaders.cpp
+1517264878 source:c:\c++\alag\sources\alagengine\src\gfx\iso\isometricshaders.cpp
 	<iostream>
 
-1517158661 source:c:\c++\alag\sources\alagengine\src\gfx\iso\isorectentity.cpp
+1517171758 source:c:\c++\alag\sources\alagengine\src\gfx\iso\isorectentity.cpp
 	"ALAGE/gfx/iso/IsoRectEntity.h"
 	"ALAGE/utils/Mathematics.h"
 
 1517158511 c:\c++\alag\sources\alagengine\include\alage\gfx\iso\isorectentity.h
 	<ALAGE/gfx/RectEntity.h>
 
-1517162555 source:c:\c++\alag\sources\alagengine\src\gfx\iso\isospriteentity.cpp
+1517210995 source:c:\c++\alag\sources\alagengine\src\gfx\iso\isospriteentity.cpp
 	"ALAGE/gfx/iso/IsoSpriteEntity.h"
 	"ALAGE/core/AssetHandler.h"
+	"ALAGE/utils/Mathematics.h"
 

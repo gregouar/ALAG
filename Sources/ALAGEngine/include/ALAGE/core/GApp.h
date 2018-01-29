@@ -41,6 +41,8 @@ class GApp
 
         int Loop();
 
+        sf::Vector2u GetWindowSize();
+
     protected:
 
     private:

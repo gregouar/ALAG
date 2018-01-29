@@ -38,6 +38,7 @@ void TestingState::Init()
     TextureHandler->SetDummyAsset(TextureAsset(bluePixel));
 
 
+    m_mainScene.InitRenderer(m_manager->GetGApp()->GetWindowSize());
     m_mainScene.SetViewAngle({.xyAngle = 45, .zAngle=30});
     m_cameraNode = m_mainScene.GetRootNode()->CreateChildNode(sf::Vector2f(0,0));
     m_camera = m_mainScene.CreateCamera(sf::Vector2f(
@@ -45,8 +46,6 @@ void TestingState::Init()
                              Config::GetInt("window","height",GApp::DEFAULT_WINDOW_HEIGHT)));
     m_cameraNode->AttachObject(m_camera);
     m_mainScene.SetCurrentCamera(m_camera);
-
-    m_mainScene.SetAmbientLight(sf::Color(32,48,128));
 
     Texture3DAsset *t3D =  Texture3DHandler->LoadAssetFromFile("../data/sarcoXML.txt");
 
@@ -56,15 +55,16 @@ void TestingState::Init()
 
 
     SceneNode* rectNode = m_mainScene.GetRootNode()->CreateChildNode();
-    RectEntity *rectEntity = m_mainScene.CreateRectEntity(sf::Vector2f(1024,1024));
+    IsoRectEntity *rectEntity = m_mainScene.CreateIsoRectEntity(sf::Vector2f(2048,2038));
     rectEntity->SetCenter(sf::Vector2f(512,  512));
    // rectEntity->SetTexture(TextureHandler->LoadAssetFromFile("../data/cobble_color.png",LoadTypeInThread));
     //rectEntity->SetTexture(Texture3DHandler->LoadAssetFromFile("../data/wallXML.txt",LoadTypeInThread));
     //rectEntity->SetTexture(Texture3DHandler->LoadAssetFromFile("../data/cobbleXML.txt",LoadTypeInThread));
     rectEntity->SetTexture(Texture3DHandler->LoadAssetFromFile("../data/sandXML.txt",LoadTypeInThread));
+    //rectEntity->SetTexture(TextureHandler->LoadAssetFromFile("../data/cobble_color.png",LoadTypeInThread));
     //rectEntity->SetTexture(TextureHandler->LoadAssetFromFile("../data/sand_color.png",LoadTypeInThread));
   //  rectEntity->SetTexture(TextureHandler->LoadAssetFromFile("../data/sand.png",LoadTypeInThread));
-   // rectEntity->SetTextureRect(sf::IntRect(0,0,4096,4096));
+    rectEntity->SetTextureRect(sf::IntRect(0,0,4096,4096));
     rectNode->AttachObject(rectEntity);
 
     m_sarcoNode = m_mainScene.GetRootNode()->CreateChildNode();
@@ -97,11 +97,15 @@ void TestingState::Init()
     IsoSpriteEntity *sarco3DEntityThird = m_mainScene.CreateIsoSpriteEntity(sf::Vector2i(256,256));
     sarco3DEntityThird->SetTexture(t3D);
     sarco3DEntityThird->SetCenter(128,128);
-    m_mainScene.GetRootNode()->CreateChildNode(sf::Vector2f(-100,100))->AttachObject(sarco3DEntityThird);
+    m_mainScene.GetRootNode()->CreateChildNode(sf::Vector2f(100,100))->AttachObject(sarco3DEntityThird);
 
-    Light* sunLight = m_mainScene.CreateLight(DirectionnalLight,sf::Vector3f(-1,.5,-1), sf::Color(255,255,160));
-    sunLight->SetConstantAttenuation(2);
+   /* Light* sunLight = m_mainScene.CreateLight(DirectionnalLight,sf::Vector3f(-1,.5,-1), sf::Color(255,255,160));
+    sunLight->SetConstantAttenuation(2);*/
+    Light* sunLight = m_mainScene.CreateLight(DirectionnalLight,sf::Vector3f(-1,.5,-1), sf::Color(255,255,224));
+    sunLight->SetConstantAttenuation(1);
     m_mainScene.GetRootNode()->AttachObject(sunLight);
+   // m_mainScene.SetAmbientLight(sf::Color(32,48,128));
+    m_mainScene.SetAmbientLight(sf::Color(128,128,128));
     //m_mainScene.GetRootNode()->AttachObject(m_mainScene.CreateLight(DirectionnalLight,sf::Vector3f(0,-1,0), sf::Color::Red));
 
     m_chene_node = m_mainScene.GetRootNode()->CreateChildNode(sf::Vector2f(150,-100));
@@ -217,11 +221,9 @@ void TestingState::Update(sf::Time time)
 
 void TestingState::Draw(sf::RenderTarget* renderer)
 {
-    if(m_totalTime.asSeconds() > 1)
+    if(m_totalTime.asSeconds() > .3)
     {
-        showfirstsecond = false;
         m_totalTime = sf::Time::Zero;
-        AssetHandler<TextureAsset>::Instance()->DescreaseObsolescenceLife();
     }
 
     m_mainScene.RenderScene(renderer);

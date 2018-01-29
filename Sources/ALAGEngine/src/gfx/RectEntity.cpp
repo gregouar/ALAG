@@ -50,13 +50,28 @@ void RectEntity::PrepareShader(sf::Shader *shader)
         if(Is3D())
         {
             Texture3DAsset *myTexture3D = (Texture3DAsset*) m_texture;
-            shader->setUniform("depthMap",*myTexture3D->GetDepthMap());
-            shader->setUniform("normalMap",*myTexture3D->GetNormalMap());
+
+            if(myTexture3D->GetDepthMap() != nullptr)
+            {
+                shader->setUniform("depthMap",*myTexture3D->GetDepthMap());
+                shader->setUniform("useDepthMap", true);
+            } else {
+                shader->setUniform("useDepthMap", false);
+            }
+
+            if(myTexture3D->GetNormalMap() != nullptr)
+            {
+                shader->setUniform("normalMap",*myTexture3D->GetNormalMap());
+                shader->setUniform("useNormalMap", true);
+            } else {
+                shader->setUniform("useNormalMap", false);
+            }
+
             shader->setUniform("height",myTexture3D->GetHeight());
         } else {
-            shader->setUniform("depthMap",*AssetHandler<TextureAsset>::Instance()->GetDummyAsset()->GetTexture());
-            shader->setUniform("normalMap",*AssetHandler<TextureAsset>::Instance()->GetDummyAsset()->GetTexture());
             shader->setUniform("height",0);
+            shader->setUniform("useNormalMap", false);
+            shader->setUniform("useDepthMap", false);
         }
     }
 }

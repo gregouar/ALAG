@@ -8,6 +8,8 @@
 namespace alag
 {
 
+class GApp;
+
 class StateManager
 {
     public:
@@ -23,10 +25,14 @@ class StateManager
         void Update(sf::Time);
         void Draw(sf::RenderTarget*);
 
+        void AttachGApp(GApp*);
+        GApp* GetGApp();
+
     protected:
 
     private:
         std::vector<GState*> m_states;
+        GApp *m_parentGApp;
 };
 
 }

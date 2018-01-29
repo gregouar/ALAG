@@ -29,6 +29,12 @@ void SceneManager::CleanAll()
     DestroyAllCreatedObjects();
 }
 
+
+bool SceneManager::InitRenderer(sf::Vector2u windowSize)
+{
+    return (true);
+}
+
 void SceneManager::Update(sf::Time elapsedTime)
 {
     if(m_needToUpdateRenderQueue)

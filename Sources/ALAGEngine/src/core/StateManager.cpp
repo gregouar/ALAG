@@ -7,7 +7,7 @@ namespace alag
 
 StateManager::StateManager()
 {
-    //ctor
+    m_parentGApp = nullptr;
 }
 
 StateManager::~StateManager()
@@ -78,6 +78,16 @@ void StateManager::Draw(sf::RenderTarget* renderer)
 {
     for(std::size_t i = 0; i < m_states.size() ; ++i)
         m_states[i]->Draw(renderer);
+}
+
+void StateManager::AttachGApp(GApp* app)
+{
+    m_parentGApp = app;
+}
+
+GApp* StateManager::GetGApp()
+{
+    return m_parentGApp;
 }
 
 }

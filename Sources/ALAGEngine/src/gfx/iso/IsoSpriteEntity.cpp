@@ -1,5 +1,6 @@
 #include "ALAGE/gfx/iso/IsoSpriteEntity.h"
 #include "ALAGE/core/AssetHandler.h"
+#include "ALAGE/utils/Mathematics.h"
 
 namespace alag
 {
@@ -32,8 +33,11 @@ void IsoSpriteEntity::PrepareShader(sf::Shader* shader)
     {
         shader->setUniform("useNormalMap", false);
         shader->setUniform("depthMap",*AssetHandler<TextureAsset>::Instance()->LoadAssetFromFile("../data/heightmap.png")->GetTexture());
+        shader->setUniform("useDepthMap",true);
         shader->setUniform("height",(-(float)sf::Sprite::getTextureRect().height*(float)getScale().y)/m_isoToCartZFactor);
     }
+
+    shader->setUniform("normalProjMatInv",sf::Glsl::Mat3(IdMat3X3));
 }
 
 void IsoSpriteEntity::SetIsoToCartZFactor(float factor)

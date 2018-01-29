@@ -81,8 +81,6 @@ bool GApp::Init()
 
     m_window.create(videoMode, m_name, sf::Style::Close, contextSettings);
 
-    //GfxEngine::Instance()->InitRenderer();
-
     return (true);
 }
 
@@ -95,7 +93,7 @@ int GApp::Run(GState *state)
         Logger::FatalError("Could not initialize application");
         return 1;
     }
-
+    m_stateManager.AttachGApp(this);
     m_stateManager.Switch(state);
 
     Logger::Write("Starting application");
@@ -137,6 +135,11 @@ int GApp::Loop()
     }
 
     return 0;
+}
+
+sf::Vector2u GApp::GetWindowSize()
+{
+    return m_window.getSize();
 }
 
 

@@ -1,7 +1,11 @@
 #include "ALAGE/gfx/iso/IsometricScene.h"
 
-#include "ALAGE/gfx/iso/IsoSpriteEntity.h"
+
+#include "ALAGE/utils/Logger.h"
 #include "ALAGE/utils/Mathematics.h"
+#include "ALAGE/core/Config.h"
+
+#include "ALAGE/gfx/iso/IsoSpriteEntity.h"
 #include "../src/gfx/iso/IsometricShaders.cpp"
 
 namespace alag
@@ -27,7 +31,10 @@ IsometricScene::IsometricScene(IsoViewAngle viewAngle)
     //m_depthAndLightingShader.loadFromMemory(depthAndLighting_fragShader,sf::Shader::Fragment);
     m_depthAndLightingShader.loadFromMemory(vertexShader,depthAndLighting_fragShader);
     m_lightingShader.loadFromMemory(lighting_fragShader,sf::Shader::Fragment);
+    m_geometryShader.loadFromMemory(vertexShader,geometry_fragShader);
     SetAmbientLight(m_ambientLight);
+
+    m_useSecondScreen = true;
 }
 
 
@@ -36,7 +43,22 @@ IsometricScene::~IsometricScene()
     //dtor
 }
 
+bool IsometricScene::InitRenderer(sf::Vector2u windowSize)
+{
+    bool r = true;
 
+    m_enableSSAO = Config::GetBool("graphics","SSAO","true");
+
+    if(!m_geometryScreen[0].create(windowSize.x, windowSize.y, true))
+        r = false;
+    if(!m_geometryScreen[1].create(windowSize.x, windowSize.y, true))
+        r = false;
+
+    if(!r)
+        Logger::Error("Cannot initialize isometric renderer");
+
+    return r;
+}
 
 void IsometricScene::ProcessRenderQueue(sf::RenderTarget *w)
 {
@@ -47,6 +69,17 @@ void IsometricScene::ProcessRenderQueue(sf::RenderTarget *w)
     w->pushGLStates();
     glEnable(GL_DEPTH_TEST);
     glDepthMask(GL_TRUE);
+
+    if(m_enableSSAO)
+    {
+        m_geometryScreen[!m_useSecondScreen].setActive(true);
+        glEnable(GL_DEPTH_TEST);
+        glDepthMask(GL_TRUE);
+        m_geometryScreen[!m_useSecondScreen].clear();
+        glClear(GL_DEPTH_BUFFER_BIT);
+        m_geometryScreen[!m_useSecondScreen].setView(w->getView());
+        m_geometryScreen[!m_useSecondScreen].setActive(false);
+    }
 
     std::list<SceneEntity*>::iterator renderIt;
     for(renderIt = m_renderQueue.begin() ; renderIt != m_renderQueue.end(); ++renderIt)
@@ -94,12 +127,46 @@ void IsometricScene::ProcessRenderQueue(sf::RenderTarget *w)
             curShader->setUniform("normalProjMat",sf::Glsl::Mat3(m_normalProjMat));
             curShader->setUniform("cartToIso2DProjMat",sf::Glsl::Mat3(m_cartToIso2DProjMat));
             curShader->setUniform("isoToCartZFactor",m_isoToCartZFactor);
+
+
+            if(m_enableSSAO)
+            {
+                curShader->setUniform("useSSAO",true);
+                curShader->setUniform("geometryMap",m_geometryScreen[m_useSecondScreen].getTexture());
+                curShader->setUniform("screen_ratio",sf::Vector2f(1.0/(float)m_geometryScreen[m_useSecondScreen].getSize().x,
+                                                                  1.0/(float)m_geometryScreen[m_useSecondScreen].getSize().y));
+            } else {
+                curShader->setUniform("useSSAO",false);
+            }
+
         }
 
         (*renderIt)->PrepareShader(curShader);
         state.shader = curShader;
-
         (*renderIt)->Render(w,state);
+
+
+        if(m_enableSSAO)
+        {
+            m_geometryScreen[!m_useSecondScreen].setActive(true);
+            curShader = &m_geometryShader;
+            {
+                curShader->setUniform("zPos",globalPos.z);
+                curShader->setUniform("useNormalMap",true);
+                curShader->setUniform("normalProjMat",sf::Glsl::Mat3(m_normalProjMat));
+                curShader->setUniform("cartToIso2DProjMat",sf::Glsl::Mat3(m_cartToIso2DProjMat));
+                curShader->setUniform("isoToCartZFactor",m_isoToCartZFactor);
+                curShader->setUniform("isoToCartMat",sf::Glsl::Mat3(m_isoToCartMat));
+                curShader->setUniform("geometryMap",m_geometryScreen[m_useSecondScreen].getTexture());
+                curShader->setUniform("screen_ratio",sf::Vector2f(1.0/(float)m_geometryScreen[m_useSecondScreen].getSize().x,
+                                                                  1.0/(float)m_geometryScreen[m_useSecondScreen].getSize().y));
+            }
+            state.shader = curShader;
+            (*renderIt)->PrepareShader(curShader);
+            (*renderIt)->Render(&m_geometryScreen[!m_useSecondScreen], state);
+            m_geometryScreen[!m_useSecondScreen].setActive(false);
+        }
+
 
         /*if((*renderIt)->Is3D())
             w->popGLStates();*/
@@ -117,7 +184,13 @@ void IsometricScene::RenderScene(sf::RenderTarget* w)
         glClear(GL_DEPTH_BUFFER_BIT);
         w->setView(GenerateView(m_currentCamera));
         ProcessRenderQueue(w);
+        if(m_enableSSAO)
+        {
+            m_geometryScreen[!m_useSecondScreen].display();
+            m_useSecondScreen = !m_useSecondScreen;
+        }
         w->setView(oldView);
+       // m_geometryScreen[m_useSecondScreen].getTexture().copyToImage().saveToFile("test.png");
     }
 }
 
@@ -131,6 +204,14 @@ int IsometricScene::UpdateLighting(std::multimap<float, Light*> &ligtList)
     return nbr_lights;
 }
 
+
+
+IsoRectEntity* IsometricScene::CreateIsoRectEntity(sf::Vector2f rectSize)
+{
+    IsoRectEntity *e = new IsoRectEntity(rectSize);
+    AddCreatedObject(GenerateObjectID(), e);
+    return e;
+}
 
 
 IsoSpriteEntity* IsometricScene::CreateIsoSpriteEntity(sf::Vector2i spriteSize)
@@ -188,6 +269,16 @@ void IsometricScene::ComputeTrigonometry()
                                          sinXY * sinZ,   cosXY * sinZ, -cosZ,
                                          0,              0,             1);
 
+     m_isoToCartMat[0] = cosXY;
+     m_isoToCartMat[1] = -sinXY;
+     m_isoToCartMat[2] = 0;
+     m_isoToCartMat[3] = -sinXY * sinZ;
+     m_isoToCartMat[4] = -cosXY * sinZ;
+     m_isoToCartMat[5] = cosZ;
+     m_isoToCartMat[6] = 0;
+     m_isoToCartMat[7] = 0;
+     m_isoToCartMat[8] = sinZ;
+
 
      m_normalProjMat[0] = cosXY;
      m_normalProjMat[1] = sinZ * sinXY;
@@ -198,6 +289,18 @@ void IsometricScene::ComputeTrigonometry()
      m_normalProjMat[6] = 0;
      m_normalProjMat[7] = -cosZ;
      m_normalProjMat[8] = sinZ;
+
+
+     m_normalProjMatInv[0] = cosXY;
+     m_normalProjMatInv[1] = -sinXY;
+     m_normalProjMatInv[2] = 0;
+     m_normalProjMatInv[3] = sinXY*sinZ;
+     m_normalProjMatInv[4] = cosXY*sinZ;
+     m_normalProjMatInv[5] = -cosZ;
+     m_normalProjMatInv[6] = sinXY * cosZ;
+     m_normalProjMatInv[7] = cosXY*cosZ;
+     m_normalProjMatInv[8] = sinZ;
+
 
      m_cartToIso2DProjMat[0] = cosXY;
      m_cartToIso2DProjMat[1] = sinXY/sinZ;

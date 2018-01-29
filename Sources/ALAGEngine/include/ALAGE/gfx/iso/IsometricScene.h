@@ -3,6 +3,7 @@
 
 #include "ALAGE/gfx/SceneManager.h"
 #include "ALAGE/gfx/iso/IsoSpriteEntity.h"
+#include "ALAGE/gfx/iso/IsoRectEntity.h"
 #include <SFML/OpenGL.hpp>
 
 namespace alag
@@ -23,10 +24,12 @@ class IsometricScene : public SceneManager
         IsometricScene(IsoViewAngle);
         virtual ~IsometricScene();
 
+        virtual bool InitRenderer(sf::Vector2u);
         virtual sf::View GenerateView(Camera*);
         virtual void ProcessRenderQueue(sf::RenderTarget*);
         virtual void RenderScene(sf::RenderTarget*);
 
+        IsoRectEntity*   CreateIsoRectEntity(sf::Vector2f = sf::Vector2f(0,0));
         IsoSpriteEntity* CreateIsoSpriteEntity(sf::Vector2i);
         IsoSpriteEntity* CreateIsoSpriteEntity(sf::IntRect = sf::IntRect(0,0,0,0));
 
@@ -48,6 +51,7 @@ class IsometricScene : public SceneManager
 
     private:
         IsoViewAngle m_viewAngle;
+
         sf::Vector2f m_IsoToCart_xVector;
         sf::Vector2f m_IsoToCart_yVector;
         sf::Vector2f m_IsoToCart_zVector;
@@ -55,13 +59,19 @@ class IsometricScene : public SceneManager
         sf::Vector2f m_CartToIso_yVector;
         sf::Transform m_TransformIsoToCart;
         GLfloat m_normalProjMat[9];
+        GLfloat m_normalProjMatInv[9];
         GLfloat m_cartToIso2DProjMat[9];
+        GLfloat m_isoToCartMat[9];
         GLfloat m_isoToCartZFactor;
-        //GLfloat m_isoToCartToIso2DProjMat[9];
 
         sf::Shader m_depthShader;
         sf::Shader m_depthAndLightingShader;
         sf::Shader m_lightingShader;
+
+        bool m_enableSSAO;
+        bool m_useSecondScreen;
+        sf::RenderTexture m_geometryScreen[2];
+        sf::Shader m_geometryShader;
 
         static const IsoViewAngle DEFAULT_ISO_VIEW_ANGLE;
 };

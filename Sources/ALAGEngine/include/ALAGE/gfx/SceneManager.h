@@ -20,7 +20,7 @@ class SceneManager
 
         virtual void CleanAll();
 
-        //virtual bool InitRenderer(int, int) = 0;
+        virtual bool InitRenderer(sf::Vector2u);
         virtual void Update(sf::Time);
         virtual void ComputeRenderQueue();
         virtual sf::View GenerateView(Camera*);

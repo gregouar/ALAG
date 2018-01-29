@@ -44,7 +44,7 @@ bool  Parser::ParseBool(const std::string& data)
     ss>>value;
     if(!ss.eof())
     {
-        if(data == "true")
+        if(data == "true" || data == "1")
             return (true);
         else
             return (false);
