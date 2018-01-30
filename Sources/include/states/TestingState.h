@@ -33,6 +33,9 @@ class TestingState : public alag::GState, public Singleton<TestingState>
 
         alag::IsometricScene m_mainScene;
 
+        sf::Text m_fpsText;
+        float m_nbrFPS, m_fpsCounter;
+
         sf::Vector3f m_camMove;
 
         alag::SceneNode *m_cameraNode;

@@ -62,7 +62,7 @@ bool Texture3DAsset::LoadNow()
                 Logger::Write("Texture3D readed from file: "+m_filePath);
 
         } else {
-            Logger::Error("Cannot load asset");
+            Logger::Error("Cannot load texture 3D from other source than file");
             loaded = false;
         }
 

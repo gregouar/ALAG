@@ -33,7 +33,7 @@
 	<vector>
 	"GState.h"
 
-1517261741 source:c:\c++\alag\sources\src\states\testingstate.cpp
+1517309777 source:c:\c++\alag\sources\src\states\testingstate.cpp
 	"states/TestingState.h"
 	"ALAGE/core/GApp.h"
 	"ALAGE/core/EventManager.h"
@@ -41,10 +41,11 @@
 	"ALAGE/core/AssetHandler.h"
 	"ALAGE/gfx/TextureAsset.h"
 	"ALAGE/gfx/Texture3DAsset.h"
+	"ALAGE/gfx/FontAsset.h"
 	"ALAGE/gfx/iso/IsoSpriteEntity.h"
 	"ALAGE/core/Config.h"
 
-1517157711 c:\c++\alag\sources\include\states\testingstate.h
+1517310157 c:\c++\alag\sources\include\states\testingstate.h
 	"ALAGE/core/GState.h"
 	"ALAGE/utils/singleton.h"
 	"ALAGE/gfx/iso/IsometricScene.h"
@@ -519,7 +520,7 @@
 	"ALAGE/core/Asset.h"
 	<SFML/Graphics.hpp>
 
-1516966659 source:c:\c++\alag\sources\alagengine\src\gfx\texture3dasset.cpp
+1517309562 source:c:\c++\alag\sources\alagengine\src\gfx\texture3dasset.cpp
 	"ALAGE/core/AssetHandler.h"
 	"ALAGE/gfx/Texture3DAsset.h"
 	"ALAGE/utils/Parser.h"
@@ -774,7 +775,7 @@
 1517265552 c:\c++\alag\sources\alagengine\src\gfx\iso\isometricshaders.cpp
 	<iostream>
 
-1517264878 source:c:\c++\alag\sources\alagengine\src\gfx\iso\isometricshaders.cpp
+1517265552 source:c:\c++\alag\sources\alagengine\src\gfx\iso\isometricshaders.cpp
 	<iostream>
 
 1517171758 source:c:\c++\alag\sources\alagengine\src\gfx\iso\isorectentity.cpp
@@ -788,4 +789,13 @@
 	"ALAGE/gfx/iso/IsoSpriteEntity.h"
 	"ALAGE/core/AssetHandler.h"
 	"ALAGE/utils/Mathematics.h"
+
+1517309320 source:c:\c++\alag\sources\alagengine\src\gfx\fontasset.cpp
+	"ALAGE/gfx/FontAsset.h"
+	"ALAGE/core/AssetHandler.h"
+	"ALAGE/utils/Logger.h"
+
+1517309324 c:\c++\alag\sources\alagengine\include\alage\gfx\fontasset.h
+	"ALAGE/core/Asset.h"
+	<SFML/Graphics.hpp>
 

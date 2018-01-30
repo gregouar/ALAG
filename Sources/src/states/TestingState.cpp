@@ -7,6 +7,7 @@
 
 #include "ALAGE/gfx/TextureAsset.h"
 #include "ALAGE/gfx/Texture3DAsset.h"
+#include "ALAGE/gfx/FontAsset.h"
 #include "ALAGE/gfx/iso/IsoSpriteEntity.h"
 
 
@@ -128,6 +129,13 @@ void TestingState::Init()
     light->SetQuadraticAttenuation(.00001);
     m_lightNode->AttachObject(light);
 
+   // font.loadFromFile("../data/arial.ttf");
+    m_fpsText.setFont(*AssetHandler<FontAsset>::Instance()->LoadAssetFromFile("../data/arial.ttf")->GetFont());
+    //m_fpsText.setFont(font);
+    m_fpsText.setCharacterSize(24);
+    m_fpsText.setFillColor(sf::Color::White);
+    m_fpsText.setPosition(0,0);
+
     m_firstEntering = false;
 }
 
@@ -209,6 +217,7 @@ void TestingState::HandleEvents(alag::EventManager *event_manager)
 
 void TestingState::Update(sf::Time time)
 {
+    ++m_fpsCounter;
     m_totalTime += time;
 
     m_cameraNode->Move(m_mainScene.ConvertCartesianToIso(m_camMove.x,m_camMove.y)*(500*time.asSeconds()));
@@ -221,10 +230,18 @@ void TestingState::Update(sf::Time time)
 
 void TestingState::Draw(sf::RenderTarget* renderer)
 {
-    if(m_totalTime.asSeconds() > .3)
+    if(m_totalTime.asSeconds() > 1)
     {
+        m_nbrFPS = (float)m_fpsCounter/m_totalTime.asSeconds();
         m_totalTime = sf::Time::Zero;
+        m_fpsCounter = 0;
     }
 
     m_mainScene.RenderScene(renderer);
+
+    std::ostringstream buf;
+    buf<<m_nbrFPS;
+    m_fpsText.setString(buf.str());
+    renderer->resetGLStates();
+    renderer->draw(m_fpsText);
 }
