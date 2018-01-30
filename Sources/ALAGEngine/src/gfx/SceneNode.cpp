@@ -210,6 +210,11 @@ SceneNodeIterator SceneNode::GetChildIterator()
     return SceneNodeIterator(m_childs.begin(), m_childs.end());
 }
 
+SceneObjectIterator SceneNode::GetSceneObjectIterator()
+{
+    return SceneObjectIterator(m_attachedObjects.begin(), m_attachedObjects.end());
+}
+
 
 void SceneNode::AttachObject(SceneObject *e)
 {
@@ -222,6 +227,9 @@ void SceneNode::AttachObject(SceneObject *e)
 
         if(e->IsALight())
             m_lights.push_back((Light*)e);
+
+        if(e->IsAShadowCaster())
+            m_shadowCasters.push_back((ShadowCaster*)e);
 
         if(e->SetParentNode(this) != nullptr)
             Logger::Warning("Attaching entity which has already a parent node");
@@ -241,6 +249,9 @@ void SceneNode::DetachObject(SceneObject *e)
 
     if(e != nullptr && e->IsALight())
         m_lights.remove((Light*)e);
+
+    if(e != nullptr && e->IsAShadowCaster())
+        m_shadowCasters.remove((ShadowCaster*)e);
 }
 
 SceneEntityIterator SceneNode::GetEntityIterator()
@@ -251,6 +262,13 @@ SceneEntityIterator SceneNode::GetEntityIterator()
 LightIterator SceneNode::GetLightIterator()
 {
     return LightIterator(m_lights.begin(), m_lights.end());
+}
+
+
+
+ShadowCasterIterator SceneNode::GetShadowCasterIterator()
+{
+    return ShadowCasterIterator(m_shadowCasters.begin(), m_shadowCasters.end());
 }
 
 void SceneNode::Move(float x, float y)
@@ -407,6 +425,54 @@ void SceneNode::SearchInsideForLights(std::multimap<float,Light*> *foundedLights
             nodeIt.GetElement()->SearchInsideForLights(foundedLights, pos);
             ++nodeIt;
         }
+    }
+}
+
+
+void SceneNode::FindNearbyShadowCaster(std::list<ShadowCaster*> *foundedCaster, LightType lightType)
+{
+    GetSceneManager()->GetRootNode()->SearchInsideForShadowCaster(foundedCaster, lightType);
+}
+
+void SceneNode::SearchInsideForShadowCaster(std::list<ShadowCaster*> *foundedCaster, LightType lightType)
+{
+    if(foundedCaster != nullptr)
+    {
+        ShadowCasterIterator casterIt = GetShadowCasterIterator();
+        while(!casterIt.IsAtTheEnd())
+        {
+            if(casterIt.GetElement()->GetShadowCastingType() == AllShadows
+            || (lightType == DirectionnalLight
+                && casterIt.GetElement()->GetShadowCastingType() == DirectionnalShadow)
+            || (lightType == OmniLight
+                && casterIt.GetElement()->GetShadowCastingType() == DynamicShadow))
+                foundedCaster->push_back(casterIt.GetElement());
+            ++casterIt;
+        }
+
+        SceneNodeIterator nodeIt = GetChildIterator();
+        while(!nodeIt.IsAtTheEnd())
+        {
+            nodeIt.GetElement()->SearchInsideForShadowCaster(foundedCaster, lightType);
+            ++nodeIt;
+        }
+    }
+}
+
+void SceneNode::Update(const sf::Time &elapsed_time)
+{
+    SceneObjectIterator objIt = GetSceneObjectIterator();
+    while(!objIt.IsAtTheEnd())
+    {
+        objIt.GetElement()->Update(elapsed_time);
+        ++objIt;
+    }
+
+    SceneNodeIterator nodeIt = GetChildIterator();
+    while(!nodeIt.IsAtTheEnd())
+    {
+        nodeIt.GetElement()->Update(elapsed_time);
+        ++nodeIt;
     }
 }
 

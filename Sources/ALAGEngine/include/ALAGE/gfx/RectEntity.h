@@ -19,6 +19,8 @@ class RectEntity : public SceneEntity, protected sf::RectangleShape
         virtual void Render(sf::RenderTarget *, const sf::RenderStates &);
         virtual void PrepareShader(sf::Shader *);
 
+        virtual void ComputeShadow(Light*){}
+
         void SetTexture(TextureAsset *t);
         void SetTexture(Texture3DAsset *t);
         void SetTextureRect(const sf::IntRect &);

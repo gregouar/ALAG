@@ -16,6 +16,8 @@ class IsoSpriteEntity : public SpriteEntity
 
         virtual void PrepareShader(sf::Shader *);
 
+        virtual void ComputeShadow(Light*);
+
         void SetIsoToCartZFactor(float );
 
     protected:

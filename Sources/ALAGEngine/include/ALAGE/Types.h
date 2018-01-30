@@ -17,6 +17,7 @@ class SceneObject;
 class SceneEntity;
 class SceneNode;
 class Light;
+class ShadowCaster;
 
 enum AssetLoadType
 {
@@ -45,6 +46,14 @@ enum LightType
     SpotLight,
 };
 
+enum ShadowCastingType
+{
+    NoShadow,
+    DirectionnalShadow,
+    DynamicShadow,
+    AllShadows,
+};
+
 
 typedef unsigned int AssetTypeID;
 typedef unsigned int NodeTypeID;
@@ -53,6 +62,7 @@ typedef std::string AnimationTypeID;
 
 typedef ListIterator<SceneObject*> SceneObjectIterator;
 typedef ListIterator<SceneEntity*> SceneEntityIterator;
+typedef ListIterator<ShadowCaster*> ShadowCasterIterator;
 typedef ListIterator<Light*> LightIterator;
 typedef MapIterator<NodeTypeID, SceneNode*> SceneNodeIterator;
 

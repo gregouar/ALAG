@@ -68,6 +68,7 @@
 		<Unit filename="ALAGEngine/include/ALAGE/gfx/AnimatedSprite.h" />
 		<Unit filename="ALAGEngine/include/ALAGE/gfx/Camera.h" />
 		<Unit filename="ALAGEngine/include/ALAGE/gfx/FontAsset.h" />
+		<Unit filename="ALAGEngine/include/ALAGE/gfx/GeometricShadowCaster.h" />
 		<Unit filename="ALAGEngine/include/ALAGE/gfx/Light.h" />
 		<Unit filename="ALAGEngine/include/ALAGE/gfx/QuadtreeNode.h" />
 		<Unit filename="ALAGEngine/include/ALAGE/gfx/RectEntity.h" />
@@ -75,6 +76,7 @@
 		<Unit filename="ALAGEngine/include/ALAGE/gfx/SceneManager.h" />
 		<Unit filename="ALAGEngine/include/ALAGE/gfx/SceneNode.h" />
 		<Unit filename="ALAGEngine/include/ALAGE/gfx/SceneObject.h" />
+		<Unit filename="ALAGEngine/include/ALAGE/gfx/ShadowCaster.h" />
 		<Unit filename="ALAGEngine/include/ALAGE/gfx/SpriteEntity.h" />
 		<Unit filename="ALAGEngine/include/ALAGE/gfx/Texture3DAsset.h" />
 		<Unit filename="ALAGEngine/include/ALAGE/gfx/TextureAsset.h" />
@@ -108,6 +110,7 @@
 		<Unit filename="ALAGEngine/src/gfx/AnimatedSprite.cpp" />
 		<Unit filename="ALAGEngine/src/gfx/Camera.cpp" />
 		<Unit filename="ALAGEngine/src/gfx/FontAsset.cpp" />
+		<Unit filename="ALAGEngine/src/gfx/GeometricShadowCaster.cpp" />
 		<Unit filename="ALAGEngine/src/gfx/Light.cpp" />
 		<Unit filename="ALAGEngine/src/gfx/QuadtreeNode.cpp" />
 		<Unit filename="ALAGEngine/src/gfx/RectEntity.cpp" />
@@ -115,6 +118,7 @@
 		<Unit filename="ALAGEngine/src/gfx/SceneManager.cpp" />
 		<Unit filename="ALAGEngine/src/gfx/SceneNode.cpp" />
 		<Unit filename="ALAGEngine/src/gfx/SceneObject.cpp" />
+		<Unit filename="ALAGEngine/src/gfx/ShadowCaster.cpp" />
 		<Unit filename="ALAGEngine/src/gfx/SpriteEntity.cpp" />
 		<Unit filename="ALAGEngine/src/gfx/Texture3DAsset.cpp" />
 		<Unit filename="ALAGEngine/src/gfx/TextureAsset.cpp" />

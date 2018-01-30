@@ -37,6 +37,8 @@ bool SceneManager::InitRenderer(sf::Vector2u windowSize)
 
 void SceneManager::Update(sf::Time elapsedTime)
 {
+    m_rootNode.Update(elapsedTime);
+
     if(m_needToUpdateRenderQueue)
     {
         ComputeRenderQueue();
@@ -119,6 +121,12 @@ int SceneManager::UpdateLighting(std::multimap<float, Light*> &lightList, int ma
             glDirection[1] = pos.y;
             glDirection[2] = pos.z;
             glLightfv(GL_LIGHT0+curNbrLights, GL_SPOT_DIRECTION, glDirection);
+
+            if(curLight->IsCastShadowEnabled())
+            {
+                node->FindNearbyShadowCaster(curLight->GetShadowCasterList(),curLight->GetType());
+                curLight->UpdateShadow();
+            }
 
             ++curNbrLights;
         }

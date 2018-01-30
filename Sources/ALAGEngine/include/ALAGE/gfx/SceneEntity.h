@@ -5,6 +5,7 @@
 #include "ALAGE/core/NotificationListener.h"
 #include "ALAGE/core/Asset.h"
 #include "ALAGE/gfx/SceneObject.h"
+#include "ALAGE/gfx/ShadowCaster.h"
 #include "ALAGE/gfx/Light.h"
 
 namespace alag
@@ -13,7 +14,7 @@ namespace alag
 class SceneNode;
 class Asset;
 
-class SceneEntity : public NotificationListener, public SceneObject
+class SceneEntity : public NotificationListener, public SceneObject, public ShadowCaster
 {
     public:
         SceneEntity();
@@ -26,8 +27,8 @@ class SceneEntity : public NotificationListener, public SceneObject
         bool CanBeLighted();
         bool Is3D();
 
-        void ActivateLighting();
-        void DesactivateLighting();
+        void EnableLighting();
+        void DisableLighting();
 
         float GetZDepth();
 
@@ -37,8 +38,6 @@ class SceneEntity : public NotificationListener, public SceneObject
         bool m_canBeLighted;
         bool m_is3D;
         bool m_isLighted;
-
-        std::map<float, Light*> m_nearbyLights;
 
     private:
         sf::Vector3f m_bounds;

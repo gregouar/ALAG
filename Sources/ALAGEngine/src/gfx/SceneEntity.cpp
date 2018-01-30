@@ -12,6 +12,7 @@ SceneEntity::SceneEntity()
     m_isLighted = true;
     m_is3D = false;
     m_ZDepth = 0.5;
+    m_isAShadowCaster = true;
 }
 
 SceneEntity::~SceneEntity()
@@ -29,14 +30,14 @@ bool SceneEntity::Is3D()
     return m_is3D;
 }
 
-void SceneEntity::ActivateLighting()
+void SceneEntity::EnableLighting()
 {
     m_isLighted = true;
     if(!m_canBeLighted)
         Logger::Error("Cannot activate illumination");
 }
 
-void SceneEntity::DesactivateLighting()
+void SceneEntity::DisableLighting()
 {
     m_isLighted = false;
 }

@@ -135,8 +135,10 @@ bool IsometricScene::InitRenderer(sf::Vector2u windowSize)
 void IsometricScene::ProcessRenderQueue(sf::RenderTarget *w)
 {
     std::multimap<float, Light*> lightList;
-    m_rootNode.FindNearbyLights(&lightList);
+    m_currentCamera->GetParentNode()->FindNearbyLights(&lightList);
+  //  m_rootNode.FindNearbyLights(&lightList);
     UpdateLighting(lightList);
+
 
     sf::View curView = GenerateView(m_currentCamera);
 
@@ -301,6 +303,7 @@ void IsometricScene::ProcessRenderQueue(sf::RenderTarget *w)
 
     if(m_enableSSAO)
     {
+        m_SSAOShader.setUniform("zoom",1.0f/m_currentCamera->GetZoom());
         m_SSAOScreen.draw(m_SSAOrenderer,&m_SSAOShader);
         m_SSAOScreen.display();
     }
@@ -308,6 +311,7 @@ void IsometricScene::ProcessRenderQueue(sf::RenderTarget *w)
     sf::Vector2f decal = curView.getCenter();
     decal -= sf::Vector2f(curView.getSize().x/2, curView.getSize().y/2);
     m_lightingShader.setUniform("view_decal",decal);
+    m_lightingShader.setUniform("zoom",m_currentCamera->GetZoom());
     w->draw(m_renderer,m_rendererStates);
 }
 
@@ -401,7 +405,7 @@ void IsometricScene::SetSSAO(bool ssao)
 
         m_SSAOrenderer.setSize(sf::Vector2f(m_depthScreen.getSize().x,
                                             m_depthScreen.getSize().y));
-        //m_SSAOrenderer.setTextureRect(sf::IntRect(0,0,windowSize.x*m_superSampling, windowSize.y*m_superSampling));
+       // m_SSAOrenderer.setTextureRect(sf::IntRect(0,0,windowSize.x*m_superSampling, windowSize.y*m_superSampling));
         m_SSAOrenderer.setTexture(&m_colorScreen.getTexture());
     } else {
         m_lightingShader.setUniform("useSSAO", false);

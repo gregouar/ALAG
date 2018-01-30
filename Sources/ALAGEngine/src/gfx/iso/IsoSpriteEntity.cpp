@@ -1,3 +1,4 @@
+#include "ALAGE/gfx/SceneNode.h"
 #include "ALAGE/gfx/iso/IsoSpriteEntity.h"
 #include "ALAGE/core/AssetHandler.h"
 #include "ALAGE/utils/Mathematics.h"
@@ -40,9 +41,29 @@ void IsoSpriteEntity::PrepareShader(sf::Shader* shader)
     shader->setUniform("normalProjMatInv",sf::Glsl::Mat3(IdMat3X3));
 }
 
+void IsoSpriteEntity::ComputeShadow(Light* light)
+{
+    if(light != nullptr && light->GetParentNode() != nullptr
+     &&GetParentNode() != nullptr)
+    {
+        if(light->GetType() == DirectionnalLight
+            && (GetShadowCastingType() == DirectionnalShadow || GetShadowCastingType() == AllShadows))
+        {
+            sf::Vector3f lightDirection = light->GetDirection();
+            sf::Vector3f casterPos = GetParentNode()->GetGlobalPosition();
+
+            sf::Texture* shadowTexture = &m_shadowMap[light];
+            m_shadowSprite[light].setTexture(*shadowTexture);
+        }
+
+        AddToLightList(light);
+    }
+}
+
 void IsoSpriteEntity::SetIsoToCartZFactor(float factor)
 {
     m_isoToCartZFactor = factor;
 }
+
 
 }

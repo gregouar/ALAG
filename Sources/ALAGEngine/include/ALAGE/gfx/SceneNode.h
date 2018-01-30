@@ -34,8 +34,10 @@ class SceneNode
         void RemoveAndDestroyAllChilds(bool destroyNonCreatedChilds = false);
 
         SceneNodeIterator GetChildIterator();
+        SceneObjectIterator GetSceneObjectIterator();
         SceneEntityIterator GetEntityIterator();
         LightIterator GetLightIterator();
+        ShadowCasterIterator GetShadowCasterIterator();
 
         void AttachObject(SceneObject *);
         void DetachObject(SceneObject *);
@@ -61,10 +63,14 @@ class SceneNode
         SceneManager*  GetSceneManager();
 
         void SearchInsideForEntities(std::list<SceneEntity*>  *renderQueue);
+
         void FindNearbyLights(std::multimap<float, Light*> *foundedLights);
         void SearchInsideForLights(std::multimap<float, Light*> *foundedLights, sf::Vector3f);
 
-        void Update();
+        void FindNearbyShadowCaster(std::list<ShadowCaster*> *foundedCaster, LightType);
+        void SearchInsideForShadowCaster(std::list<ShadowCaster*> *foundedCaster, LightType);
+
+        void Update(const sf::Time &);
 
     protected:
         void SetParent(SceneNode *);
@@ -85,6 +91,7 @@ class SceneNode
         std::list<SceneObject *> m_attachedObjects;
         std::list<SceneEntity *> m_entities;
         std::list<Light *> m_lights;
+        std::list<ShadowCaster *> m_shadowCasters;
 
         int m_curNewId;
 };

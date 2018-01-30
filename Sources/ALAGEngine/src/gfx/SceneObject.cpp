@@ -8,6 +8,7 @@ SceneObject::SceneObject()
     m_parentNode = nullptr;
     m_isALight = false;
     m_isAnEntity = false;
+    m_isAShadowCaster = false;
 }
 
 SceneObject::~SceneObject()
@@ -37,6 +38,16 @@ bool SceneObject::IsALight()
 bool SceneObject::IsAnEntity()
 {
     return m_isAnEntity;
+}
+
+bool SceneObject::IsAShadowCaster()
+{
+    return m_isAShadowCaster;
+}
+
+void SceneObject::Update(const sf::Time &elapsed_time)
+{
+
 }
 
 

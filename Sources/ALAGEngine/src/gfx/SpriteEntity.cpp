@@ -129,10 +129,32 @@ void SpriteEntity::SetCenter(sf::Vector2f c)
     sf::Sprite::setOrigin(c);
 }
 
+void SpriteEntity::SetScale(float x, float y)
+{
+    SetScale(sf::Vector2f(x,y));
+}
+
+void SpriteEntity::SetScale(sf::Vector2f c)
+{
+    sf::Sprite::setScale(c);
+}
+
+
+void SpriteEntity::SetShadowCastingType(ShadowCastingType type)
+{
+    ShadowCaster::ForceShadowCastingType(type);
+}
+
 sf::Vector2f SpriteEntity::GetCenter()
 {
     return sf::Sprite::getOrigin();
 }
+
+sf::Vector2f SpriteEntity::GetScale()
+{
+    return sf::Sprite::getScale();
+}
+
 
 void SpriteEntity::Notify(NotificationSender* sender, NotificationType notification)
 {

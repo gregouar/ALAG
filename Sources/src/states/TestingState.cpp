@@ -82,7 +82,8 @@ void TestingState::Init()
     //sarco3DEntity->SetTexture(TextureHandler->LoadAssetFromFile("../data/sarco-color.png"));
     sarco3DEntity->SetTexture(t3D);
     sarco3DEntity->SetCenter(128,160);
-   // sarco3DEntity->DesactivateLighting();
+    sarco3DEntity->SetShadowCastingType(DirectionnalShadow);
+    //sarco3DEntity->DesactivateLighting();
     m_sarco3DNode->AttachObject(sarco3DEntity);
 
 
@@ -92,7 +93,7 @@ void TestingState::Init()
     sarco3DEntitybis->SetCenter(128,128);
     m_sarcoNode->CreateChildNode(sf::Vector2f(-15,70))->AttachObject(sarco3DEntitybis);
 
-    sarco3DEntitybis->scale(.75,.75);
+    sarco3DEntitybis->SetScale(.75,.75);
 
 
     IsoSpriteEntity *sarco3DEntityThird = m_mainScene.CreateIsoSpriteEntity(sf::Vector2i(256,256));
@@ -104,9 +105,10 @@ void TestingState::Init()
     sunLight->SetConstantAttenuation(2);*/
     Light* sunLight = m_mainScene.CreateLight(DirectionnalLight,sf::Vector3f(-1,.5,-1), sf::Color(255,255,224));
     sunLight->SetConstantAttenuation(1);
+    sunLight->EnableShadowCasting();
     m_mainScene.GetRootNode()->AttachObject(sunLight);
    // m_mainScene.SetAmbientLight(sf::Color(32,48,128));
-    m_mainScene.SetAmbientLight(sf::Color(128,128,128));
+    m_mainScene.SetAmbientLight(sf::Color(96,96,128));
     //m_mainScene.GetRootNode()->AttachObject(m_mainScene.CreateLight(DirectionnalLight,sf::Vector3f(0,-1,0), sf::Color::Red));
 
     m_chene_node = m_mainScene.GetRootNode()->CreateChildNode(sf::Vector2f(150,-100));
