@@ -194,6 +194,12 @@ void TestingState::HandleEvents(alag::EventManager *event_manager)
         m_sarco3DNode->Move(0,0,-10);
 
 
+    if(event_manager->KeyPressed(sf::Keyboard::S))
+        m_mainScene.SetSSAO(false);
+    if(event_manager->KeyReleased(sf::Keyboard::S))
+        m_mainScene.SetSSAO(true);
+
+
     if(event_manager->MouseButtonIsPressed(sf::Mouse::Left))
     {
         sf::Vector2i p(event_manager->MousePosition());

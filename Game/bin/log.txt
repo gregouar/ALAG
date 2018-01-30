@@ -19,10 +19,3 @@ Texture3D readed from file: ../data/abbayeXML.txt
 Font loaded from file: ../data/arial.ttf
 Starting application
 Stopping application
-ERROR: Cannot destroy child (ID=0)
-ERROR: Cannot destroy child (ID=4277075694)
-ERROR: Cannot destroy child (ID=0)
-ERROR: Cannot destroy child (ID=0)
-ERROR: Cannot destroy child (ID=0)
-ERROR: Cannot destroy child (ID=4277075694)
-ERROR: Cannot destroy child (ID=0)

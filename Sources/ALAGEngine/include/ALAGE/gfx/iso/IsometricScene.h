@@ -44,9 +44,10 @@ class IsometricScene : public SceneManager
         void SetViewAngle(IsoViewAngle);
         void SetAmbientLight(sf::Color);
 
-        void ComputeTrigonometry();
+        void SetSSAO(bool);
 
     protected:
+        void ComputeTrigonometry();
         int UpdateLighting(std::multimap<float, Light*> &lightList);
 
     private:
@@ -64,14 +65,26 @@ class IsometricScene : public SceneManager
         GLfloat m_isoToCartMat[9];
         GLfloat m_isoToCartZFactor;
 
+        sf::Shader m_colorShader;
+        sf::Shader m_normalShader;
         sf::Shader m_depthShader;
-        sf::Shader m_depthAndLightingShader;
         sf::Shader m_lightingShader;
 
+        int m_superSampling;
+        sf::RenderTexture m_colorScreen;
+        sf::RenderTexture m_normalScreen;
+        sf::RenderTexture m_depthScreen;
+
+        sf::RectangleShape m_renderer;
+        sf::RenderStates m_rendererStates;
+
         bool m_enableSSAO;
-        bool m_useSecondScreen;
-        sf::RenderTexture m_geometryScreen[2];
-        sf::Shader m_geometryShader;
+        sf::Shader m_SSAOShader;
+        sf::RenderTexture m_SSAOScreen;
+        sf::RectangleShape m_SSAOrenderer;
+        sf::Texture m_SSAONoiseTexture;
+        sf::Image m_SSAONoisePattern;
+
 
         static const IsoViewAngle DEFAULT_ISO_VIEW_ANGLE;
 };

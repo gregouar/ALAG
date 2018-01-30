@@ -67,6 +67,7 @@
 		<Unit filename="ALAGEngine/include/ALAGE/core/StateManager.h" />
 		<Unit filename="ALAGEngine/include/ALAGE/gfx/AnimatedSprite.h" />
 		<Unit filename="ALAGEngine/include/ALAGE/gfx/Camera.h" />
+		<Unit filename="ALAGEngine/include/ALAGE/gfx/FontAsset.h" />
 		<Unit filename="ALAGEngine/include/ALAGE/gfx/Light.h" />
 		<Unit filename="ALAGEngine/include/ALAGE/gfx/QuadtreeNode.h" />
 		<Unit filename="ALAGEngine/include/ALAGE/gfx/RectEntity.h" />
@@ -106,6 +107,7 @@
 		<Unit filename="ALAGEngine/src/extlibs/tinyxmlparser.cpp" />
 		<Unit filename="ALAGEngine/src/gfx/AnimatedSprite.cpp" />
 		<Unit filename="ALAGEngine/src/gfx/Camera.cpp" />
+		<Unit filename="ALAGEngine/src/gfx/FontAsset.cpp" />
 		<Unit filename="ALAGEngine/src/gfx/Light.cpp" />
 		<Unit filename="ALAGEngine/src/gfx/QuadtreeNode.cpp" />
 		<Unit filename="ALAGEngine/src/gfx/RectEntity.cpp" />
