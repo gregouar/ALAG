@@ -9,7 +9,7 @@
 namespace alag
 {
 
-class GeometricShadowCaster : public SceneObject, public ShadowCaster
+class GeometricShadowCaster : public ShadowCaster
 {
     public:
         GeometricShadowCaster();

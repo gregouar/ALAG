@@ -26,6 +26,8 @@ class SceneManager
         virtual sf::View GenerateView(Camera*);
         virtual void ProcessRenderQueue(sf::RenderTarget*);
         virtual void RenderScene(sf::RenderTarget*) = 0;
+        virtual void RenderShadows(std::multimap<float, Light*> &,const sf::View &,
+                                   const sf::Vector2u &, int = GL_MAX_LIGHTS);
 
         void AskToComputeRenderQueue();
 
@@ -35,7 +37,8 @@ class SceneManager
         SpriteEntity*   CreateSpriteEntity(sf::Vector2i);
         SpriteEntity*   CreateSpriteEntity(sf::IntRect = sf::IntRect(0,0,0,0));
 
-        Light* CreateLight(LightType = OmniLight, sf::Vector3f = sf::Vector3f(0,0,-1), sf::Color = sf::Color::White);
+        Light* CreateLight(LightType = OmniLight, sf::Vector3f = sf::Vector3f(0,0,-1),
+                           sf::Color = sf::Color::White);
         Camera* CreateCamera(sf::Vector2f viewSize);
 
         void DestroyCreatedObject(const ObjectTypeID &);

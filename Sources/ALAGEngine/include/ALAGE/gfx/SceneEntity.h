@@ -14,7 +14,7 @@ namespace alag
 class SceneNode;
 class Asset;
 
-class SceneEntity : public NotificationListener, public SceneObject, public ShadowCaster
+class SceneEntity : public NotificationListener, public ShadowCaster
 {
     public:
         SceneEntity();

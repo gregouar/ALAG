@@ -31,10 +31,7 @@ IsometricScene::IsometricScene(IsoViewAngle viewAngle)
     m_depthShader.loadFromMemory(depth_fragShader,sf::Shader::Fragment);
     m_normalShader.loadFromMemory(normal_fragShader,sf::Shader::Fragment);
     m_SSAOShader.loadFromMemory(vertexShader,SSAO_fragShader);
-    //m_depthAndLightingShader.loadFromMemory(depthAndLighting_fragShader,sf::Shader::Fragment);
-    //m_depthAndLightingShader.loadFromMemory(vertexShader,depthAndLighting_fragShader);
     m_lightingShader.loadFromMemory(vertexShader,lighting_fragShader);
-   // m_geometryShader.loadFromMemory(vertexShader,geometry_fragShader);
     SetAmbientLight(m_ambientLight);
 }
 
@@ -139,8 +136,9 @@ void IsometricScene::ProcessRenderQueue(sf::RenderTarget *w)
   //  m_rootNode.FindNearbyLights(&lightList);
     UpdateLighting(lightList);
 
-
     sf::View curView = GenerateView(m_currentCamera);
+
+    RenderShadows(lightList,curView,m_colorScreen.getSize());
 
     m_colorScreen.setActive(true);
         glClear(GL_DEPTH_BUFFER_BIT);
@@ -154,7 +152,7 @@ void IsometricScene::ProcessRenderQueue(sf::RenderTarget *w)
         glClear(GL_DEPTH_BUFFER_BIT);
         glEnable(GL_DEPTH_TEST);
         glDepthMask(GL_TRUE);
-        m_depthScreen.clear();
+        m_depthScreen.clear(sf::Color::White);
         m_depthScreen.setView(curView);
     m_depthScreen.setActive(false);
 
@@ -166,20 +164,6 @@ void IsometricScene::ProcessRenderQueue(sf::RenderTarget *w)
         m_normalScreen.setView(curView);
     m_normalScreen.setActive(false);
 
-    /*w->pushGLStates();
-    glEnable(GL_DEPTH_TEST);
-    glDepthMask(GL_TRUE);
-
-    if(m_enableSSAO)
-    {
-        m_geometryScreen[!m_useSecondScreen].setActive(true);
-        glEnable(GL_DEPTH_TEST);
-        glDepthMask(GL_TRUE);
-        m_geometryScreen[!m_useSecondScreen].clear();
-        glClear(GL_DEPTH_BUFFER_BIT);
-        m_geometryScreen[!m_useSecondScreen].setView(w->getView());
-        m_geometryScreen[!m_useSecondScreen].setActive(false);
-    }
 
     std::list<SceneEntity*>::iterator renderIt;
     for(renderIt = m_renderQueue.begin() ; renderIt != m_renderQueue.end(); ++renderIt)
@@ -193,82 +177,14 @@ void IsometricScene::ProcessRenderQueue(sf::RenderTarget *w)
         if(node != nullptr)
             globalPos = node->GetGlobalPosition();
 
-        state.transform.translate(ConvertIsoToCartesian(0,0,globalPos.z));
+        /*state.transform.translate(ConvertIsoToCartesian(0,0,globalPos.z));
         state.transform *= m_TransformIsoToCart;
-        state.transform.translate(globalPos.x, globalPos.y);
+        state.transform.translate(globalPos.x, globalPos.y);*/
 
-        sf::Shader* curShader = nullptr;
+        sf::Vector3f v = m_isoToCartMat*globalPos;
 
-        if((*renderIt)->CanBeLighted())
-            curShader = &m_depthAndLightingShader;
-        else
-            curShader = &m_depthShader;
-
-        if(curShader != nullptr)
-        {
-            curShader->setUniform("zPos",globalPos.z);
-            curShader->setUniform("useNormalMap",true);
-            curShader->setUniform("normalProjMat",sf::Glsl::Mat3(m_normalProjMat));
-
-            curShader->setUniform("cartToIso2DProjMat",sf::Glsl::Mat3(m_cartToIso2DProjMat));
-            curShader->setUniform("isoToCartZFactor",m_isoToCartZFactor);
-
-            if(m_enableSSAO)
-            {
-                curShader->setUniform("useSSAO",true);
-                curShader->setUniform("geometryMap",m_geometryScreen[m_useSecondScreen].getTexture());
-                curShader->setUniform("screen_ratio",sf::Vector2f(1.0/(float)m_geometryScreen[m_useSecondScreen].getSize().x,
-                                                                  1.0/(float)m_geometryScreen[m_useSecondScreen].getSize().y));
-            } else {
-                curShader->setUniform("useSSAO",false);
-            }
-
-        }
-
-        (*renderIt)->PrepareShader(curShader);
-        state.shader = curShader;
-        (*renderIt)->Render(w,state);
-
-
-        if(m_enableSSAO)
-        {
-            m_geometryScreen[!m_useSecondScreen].setActive(true);
-            curShader = &m_geometryShader;
-            {
-                curShader->setUniform("zPos",globalPos.z);
-                curShader->setUniform("useNormalMap",true);
-                curShader->setUniform("normalProjMat",sf::Glsl::Mat3(m_normalProjMat));
-                curShader->setUniform("cartToIso2DProjMat",sf::Glsl::Mat3(m_cartToIso2DProjMat));
-                curShader->setUniform("isoToCartZFactor",m_isoToCartZFactor);
-                curShader->setUniform("isoToCartMat",sf::Glsl::Mat3(m_isoToCartMat));
-                curShader->setUniform("geometryMap",m_geometryScreen[m_useSecondScreen].getTexture());
-                curShader->setUniform("screen_ratio",sf::Vector2f(1.0/(float)m_geometryScreen[m_useSecondScreen].getSize().x,
-                                                                  1.0/(float)m_geometryScreen[m_useSecondScreen].getSize().y));
-            }
-            state.shader = curShader;
-            (*renderIt)->PrepareShader(curShader);
-            (*renderIt)->Render(&m_geometryScreen[!m_useSecondScreen], state);
-            m_geometryScreen[!m_useSecondScreen].setActive(false);
-        }
-    }
-    w->popGLStates();*/
-
-    std::list<SceneEntity*>::iterator renderIt;
-    for(renderIt = m_renderQueue.begin() ; renderIt != m_renderQueue.end(); ++renderIt)
-    {
-        sf::RenderStates state;
-        state.transform = sf::Transform::Identity;
-
-        sf::Vector3f globalPos(0,0,0);
-
-        SceneNode *node = (*renderIt)->GetParentNode();
-        if(node != nullptr)
-            globalPos = node->GetGlobalPosition();
-
-        state.transform.translate(ConvertIsoToCartesian(0,0,globalPos.z));
+        state.transform.translate(v.x, v.y);
         state.transform *= m_TransformIsoToCart;
-        state.transform.translate(globalPos.x, globalPos.y);
-
 
         m_colorScreen.setActive(true);
             m_colorShader.setUniform("zPos",globalPos.z);
@@ -281,8 +197,8 @@ void IsometricScene::ProcessRenderQueue(sf::RenderTarget *w)
             m_normalShader.setUniform("zPos",globalPos.z);
             m_normalShader.setUniform("useNormalMap",false);
             m_normalShader.setUniform("normalProjMat",sf::Glsl::Mat3(m_normalProjMat.values));
-            m_normalShader.setUniform("cartToIso2DProjMat",sf::Glsl::Mat3(m_cartToIso2DProjMat.values));
-            m_normalShader.setUniform("isoToCartZFactor",-m_isoToCartMat.values[5]);
+            m_normalShader.setUniform("cartToIso2DProjMat",sf::Glsl::Mat3(m_cartToIsoMat.values));
+            m_normalShader.setUniform("isoToCartZFactor",m_isoToCartMat.values[5]);
             (*renderIt)->PrepareShader(&m_normalShader);
             state.shader = &m_normalShader;
             (*renderIt)->Render(&m_normalScreen,state);
@@ -300,6 +216,10 @@ void IsometricScene::ProcessRenderQueue(sf::RenderTarget *w)
     m_colorScreen.display();
     m_depthScreen.display();
     m_normalScreen.display();
+
+    /*m_colorScreen.getTexture().copyToImage().saveToFile("color.png");
+    m_depthScreen.getTexture().copyToImage().saveToFile("depth.png");
+    m_normalScreen.getTexture().copyToImage().saveToFile("normal.png");*/
 
     if(m_enableSSAO)
     {
@@ -341,12 +261,36 @@ void IsometricScene::RenderScene(sf::RenderTarget* w)
     }
 }
 
-int IsometricScene::UpdateLighting(std::multimap<float, Light*> &ligtList)
+
+int IsometricScene::UpdateLighting(std::multimap<float, Light*> &lightList)
 {
-    int nbr_lights = SceneManager::UpdateLighting(ligtList);
+    int nbr_lights = SceneManager::UpdateLighting(lightList);
 
     m_lightingShader.setUniform("NBR_LIGHTS",(int)nbr_lights);
-   // m_depthAndLightingShader.setUniform("NBR_LIGHTS",(int)nbr_lights);
+
+    int curNbrLights = 0, curNbrShadows = 0;
+
+    float shadowCastingLights[8] = {-1,-1,-1,-1,-1,-1,-1,-1};
+
+    std::multimap<float, Light*>::iterator lightIt;
+    for(lightIt = lightList.begin() ; lightIt != lightList.end()
+    && curNbrLights < nbr_lights && curNbrShadows < 8 ; ++lightIt) /** REPLACE 8 BY CONSTANT**/
+    {
+        std::ostringstream buffer;
+        Light* curLight = lightIt->second;
+
+        if(curLight->IsCastShadowEnabled())
+        {
+            buffer <<"shadowMap_"<<curNbrShadows;
+            shadowCastingLights[curNbrShadows] = curNbrLights;
+            m_lightingShader.setUniform(buffer.str(), curLight->GetShadowMap());
+
+            ++curNbrShadows;
+        }
+        ++curNbrLights;
+    }
+
+    m_lightingShader.setUniformArray("shadowCasters",shadowCastingLights, 8);
 
     return nbr_lights;
 }
@@ -387,7 +331,6 @@ void IsometricScene::SetAmbientLight(sf::Color light)
     SceneManager::SetAmbientLight(light);
 
     m_lightingShader.setUniform("ambient_light",sf::Glsl::Vec4(m_ambientLight));
-   // m_depthAndLightingShader.setUniform("ambient_light",sf::Glsl::Vec4(m_ambientLight));
 }
 
 void IsometricScene::SetSSAO(bool ssao)
@@ -414,41 +357,34 @@ void IsometricScene::SetSSAO(bool ssao)
 
 void IsometricScene::ComputeTrigonometry()
 {
-    float cosXY = cos(m_viewAngle.xyAngle*PI/180.0);
-    float sinXY = sin(m_viewAngle.xyAngle*PI/180.0);
-    float cosZ = cos(m_viewAngle.zAngle*PI/180);
-    float sinZ = sin(m_viewAngle.zAngle*PI/180);
+     float cosXY = cos(m_viewAngle.xyAngle*PI/180.0);
+     float sinXY = sin(m_viewAngle.xyAngle*PI/180.0);
+     float cosZ = cos(m_viewAngle.zAngle*PI/180);
+     float sinZ = sin(m_viewAngle.zAngle*PI/180);
 
-    m_IsoToCart_xVector.x =  cosXY;
-    m_IsoToCart_xVector.y =  sinXY * sinZ;
+     m_TransformIsoToCart = sf::Transform(cosXY,         -sinXY,         0,
+                                         sinXY * sinZ,   cosXY * sinZ, 0,
+                                            0, 0, 1);
 
-    m_IsoToCart_yVector.x = -sinXY;
-    m_IsoToCart_yVector.y =  cosXY * sinZ;
+     m_isoToCartMat = Mat3x3(cosXY        , -sinXY       , 0    ,
+                             sinXY * sinZ , cosXY * sinZ , -cosZ,
+                             0            , 0            , 0);
 
-    m_IsoToCart_zVector.x =  0;
-    m_IsoToCart_zVector.y = -cosZ;
-
-    m_CartToIso_xVector.x =  cosXY;
-    m_CartToIso_xVector.y = -sinXY;
-
-    m_CartToIso_yVector.x =  sinXY/sinZ;
-    m_CartToIso_yVector.y =  cosXY/sinZ;
-
-    m_TransformIsoToCart = sf::Transform(cosXY,         -sinXY,         0,
-                                         sinXY * sinZ,   cosXY * sinZ, -cosZ,
-                                         0,              0,             1);
-
-     m_isoToCartMat.values[0] = cosXY;
+     /*m_isoToCartMat.values[0] = cosXY;
      m_isoToCartMat.values[1] = -sinXY;
      m_isoToCartMat.values[2] = 0;
-     m_isoToCartMat.values[3] = -sinXY * sinZ;
-     m_isoToCartMat.values[4] = -cosXY * sinZ;
-     m_isoToCartMat.values[5] = cosZ;
+     m_isoToCartMat.values[3] = sinXY * sinZ;
+     m_isoToCartMat.values[4] = cosXY * sinZ;
+     m_isoToCartMat.values[5] = -cosZ;
      m_isoToCartMat.values[6] = 0;
      m_isoToCartMat.values[7] = 0;
-     m_isoToCartMat.values[8] = sinZ;
+     m_isoToCartMat.values[8] = sinZ;*/
 
-     m_cartToIsoMat.values[0] = cosXY;
+     m_cartToIsoMat = Mat3x3( cosXY , sinXY/sinZ, 0,
+                             -sinXY , cosXY/sinZ, 0,
+                              0     , 0         , 0);
+
+     /*m_cartToIsoMat.values[0] = cosXY;
      m_cartToIsoMat.values[1] = sinXY/sinZ;
      m_cartToIsoMat.values[2] = 0;
      m_cartToIsoMat.values[3] = -sinXY;
@@ -456,7 +392,7 @@ void IsometricScene::ComputeTrigonometry()
      m_cartToIsoMat.values[5] = 0;
      m_cartToIsoMat.values[6] = 0;
      m_cartToIsoMat.values[7] = 0;
-     m_cartToIsoMat.values[8] = 0;
+     m_cartToIsoMat.values[8] = 0;*/
 
 
      m_normalProjMat.values[0] = cosXY;
@@ -481,7 +417,7 @@ void IsometricScene::ComputeTrigonometry()
      m_normalProjMatInv.values[8] = sinZ;
 
 
-     m_cartToIso2DProjMat.values[0] = cosXY;
+     /*m_cartToIso2DProjMat.values[0] = cosXY;
      m_cartToIso2DProjMat.values[1] = sinXY/sinZ;
      m_cartToIso2DProjMat.values[2] = 0;
      m_cartToIso2DProjMat.values[3] = -sinXY;
@@ -489,15 +425,16 @@ void IsometricScene::ComputeTrigonometry()
      m_cartToIso2DProjMat.values[5] = 0;
      m_cartToIso2DProjMat.values[6] = 0;
      m_cartToIso2DProjMat.values[7] = 0;
-     m_cartToIso2DProjMat.values[8] = 0;
+     m_cartToIso2DProjMat.values[8] = 0;*/
 
 
-    m_lightingShader.setUniform("cartToIso2DProjMat",sf::Glsl::Mat3(m_cartToIso2DProjMat.values));
-    m_lightingShader.setUniform("isoToCartZFactor",-m_isoToCartMat.values[5]);
+    m_lightingShader.setUniform("cartToIso2DProjMat",sf::Glsl::Mat3(m_cartToIsoMat.values));
+    m_lightingShader.setUniform("isoToCartMat",sf::Glsl::Mat3(m_isoToCartMat.values));
+    m_lightingShader.setUniform("isoToCartZFactor",m_isoToCartMat.values[5]);
 
 
-    m_SSAOShader.setUniform("cartToIso2DProjMat",sf::Glsl::Mat3(m_cartToIso2DProjMat.values));
-    m_SSAOShader.setUniform("isoToCartZFactor",-m_isoToCartMat.values[5]);
+    m_SSAOShader.setUniform("cartToIso2DProjMat",sf::Glsl::Mat3(m_cartToIsoMat.values));
+    m_SSAOShader.setUniform("isoToCartZFactor",m_isoToCartMat.values[5]);
     m_SSAOShader.setUniform("isoToCartMat",sf::Glsl::Mat3(m_isoToCartMat.values));
 
      /** ADD UPDATE OF ZFACTOR FOR CREATED ISOSPRITES**/
@@ -521,16 +458,13 @@ sf::Vector2f IsometricScene::ConvertIsoToCartesian(float x, float y, float z)
 
 sf::Vector2f IsometricScene::ConvertIsoToCartesian(sf::Vector2f p)
 {
-    sf::Vector2f r;
-    r = m_IsoToCart_xVector * p.x + m_IsoToCart_yVector * p.y;
-    return r;
+    return m_isoToCartMat*p;
 }
 
 sf::Vector2f IsometricScene::ConvertIsoToCartesian(sf::Vector3f p)
 {
-    sf::Vector2f r;
-    r = m_IsoToCart_xVector * p.x + m_IsoToCart_yVector * p.y + m_IsoToCart_zVector * p.z;
-    return r;
+    sf::Vector3f r = m_isoToCartMat*p;
+    return sf::Vector2f(r.x, r.y);
 }
 
 
@@ -541,9 +475,7 @@ sf::Vector2f IsometricScene::ConvertCartesianToIso(float x, float y)
 
 sf::Vector2f IsometricScene::ConvertCartesianToIso(sf::Vector2f p)
 {
-    sf::Vector2f r;
-    r = m_CartToIso_xVector * p.x + m_CartToIso_yVector * p.y;
-    return r;
+    return m_cartToIsoMat*p;
 }
 
 sf::Vector2f IsometricScene::ConvertMouseToScene(sf::Vector2i mouse)
@@ -571,6 +503,11 @@ sf::View IsometricScene::GenerateView(Camera* cam)
             v.setCenter(ConvertIsoToCartesian(node->GetGlobalPosition()));
     }
     return v;
+}
+
+sf::Shader* IsometricScene::GetDepthShader()
+{
+    return &m_depthShader;
 }
 
 }

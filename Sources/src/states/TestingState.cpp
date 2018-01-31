@@ -103,7 +103,7 @@ void TestingState::Init()
 
    /* Light* sunLight = m_mainScene.CreateLight(DirectionnalLight,sf::Vector3f(-1,.5,-1), sf::Color(255,255,160));
     sunLight->SetConstantAttenuation(2);*/
-    Light* sunLight = m_mainScene.CreateLight(DirectionnalLight,sf::Vector3f(-1,.5,-1), sf::Color(255,255,224));
+    Light* sunLight = m_mainScene.CreateLight(DirectionnalLight,sf::Vector3f(-1,-.2,-1), sf::Color(255,255,224));
     sunLight->SetConstantAttenuation(1);
     sunLight->EnableShadowCasting();
     m_mainScene.GetRootNode()->AttachObject(sunLight);
@@ -120,6 +120,7 @@ void TestingState::Init()
     IsoSpriteEntity *abbayeEntity = m_mainScene.CreateIsoSpriteEntity();
     abbayeEntity->SetTexture(Texture3DHandler->LoadAssetFromFile("../data/abbayeXML.txt"));
     abbayeEntity->SetCenter(960,540);
+    abbayeEntity->SetShadowCastingType(DirectionnalShadow);
     m_mainScene.GetRootNode()->AttachObject(abbayeEntity);
     //m_mainScene.GetRootNode()->CreateChildNode(sf::Vector2f(0,0))->AttachObject(abbayeEntity);
 

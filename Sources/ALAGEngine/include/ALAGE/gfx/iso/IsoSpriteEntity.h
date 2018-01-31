@@ -21,6 +21,7 @@ class IsoSpriteEntity : public SpriteEntity
         virtual void PrepareShader(sf::Shader *);
 
         virtual void ComputeShadow(Light*);
+        void RenderShadow(sf::RenderTarget*, Light*);
 
         //virtual void Notify(NotificationSender*, NotificationType);
 

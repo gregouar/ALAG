@@ -229,7 +229,7 @@ void SceneNode::AttachObject(SceneObject *e)
             m_lights.push_back((Light*)e);
 
         if(e->IsAShadowCaster())
-            m_shadowCasters.push_back((ShadowCaster*)e);
+            m_shadowCasters.push_back(dynamic_cast<ShadowCaster*>(e));
 
         if(e->SetParentNode(this) != nullptr)
             Logger::Warning("Attaching entity which has already a parent node");

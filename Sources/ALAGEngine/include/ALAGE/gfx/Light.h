@@ -36,9 +36,10 @@ class Light : public SceneObject
 
         void EnableShadowCasting();
         void DisableShadowCasting();
+        const sf::Texture& GetShadowMap();
 
         void InitShadowMap();
-        void RenderShadowMap(const sf::View &);
+        void RenderShadowMap(const sf::View &,const sf::Vector2u &);
         void UpdateShadow();
 
     protected:

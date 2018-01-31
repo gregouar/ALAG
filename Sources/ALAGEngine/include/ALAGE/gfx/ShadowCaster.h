@@ -8,14 +8,14 @@
 namespace alag
 {
 
-class ShadowCaster
+class ShadowCaster : public SceneObject
 {
     public:
         ShadowCaster();
         virtual ~ShadowCaster();
 
         virtual void ComputeShadow(Light*) = 0; /**Do not forget to AddToLightList()**/
-        void RenderShadow(sf::RenderTarget*, const sf::RenderStates &, Light*);
+        virtual void RenderShadow(sf::RenderTarget*, Light*);
 
         bool IsRequiringShadowCasting(Light*);
         ShadowCastingType GetShadowCastingType();

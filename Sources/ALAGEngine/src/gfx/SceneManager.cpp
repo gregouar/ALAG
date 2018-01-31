@@ -124,6 +124,7 @@ int SceneManager::UpdateLighting(std::multimap<float, Light*> &lightList, int ma
 
             if(curLight->IsCastShadowEnabled())
             {
+                curLight->GetShadowCasterList()->clear();
                 node->FindNearbyShadowCaster(curLight->GetShadowCasterList(),curLight->GetType());
                 curLight->UpdateShadow();
             }
@@ -133,6 +134,30 @@ int SceneManager::UpdateLighting(std::multimap<float, Light*> &lightList, int ma
     }
 
     return curNbrLights;
+}
+
+
+
+void SceneManager::RenderShadows(std::multimap<float, Light*> &lightList,const sf::View &view,
+                                 const sf::Vector2u &screen_size, int maxNbrLights)
+{
+    int curNbrLights = 0;
+
+    std::multimap<float, Light*>::iterator lightIt;
+    for(lightIt = lightList.begin() ; lightIt != lightList.end()
+    && curNbrLights < maxNbrLights ; ++lightIt)
+    {
+        Light* curLight = lightIt->second;
+        SceneNode* node = curLight->GetParentNode();
+
+        if(node != nullptr)
+        {
+            if(curLight->IsCastShadowEnabled())
+                curLight->RenderShadowMap(view,screen_size);
+
+            ++curNbrLights;
+        }
+    }
 }
 
 

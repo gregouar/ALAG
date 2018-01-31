@@ -14,9 +14,9 @@ ShadowCaster::~ShadowCaster()
 }
 
 
-void ShadowCaster::RenderShadow(sf::RenderTarget* w, const sf::RenderStates &state, Light* light)
+void ShadowCaster::RenderShadow(sf::RenderTarget* w/*, const sf::RenderStates &state*/, Light* light)
 {
-    w->draw(m_shadowSprite[light], state);
+    w->draw(m_shadowSprite[light]/*, state*/);
 }
 
 

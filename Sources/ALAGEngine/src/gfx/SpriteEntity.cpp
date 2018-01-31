@@ -18,7 +18,7 @@ SpriteEntity::SpriteEntity(const sf::Vector2i &v) : SpriteEntity(sf::IntRect (0,
 }
 
 
-SpriteEntity::SpriteEntity(const sf::IntRect &r)
+SpriteEntity::SpriteEntity(const sf::IntRect &r) : SceneEntity()
 {
     sf::Sprite::setTextureRect(r);
     m_texture = nullptr;
@@ -79,7 +79,7 @@ void SpriteEntity::PrepareShader(sf::Shader *shader)
                 shader->setUniform("useNormalMap", false);
             }
 
-            shader->setUniform("height",myTexture3D->GetHeight()*getScale().y);
+            shader->setUniform("height",myTexture3D->GetHeight()*GetScale().y);
         } else {
             shader->setUniform("useNormalMap", false);
             shader->setUniform("useDepthMap", false);
@@ -141,7 +141,6 @@ void SpriteEntity::SetScale(sf::Vector2f c)
 
 void SpriteEntity::SetShadowCastingType(ShadowCastingType type)
 {
-    std::cout<<"HHH3"<<std::endl;
     ShadowCaster::ForceShadowCastingType(type);
 }
 

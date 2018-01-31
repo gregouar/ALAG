@@ -80,6 +80,7 @@ const std::string normal_fragShader = \
     "   gl_FragColor.a = colorAlpha;" \
     "}";
 
+    /** REPLACE 8 SHADOW MAP BY CONSTANT**/
 const std::string lighting_fragShader = \
     "uniform sampler2D colorMap;" \
     "uniform sampler2D normalMap;" \
@@ -88,13 +89,32 @@ const std::string lighting_fragShader = \
     "uniform sampler2D SSAOMap;" \
     "uniform float zPos;" \
     "uniform mat3 cartToIso2DProjMat;" \
+    "uniform mat3 isoToCartMat;" \
     "uniform float isoToCartZFactor;" \
     "uniform vec4 ambient_light;" \
     "uniform int NBR_LIGHTS;" \
+    "uniform sampler2D shadowMap_0;" \
+    "uniform sampler2D shadowMap_1;" \
+    "uniform sampler2D shadowMap_2;" \
+    "uniform sampler2D shadowMap_3;" \
+    "uniform sampler2D shadowMap_4;" \
+    "uniform sampler2D shadowMap_5;" \
+    "uniform sampler2D shadowMap_6;" \
+    "uniform sampler2D shadowMap_7;" \
+    "uniform int shadowCasters[8];"
     "uniform vec2 screen_ratio;" \
     "uniform float zoom;"
     "uniform vec2 view_decal;" \
     "varying vec3 vertex; "\
+    ""
+    "float GetShadowCastValue(int curShadowMap, float heightPixel, vec2 shadow_pos) {"
+    "   vec4 shadow_pixel;"
+	"   if(curShadowMap == 0)"
+	"       shadow_pixel = texture2D(shadowMap_0, shadow_pos*screen_ratio);"
+	"   float shadow_height = (0.5-(shadow_pixel.r+shadow_pixel.g/256.0+shadow_pixel.b/65536.0))*1000;"
+    "   return 1.0 - min(1.0,max(0.0, (shadow_height-heightPixel-1)*0.1));"
+    "}"
+    ""
     "void main()" \
     "{" \
     "   vec4 colorPixel = texture2D(colorMap, gl_TexCoord[0].xy);" \
@@ -107,6 +127,7 @@ const std::string lighting_fragShader = \
 	"   frag_pos = frag_pos*cartToIso2DProjMat;"
 	"   frag_pos.z = heightPixel;"
     "   gl_FragColor = gl_Color * ambient_light * colorPixel; "
+    "   int curShadowMap = 0;"
     "   for(int i = 0 ; i < NBR_LIGHTS ; ++i)" \
 	"   {" \
 	"	    float lighting = 0.0;" \
@@ -124,7 +145,24 @@ const std::string lighting_fragShader = \
 	"	    							  dist*gl_LightSource[i].linearAttenuation +" \
 	"	    							  dist*dist*gl_LightSource[i].quadraticAttenuation);" \
 	"	    }" \
-	"       lighting *= max(0.0, dot(direction,normalize(light_direction)));"
+	"       light_direction = normalize(light_direction);"
+	"       if(curShadowMap < 8 && shadowCasters[curShadowMap] == i) {"
+	"           if(gl_LightSource[i].position.w == 0.0){"
+	"               vec2 shadow_pos = gl_FragCoord.xy;"
+	"               shadow_pos.y += heightPixel*isoToCartZFactor;"
+	"               vec3 v = vec3((heightPixel*light_direction.xy/light_direction.z), 0);"
+	"               shadow_pos.x -= (v*isoToCartMat).x;"
+	"               shadow_pos.y += (v*isoToCartMat).y;"
+	"               vec4 shadow_pixel= (0,0,0,0);"
+	"               lighting *= (GetShadowCastValue(curShadowMap,heightPixel,shadow_pos)*2"
+    "                            +GetShadowCastValue(curShadowMap,heightPixel,shadow_pos+vec2(1,0))"
+    "                            +GetShadowCastValue(curShadowMap,heightPixel,shadow_pos+vec2(-1,0))"
+    "                            +GetShadowCastValue(curShadowMap,heightPixel,shadow_pos+vec2(0,1))"
+    "                            +GetShadowCastValue(curShadowMap,heightPixel,shadow_pos+vec2(0,-1)))/6;"
+	"           }"
+	"           ++curShadowMap;"
+	"       }"
+	"       lighting *= max(0.0, dot(direction,light_direction));"
 	"	    lighting *= gl_LightSource[i].diffuse.a;" \
 	"	    gl_FragColor.rgb +=  gl_Color.rgb * colorPixel.rgb * gl_LightSource[i].diffuse.rgb  * lighting;" \
 	"   }"
@@ -172,7 +210,9 @@ const std::string SSAO_fragShader = \
 	"   mat3 rot = mat3(t,cross(direction,t),direction);"
 	"   for(int i =0 ; i < 16 ; ++i){"
 	"       vec3 decal = rot * samplesHemisphere[i] * 20;"
-	"       vec3 screen_pos = gl_FragCoord  + zoom*decal*isoToCartMat;"
+	"       vec3 screen_decal = zoom*decal*isoToCartMat;"
+	"       screen_decal.y *= -1;"
+	"       vec3 screen_pos = gl_FragCoord  + screen_decal;"
 	"       vec3 occl_depthPixel = texture2D(depthMap, (screen_pos.xy)*screen_ratio);"
 	"       float occl_height = (0.5-(occl_depthPixel.r+occl_depthPixel.g/256.0+occl_depthPixel.b/65536.0))*1000;"
     "       if(occl_height > (frag_pos.z+decal.z) + 1  "

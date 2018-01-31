@@ -20,6 +20,8 @@ struct IsoViewAngle
 
 class IsometricScene : public SceneManager
 {
+    friend void IsoSpriteEntity::RenderShadow(sf::RenderTarget*, Light*);
+
     public:
         IsometricScene();
         IsometricScene(IsoViewAngle);
@@ -29,6 +31,7 @@ class IsometricScene : public SceneManager
         virtual sf::View GenerateView(Camera*);
         virtual void ProcessRenderQueue(sf::RenderTarget*);
         virtual void RenderScene(sf::RenderTarget*);
+
 
         IsoRectEntity*   CreateIsoRectEntity(sf::Vector2f = sf::Vector2f(0,0));
         IsoSpriteEntity* CreateIsoSpriteEntity(sf::Vector2i);
@@ -53,21 +56,19 @@ class IsometricScene : public SceneManager
     protected:
         void ComputeTrigonometry();
         int UpdateLighting(std::multimap<float, Light*> &lightList);
+        //virtual void RenderShadows(std::multimap<float, Light*> &lightList, int = GL_MAX_LIGHTS);
+
+        sf::Shader *GetDepthShader();
 
     private:
         IsoViewAngle m_viewAngle;
 
-        sf::Vector2f m_IsoToCart_xVector;
-        sf::Vector2f m_IsoToCart_yVector;
-        sf::Vector2f m_IsoToCart_zVector;
-        sf::Vector2f m_CartToIso_xVector;
-        sf::Vector2f m_CartToIso_yVector;
         sf::Transform m_TransformIsoToCart;
 
         Mat3x3 m_normalProjMat;
         Mat3x3 m_normalProjMatInv;
 
-        Mat3x3 m_cartToIso2DProjMat;
+        //Mat3x3 m_cartToIso2DProjMat;
 
         Mat3x3 m_isoToCartMat;
         Mat3x3 m_cartToIsoMat;

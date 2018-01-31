@@ -112,6 +112,11 @@ void Light::DisableShadowCasting()
     m_castShadow = false;
 }
 
+const sf::Texture& Light::GetShadowMap()
+{
+    return m_shadowMap.getTexture();
+}
+
 std::list<ShadowCaster*> *Light::GetShadowCasterList()
 {
     return &m_shadowCasterList;
@@ -122,9 +127,30 @@ void Light::UpdateShadow()
     std::list<ShadowCaster *>::iterator casterIt;
     for(casterIt = m_shadowCasterList.begin() ; casterIt != m_shadowCasterList.end() ; ++casterIt)
     if(m_requireShadowComputation || (*casterIt)->IsRequiringShadowCasting(this))
-    {
         (*casterIt)->ComputeShadow(this);
-    }
+
+    m_requireShadowComputation = false;
+}
+
+void Light::RenderShadowMap(const sf::View &view,const sf::Vector2u &screen_size)
+{
+    if(m_shadowMap.getSize() != screen_size)
+        m_shadowMap.create(screen_size.x, screen_size.y, true);
+
+    m_shadowMap.setActive(true);
+        glClear(GL_DEPTH_BUFFER_BIT);
+        glEnable(GL_DEPTH_TEST);
+        glDepthMask(GL_TRUE);
+        m_shadowMap.clear(sf::Color::White);
+        m_shadowMap.setView(view);
+
+        std::list<ShadowCaster *>::iterator casterIt;
+        for(casterIt = m_shadowCasterList.begin() ; casterIt != m_shadowCasterList.end() ; ++casterIt)
+            (*casterIt)->RenderShadow(&m_shadowMap,this);
+
+        m_shadowMap.display();
+        //m_shadowMap.getTexture().copyToImage().saveToFile("shadow.png");
+    m_shadowMap.setActive(false);
 }
 
 }
