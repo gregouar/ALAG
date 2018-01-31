@@ -29,7 +29,14 @@ void ShadowCaster::AskForDynamicShadowUpdate()
             if(lightIt->first->GetType() == OmniLight)
                 lightIt->second = true;
         }
+}
 
+void ShadowCaster::AskForAllShadowUpdate()
+{
+    std::map<Light*, bool>::iterator lightIt;
+    for(lightIt = m_requireShadowCasting.begin() ;
+        lightIt !=  m_requireShadowCasting.end() ; ++lightIt)
+            lightIt->second = true;
 }
 
 ShadowCastingType ShadowCaster::GetShadowCastingType()

@@ -33,7 +33,7 @@
 	<vector>
 	"GState.h"
 
-1517336766 source:c:\c++\alag\sources\src\states\testingstate.cpp
+1517343820 source:c:\c++\alag\sources\src\states\testingstate.cpp
 	"states/TestingState.h"
 	"ALAGE/core/GApp.h"
 	"ALAGE/core/EventManager.h"
@@ -532,9 +532,10 @@
 	"ALAGE/gfx/TextureAsset.h"
 	"extlibs/tinyxml.h"
 
-1517340046 c:\c++\alag\sources\alagengine\include\alage\types.h
+1517356805 c:\c++\alag\sources\alagengine\include\alage\types.h
 	<iostream>
 	<SFML/Graphics.hpp>
+	<SFML/OpenGL.hpp>
 	"AlAGE/utils/MapIterator.h"
 	"AlAGE/utils/ListIterator.h"
 
@@ -636,7 +637,7 @@
 	"ALAGE/Types.h"
 	"ALAGE/gfx/SceneEntity.h"
 
-1517341017 source:c:\c++\alag\sources\alagengine\src\gfx\scenenode.cpp
+1517357911 source:c:\c++\alag\sources\alagengine\src\gfx\scenenode.cpp
 	"ALAGE/gfx/SceneNode.h"
 	"ALAGE/gfx/SceneManager.h"
 	"ALAGE/utils/Logger.h"
@@ -678,7 +679,7 @@
 1516702536 c:\c++\alag\sources\alagengine\include\alage\utils\mapiterator.h
 	<map>
 
-1517335787 source:c:\c++\alag\sources\alagengine\src\gfx\spriteentity.cpp
+1517353873 source:c:\c++\alag\sources\alagengine\src\gfx\spriteentity.cpp
 	"ALAGE/gfx/SpriteEntity.h"
 	"ALAGE/core/AssetHandler.h"
 	"ALAGE/gfx/SceneNode.h"
@@ -734,7 +735,7 @@
 	<SFML/Graphics.hpp>
 	"ALAGE/gfx/SceneObject.h"
 
-1517341068 source:c:\c++\alag\sources\alagengine\src\gfx\light.cpp
+1517357846 source:c:\c++\alag\sources\alagengine\src\gfx\light.cpp
 	"ALAGE/gfx/Light.h"
 	"ALAGE/gfx/ShadowCaster.h"
 
@@ -745,11 +746,12 @@
 1517341022 source:c:\c++\alag\sources\alagengine\src\gfx\sceneobject.cpp
 	"ALAGE/gfx/SceneObject.h"
 
-1516918829 c:\c++\alag\sources\alagengine\include\alage\utils\mathematics.h
+1517357081 c:\c++\alag\sources\alagengine\include\alage\utils\mathematics.h
 	<SFML/Graphics.hpp>
 	<SFML/OpenGL.hpp>
+	"ALAGE/Types.h"
 
-1516913553 source:c:\c++\alag\sources\alagengine\src\utils\mathematics.cpp
+1517357585 source:c:\c++\alag\sources\alagengine\src\utils\mathematics.cpp
 	"ALAGE/utils/Mathematics.h"
 
 1517140944 c:\c++\alag\sources\alagengine\src\gfx\isometricshaders.cpp
@@ -758,16 +760,17 @@
 1517140944 source:c:\c++\alag\sources\alagengine\src\gfx\isometricshaders.cpp
 	<iostream>
 
-1517320104 c:\c++\alag\sources\alagengine\include\alage\gfx\iso\isometricscene.h
+1517357142 c:\c++\alag\sources\alagengine\include\alage\gfx\iso\isometricscene.h
+	"ALAGE/utils/Mathematics.h"
 	"ALAGE/gfx/SceneManager.h"
 	"ALAGE/gfx/iso/IsoSpriteEntity.h"
 	"ALAGE/gfx/iso/IsoRectEntity.h"
 	<SFML/OpenGL.hpp>
 
-1517335777 c:\c++\alag\sources\alagengine\include\alage\gfx\iso\isospriteentity.h
+1517357598 c:\c++\alag\sources\alagengine\include\alage\gfx\iso\isospriteentity.h
 	<ALAGE/gfx/SpriteEntity.h>
 
-1517335149 source:c:\c++\alag\sources\alagengine\src\gfx\iso\isometricscene.cpp
+1517357124 source:c:\c++\alag\sources\alagengine\src\gfx\iso\isometricscene.cpp
 	"ALAGE/gfx/iso/IsometricScene.h"
 	"ALAGE/utils/Logger.h"
 	"ALAGE/utils/Mathematics.h"
@@ -781,15 +784,16 @@
 1517327590 source:c:\c++\alag\sources\alagengine\src\gfx\iso\isometricshaders.cpp
 	<iostream>
 
-1517171758 source:c:\c++\alag\sources\alagengine\src\gfx\iso\isorectentity.cpp
+1517353873 source:c:\c++\alag\sources\alagengine\src\gfx\iso\isorectentity.cpp
 	"ALAGE/gfx/iso/IsoRectEntity.h"
 	"ALAGE/utils/Mathematics.h"
 
-1517158511 c:\c++\alag\sources\alagengine\include\alage\gfx\iso\isorectentity.h
+1517352515 c:\c++\alag\sources\alagengine\include\alage\gfx\iso\isorectentity.h
 	<ALAGE/gfx/RectEntity.h>
 
-1517335777 source:c:\c++\alag\sources\alagengine\src\gfx\iso\isospriteentity.cpp
+1517357695 source:c:\c++\alag\sources\alagengine\src\gfx\iso\isospriteentity.cpp
 	"ALAGE/gfx/SceneNode.h"
+	"ALAGE/gfx/iso/IsometricScene.h"
 	"ALAGE/gfx/iso/IsoSpriteEntity.h"
 	"ALAGE/core/AssetHandler.h"
 	"ALAGE/utils/Mathematics.h"
@@ -811,10 +815,10 @@
 	"ALAGE/gfx/ShadowCaster.h"
 	"ALAGE/gfx/SceneObject.h"
 
-1517335675 c:\c++\alag\sources\alagengine\include\alage\gfx\shadowcaster.h
+1517353873 c:\c++\alag\sources\alagengine\include\alage\gfx\shadowcaster.h
 	<SFML/Graphics.hpp>
 	"ALAGE/gfx/Light.h"
 
-1517336821 source:c:\c++\alag\sources\alagengine\src\gfx\shadowcaster.cpp
+1517351254 source:c:\c++\alag\sources\alagengine\src\gfx\shadowcaster.cpp
 	"ALAGE/gfx/GeometricShadowCaster.h"
 

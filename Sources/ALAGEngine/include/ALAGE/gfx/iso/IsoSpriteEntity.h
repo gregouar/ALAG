@@ -6,8 +6,12 @@
 namespace alag
 {
 
+class IsometricScene;
+
 class IsoSpriteEntity : public SpriteEntity
 {
+    friend class IsometricScene;
+
     public:
         IsoSpriteEntity();
         IsoSpriteEntity(const sf::Vector2i &spriteSize);
@@ -18,12 +22,13 @@ class IsoSpriteEntity : public SpriteEntity
 
         virtual void ComputeShadow(Light*);
 
-        void SetIsoToCartZFactor(float );
+        //virtual void Notify(NotificationSender*, NotificationType);
 
     protected:
+        void SetIsoScene(IsometricScene *scene);
 
     private:
-        float m_isoToCartZFactor;
+        IsometricScene *m_scene;
 };
 
 }

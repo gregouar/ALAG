@@ -86,7 +86,6 @@ void SpriteEntity::PrepareShader(sf::Shader *shader)
             shader->setUniform("height",0);
         }
     }
-
 }
 
 
@@ -142,6 +141,7 @@ void SpriteEntity::SetScale(sf::Vector2f c)
 
 void SpriteEntity::SetShadowCastingType(ShadowCastingType type)
 {
+    std::cout<<"HHH3"<<std::endl;
     ShadowCaster::ForceShadowCastingType(type);
 }
 
@@ -168,6 +168,8 @@ void SpriteEntity::Notify(NotificationSender* sender, NotificationType notificat
         }
         else if(notification == NotificationSenderDestroyed)
             m_texture = nullptr;
+
+        ShadowCaster::AskForAllShadowUpdate();
     }
 }
 

@@ -280,9 +280,9 @@ void IsometricScene::ProcessRenderQueue(sf::RenderTarget *w)
         m_normalScreen.setActive(true);
             m_normalShader.setUniform("zPos",globalPos.z);
             m_normalShader.setUniform("useNormalMap",false);
-            m_normalShader.setUniform("normalProjMat",sf::Glsl::Mat3(m_normalProjMat));
-            m_normalShader.setUniform("cartToIso2DProjMat",sf::Glsl::Mat3(m_cartToIso2DProjMat));
-            m_normalShader.setUniform("isoToCartZFactor",m_isoToCartZFactor);
+            m_normalShader.setUniform("normalProjMat",sf::Glsl::Mat3(m_normalProjMat.values));
+            m_normalShader.setUniform("cartToIso2DProjMat",sf::Glsl::Mat3(m_cartToIso2DProjMat.values));
+            m_normalShader.setUniform("isoToCartZFactor",-m_isoToCartMat.values[5]);
             (*renderIt)->PrepareShader(&m_normalShader);
             state.shader = &m_normalShader;
             (*renderIt)->Render(&m_normalScreen,state);
@@ -370,7 +370,7 @@ IsoSpriteEntity* IsometricScene::CreateIsoSpriteEntity(sf::IntRect textureRect)
 {
     IsoSpriteEntity *e = new IsoSpriteEntity(textureRect);
     AddCreatedObject(GenerateObjectID(), e);
-    e->SetIsoToCartZFactor(m_isoToCartZFactor);
+    e->SetIsoScene(this);
     return e;
 }
 
@@ -438,63 +438,81 @@ void IsometricScene::ComputeTrigonometry()
                                          sinXY * sinZ,   cosXY * sinZ, -cosZ,
                                          0,              0,             1);
 
-     m_isoToCartMat[0] = cosXY;
-     m_isoToCartMat[1] = -sinXY;
-     m_isoToCartMat[2] = 0;
-     m_isoToCartMat[3] = -sinXY * sinZ;
-     m_isoToCartMat[4] = -cosXY * sinZ;
-     m_isoToCartMat[5] = cosZ;
-     m_isoToCartMat[6] = 0;
-     m_isoToCartMat[7] = 0;
-     m_isoToCartMat[8] = sinZ;
+     m_isoToCartMat.values[0] = cosXY;
+     m_isoToCartMat.values[1] = -sinXY;
+     m_isoToCartMat.values[2] = 0;
+     m_isoToCartMat.values[3] = -sinXY * sinZ;
+     m_isoToCartMat.values[4] = -cosXY * sinZ;
+     m_isoToCartMat.values[5] = cosZ;
+     m_isoToCartMat.values[6] = 0;
+     m_isoToCartMat.values[7] = 0;
+     m_isoToCartMat.values[8] = sinZ;
+
+     m_cartToIsoMat.values[0] = cosXY;
+     m_cartToIsoMat.values[1] = sinXY/sinZ;
+     m_cartToIsoMat.values[2] = 0;
+     m_cartToIsoMat.values[3] = -sinXY;
+     m_cartToIsoMat.values[4] = cosXY/sinZ;
+     m_cartToIsoMat.values[5] = 0;
+     m_cartToIsoMat.values[6] = 0;
+     m_cartToIsoMat.values[7] = 0;
+     m_cartToIsoMat.values[8] = 0;
 
 
-     m_normalProjMat[0] = cosXY;
-     m_normalProjMat[1] = sinZ * sinXY;
-     m_normalProjMat[2] = cosZ * sinXY;
-     m_normalProjMat[3] = -sinXY;
-     m_normalProjMat[4] = sinZ * cosXY;
-     m_normalProjMat[5] = cosZ * cosXY;
-     m_normalProjMat[6] = 0;
-     m_normalProjMat[7] = -cosZ;
-     m_normalProjMat[8] = sinZ;
+     m_normalProjMat.values[0] = cosXY;
+     m_normalProjMat.values[1] = sinZ * sinXY;
+     m_normalProjMat.values[2] = cosZ * sinXY;
+     m_normalProjMat.values[3] = -sinXY;
+     m_normalProjMat.values[4] = sinZ * cosXY;
+     m_normalProjMat.values[5] = cosZ * cosXY;
+     m_normalProjMat.values[6] = 0;
+     m_normalProjMat.values[7] = -cosZ;
+     m_normalProjMat.values[8] = sinZ;
 
 
-     m_normalProjMatInv[0] = cosXY;
-     m_normalProjMatInv[1] = -sinXY;
-     m_normalProjMatInv[2] = 0;
-     m_normalProjMatInv[3] = sinXY*sinZ;
-     m_normalProjMatInv[4] = cosXY*sinZ;
-     m_normalProjMatInv[5] = -cosZ;
-     m_normalProjMatInv[6] = sinXY * cosZ;
-     m_normalProjMatInv[7] = cosXY*cosZ;
-     m_normalProjMatInv[8] = sinZ;
+     m_normalProjMatInv.values[0] = cosXY;
+     m_normalProjMatInv.values[1] = -sinXY;
+     m_normalProjMatInv.values[2] = 0;
+     m_normalProjMatInv.values[3] = sinXY*sinZ;
+     m_normalProjMatInv.values[4] = cosXY*sinZ;
+     m_normalProjMatInv.values[5] = -cosZ;
+     m_normalProjMatInv.values[6] = sinXY * cosZ;
+     m_normalProjMatInv.values[7] = cosXY*cosZ;
+     m_normalProjMatInv.values[8] = sinZ;
 
 
-     m_cartToIso2DProjMat[0] = cosXY;
-     m_cartToIso2DProjMat[1] = sinXY/sinZ;
-     m_cartToIso2DProjMat[2] = 0;
-     m_cartToIso2DProjMat[3] = -sinXY;
-     m_cartToIso2DProjMat[4] = cosXY/sinZ;
-     m_cartToIso2DProjMat[5] = 0;
-     m_cartToIso2DProjMat[6] = 0;
-     m_cartToIso2DProjMat[7] = 0;
-     m_cartToIso2DProjMat[8] = 0;
-
-     m_isoToCartZFactor = -cosZ;
+     m_cartToIso2DProjMat.values[0] = cosXY;
+     m_cartToIso2DProjMat.values[1] = sinXY/sinZ;
+     m_cartToIso2DProjMat.values[2] = 0;
+     m_cartToIso2DProjMat.values[3] = -sinXY;
+     m_cartToIso2DProjMat.values[4] = cosXY/sinZ;
+     m_cartToIso2DProjMat.values[5] = 0;
+     m_cartToIso2DProjMat.values[6] = 0;
+     m_cartToIso2DProjMat.values[7] = 0;
+     m_cartToIso2DProjMat.values[8] = 0;
 
 
-    m_lightingShader.setUniform("cartToIso2DProjMat",sf::Glsl::Mat3(m_cartToIso2DProjMat));
-    m_lightingShader.setUniform("isoToCartZFactor",m_isoToCartZFactor);
+    m_lightingShader.setUniform("cartToIso2DProjMat",sf::Glsl::Mat3(m_cartToIso2DProjMat.values));
+    m_lightingShader.setUniform("isoToCartZFactor",-m_isoToCartMat.values[5]);
 
 
-    m_SSAOShader.setUniform("cartToIso2DProjMat",sf::Glsl::Mat3(m_cartToIso2DProjMat));
-    m_SSAOShader.setUniform("isoToCartZFactor",m_isoToCartZFactor);
-    m_SSAOShader.setUniform("isoToCartMat",sf::Glsl::Mat3(m_isoToCartMat));
+    m_SSAOShader.setUniform("cartToIso2DProjMat",sf::Glsl::Mat3(m_cartToIso2DProjMat.values));
+    m_SSAOShader.setUniform("isoToCartZFactor",-m_isoToCartMat.values[5]);
+    m_SSAOShader.setUniform("isoToCartMat",sf::Glsl::Mat3(m_isoToCartMat.values));
 
      /** ADD UPDATE OF ZFACTOR FOR CREATED ISOSPRITES**/
 }
 
+
+Mat3x3 IsometricScene::GetIsoToCartMat()
+{
+    return m_isoToCartMat;
+}
+
+Mat3x3 IsometricScene::GetCartToIsoMat()
+{
+    return m_cartToIsoMat;
+}
 
 sf::Vector2f IsometricScene::ConvertIsoToCartesian(float x, float y, float z)
 {

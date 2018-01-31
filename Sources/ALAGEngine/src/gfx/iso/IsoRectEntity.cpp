@@ -11,7 +11,7 @@ IsoRectEntity::IsoRectEntity()  : IsoRectEntity(sf::Vector2f (0,0))
 
 IsoRectEntity::IsoRectEntity(sf::Vector2f s) : RectEntity(s)
 {
-
+    m_scene = nullptr;
 }
 
 IsoRectEntity::~IsoRectEntity()
@@ -31,6 +31,11 @@ void IsoRectEntity::PrepareShader(sf::Shader *shader)
     }
 }
 
+
+void IsoRectEntity::SetIsoScene(IsometricScene *scene)
+{
+    m_scene = scene;
+}
 
 
 }

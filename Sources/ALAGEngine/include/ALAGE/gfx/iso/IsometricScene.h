@@ -1,6 +1,7 @@
 #ifndef ISOMETRICSCENE_H
 #define ISOMETRICSCENE_H
 
+#include "ALAGE/utils/Mathematics.h"
 #include "ALAGE/gfx/SceneManager.h"
 #include "ALAGE/gfx/iso/IsoSpriteEntity.h"
 #include "ALAGE/gfx/iso/IsoRectEntity.h"
@@ -39,6 +40,9 @@ class IsometricScene : public SceneManager
         sf::Vector2f ConvertCartesianToIso(float, float);
         sf::Vector2f ConvertCartesianToIso(sf::Vector2f);
 
+        Mat3x3 GetIsoToCartMat();
+        Mat3x3 GetCartToIsoMat();
+
         virtual sf::Vector2f ConvertMouseToScene(sf::Vector2i);
 
         void SetViewAngle(IsoViewAngle);
@@ -59,11 +63,14 @@ class IsometricScene : public SceneManager
         sf::Vector2f m_CartToIso_xVector;
         sf::Vector2f m_CartToIso_yVector;
         sf::Transform m_TransformIsoToCart;
-        GLfloat m_normalProjMat[9];
-        GLfloat m_normalProjMatInv[9];
-        GLfloat m_cartToIso2DProjMat[9];
-        GLfloat m_isoToCartMat[9];
-        GLfloat m_isoToCartZFactor;
+
+        Mat3x3 m_normalProjMat;
+        Mat3x3 m_normalProjMatInv;
+
+        Mat3x3 m_cartToIso2DProjMat;
+
+        Mat3x3 m_isoToCartMat;
+        Mat3x3 m_cartToIsoMat;
 
         sf::Shader m_colorShader;
         sf::Shader m_normalShader;

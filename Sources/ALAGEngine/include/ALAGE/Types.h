@@ -4,6 +4,7 @@
 
 #include <iostream>
 #include <SFML/Graphics.hpp>
+#include <SFML/OpenGL.hpp>
 #include "AlAGE/utils/MapIterator.h"
 #include "AlAGE/utils/ListIterator.h"
 
@@ -66,8 +67,11 @@ typedef ListIterator<ShadowCaster*> ShadowCasterIterator;
 typedef ListIterator<Light*> LightIterator;
 typedef MapIterator<NodeTypeID, SceneNode*> SceneNodeIterator;
 
+//typedef GLfloat Mat3x3[9];
+
 const std::string emptyString;
 const sf::Texture emptyTexture;
+
 
 
 }

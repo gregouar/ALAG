@@ -24,6 +24,7 @@ class ShadowCaster
         void AddToLightList(Light*);
         void ForceShadowCastingType(ShadowCastingType);
         void AskForDynamicShadowUpdate();
+        void AskForAllShadowUpdate();
         std::map<Light*,sf::Texture> m_shadowMap;
         std::map<Light*,sf::Sprite> m_shadowSprite;
 
