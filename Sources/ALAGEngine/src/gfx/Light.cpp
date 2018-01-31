@@ -1,5 +1,6 @@
 #include "ALAGE/gfx/Light.h"
 #include "ALAGE/gfx/ShadowCaster.h"
+#include "ALAGE/utils/TextureModifier.h"
 
 namespace alag
 {

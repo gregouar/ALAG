@@ -3,6 +3,7 @@
 #include "ALAGE/gfx/iso/IsoSpriteEntity.h"
 #include "ALAGE/core/AssetHandler.h"
 #include "ALAGE/utils/Mathematics.h"
+#include "ALAGE/utils/TextureModifier.h"
 
 namespace alag
 {
@@ -64,6 +65,10 @@ void IsoSpriteEntity::RenderShadow(sf::RenderTarget *w/*, const sf::RenderStates
         depthShader->setUniform("height",myTexture3D->GetHeight()*sf::Sprite::getScale().y);
         depthShader->setUniform("zPos",globalPos.z);
 
+        sf::Vector3f light_direction = Normalize(light->GetDirection());
+        globalPos -= sf::Vector3f(globalPos.z*light_direction.x/light_direction.z,
+                                  globalPos.z*light_direction.y/light_direction.z, 0);
+        globalPos.z = 0;
 
         sf::RenderStates state;
         sf::Vector3f t = m_scene->GetIsoToCartMat()*globalPos;
@@ -71,12 +76,6 @@ void IsoSpriteEntity::RenderShadow(sf::RenderTarget *w/*, const sf::RenderStates
         state.shader = depthShader;
         w->draw(m_shadowSprite[light], state);
     }
-}
-
-
-void BlurImage()
-{
-
 }
 
 void IsoSpriteEntity::ComputeShadow(Light* light)
@@ -121,19 +120,25 @@ void IsoSpriteEntity::ComputeShadow(Light* light)
             const sf::Uint8* depth_array = depth_img.getPixelsPtr();
 
             for(size_t t = 0 ; t < shadow_bounds.width*shadow_bounds.height ; ++t)
+            {
+                shadow_map_array[t*4] = 0;
+                shadow_map_array[t*4+1] = 0;
+                shadow_map_array[t*4+2] = 0;
                 shadow_map_array[t*4+3] = 0;
+            }
 
 
             float height_pixel = 0;
             sf::Vector2f proj_pos(0,0);
             for(size_t x = 0 ; x < depth_texture_width ; ++x)
             for(size_t y = 0 ; y < depth_img.getSize().y ; ++y)
+            if(depth_array[(x + y*depth_texture_width)*4+3] == 255)
             {
                 sf::Color color_pixel(depth_array[(x + y*depth_texture_width)*4],
                                       depth_array[(x + y*depth_texture_width)*4+1],
                                       depth_array[(x + y*depth_texture_width)*4+2],
                                       depth_array[(x + y*depth_texture_width)*4+3]);
-                height_pixel  = color_pixel.a*0.00392156862*(color_pixel.r + color_pixel.g + color_pixel.b);
+                height_pixel  =  /*color_pixel.a*0.00392156862* */(color_pixel.r + color_pixel.g + color_pixel.b);
                 height_pixel *= height*0.00130718954;
 
                 sf::Vector2f pos(x,y);
@@ -144,32 +149,29 @@ void IsoSpriteEntity::ComputeShadow(Light* light)
                 pos.x = (int)(pos.x+0.5) - shadow_bounds.left;
                 pos.y = (int)(pos.y+0.5) - shadow_bounds.top;
 
-                int array_pos = (pos.x + pos.y*shadow_bounds.width)*4;
-
-                if(array_pos < shadow_bounds.width*shadow_bounds.height*4)
-                if(color_pixel.a*(color_pixel.r + color_pixel.g + color_pixel.b) >
-                   shadow_map_array[array_pos+3]*(shadow_map_array[array_pos]
-                                                  +shadow_map_array[array_pos+1]
-                                                  +shadow_map_array[array_pos+2]))
+                for(int dx = -1 ; dx <= 1 ; ++dx)
+                for(int dy = -1 ; dy <= 1 ; ++dy)
                 {
-                    shadow_map_array[array_pos] = color_pixel.r;
-                    shadow_map_array[array_pos+1] = color_pixel.g;
-                    shadow_map_array[array_pos+2] = color_pixel.b;
-                    shadow_map_array[array_pos+3] = color_pixel.a;
+                    int array_pos = ((pos.x+dx) + (pos.y+dy)*shadow_bounds.width)*4;
+
+                    if(array_pos >= 0 && array_pos < shadow_bounds.width*shadow_bounds.height*4)
+                    if(color_pixel.a*(color_pixel.r + color_pixel.g + color_pixel.b) >
+                       shadow_map_array[array_pos+3]*(shadow_map_array[array_pos]
+                                                      +shadow_map_array[array_pos+1]
+                                                      +shadow_map_array[array_pos+2]))
+                    {
+                        shadow_map_array[array_pos] = color_pixel.r;
+                        shadow_map_array[array_pos+1] = color_pixel.g;
+                        shadow_map_array[array_pos+2] = color_pixel.b;
+                        shadow_map_array[array_pos+3] = color_pixel.a;
+                    }
                 }
             }
-
-           // BlurImage(shadow_map_array,shadow_bounds.width,shadow_bounds.height,sf::Vector2f(1,0));
-
-            //sf::Image shadow_img;
-            //shadow_img.create(shadow_bounds.width,shadow_bounds.height,shadow_map_array);
-
-            /** ADD BLUR **/
 
             sf::Texture* shadowTexture = &m_shadowMap[light];
             shadowTexture->create(shadow_bounds.width,shadow_bounds.height);
             shadowTexture->update(shadow_map_array,shadow_bounds.width,shadow_bounds.height,0,0);
-            //shadowTexture->loadFromImage(shadow_img);
+            TextureModifier::BlurTexture(shadowTexture, 5);
             m_shadowSprite[light].setTexture(*shadowTexture);
             m_shadowSprite[light].setOrigin(sf::Sprite::getOrigin()
                                             -sf::Vector2f(shadow_bounds.left, shadow_bounds.top));

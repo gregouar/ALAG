@@ -115,6 +115,7 @@ void TestingState::Init()
     IsoSpriteEntity *cheneEntity = m_mainScene.CreateIsoSpriteEntity();
     cheneEntity->SetTexture(Texture3DHandler->LoadAssetFromFile("../data/cheneXML.txt"));
     cheneEntity->SetCenter(192,320);
+    cheneEntity->SetShadowCastingType(DirectionnalShadow);
     m_chene_node->AttachObject(cheneEntity);
 
     IsoSpriteEntity *abbayeEntity = m_mainScene.CreateIsoSpriteEntity();
