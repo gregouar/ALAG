@@ -11,9 +11,6 @@
 namespace alag
 {
 
-//const IsoViewAngle IsometricScene::DEFAULT_ISO_VIEW_ANGLE.xyAngle = 0;
-//const IsoViewAngle IsometricScene::DEFAULT_ISO_VIEW_ANGLE.zAngle = 90;
-
 const IsoViewAngle IsometricScene::DEFAULT_ISO_VIEW_ANGLE = {.xyAngle = 0,
                                                              .zAngle = 90};
 
@@ -46,6 +43,18 @@ bool IsometricScene::InitRenderer(sf::Vector2u windowSize)
     bool r = true;
 
     m_superSampling = Config::GetInt("graphics","SuperSampling","1");
+
+    bool directShadow = Config::GetBool("graphics","DirectionalShadowsCasting","1");
+    bool dynamicShadow = Config::GetBool("graphics","DynamicShadowsCasting","1");
+
+    if(directShadow)
+    {
+        if(dynamicShadow)
+            SetShadowCasting(AllShadows);
+        else
+            SetShadowCasting(DirectionnalShadow);
+    } else if(dynamicShadow)
+        SetShadowCasting(DynamicShadow);
 
     if(!m_colorScreen.create(windowSize.x*m_superSampling, windowSize.y*m_superSampling, true))
         r = false;
@@ -81,6 +90,12 @@ bool IsometricScene::InitRenderer(sf::Vector2u windowSize)
 
     m_rendererStates.shader = &m_lightingShader;
 
+
+    //m_lightingShader.setUniform("enable_sRGB",Config::GetBool("graphics","sRGB","true"));
+    if(Config::GetBool("graphics","sRGB","false"))
+        EnableGammaCorrection();
+    else
+        DisableGammaCorrection();
 
     SetSSAO(Config::GetBool("graphics","SSAO","true"));
 
@@ -132,14 +147,15 @@ bool IsometricScene::InitRenderer(sf::Vector2u windowSize)
 
 void IsometricScene::ProcessRenderQueue(sf::RenderTarget *w)
 {
-    std::multimap<float, Light*> lightList;
-    m_currentCamera->GetParentNode()->FindNearbyLights(&lightList);
-  //  m_rootNode.FindNearbyLights(&lightList);
-    UpdateLighting(lightList);
-
     sf::View curView = GenerateView(m_currentCamera);
 
-    RenderShadows(lightList,curView,m_colorScreen.getSize());
+    std::multimap<float, Light*> lightList;
+    m_currentCamera->GetParentNode()->FindNearbyLights(&lightList);
+
+    UpdateLighting(lightList);
+
+    if(m_shadowCastingOption != NoShadow)
+        RenderShadows(lightList,curView/*,m_colorScreen.getSize()*/);
 
     m_colorScreen.setActive(true);
         glClear(GL_DEPTH_BUFFER_BIT);
@@ -246,19 +262,6 @@ void IsometricScene::RenderScene(sf::RenderTarget* w)
         w->setView(w->getDefaultView());
         ProcessRenderQueue(w);
         w->setView(oldView);
-
-
-        /*sf::View oldView = w->getView();
-        glClear(GL_DEPTH_BUFFER_BIT);
-        w->setView(GenerateView(m_currentCamera));
-        ProcessRenderQueue(w);
-
-        if(m_enableSSAO)
-        {
-            m_geometryScreen[!m_useSecondScreen].display();
-            m_useSecondScreen = !m_useSecondScreen;
-        }
-        w->setView(oldView);*/
     }
 }
 
@@ -358,12 +361,42 @@ void IsometricScene::SetSSAO(bool ssao)
 
         m_SSAOrenderer.setSize(sf::Vector2f(m_depthScreen.getSize().x,
                                             m_depthScreen.getSize().y));
-       // m_SSAOrenderer.setTextureRect(sf::IntRect(0,0,windowSize.x*m_superSampling, windowSize.y*m_superSampling));
+
         m_SSAOrenderer.setTexture(&m_colorScreen.getTexture());
     } else {
         m_lightingShader.setUniform("enable_SSAO", false);
     }
 }
+
+void IsometricScene::SetShadowCasting(ShadowCastingType type)
+{
+    SceneManager::SetShadowCasting(type);
+
+
+    if(type == AllShadows || type == DirectionnalShadow)
+        m_lightingShader.setUniform("enable_directionalShadows", true);
+    else
+        m_lightingShader.setUniform("enable_directionalShadows", false);
+
+    if(type == AllShadows || type == DynamicShadow)
+        m_lightingShader.setUniform("enable_directionalShadows", true);
+    else
+        m_lightingShader.setUniform("enable_dynamicShadows", false);
+}
+
+void IsometricScene::EnableGammaCorrection()
+{
+    SceneManager::EnableGammaCorrection();
+    m_lightingShader.setUniform("enable_sRGB", true);
+}
+
+void IsometricScene::DisableGammaCorrection()
+{
+    SceneManager::DisableGammaCorrection();
+    m_lightingShader.setUniform("enable_sRGB", false);
+}
+
+
 
 void IsometricScene::ComputeTrigonometry()
 {
@@ -384,7 +417,11 @@ void IsometricScene::ComputeTrigonometry()
                              -sinXY , cosXY/sinZ, 0,
                               0     , 0         , 0);
 
-     m_normalProjMat.values[0] = cosXY;
+    m_normalProjMat = Mat3x3 ( cosXY ,  sinZ * sinXY , cosZ * sinXY,
+                              -sinXY ,  sinZ * cosXY , cosZ * cosXY,
+                               0     , -cosZ         , sinZ);
+
+    /* m_normalProjMat.values[0] = cosXY;
      m_normalProjMat.values[1] = sinZ * sinXY;
      m_normalProjMat.values[2] = cosZ * sinXY;
      m_normalProjMat.values[3] = -sinXY;
@@ -392,10 +429,14 @@ void IsometricScene::ComputeTrigonometry()
      m_normalProjMat.values[5] = cosZ * cosXY;
      m_normalProjMat.values[6] = 0;
      m_normalProjMat.values[7] = -cosZ;
-     m_normalProjMat.values[8] = sinZ;
+     m_normalProjMat.values[8] = sinZ;*/
+
+     m_normalProjMatInv = Mat3x3(   cosXY        , -sinXY        , 0,
+                                    sinXY*sinZ   ,  cosXY*sinZ   , -cosZ,
+                                    sinXY * cosZ ,  cosXY*cosZ   , sinZ);
 
 
-     m_normalProjMatInv.values[0] = cosXY;
+     /*m_normalProjMatInv.values[0] = cosXY;
      m_normalProjMatInv.values[1] = -sinXY;
      m_normalProjMatInv.values[2] = 0;
      m_normalProjMatInv.values[3] = sinXY*sinZ;
@@ -403,7 +444,7 @@ void IsometricScene::ComputeTrigonometry()
      m_normalProjMatInv.values[5] = -cosZ;
      m_normalProjMatInv.values[6] = sinXY * cosZ;
      m_normalProjMatInv.values[7] = cosXY*cosZ;
-     m_normalProjMatInv.values[8] = sinZ;
+     m_normalProjMatInv.values[8] = sinZ;*/
 
 
     m_lightingShader.setUniform("p_cartToIso2DProjMat",sf::Glsl::Mat3(m_cartToIsoMat.values));

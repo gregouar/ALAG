@@ -40,7 +40,7 @@ class Light : public SceneObject
         const sf::IntRect& GetShadowMaxShift();
 
         void InitShadowMap();
-        void RenderShadowMap(const sf::View &,const sf::Vector2u &);
+        void RenderShadowMap(const sf::View &/*,const sf::Vector2u &*/);
         void UpdateShadow();
 
     protected:

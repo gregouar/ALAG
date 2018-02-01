@@ -5,7 +5,7 @@
 	"ALAGE/utils/Logger.h"
 	"include/states/TestingState.h"
 
-1517175920 source:c:\c++\alag\sources\alagengine\src\core\gapp.cpp
+1517502059 source:c:\c++\alag\sources\alagengine\src\core\gapp.cpp
 	<SFML/System.hpp>
 	"ALAGE/core/GApp.h"
 	"ALAGE/utils/Logger.h"
@@ -33,7 +33,7 @@
 	<vector>
 	"GState.h"
 
-1517482341 source:c:\c++\alag\sources\src\states\testingstate.cpp
+1517504085 source:c:\c++\alag\sources\src\states\testingstate.cpp
 	"states/TestingState.h"
 	"ALAGE/core/GApp.h"
 	"ALAGE/core/EventManager.h"
@@ -45,7 +45,7 @@
 	"ALAGE/gfx/iso/IsoSpriteEntity.h"
 	"ALAGE/core/Config.h"
 
-1517310157 c:\c++\alag\sources\include\states\testingstate.h
+1517504268 c:\c++\alag\sources\include\states\testingstate.h
 	"ALAGE/core/GState.h"
 	"ALAGE/utils/singleton.h"
 	"ALAGE/gfx/iso/IsometricScene.h"
@@ -617,7 +617,7 @@
 	"ALAGE/gfx/Sprite3DEntity.h"
 	<SFML/OpenGL.hpp>
 
-1517411041 c:\c++\alag\sources\alagengine\include\alage\gfx\scenemanager.h
+1517503864 c:\c++\alag\sources\alagengine\include\alage\gfx\scenemanager.h
 	<SFML/OpenGL.hpp>
 	<SFML/Graphics.hpp>
 	"ALAGE/gfx/SceneNode.h"
@@ -626,7 +626,7 @@
 	"ALAGE/gfx/Camera.h"
 	"ALAGE/gfx/Light.h"
 
-1517419771 source:c:\c++\alag\sources\alagengine\src\gfx\scenemanager.cpp
+1517503864 source:c:\c++\alag\sources\alagengine\src\gfx\scenemanager.cpp
 	"ALAGE/gfx/SceneManager.h"
 	"ALAGE/utils/Logger.h"
 	"ALAGE/utils/Mathematics.h"
@@ -735,12 +735,12 @@
 	<SFML/Graphics.hpp>
 	"ALAGE/gfx/SceneObject.h"
 
-1517482679 source:c:\c++\alag\sources\alagengine\src\gfx\light.cpp
+1517504134 source:c:\c++\alag\sources\alagengine\src\gfx\light.cpp
 	"ALAGE/gfx/Light.h"
 	"ALAGE/gfx/ShadowCaster.h"
 	"ALAGE/utils/TextureModifier.h"
 
-1517475226 c:\c++\alag\sources\alagengine\include\alage\gfx\light.h
+1517490996 c:\c++\alag\sources\alagengine\include\alage\gfx\light.h
 	"ALAGE/Types.h"
 	"ALAGE/gfx/SceneObject.h"
 
@@ -761,7 +761,7 @@
 1517140944 source:c:\c++\alag\sources\alagengine\src\gfx\isometricshaders.cpp
 	<iostream>
 
-1517419495 c:\c++\alag\sources\alagengine\include\alage\gfx\iso\isometricscene.h
+1517503864 c:\c++\alag\sources\alagengine\include\alage\gfx\iso\isometricscene.h
 	"ALAGE/utils/Mathematics.h"
 	"ALAGE/gfx/SceneManager.h"
 	"ALAGE/gfx/iso/IsoSpriteEntity.h"
@@ -771,7 +771,7 @@
 1517410375 c:\c++\alag\sources\alagengine\include\alage\gfx\iso\isospriteentity.h
 	<ALAGE/gfx/SpriteEntity.h>
 
-1517482813 source:c:\c++\alag\sources\alagengine\src\gfx\iso\isometricscene.cpp
+1517503978 source:c:\c++\alag\sources\alagengine\src\gfx\iso\isometricscene.cpp
 	"ALAGE/gfx/iso/IsometricScene.h"
 	"ALAGE/utils/Logger.h"
 	"ALAGE/utils/Mathematics.h"
@@ -779,10 +779,10 @@
 	"ALAGE/gfx/iso/IsoSpriteEntity.h"
 	"../src/gfx/iso/IsometricShaders.cpp"
 
-1517482813 c:\c++\alag\sources\alagengine\src\gfx\iso\isometricshaders.cpp
+1517503536 c:\c++\alag\sources\alagengine\src\gfx\iso\isometricshaders.cpp
 	<iostream>
 
-1517482813 source:c:\c++\alag\sources\alagengine\src\gfx\iso\isometricshaders.cpp
+1517503536 source:c:\c++\alag\sources\alagengine\src\gfx\iso\isometricshaders.cpp
 	<iostream>
 
 1517476911 source:c:\c++\alag\sources\alagengine\src\gfx\iso\isorectentity.cpp

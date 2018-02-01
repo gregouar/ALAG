@@ -44,6 +44,8 @@ class TestingState : public alag::GState, public Singleton<TestingState>
         alag::SceneNode *m_chene_node;
         alag::SceneNode *m_lightNode;
 
+        alag::Light *m_sunLight;
+
         alag::Camera *m_camera;
 };
 

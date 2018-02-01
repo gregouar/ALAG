@@ -50,6 +50,9 @@ class IsometricScene : public SceneManager
 
         void SetViewAngle(IsoViewAngle);
         void SetAmbientLight(sf::Color);
+        virtual void SetShadowCasting(ShadowCastingType);
+        virtual void EnableGammaCorrection();
+        virtual void DisableGammaCorrection();
 
         void SetSSAO(bool);
 

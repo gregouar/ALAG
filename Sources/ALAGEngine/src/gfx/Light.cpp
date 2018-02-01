@@ -89,7 +89,7 @@ void Light::SetSpecularColor(sf::Color color)
 
 void Light::SetConstantAttenuation(float constAtt)
 {
-    if(constAtt >= 1)
+    if(constAtt > 0)
         m_constantAttenuation = constAtt;
 }
 
@@ -158,12 +158,12 @@ void Light::UpdateShadow()
     m_requireShadowComputation = false;
 }
 
-void Light::RenderShadowMap(const sf::View &view,const sf::Vector2u &screen_size)
+void Light::RenderShadowMap(const sf::View &view/*,const sf::Vector2u &screen_size*/)
 {
-    if(m_shadowMap.getSize().x != screen_size.x + m_shadowMaxShift.width
-    || m_shadowMap.getSize().y != screen_size.y + m_shadowMaxShift.height)
-        m_shadowMap.create(screen_size.x + m_shadowMaxShift.width,
-                            screen_size.y + m_shadowMaxShift.height, true);
+    if(m_shadowMap.getSize().x != (unsigned int)view.getSize().x + m_shadowMaxShift.width
+    || m_shadowMap.getSize().y != (unsigned int)view.getSize().y + m_shadowMaxShift.height)
+        m_shadowMap.create((unsigned int)view.getSize().x + m_shadowMaxShift.width,
+                            (unsigned int)view.getSize().y + m_shadowMaxShift.height, true);
 
    /* std::cout<<m_shadowMaxShift.left<<" "<<m_shadowMaxShift.top<<" "<<
     m_shadowMaxShift.width<<" "<<m_shadowMaxShift.height<<std::endl;*/

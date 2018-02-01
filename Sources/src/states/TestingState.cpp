@@ -103,12 +103,13 @@ void TestingState::Init()
 
    /* Light* sunLight = m_mainScene.CreateLight(DirectionnalLight,sf::Vector3f(-1,.5,-1), sf::Color(255,255,160));
     sunLight->SetConstantAttenuation(2);*/
-    Light* sunLight = m_mainScene.CreateLight(DirectionnalLight,sf::Vector3f(-1,-.2,-1), sf::Color(255,255,224));
-    sunLight->SetConstantAttenuation(1);
-    sunLight->EnableShadowCasting();
-    m_mainScene.GetRootNode()->AttachObject(sunLight);
+    m_sunLight = m_mainScene.CreateLight(DirectionnalLight,sf::Vector3f(-1,-.2,-1), sf::Color(255,255,224));
+    m_sunLight->SetConstantAttenuation(1);
+    m_mainScene.SetAmbientLight(sf::Color(64,64,96));
+    m_sunLight->EnableShadowCasting();
+    m_mainScene.GetRootNode()->AttachObject(m_sunLight);
    // m_mainScene.SetAmbientLight(sf::Color(32,48,128));
-    m_mainScene.SetAmbientLight(sf::Color(96,96,128));
+   // m_mainScene.SetAmbientLight(sf::Color(96,96,128));
     //m_mainScene.GetRootNode()->AttachObject(m_mainScene.CreateLight(DirectionnalLight,sf::Vector3f(0,-1,0), sf::Color::Red));
 
     m_chene_node = m_mainScene.GetRootNode()->CreateChildNode(sf::Vector2f(150,-100));
@@ -198,10 +199,32 @@ void TestingState::HandleEvents(alag::EventManager *event_manager)
         m_sarco3DNode->Move(0,0,-10);
 
 
-    if(event_manager->KeyPressed(sf::Keyboard::S))
+    if(event_manager->KeyPressed(sf::Keyboard::O))
         m_mainScene.SetSSAO(false);
-    if(event_manager->KeyReleased(sf::Keyboard::S))
+    if(event_manager->KeyReleased(sf::Keyboard::O))
         m_mainScene.SetSSAO(true);
+
+
+    if(event_manager->KeyPressed(sf::Keyboard::S))
+        m_mainScene.SetShadowCasting(NoShadow);
+    if(event_manager->KeyReleased(sf::Keyboard::S))
+        m_mainScene.SetShadowCasting(DirectionnalShadow);
+
+
+    if(event_manager->KeyPressed(sf::Keyboard::G))
+    {
+        m_mainScene.EnableGammaCorrection();
+
+        m_sunLight->SetConstantAttenuation(.7);
+        m_mainScene.SetAmbientLight(sf::Color(32,32,48));
+    }
+    if(event_manager->KeyReleased(sf::Keyboard::G))
+    {
+        m_mainScene.DisableGammaCorrection();
+
+        m_sunLight->SetConstantAttenuation(1);
+        m_mainScene.SetAmbientLight(sf::Color(64,64,96));
+    }
 
 
     if(event_manager->MouseButtonIsPressed(sf::Mouse::Left))

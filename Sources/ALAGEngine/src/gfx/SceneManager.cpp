@@ -16,6 +16,8 @@ SceneManager::SceneManager() : m_rootNode(0,nullptr, this)
     m_currentCamera = nullptr;
 
     m_ambientLight = sf::Color::White;
+    m_shadowCastingOption = NoShadow;
+    m_enableSRGB = false;
 }
 
 SceneManager::~SceneManager()
@@ -122,7 +124,13 @@ int SceneManager::UpdateLighting(std::multimap<float, Light*> &lightList, int ma
             glDirection[2] = pos.z;
             glLightfv(GL_LIGHT0+curNbrLights, GL_SPOT_DIRECTION, glDirection);
 
-            if(curLight->IsCastShadowEnabled())
+            if(m_shadowCastingOption != NoShadow
+            && curLight->IsCastShadowEnabled())
+            if(m_shadowCastingOption == AllShadows
+            || (curLight->GetType() == DirectionnalLight
+                && m_shadowCastingOption == DirectionnalShadow)
+            || (curLight->GetType() == OmniLight
+                && m_shadowCastingOption == DynamicShadow))
             {
                 curLight->GetShadowCasterList()->clear();
                 node->FindNearbyShadowCaster(curLight->GetShadowCasterList(),curLight->GetType());
@@ -139,7 +147,7 @@ int SceneManager::UpdateLighting(std::multimap<float, Light*> &lightList, int ma
 
 
 void SceneManager::RenderShadows(std::multimap<float, Light*> &lightList,const sf::View &view,
-                                 const sf::Vector2u &screen_size, int maxNbrLights)
+                                 /*const sf::Vector2u &screen_size,*/ int maxNbrLights)
 {
     int curNbrLights = 0;
 
@@ -150,10 +158,13 @@ void SceneManager::RenderShadows(std::multimap<float, Light*> &lightList,const s
         Light* curLight = lightIt->second;
         SceneNode* node = curLight->GetParentNode();
 
+        if(m_shadowCastingOption == AllShadows
+           || (m_shadowCastingOption == DirectionnalShadow && curLight->GetType() == DirectionnalLight)
+           || (m_shadowCastingOption == DynamicShadow && curLight->GetType() == OmniLight))
         if(node != nullptr)
         {
             if(curLight->IsCastShadowEnabled())
-                curLight->RenderShadowMap(view,screen_size);
+                curLight->RenderShadowMap(view/*,screen_size*/);
 
             ++curNbrLights;
         }
@@ -303,6 +314,39 @@ void SceneManager::SetAmbientLight(sf::Color light)
     m_ambientLight = light;
     m_ambientLight.a = 255;
 }
+
+void SceneManager::SetShadowCasting(ShadowCastingType type)
+{
+    m_shadowCastingOption = type;
+    /*if(type == AllShadows)
+        m_shadowCastingOption = AllShadows;
+    else if(type == DirectionnalLight)
+    {
+        if(m_shadowCastingOption == DynamicShadow)
+            m_shadowCastingOption = AllShadows;
+        else
+            m_shadowCastingOption = DirectionnalLight;
+    }
+    else if(type == DynamicShadow)
+    {
+        if(m_shadowCastingOption == DirectionnalLight)
+            m_shadowCastingOption = AllShadows;
+        else
+            m_shadowCastingOption = DynamicShadow;
+    }*/
+}
+
+
+void SceneManager::EnableGammaCorrection()
+{
+    m_enableSRGB = true;
+}
+
+void SceneManager::DisableGammaCorrection()
+{
+    m_enableSRGB = false;
+}
+
 
 
 ObjectTypeID SceneManager::GenerateObjectID()

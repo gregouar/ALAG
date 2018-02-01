@@ -105,21 +105,20 @@ const std::string lighting_fragShader = \
     "uniform sampler2D shadow_map_7;" \
     "uniform vec2 shadow_shift[8];"
     "uniform vec2 shadow_ratio[8];"
+    "uniform bool enable_directionalShadows;" \
+    "uniform bool enable_dynamicShadows;" \
     "uniform bool enable_SSAO;" \
     "uniform sampler2D map_SSAO;" \
+    "uniform bool enable_sRGB;" \
     "varying vec3 v_vertex; "\
     ""
     "float GetShadowCastValue(int curShadowMap, float heightPixel, vec2 shadowPos) {"
     "   vec4 shadowPixel;"
     "   vec2 mapPos = (shadowPos-shadow_shift[curShadowMap])*shadow_ratio[curShadowMap];"
-    "   if(mapPos.x > 1.0) mapPos.x = 1.0;"
-    "   if(mapPos.y > 1.0) mapPos.y = 1.0;"
-    "   if(mapPos.x < 0) mapPos.x = 0;"
-    "   if(mapPos.y < 0)  return 0;"
 	"   if(curShadowMap == 0)"
 	"       shadowPixel = texture2D(shadow_map_0, mapPos);"
 	"   float shadowHeight = (0.5-(shadowPixel.r+shadowPixel.g/256.0+shadowPixel.b/65536.0))*1000;"
-    "   return 1.0 - min(1.0,max(0.0, (shadowHeight-heightPixel-5)*0.05));"
+    "   return 1.0 - min(1.0,max(0.0, (shadowHeight-heightPixel)*0.05));"
     "}"
     ""
     "void main()" \
@@ -128,6 +127,8 @@ const std::string lighting_fragShader = \
     "   vec4 normalPixel = texture2D(map_normal, gl_TexCoord[0].xy);" \
     "   vec4 depthPixel  = texture2D(map_depth, gl_TexCoord[0].xy);" \
     "   vec3 direction = -1.0+2.0*normalPixel.rgb;"
+    "   if(enable_sRGB == true)"
+	"       colorPixel.rgb = pow(colorPixel.rgb, vec3(2.2));"
     "   float heightPixel = (0.5-(depthPixel.r+depthPixel.g/256.0+depthPixel.b/65536.0))*1000;"
 	"   vec3 fragPos = v_vertex*view_zoom+vec3(view_shift.xy,0);"
 	"   fragPos.y -= heightPixel*p_isoToCartZFactor;"
@@ -153,9 +154,11 @@ const std::string lighting_fragShader = \
 	"	    				     dist*dist*gl_LightSource[i].quadraticAttenuation);" \
 	"	    }" \
 	"       lightDirection = normalize(lightDirection);"
+    "       if((gl_LightSource[i].position.w == 0.0 && enable_directionalShadows == true)"
+    "        ||(gl_LightSource[i].position.w != 0.0 && enable_dynamicShadows == true))"
 	"       if(curShadowMap < 8 && shadow_caster[curShadowMap] == i) {"
 	"           if(gl_LightSource[i].position.w == 0.0){"
-	"               vec2 shadowPos = gl_FragCoord.xy;"
+	"               vec2 shadowPos = gl_FragCoord.xy*view_zoom;"
 	"               shadowPos.y += heightPixel*p_isoToCartZFactor;"
 	"               vec3 v = vec3((heightPixel*lightDirection.xy/lightDirection.z), 0);"
 	"               shadowPos.x -= (v*p_isoToCartMat).x;"
@@ -190,6 +193,8 @@ const std::string lighting_fragShader = \
 	"                       )/16.0;"
     "       gl_FragColor.rgb *= occlusion;"
 	"   };"
+    "   if(enable_sRGB == true)"
+	"    gl_FragColor.rgb = pow(gl_FragColor.rgb, vec3(1.0/2.2));"
     "}";
 
 

@@ -27,7 +27,7 @@ class SceneManager
         virtual void ProcessRenderQueue(sf::RenderTarget*);
         virtual void RenderScene(sf::RenderTarget*) = 0;
         virtual void RenderShadows(std::multimap<float, Light*> &,const sf::View &,
-                                   const sf::Vector2u &, int = GL_MAX_LIGHTS);
+                                   /*const sf::Vector2u &,*/ int = GL_MAX_LIGHTS);
 
         void AskToComputeRenderQueue();
 
@@ -49,6 +49,12 @@ class SceneManager
         virtual void SetCurrentCamera(Camera *);
         virtual void SetAmbientLight(sf::Color);
 
+        //virtual void EnableShadowCasting(ShadowCastingType);
+        //virtual void DisableShadowCasting(ShadowCastingType);
+        virtual void SetShadowCasting(ShadowCastingType);
+        virtual void EnableGammaCorrection();
+        virtual void DisableGammaCorrection();
+
     protected:
         ObjectTypeID GenerateObjectID();
         void AddCreatedObject(const ObjectTypeID &, SceneObject*);
@@ -61,6 +67,8 @@ class SceneManager
         SceneNode m_rootNode;
 
         sf::Color m_ambientLight;
+        ShadowCastingType m_shadowCastingOption;
+        bool m_enableSRGB;
 
         std::list<SceneEntity*> m_renderQueue;
         sf::RenderTarget *m_last_target;
