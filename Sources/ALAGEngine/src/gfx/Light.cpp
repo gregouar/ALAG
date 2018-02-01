@@ -15,6 +15,7 @@ Light::Light()
     m_linearAttenuation = 0;
     m_quadraticAttenuation = 0;
     m_castShadow = false;
+    m_shadowMaxShift = sf::IntRect(0,0,0,0);
     m_requireShadowComputation = false;
 }
 
@@ -118,6 +119,11 @@ const sf::Texture& Light::GetShadowMap()
     return m_shadowMap.getTexture();
 }
 
+const sf::IntRect& Light::GetShadowMaxShift()
+{
+    return m_shadowMaxShift;
+}
+
 std::list<ShadowCaster*> *Light::GetShadowCasterList()
 {
     return &m_shadowCasterList;
@@ -125,32 +131,62 @@ std::list<ShadowCaster*> *Light::GetShadowCasterList()
 
 void Light::UpdateShadow()
 {
+    sf::IntRect max_shift(0,0,0,0);
+
     std::list<ShadowCaster *>::iterator casterIt;
     for(casterIt = m_shadowCasterList.begin() ; casterIt != m_shadowCasterList.end() ; ++casterIt)
-    if(m_requireShadowComputation || (*casterIt)->IsRequiringShadowCasting(this))
-        (*casterIt)->ComputeShadow(this);
+    {
+        if(m_requireShadowComputation || (*casterIt)->IsRequiringShadowCasting(this))
+            (*casterIt)->ComputeShadow(this);
 
+        sf::IntRect shift = (*casterIt)->GetShadowMaxShift(this);
+        if(shift.left < max_shift.left)
+            max_shift.left = shift.left;
+        if(shift.top < max_shift.top)
+            max_shift.top = shift.top;
+        if(shift.width > max_shift.width)
+            max_shift.width = shift.width;
+        if(shift.height > max_shift.height)
+            max_shift.height = shift.height;
+    }
+
+    m_shadowMaxShift = max_shift;
+    /*m_shadowMaxShift.left -= 8;
+    m_shadowMaxShift.top -= 8;
+    m_shadowMaxShift.width += 16;
+    m_shadowMaxShift.height += 16;*/
     m_requireShadowComputation = false;
 }
 
 void Light::RenderShadowMap(const sf::View &view,const sf::Vector2u &screen_size)
 {
-    if(m_shadowMap.getSize() != screen_size)
-        m_shadowMap.create(screen_size.x, screen_size.y, true);
+    if(m_shadowMap.getSize().x != screen_size.x + m_shadowMaxShift.width
+    || m_shadowMap.getSize().y != screen_size.y + m_shadowMaxShift.height)
+        m_shadowMap.create(screen_size.x + m_shadowMaxShift.width,
+                            screen_size.y + m_shadowMaxShift.height, true);
+
+   /* std::cout<<m_shadowMaxShift.left<<" "<<m_shadowMaxShift.top<<" "<<
+    m_shadowMaxShift.width<<" "<<m_shadowMaxShift.height<<std::endl;*/
+
+    sf::View shadow_view = view;
+    shadow_view.move(m_shadowMaxShift.width*0.5+m_shadowMaxShift.left,
+                     m_shadowMaxShift.height*0.5+m_shadowMaxShift.top);
+    shadow_view.setSize(view.getSize().x+m_shadowMaxShift.width,
+                        view.getSize().y+m_shadowMaxShift.height);
 
     m_shadowMap.setActive(true);
         glClear(GL_DEPTH_BUFFER_BIT);
         glEnable(GL_DEPTH_TEST);
         glDepthMask(GL_TRUE);
         m_shadowMap.clear(sf::Color::White);
-        m_shadowMap.setView(view);
+        m_shadowMap.setView(shadow_view);
 
         std::list<ShadowCaster *>::iterator casterIt;
         for(casterIt = m_shadowCasterList.begin() ; casterIt != m_shadowCasterList.end() ; ++casterIt)
             (*casterIt)->RenderShadow(&m_shadowMap,this);
 
         m_shadowMap.display();
-        //m_shadowMap.getTexture().copyToImage().saveToFile("shadow.png");
+       // m_shadowMap.getTexture().copyToImage().saveToFile("shadow.png");
     m_shadowMap.setActive(false);
 }
 

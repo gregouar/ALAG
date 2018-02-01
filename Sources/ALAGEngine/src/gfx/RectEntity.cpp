@@ -46,32 +46,32 @@ void RectEntity::PrepareShader(sf::Shader *shader)
     && m_texture != nullptr)
     {
     //&& m_texture->IsLoaded())
-        shader->setUniform("colorMap",*m_texture->GetTexture());
+        shader->setUniform("map_color",*m_texture->GetTexture());
         if(Is3D())
         {
             Texture3DAsset *myTexture3D = (Texture3DAsset*) m_texture;
 
             if(myTexture3D->GetDepthMap() != nullptr)
             {
-                shader->setUniform("depthMap",*myTexture3D->GetDepthMap());
-                shader->setUniform("useDepthMap", true);
+                shader->setUniform("map_depth",*myTexture3D->GetDepthMap());
+                shader->setUniform("enable_depthMap", true);
             } else {
-                shader->setUniform("useDepthMap", false);
+                shader->setUniform("enable_depthMap", false);
             }
 
             if(myTexture3D->GetNormalMap() != nullptr)
             {
-                shader->setUniform("normalMap",*myTexture3D->GetNormalMap());
-                shader->setUniform("useNormalMap", true);
+                shader->setUniform("map_normal",*myTexture3D->GetNormalMap());
+                shader->setUniform("enable_normalMap", true);
             } else {
-                shader->setUniform("useNormalMap", false);
+                shader->setUniform("enable_normalMap", false);
             }
 
-            shader->setUniform("height",myTexture3D->GetHeight());
+            shader->setUniform("p_height",myTexture3D->GetHeight());
         } else {
-            shader->setUniform("height",0);
-            shader->setUniform("useNormalMap", false);
-            shader->setUniform("useDepthMap", false);
+            shader->setUniform("p_height",0);
+            shader->setUniform("enable_depthMap", false);
+            shader->setUniform("enable_normalMap", false);
         }
     }
 }

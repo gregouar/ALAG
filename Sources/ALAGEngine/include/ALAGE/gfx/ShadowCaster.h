@@ -17,6 +17,8 @@ class ShadowCaster : public SceneObject
         virtual void ComputeShadow(Light*) = 0; /**Do not forget to AddToLightList()**/
         virtual void RenderShadow(sf::RenderTarget*, Light*);
 
+        sf::IntRect GetShadowMaxShift(Light* light);
+
         bool IsRequiringShadowCasting(Light*);
         ShadowCastingType GetShadowCastingType();
 
@@ -25,8 +27,10 @@ class ShadowCaster : public SceneObject
         void ForceShadowCastingType(ShadowCastingType);
         void AskForDynamicShadowUpdate();
         void AskForAllShadowUpdate();
+
         std::map<Light*,sf::Texture> m_shadowMap;
         std::map<Light*,sf::Sprite> m_shadowSprite;
+        std::map<Light*,sf::IntRect> m_shadowMaxShift;
 
     private:
         ShadowCastingType m_shadowCastingType;

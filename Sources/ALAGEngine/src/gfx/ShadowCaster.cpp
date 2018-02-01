@@ -20,6 +20,17 @@ void ShadowCaster::RenderShadow(sf::RenderTarget* w/*, const sf::RenderStates &s
 }
 
 
+sf::IntRect ShadowCaster::GetShadowMaxShift(Light* light)
+{
+    std::map<Light*, sf::IntRect>::iterator shadowIt;
+    shadowIt = m_shadowMaxShift.find(light);
+    if(shadowIt == m_shadowMaxShift.end())
+        return sf::IntRect(0,0,0,0);
+    else
+        return shadowIt->second;
+}
+
+
 void ShadowCaster::AskForDynamicShadowUpdate()
 {
     std::map<Light*, bool>::iterator lightIt;

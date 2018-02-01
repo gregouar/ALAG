@@ -36,34 +36,32 @@ void IsoSpriteEntity::PrepareShader(sf::Shader* shader)
     if(m_scene != nullptr)
     {
         float isoToCartZFactor = -m_scene->GetIsoToCartMat().values[5];
-        shader->setUniform("useNormalMap", false);
-        shader->setUniform("depthMap",*AssetHandler<TextureAsset>::Instance()->LoadAssetFromFile("../data/heightmap.png")->GetTexture());
-        shader->setUniform("useDepthMap",true);
-        shader->setUniform("height",(-(float)sf::Sprite::getTextureRect().height*(float)getScale().y)/isoToCartZFactor);
+        shader->setUniform("enable_normalMap", false);
+        shader->setUniform("map_depth",*AssetHandler<TextureAsset>::Instance()->LoadAssetFromFile("../data/heightmap.png")->GetTexture());
+        shader->setUniform("enable_depthMap",true);
+        shader->setUniform("p_height",(-(float)sf::Sprite::getTextureRect().height*(float)getScale().y)/isoToCartZFactor);
     }
 
-    shader->setUniform("normalProjMatInv",sf::Glsl::Mat3(IdMat3X3));
+    shader->setUniform("p_normalProjMatInv",sf::Glsl::Mat3(IdMat3X3));
 }
 
 void IsoSpriteEntity::RenderShadow(sf::RenderTarget *w/*, const sf::RenderStates &state*/, Light* light)
 {
-    //w->draw((*this), state);
     SceneNode* node = GetParentNode();
 
-    if(node != nullptr)
-    if(m_scene != nullptr)
     if(Is3D())
-    //if(m_texture != nullptr && m_texture->IsLoaded())
+    if(node != nullptr && m_scene != nullptr)
+    if(m_texture != nullptr && m_texture->IsLoaded())
     {
         Texture3DAsset *myTexture3D = (Texture3DAsset*) m_texture;
         sf::Vector3f globalPos = node->GetGlobalPosition();
 
         sf::Shader* depthShader = m_scene->GetDepthShader();
-        depthShader->setUniform("colorMap",m_shadowMap[light]);
-        depthShader->setUniform("depthMap",m_shadowMap[light]);
-        depthShader->setUniform("useDepthMap", true);
-        depthShader->setUniform("height",myTexture3D->GetHeight()*sf::Sprite::getScale().y);
-        depthShader->setUniform("zPos",globalPos.z);
+        depthShader->setUniform("map_color",m_shadowMap[light]);
+        depthShader->setUniform("map_depth",m_shadowMap[light]);
+        depthShader->setUniform("enable_depthMap", true);
+        depthShader->setUniform("p_height",myTexture3D->GetHeight()*sf::Sprite::getScale().y);
+        depthShader->setUniform("p_zPos",globalPos.z);
 
         sf::Vector3f light_direction = Normalize(light->GetDirection());
         globalPos -= sf::Vector3f(globalPos.z*light_direction.x/light_direction.z,
@@ -96,30 +94,36 @@ void IsoSpriteEntity::ComputeShadow(Light* light)
             sf::Vector3f lightDirection = Normalize(light->GetDirection());
 
             Mat3x3 isoToCart = m_scene->GetIsoToCartMat();
-            Mat3x3 cartToIso = m_scene->GetCartToIsoMat();
+            //Mat3x3 cartToIso = m_scene->GetCartToIsoMat();
 
-            sf::Vector2f iso_decal(-lightDirection.x*height/lightDirection.z,-lightDirection.y*height/lightDirection.z);
-            sf::Vector2f max_decal = isoToCart*iso_decal;
+            sf::Vector2f iso_shift(-lightDirection.x*height/lightDirection.z,
+                                   -lightDirection.y*height/lightDirection.z);
 
-            max_decal.x = (int)max_decal.x +((max_decal.x > 0) ? 1 : -1);
-            max_decal.y = (int)max_decal.y +((max_decal.y > 0) ? 1 : -1);
+            sf::Vector2f max_shift = isoToCart*iso_shift;
+            max_shift.y -= height*isoToCart.values[5];
 
-            sf::IntRect shadow_bounds(0,0,getGlobalBounds().width+abs(max_decal.x),
-                                            getGlobalBounds().height+abs(max_decal.y));
+            max_shift.x = (int)max_shift.x +((max_shift.x > 0) ? 1 : -1);
+            max_shift.y = (int)max_shift.y +((max_shift.y > 0) ? 1 : -1);
 
-            if(max_decal.x < 0)
-                shadow_bounds.left = max_decal.x;
-            if(max_decal.y < 0)
-                shadow_bounds.top = max_decal.y;
+            sf::IntRect shadow_bounds(0,0,getGlobalBounds().width+abs(max_shift.x),
+                                          getGlobalBounds().height+abs(max_shift.y));
+
+            if(max_shift.x < 0)
+                shadow_bounds.left = max_shift.x;
+            if(max_shift.y < 0)
+                shadow_bounds.top = max_shift.y;
+
+            m_shadowMaxShift[light] = sf::IntRect(shadow_bounds.left,shadow_bounds.top,
+                                                  abs(max_shift.x), abs(max_shift.y));
 
             sf::Uint8 *shadow_map_array = new sf::Uint8[shadow_bounds.width*shadow_bounds.height*4];
 
             sf::Texture* depth_texture = myTexture3D->GetDepthMap();
             sf::Image depth_img = depth_texture->copyToImage();
-            int depth_texture_width = depth_img.getSize().x;
+            size_t depth_texture_width = depth_img.getSize().x;
             const sf::Uint8* depth_array = depth_img.getPixelsPtr();
 
-            for(size_t t = 0 ; t < shadow_bounds.width*shadow_bounds.height ; ++t)
+            for(size_t t = 0 ; t < (size_t)(shadow_bounds.width*shadow_bounds.height) ; ++t)
             {
                 shadow_map_array[t*4] = 0;
                 shadow_map_array[t*4+1] = 0;

@@ -73,10 +73,10 @@ bool IsometricScene::InitRenderer(sf::Vector2u windowSize)
     m_renderer.setTextureRect(sf::IntRect(0,0,windowSize.x*m_superSampling, windowSize.y*m_superSampling));
     m_renderer.setTexture(&m_colorScreen.getTexture());
 
-    m_lightingShader.setUniform("colorMap",m_colorScreen.getTexture());
-    m_lightingShader.setUniform("normalMap",m_normalScreen.getTexture());
-    m_lightingShader.setUniform("depthMap",m_depthScreen.getTexture());
-    m_lightingShader.setUniform("screen_ratio",sf::Vector2f(1.0/(float)m_colorScreen.getSize().x,
+    m_lightingShader.setUniform("map_color",m_colorScreen.getTexture());
+    m_lightingShader.setUniform("map_normal",m_normalScreen.getTexture());
+    m_lightingShader.setUniform("map_depth",m_depthScreen.getTexture());
+    m_lightingShader.setUniform("view_ratio",sf::Vector2f(1.0/(float)m_colorScreen.getSize().x,
                                                             1.0/(float)m_colorScreen.getSize().y));
 
     m_rendererStates.shader = &m_lightingShader;
@@ -105,7 +105,7 @@ bool IsometricScene::InitRenderer(sf::Vector2u windowSize)
     samplesHemisphere[14] = sf::Glsl::Vec3(0,.5,.5);
     samplesHemisphere[15] = sf::Glsl::Vec3(0,-.5,.5);
 
-    m_SSAOShader.setUniformArray("samplesHemisphere",samplesHemisphere,16);
+    m_SSAOShader.setUniformArray("p_samplesHemisphere",samplesHemisphere,16);
 
     m_SSAONoisePattern.create(4,4);
 
@@ -121,7 +121,8 @@ bool IsometricScene::InitRenderer(sf::Vector2u windowSize)
 
     m_SSAONoiseTexture.setRepeated(true);
     m_SSAONoiseTexture.loadFromImage(m_SSAONoisePattern);
-    m_SSAOShader.setUniform("noiseMap",m_SSAONoiseTexture);
+    m_SSAONoiseTexture.setRepeated(true);
+    m_SSAOShader.setUniform("map_noise",m_SSAONoiseTexture);
 
     if(!r)
         Logger::Error("Cannot initialize isometric renderer");
@@ -187,25 +188,25 @@ void IsometricScene::ProcessRenderQueue(sf::RenderTarget *w)
         state.transform *= m_TransformIsoToCart;
 
         m_colorScreen.setActive(true);
-            m_colorShader.setUniform("zPos",globalPos.z);
+            m_colorShader.setUniform("p_zPos",globalPos.z);
             (*renderIt)->PrepareShader(&m_colorShader);
             state.shader = &m_colorShader;
             (*renderIt)->Render(&m_colorScreen,state);
         m_colorScreen.setActive(false);
 
         m_normalScreen.setActive(true);
-            m_normalShader.setUniform("zPos",globalPos.z);
-            m_normalShader.setUniform("useNormalMap",false);
-            m_normalShader.setUniform("normalProjMat",sf::Glsl::Mat3(m_normalProjMat.values));
-            m_normalShader.setUniform("cartToIso2DProjMat",sf::Glsl::Mat3(m_cartToIsoMat.values));
-            m_normalShader.setUniform("isoToCartZFactor",m_isoToCartMat.values[5]);
+            m_normalShader.setUniform("p_zPos",globalPos.z);
+            m_normalShader.setUniform("enable_normalMap",false);
+            m_normalShader.setUniform("p_normalProjMat",sf::Glsl::Mat3(m_normalProjMat.values));
+            m_normalShader.setUniform("p_cartToIso2DProjMat",sf::Glsl::Mat3(m_cartToIsoMat.values));
+            m_normalShader.setUniform("p_isoToCartZFactor",m_isoToCartMat.values[5]);
             (*renderIt)->PrepareShader(&m_normalShader);
             state.shader = &m_normalShader;
             (*renderIt)->Render(&m_normalScreen,state);
         m_normalScreen.setActive(false);
 
         m_depthScreen.setActive(true);
-            m_depthShader.setUniform("zPos",globalPos.z);
+            m_depthShader.setUniform("p_zPos",globalPos.z);
             (*renderIt)->PrepareShader(&m_depthShader);
             state.shader = &m_depthShader;
             (*renderIt)->Render(&m_depthScreen,state);
@@ -223,15 +224,15 @@ void IsometricScene::ProcessRenderQueue(sf::RenderTarget *w)
 
     if(m_enableSSAO)
     {
-        m_SSAOShader.setUniform("zoom",1.0f/m_currentCamera->GetZoom());
+        m_SSAOShader.setUniform("view_zoom",1.0f/m_currentCamera->GetZoom());
         m_SSAOScreen.draw(m_SSAOrenderer,&m_SSAOShader);
         m_SSAOScreen.display();
     }
 
-    sf::Vector2f decal = curView.getCenter();
-    decal -= sf::Vector2f(curView.getSize().x/2, curView.getSize().y/2);
-    m_lightingShader.setUniform("view_decal",decal);
-    m_lightingShader.setUniform("zoom",m_currentCamera->GetZoom());
+    sf::Vector2f shift = curView.getCenter();
+    shift -= sf::Vector2f(curView.getSize().x/2, curView.getSize().y/2);
+    m_lightingShader.setUniform("view_shift",shift);
+    m_lightingShader.setUniform("view_zoom",m_currentCamera->GetZoom());
     w->draw(m_renderer,m_rendererStates);
 }
 
@@ -266,11 +267,13 @@ int IsometricScene::UpdateLighting(std::multimap<float, Light*> &lightList)
 {
     int nbr_lights = SceneManager::UpdateLighting(lightList);
 
-    m_lightingShader.setUniform("NBR_LIGHTS",(int)nbr_lights);
+    m_lightingShader.setUniform("light_nbr",(int)nbr_lights);
 
     int curNbrLights = 0, curNbrShadows = 0;
 
     float shadowCastingLights[8] = {-1,-1,-1,-1,-1,-1,-1,-1};
+    sf::Vector2f shadowShift[8];
+    sf::Vector2f shadowRatio[8];
 
     std::multimap<float, Light*>::iterator lightIt;
     for(lightIt = lightList.begin() ; lightIt != lightList.end()
@@ -281,8 +284,13 @@ int IsometricScene::UpdateLighting(std::multimap<float, Light*> &lightList)
 
         if(curLight->IsCastShadowEnabled())
         {
-            buffer <<"shadowMap_"<<curNbrShadows;
+            buffer <<"shadow_map_"<<curNbrShadows;
             shadowCastingLights[curNbrShadows] = curNbrLights;
+            sf::IntRect cur_shift = curLight->GetShadowMaxShift();
+            shadowShift[curNbrShadows] = sf::Vector2f(cur_shift.left,
+                                                      -cur_shift.height - cur_shift.top ); /*GLSL Reverse y-coord*/
+            shadowRatio[curNbrShadows] = sf::Vector2f(1.0/(float)curLight->GetShadowMap().getSize().x,
+                                                      1.0/(float)curLight->GetShadowMap().getSize().y);
             m_lightingShader.setUniform(buffer.str(), curLight->GetShadowMap());
 
             ++curNbrShadows;
@@ -290,7 +298,9 @@ int IsometricScene::UpdateLighting(std::multimap<float, Light*> &lightList)
         ++curNbrLights;
     }
 
-    m_lightingShader.setUniformArray("shadowCasters",shadowCastingLights, 8);
+    m_lightingShader.setUniformArray("shadow_casters",shadowCastingLights, 8);
+    m_lightingShader.setUniformArray("shadow_shift",shadowShift, 8);
+    m_lightingShader.setUniformArray("shadow_ratio",shadowRatio, 8);
 
     return nbr_lights;
 }
@@ -330,7 +340,7 @@ void IsometricScene::SetAmbientLight(sf::Color light)
 {
     SceneManager::SetAmbientLight(light);
 
-    m_lightingShader.setUniform("ambient_light",sf::Glsl::Vec4(m_ambientLight));
+    m_lightingShader.setUniform("light_ambient",sf::Glsl::Vec4(m_ambientLight));
 }
 
 void IsometricScene::SetSSAO(bool ssao)
@@ -339,11 +349,11 @@ void IsometricScene::SetSSAO(bool ssao)
 
     if(m_enableSSAO)
     {
-        m_lightingShader.setUniform("useSSAO", true);
-        m_lightingShader.setUniform("SSAOMap", m_SSAOScreen.getTexture());
-        m_SSAOShader.setUniform("normalMap", m_normalScreen.getTexture());
-        m_SSAOShader.setUniform("depthMap", m_depthScreen.getTexture());
-        m_SSAOShader.setUniform("screen_ratio",sf::Vector2f(1.0/(float)m_depthScreen.getSize().x,
+        m_lightingShader.setUniform("enable_SSAO", true);
+        m_lightingShader.setUniform("map_SSAO", m_SSAOScreen.getTexture());
+        m_SSAOShader.setUniform("map_normal", m_normalScreen.getTexture());
+        m_SSAOShader.setUniform("map_depth", m_depthScreen.getTexture());
+        m_SSAOShader.setUniform("view_ratio",sf::Vector2f(1.0/(float)m_depthScreen.getSize().x,
                                                             1.0/(float)m_depthScreen.getSize().y));
 
         m_SSAOrenderer.setSize(sf::Vector2f(m_depthScreen.getSize().x,
@@ -351,7 +361,7 @@ void IsometricScene::SetSSAO(bool ssao)
        // m_SSAOrenderer.setTextureRect(sf::IntRect(0,0,windowSize.x*m_superSampling, windowSize.y*m_superSampling));
         m_SSAOrenderer.setTexture(&m_colorScreen.getTexture());
     } else {
-        m_lightingShader.setUniform("useSSAO", false);
+        m_lightingShader.setUniform("enable_SSAO", false);
     }
 }
 
@@ -370,30 +380,9 @@ void IsometricScene::ComputeTrigonometry()
                              sinXY * sinZ , cosXY * sinZ , -cosZ,
                              0            , 0            , 0);
 
-     /*m_isoToCartMat.values[0] = cosXY;
-     m_isoToCartMat.values[1] = -sinXY;
-     m_isoToCartMat.values[2] = 0;
-     m_isoToCartMat.values[3] = sinXY * sinZ;
-     m_isoToCartMat.values[4] = cosXY * sinZ;
-     m_isoToCartMat.values[5] = -cosZ;
-     m_isoToCartMat.values[6] = 0;
-     m_isoToCartMat.values[7] = 0;
-     m_isoToCartMat.values[8] = sinZ;*/
-
      m_cartToIsoMat = Mat3x3( cosXY , sinXY/sinZ, 0,
                              -sinXY , cosXY/sinZ, 0,
                               0     , 0         , 0);
-
-     /*m_cartToIsoMat.values[0] = cosXY;
-     m_cartToIsoMat.values[1] = sinXY/sinZ;
-     m_cartToIsoMat.values[2] = 0;
-     m_cartToIsoMat.values[3] = -sinXY;
-     m_cartToIsoMat.values[4] = cosXY/sinZ;
-     m_cartToIsoMat.values[5] = 0;
-     m_cartToIsoMat.values[6] = 0;
-     m_cartToIsoMat.values[7] = 0;
-     m_cartToIsoMat.values[8] = 0;*/
-
 
      m_normalProjMat.values[0] = cosXY;
      m_normalProjMat.values[1] = sinZ * sinXY;
@@ -417,27 +406,14 @@ void IsometricScene::ComputeTrigonometry()
      m_normalProjMatInv.values[8] = sinZ;
 
 
-     /*m_cartToIso2DProjMat.values[0] = cosXY;
-     m_cartToIso2DProjMat.values[1] = sinXY/sinZ;
-     m_cartToIso2DProjMat.values[2] = 0;
-     m_cartToIso2DProjMat.values[3] = -sinXY;
-     m_cartToIso2DProjMat.values[4] = cosXY/sinZ;
-     m_cartToIso2DProjMat.values[5] = 0;
-     m_cartToIso2DProjMat.values[6] = 0;
-     m_cartToIso2DProjMat.values[7] = 0;
-     m_cartToIso2DProjMat.values[8] = 0;*/
+    m_lightingShader.setUniform("p_cartToIso2DProjMat",sf::Glsl::Mat3(m_cartToIsoMat.values));
+    m_lightingShader.setUniform("p_isoToCartMat",sf::Glsl::Mat3(m_isoToCartMat.values));
+    m_lightingShader.setUniform("p_isoToCartZFactor",m_isoToCartMat.values[5]);
 
 
-    m_lightingShader.setUniform("cartToIso2DProjMat",sf::Glsl::Mat3(m_cartToIsoMat.values));
-    m_lightingShader.setUniform("isoToCartMat",sf::Glsl::Mat3(m_isoToCartMat.values));
-    m_lightingShader.setUniform("isoToCartZFactor",m_isoToCartMat.values[5]);
-
-
-    m_SSAOShader.setUniform("cartToIso2DProjMat",sf::Glsl::Mat3(m_cartToIsoMat.values));
-    m_SSAOShader.setUniform("isoToCartZFactor",m_isoToCartMat.values[5]);
-    m_SSAOShader.setUniform("isoToCartMat",sf::Glsl::Mat3(m_isoToCartMat.values));
-
-     /** ADD UPDATE OF ZFACTOR FOR CREATED ISOSPRITES**/
+    m_SSAOShader.setUniform("p_cartToIso2DProjMat",sf::Glsl::Mat3(m_cartToIsoMat.values));
+    m_SSAOShader.setUniform("p_isoToCartZFactor",m_isoToCartMat.values[5]);
+    m_SSAOShader.setUniform("p_isoToCartMat",sf::Glsl::Mat3(m_isoToCartMat.values));
 }
 
 

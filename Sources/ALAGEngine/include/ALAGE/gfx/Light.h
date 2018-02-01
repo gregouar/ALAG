@@ -37,6 +37,7 @@ class Light : public SceneObject
         void EnableShadowCasting();
         void DisableShadowCasting();
         const sf::Texture& GetShadowMap();
+        const sf::IntRect& GetShadowMaxShift();
 
         void InitShadowMap();
         void RenderShadowMap(const sf::View &,const sf::Vector2u &);
@@ -56,6 +57,7 @@ class Light : public SceneObject
 
         bool m_castShadow;
         sf::RenderTexture m_shadowMap;
+        sf::IntRect m_shadowMaxShift;
         bool m_requireShadowComputation;
 
         std::list<ShadowCaster*> m_shadowCasterList;

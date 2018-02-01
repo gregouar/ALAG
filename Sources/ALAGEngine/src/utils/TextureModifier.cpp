@@ -24,29 +24,29 @@ namespace alag
     "}";*/
 
 const std::string blur_fragShader = \
-    "uniform sampler2D texture;" \
-    "uniform vec2 offset;" \
+    "uniform sampler2D map_texture;" \
+    "uniform vec2 p_offset;" \
     "void main()" \
     "{" \
     "    gl_FragColor =  gl_Color * "
-	"			   (texture2D(texture, gl_TexCoord[0].xy + offset * 1.0)	* 0.000003 + "
-	"				texture2D(texture, gl_TexCoord[0].xy + offset * 0.8)	* 0.000229 + "
-	"				texture2D(texture, gl_TexCoord[0].xy + offset * 0.6)	* 0.005977 + "
-	"				texture2D(texture, gl_TexCoord[0].xy + offset * 0.4)	* 0.060598 + "
-	"    			texture2D(texture, gl_TexCoord[0].xy + offset * 0.2)	* 0.24173 + "
-	"				texture2D(texture, gl_TexCoord[0].xy)	* 0.382925 + "
-	"			    texture2D(texture, gl_TexCoord[0].xy - offset * 1.0)	* 0.000003 + "
-	"				texture2D(texture, gl_TexCoord[0].xy - offset * 0.8)	* 0.000229 + "
-	"				texture2D(texture, gl_TexCoord[0].xy - offset * 0.6)	* 0.005977 + "
-	"				texture2D(texture, gl_TexCoord[0].xy - offset * 0.4)	* 0.060598 + "
-	"    			texture2D(texture, gl_TexCoord[0].xy - offset * 0.2)	* 0.24173); "
+	"			   (texture2D(map_texture, gl_TexCoord[0].xy + p_offset * 1.0)	* 0.000003 + "
+	"				texture2D(map_texture, gl_TexCoord[0].xy + p_offset * 0.8)	* 0.000229 + "
+	"				texture2D(map_texture, gl_TexCoord[0].xy + p_offset * 0.6)	* 0.005977 + "
+	"				texture2D(map_texture, gl_TexCoord[0].xy + p_offset * 0.4)	* 0.060598 + "
+	"    			texture2D(map_texture, gl_TexCoord[0].xy + p_offset * 0.2)	* 0.24173 + "
+	"				texture2D(map_texture, gl_TexCoord[0].xy)	* 0.382925 + "
+	"			    texture2D(map_texture, gl_TexCoord[0].xy - p_offset * 1.0)	* 0.000003 + "
+	"				texture2D(map_texture, gl_TexCoord[0].xy - p_offset * 0.8)	* 0.000229 + "
+	"				texture2D(map_texture, gl_TexCoord[0].xy - p_offset * 0.6)	* 0.005977 + "
+	"				texture2D(map_texture, gl_TexCoord[0].xy - p_offset * 0.4)	* 0.060598 + "
+	"    			texture2D(map_texture, gl_TexCoord[0].xy - p_offset * 0.2)	* 0.24173); "
     "}";
 
 
 TextureModifier::TextureModifier()
 {
     m_blurShader.loadFromMemory(blur_fragShader,sf::Shader::Fragment);
-    m_blurShader.setUniform("texture", sf::Shader::CurrentTexture);
+    m_blurShader.setUniform("map_texture", sf::Shader::CurrentTexture);
 }
 
 TextureModifier::~TextureModifier()
@@ -68,12 +68,12 @@ void TextureModifier::BlurTexture(sf::Texture* texture, float blur)
 
     sf::Shader *blurShader = &Instance()->m_blurShader;
 
-    blurShader->setUniform("offset",sf::Vector2f(blur/texture->getSize().x,0));
+    blurShader->setUniform("p_offset",sf::Vector2f(blur/texture->getSize().x,0));
     renderer.draw(rect,blurShader);
     renderer.display();
 
     rect.setTexture(&renderer.getTexture());
-    blurShader->setUniform("offset",sf::Vector2f(0,blur/texture->getSize().y));
+    blurShader->setUniform("p_offset",sf::Vector2f(0,blur/texture->getSize().y));
     renderer.draw(rect,blurShader);
     renderer.display();
 
