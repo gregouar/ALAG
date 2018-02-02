@@ -215,8 +215,8 @@ void TestingState::HandleEvents(alag::EventManager *event_manager)
     {
         m_mainScene.EnableGammaCorrection();
 
-        m_sunLight->SetConstantAttenuation(.7);
-        m_mainScene.SetAmbientLight(sf::Color(32,32,48));
+        m_sunLight->SetConstantAttenuation(1);
+        m_mainScene.SetAmbientLight(sf::Color(16,16,32));
     }
     if(event_manager->KeyReleased(sf::Keyboard::G))
     {

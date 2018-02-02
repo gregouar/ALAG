@@ -206,7 +206,7 @@ void IsometricScene::ProcessRenderQueue(sf::RenderTarget *w)
         m_colorScreen.setActive(true);
             m_colorShader.setUniform("p_zPos",globalPos.z);
             (*renderIt)->PrepareShader(&m_colorShader);
-            state.shader = &m_colorShader;
+          //  state.shader = &m_colorShader;
             (*renderIt)->Render(&m_colorScreen,state);
         m_colorScreen.setActive(false);
 

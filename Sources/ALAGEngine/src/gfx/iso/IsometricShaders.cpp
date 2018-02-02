@@ -193,6 +193,8 @@ const std::string lighting_fragShader = \
 	"                       )/16.0;"
     "       gl_FragColor.rgb *= occlusion;"
 	"   };"
+	//"   gl_FragColor.rgb = gl_FragColor.rgb/(gl_FragColor.rgb+vec3(1.0));"
+    //"   gl_FragColor.rgb = vec3(1.0) - exp(-gl_FragColor.rgb * .5);"
     "   if(enable_sRGB == true)"
 	"    gl_FragColor.rgb = pow(gl_FragColor.rgb, vec3(1.0/2.2));"
     "}";
