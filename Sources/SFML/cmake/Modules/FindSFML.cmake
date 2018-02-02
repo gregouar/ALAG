@@ -78,6 +78,10 @@ find_path(SFML_INCLUDE_DIR SFML/Config.hpp
           PATH_SUFFIXES include
           PATHS ${FIND_SFML_PATHS})
 
+find_path(SFML_DOC_DIR SFML.tag
+          PATH_SUFFIXES SFML/doc share/SFML/doc
+          PATHS ${FIND_SFML_PATHS})
+
 # check the version number
 set(SFML_VERSION_OK TRUE)
 if(SFML_FIND_VERSION AND SFML_INCLUDE_DIR)
@@ -311,10 +315,9 @@ if(SFML_STATIC_LIBRARIES)
 
         # find libraries
         find_sfml_dependency(FREETYPE_LIBRARY "FreeType" freetype)
-        find_sfml_dependency(JPEG_LIBRARY "libjpeg" jpeg)
 
         # update the list
-        set(SFML_GRAPHICS_DEPENDENCIES ${FREETYPE_LIBRARY} ${JPEG_LIBRARY})
+        set(SFML_GRAPHICS_DEPENDENCIES ${FREETYPE_LIBRARY})
         set(SFML_DEPENDENCIES ${SFML_GRAPHICS_DEPENDENCIES} ${SFML_DEPENDENCIES})
     endif()
 

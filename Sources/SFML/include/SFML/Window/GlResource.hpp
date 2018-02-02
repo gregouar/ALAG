@@ -58,12 +58,6 @@ protected:
     ~GlResource();
 
     ////////////////////////////////////////////////////////////
-    /// \brief Empty function for ABI compatibility, use acquireTransientContext instead
-    ///
-    ////////////////////////////////////////////////////////////
-    static void ensureGlContext();
-
-    ////////////////////////////////////////////////////////////
     /// \brief RAII helper class to temporarily lock an available context for use
     ///
     ////////////////////////////////////////////////////////////
@@ -81,9 +75,6 @@ protected:
         ///
         ////////////////////////////////////////////////////////////
         ~TransientContextLock();
-
-    private:
-        Context* m_context; ///< Temporary context, in case we needed to create one
     };
 };
 

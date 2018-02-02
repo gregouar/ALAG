@@ -64,7 +64,7 @@ const std::string normal_fragShader = \
     "void main()" \
     "{" \
     "   vec4 colorAlpha = texture2D(map_color, gl_TexCoord[0].xy).a;" \
-	"	vec3 direction = vec3(0,0,1);"
+	"	vec3 direction = vec3(0,0,-1);"
 	"   if(enable_normalMap == true){"
 	"    direction = -1.0+2.0*texture2D(map_normal, gl_TexCoord[0].xy).rgb;"
 	"   }"

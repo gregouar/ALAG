@@ -44,6 +44,7 @@
     #endif
 
     #include <GL/gl.h>
+   // #include <GL/glew.h>
 
 #elif defined(SFML_SYSTEM_LINUX) || defined(SFML_SYSTEM_FREEBSD)
 
@@ -67,7 +68,7 @@
 
     #include <GLES/gl.h>
     #include <GLES/glext.h>
-    
+
     // We're not using OpenGL ES 2+ yet, but we can use the sRGB extension
     #include <GLES2/gl2ext.h>
 

@@ -86,6 +86,8 @@ class IsometricScene : public SceneManager
         sf::RenderTexture m_normalScreen;
         sf::RenderTexture m_depthScreen;
 
+        sf::MultipleRenderTexture m_PBRScreen;
+
         sf::RectangleShape m_renderer;
         sf::RenderStates m_rendererStates;
 

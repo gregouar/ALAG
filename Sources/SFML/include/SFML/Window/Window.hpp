@@ -28,16 +28,17 @@
 ////////////////////////////////////////////////////////////
 // Headers
 ////////////////////////////////////////////////////////////
-#include <SFML/Window/Export.hpp>
 #include <SFML/Window/ContextSettings.hpp>
+#include <SFML/Window/Cursor.hpp>
+#include <SFML/Window/Export.hpp>
+#include <SFML/Window/GlResource.hpp>
 #include <SFML/Window/VideoMode.hpp>
 #include <SFML/Window/WindowHandle.hpp>
 #include <SFML/Window/WindowStyle.hpp>
-#include <SFML/Window/GlResource.hpp>
 #include <SFML/System/Clock.hpp>
-#include <SFML/System/Vector2.hpp>
 #include <SFML/System/NonCopyable.hpp>
 #include <SFML/System/String.hpp>
+#include <SFML/System/Vector2.hpp>
 
 
 namespace sf
@@ -360,6 +361,25 @@ public:
     ///
     ////////////////////////////////////////////////////////////
     void setMouseCursorGrabbed(bool grabbed);
+
+    ////////////////////////////////////////////////////////////
+    /// \brief Set the displayed cursor to a native system cursor
+    ///
+    /// Upon window creation, the arrow cursor is used by default.
+    ///
+    /// \warning The cursor must not be destroyed while in use by
+    ///          the window.
+    ///
+    /// \warning Features related to Cursor are not supported on
+    ///          iOS and Android.
+    ///
+    /// \param cursor Native system cursor type to display
+    ///
+    /// \see sf::Cursor::loadFromSystem
+    /// \see sf::Cursor::loadFromPixels
+    ///
+    ////////////////////////////////////////////////////////////
+    void setMouseCursor(const Cursor& cursor);
 
     ////////////////////////////////////////////////////////////
     /// \brief Enable or disable automatic key-repeat

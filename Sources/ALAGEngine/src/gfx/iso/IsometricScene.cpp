@@ -65,6 +65,13 @@ bool IsometricScene::InitRenderer(sf::Vector2u windowSize)
     if(!m_SSAOScreen.create(windowSize.x*m_superSampling, windowSize.y*m_superSampling, true))
         r = false;
 
+
+    if(!m_PBRScreen.create(windowSize.x*m_superSampling, windowSize.y*m_superSampling, true))
+        r = false;
+
+    m_PBRScreen.addRenderTarget(1);
+    m_PBRScreen.addRenderTarget(2);
+
     m_colorScreen.setActive(true);
         m_colorScreen.setSmooth(true);
     m_colorScreen.setActive(false);
@@ -76,6 +83,7 @@ bool IsometricScene::InitRenderer(sf::Vector2u windowSize)
     m_normalScreen.setActive(true);
         m_normalScreen.setSmooth(true);
     m_normalScreen.setActive(false);
+
 
 
     m_renderer.setSize(sf::Vector2f(windowSize.x,windowSize.y));
@@ -182,6 +190,17 @@ void IsometricScene::ProcessRenderQueue(sf::RenderTarget *w)
     m_normalScreen.setActive(false);
 
 
+
+    m_PBRScreen.setActive(true);
+        glClear(GL_DEPTH_BUFFER_BIT);
+        glEnable(GL_DEPTH_TEST);
+        glDepthMask(GL_TRUE);
+        m_PBRScreen.clear();
+        m_PBRScreen.setView(curView);
+    m_PBRScreen.setActive(false);
+
+
+
     std::list<SceneEntity*>::iterator renderIt;
     for(renderIt = m_renderQueue.begin() ; renderIt != m_renderQueue.end(); ++renderIt)
     {
@@ -206,7 +225,7 @@ void IsometricScene::ProcessRenderQueue(sf::RenderTarget *w)
         m_colorScreen.setActive(true);
             m_colorShader.setUniform("p_zPos",globalPos.z);
             (*renderIt)->PrepareShader(&m_colorShader);
-          //  state.shader = &m_colorShader;
+            state.shader = &m_colorShader;
             (*renderIt)->Render(&m_colorScreen,state);
         m_colorScreen.setActive(false);
 
@@ -228,11 +247,25 @@ void IsometricScene::ProcessRenderQueue(sf::RenderTarget *w)
             (*renderIt)->Render(&m_depthScreen,state);
         m_depthScreen.setActive(false);
 
+        m_PBRScreen.setActive(true);
+            /*m_geometryShader.setUniform("p_zPos",globalPos.z);
+            (*renderIt)->PrepareShader(&m_geometryShader);
+            state.shader = &m_geometryShader;*/
+            state.shader = nullptr;
+            (*renderIt)->Render(&m_PBRScreen,state);
+        m_PBRScreen.setActive(false);
+
     }
 
     m_colorScreen.display();
     m_depthScreen.display();
     m_normalScreen.display();
+
+    m_PBRScreen.display();
+
+    m_PBRScreen.getTexture(0).copyToImage().saveToFile("PBR0.png");
+    m_PBRScreen.getTexture(1).copyToImage().saveToFile("PBR1.png");
+    m_PBRScreen.getTexture(2).copyToImage().saveToFile("PBR2.png");
 
     /*m_colorScreen.getTexture().copyToImage().saveToFile("color.png");
     m_depthScreen.getTexture().copyToImage().saveToFile("depth.png");

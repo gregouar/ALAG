@@ -59,6 +59,7 @@ enum ShadowCastingType
 typedef unsigned int AssetTypeID;
 typedef unsigned int NodeTypeID;
 typedef unsigned int ObjectTypeID;
+//typedef unsigned int RenderTargetTypeID;
 typedef std::string AnimationTypeID;
 
 typedef ListIterator<SceneObject*> SceneObjectIterator;
