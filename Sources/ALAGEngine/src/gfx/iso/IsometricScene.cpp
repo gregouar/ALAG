@@ -400,7 +400,7 @@ void IsometricScene::SetSSAO(bool ssao)
         m_lightingShader.setUniform("enable_SSAO", true);
         m_lightingShader.setUniform("map_SSAO", m_SSAOScreen.getTexture());
         m_SSAOShader.setUniform("map_normal", *m_PBRScreen.getTexture(PBRNormalScreen));
-        m_SSAOShader.setUniform("map_depth", m_PBRScreen.getTexture(PBRDepthScreen));
+        m_SSAOShader.setUniform("map_depth", *m_PBRScreen.getTexture(PBRDepthScreen));
         m_SSAOShader.setUniform("view_ratio",sf::Vector2f(1.0/(float)m_PBRScreen.getSize().x,
                                                             1.0/(float)m_PBRScreen.getSize().y));
 
