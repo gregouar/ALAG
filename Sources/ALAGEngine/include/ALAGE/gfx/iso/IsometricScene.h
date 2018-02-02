@@ -79,6 +79,7 @@ class IsometricScene : public SceneManager
         sf::Shader m_colorShader;
         sf::Shader m_normalShader;
         sf::Shader m_depthShader;
+        sf::Shader m_PBRGeometryShader;
         sf::Shader m_lightingShader;
 
         int m_superSampling;

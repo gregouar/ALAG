@@ -55,6 +55,14 @@ enum ShadowCastingType
     AllShadows,
 };
 
+enum PBRScreenType
+{
+    PBRAlbedoScreen = 0,
+    PBRNormalScreen,
+    PBRDepthScreen,
+    PBRMaterialScreen,
+};
+
 
 typedef unsigned int AssetTypeID;
 typedef unsigned int NodeTypeID;

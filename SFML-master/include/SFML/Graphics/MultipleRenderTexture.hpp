@@ -19,7 +19,6 @@ public:
     bool create(unsigned int width, unsigned int height, bool depthBuffer = false);
     bool addRenderTarget(unsigned int renderingLocation);
     bool removeRenderTarget(unsigned int renderingLocation);
-    //bool create(unsigned int width, unsigned int height, bool depthBuffer = false);
 
     /*void setSmooth(bool smooth);
     bool isSmooth() const;
@@ -31,20 +30,20 @@ public:
     void display();
 
     virtual sf::Vector2u getSize() const;
-    const Texture& getTexture(unsigned int renderingLocation);
+    Texture* getTexture(unsigned int renderingLocation);
 
 
 protected:
     std::vector<unsigned int>::iterator findRenderTarget(unsigned int renderingLocation);
     bool createFBO(unsigned int width, unsigned int height, bool depthBuffer = false);
     bool addTargetToFBO(unsigned int renderingLocation, unsigned int);
-    //void UpdateFBO();
+
+    static unsigned int getMaxColorAttachments();
 
 private:
     //priv::MultipleRenderTextureImpl* m_impl;
     Texture *m_textures;
     std::vector<unsigned int> m_activeTextures;
-    //unsigned int *m_attachments;
     Vector2u m_size;
 
     Context*     m_context;

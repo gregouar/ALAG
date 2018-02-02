@@ -77,6 +77,8 @@ bool GApp::Init()
     sf::ContextSettings contextSettings;
     contextSettings.depthBits = 24;
     contextSettings.antialiasingLevel = 2;
+    contextSettings.majorVersion=3;
+    contextSettings.minorVersion=3;
     //contextSettings.sRgbCapable = Config::GetBool("window","srgb",DEFAULT_SRGB);
 
     m_window.create(videoMode, m_name, sf::Style::Close, contextSettings);

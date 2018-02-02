@@ -11,6 +11,91 @@ const std::string vertexShader = \
     "}";
 
 
+/*
+const std::string PBRGeometry_vertShader = \
+"#version 330\n"
+//"#extension GL_ARB_explicit_attribute_location : require"
+//"#extension GL_ARB_explicit_uniform_location : require"
+"out vec2 TexCoords;"
+"void main()"
+"{"
+"    gl_Position = vec4(aPos.x, aPos.y, 0.0, 1.0);"
+"    TexCoords = aTexCoords;"
+"}";
+
+
+const std::string PBRGeometry_fragShader = \
+"#version 330\n"
+//"#extension GL_ARB_explicit_attribute_location : require"
+//"#extension GL_ARB_explicit_uniform_location : require"
+"out vec4 FragColor;"
+"in vec2 TexCoords;"
+"uniform sampler2D screenTexture;"
+"void main()"
+"{"
+"    FragColor = texture(screenTexture, TexCoords);"
+"}";*/
+
+/*const std::string PBRGeometry_vertShader = \
+"#version 330 core\n"
+"layout (location = 0) in vec3 aPos;"
+"layout (location = 1) in vec3 aColor;"
+"layout (location = 2) in vec2 aTexCoord;"
+"out vec3 glColor;"
+"out vec2 texCoords;"
+"void main()"
+"{"
+"    gl_Position = vec4(aPos, 1.0);"
+"    glColor = aColor;"
+"    texCoords = aTexCoord;"
+"}";*/
+
+const std::string PBRGeometry_fragShader = \
+    "#version 330 compatibility \n"
+    "layout (location = 0) out vec4 FragColor;"
+    "layout (location = 1) out vec4 NormalColor;"
+    "layout (location = 2) out vec4 DepthColor;"
+    "layout (location = 3) out vec4 MaterialColor;"
+    "uniform sampler2D map_color;"  \
+    "uniform bool enable_depthMap;" \
+    "uniform sampler2D map_depth;" \
+    "uniform bool enable_normalMap;" \
+    "uniform sampler2D map_normal;" \
+    "uniform mat3 p_normalProjMat;" \
+    "uniform float p_height;" \
+    "uniform float p_zPos;" \
+    "void main()" \
+    "{" \
+    "   vec4 colorPixel = texture2D(map_color, gl_TexCoord[0].xy);" \
+	"	vec3 direction = vec3(0,0,-1);"
+	"   if(enable_normalMap == true){"
+	"    direction = -1.0+2.0*texture2D(map_normal, gl_TexCoord[0].xy).rgb;"
+	"   }"
+	"   direction = direction * p_normalProjMat;"
+    "   float heightPixel = 0; "
+    "   if(enable_depthMap == true){"
+    "        vec4 depthPixel = texture2D(map_depth, gl_TexCoord[0].xy);" \
+    "       heightPixel = (depthPixel.r+depthPixel.g+depthPixel.b)*.33*p_height;"
+    "   }"
+    "   float zPixel = heightPixel + p_zPos;" \
+    "   gl_FragDepth = 1.0 - colorPixel.a*(0.5+zPixel*0.001);" \
+    "   FragColor = gl_Color*colorPixel; " \
+    "   NormalColor.rgb = 0.5+direction*0.5;" \
+    "   NormalColor.a = colorPixel.a;" \
+    "   DepthColor.r = gl_FragDepth;" \
+    "   DepthColor.g = (gl_FragDepth - 256.0 * floor(gl_FragDepth / 256.0))*256.0;" \
+    "   DepthColor.b = (gl_FragDepth - 65536.0 * floor(gl_FragDepth / (65536.0)))*65536.0;" \
+    "   DepthColor.a = colorPixel.a;" \
+    "   MaterialColor = vec4(0,0,1,1); " \
+    "}";
+
+
+ /*   "layout (location = 0) out vec4 FragColor;"
+    "layout (location = 1) out vec4 NormalColor;"
+    "layout (location = 2) out vec4 DepthColor;"
+    "layout (location = 3) out vec4 MaterialColor;"*/
+
+
 const std::string color_fragShader = \
     "uniform sampler2D map_color;" \
     "uniform bool enable_depthMap;" \
@@ -240,6 +325,7 @@ const std::string SSAO_fragShader = \
     "   gl_FragColor.rgb = 1.0-occlusion/12.0;" \
     "   gl_FragColor.a = 1;" \
     "}";
+
 
 
 

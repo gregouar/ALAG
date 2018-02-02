@@ -53,7 +53,7 @@
         typedef sf::priv::GlxContext ContextType;
 
     #elif defined(SFML_SYSTEM_MACOS)
-
+C:\C++\ALAG\Sources\ALAGEngine\src\core\GApp.cpp
         #include <SFML/Window/OSX/SFContext.hpp>
         typedef sf::priv::SFContext ContextType;
 

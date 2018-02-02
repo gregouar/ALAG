@@ -24,11 +24,16 @@ IsometricScene::IsometricScene(IsoViewAngle viewAngle)
 {
     SetViewAngle(viewAngle);
 
-    m_colorShader.loadFromMemory(color_fragShader,sf::Shader::Fragment);
+    /*m_colorShader.loadFromMemory(color_fragShader,sf::Shader::Fragment);
     m_depthShader.loadFromMemory(depth_fragShader,sf::Shader::Fragment);
-    m_normalShader.loadFromMemory(normal_fragShader,sf::Shader::Fragment);
+    m_normalShader.loadFromMemory(normal_fragShader,sf::Shader::Fragment);*/
+    m_depthShader.loadFromMemory(depth_fragShader,sf::Shader::Fragment);
     m_SSAOShader.loadFromMemory(vertexShader,SSAO_fragShader);
     m_lightingShader.loadFromMemory(vertexShader,lighting_fragShader);
+
+    //m_PBRGeometryShader.loadFromMemory(PBRGeometry_vertShader,PBRGeometry_fragShader);
+    m_PBRGeometryShader.loadFromMemory(PBRGeometry_fragShader,sf::Shader::Fragment);
+
     SetAmbientLight(m_ambientLight);
 }
 
@@ -41,6 +46,7 @@ IsometricScene::~IsometricScene()
 bool IsometricScene::InitRenderer(sf::Vector2u windowSize)
 {
     bool r = true;
+
 
     m_superSampling = Config::GetInt("graphics","SuperSampling","1");
 
@@ -56,12 +62,12 @@ bool IsometricScene::InitRenderer(sf::Vector2u windowSize)
     } else if(dynamicShadow)
         SetShadowCasting(DynamicShadow);
 
-    if(!m_colorScreen.create(windowSize.x*m_superSampling, windowSize.y*m_superSampling, true))
+    /*if(!m_colorScreen.create(windowSize.x*m_superSampling, windowSize.y*m_superSampling, true))
         r = false;
     if(!m_depthScreen.create(windowSize.x*m_superSampling, windowSize.y*m_superSampling, true))
         r = false;
     if(!m_normalScreen.create(windowSize.x*m_superSampling, windowSize.y*m_superSampling, true))
-        r = false;
+        r = false;*/
     if(!m_SSAOScreen.create(windowSize.x*m_superSampling, windowSize.y*m_superSampling, true))
         r = false;
 
@@ -69,10 +75,11 @@ bool IsometricScene::InitRenderer(sf::Vector2u windowSize)
     if(!m_PBRScreen.create(windowSize.x*m_superSampling, windowSize.y*m_superSampling, true))
         r = false;
 
-    m_PBRScreen.addRenderTarget(1);
-    m_PBRScreen.addRenderTarget(2);
+    m_PBRScreen.addRenderTarget(PBRNormalScreen);
+    m_PBRScreen.addRenderTarget(PBRDepthScreen);
+    m_PBRScreen.addRenderTarget(PBRMaterialScreen);
 
-    m_colorScreen.setActive(true);
+    /*m_colorScreen.setActive(true);
         m_colorScreen.setSmooth(true);
     m_colorScreen.setActive(false);
 
@@ -82,19 +89,19 @@ bool IsometricScene::InitRenderer(sf::Vector2u windowSize)
 
     m_normalScreen.setActive(true);
         m_normalScreen.setSmooth(true);
-    m_normalScreen.setActive(false);
+    m_normalScreen.setActive(false);*/
 
 
 
     m_renderer.setSize(sf::Vector2f(windowSize.x,windowSize.y));
     m_renderer.setTextureRect(sf::IntRect(0,0,windowSize.x*m_superSampling, windowSize.y*m_superSampling));
-    m_renderer.setTexture(&m_colorScreen.getTexture());
+    m_renderer.setTexture(m_PBRScreen.getTexture(PBRAlbedoScreen));
 
-    m_lightingShader.setUniform("map_color",m_colorScreen.getTexture());
-    m_lightingShader.setUniform("map_normal",m_normalScreen.getTexture());
-    m_lightingShader.setUniform("map_depth",m_depthScreen.getTexture());
-    m_lightingShader.setUniform("view_ratio",sf::Vector2f(1.0/(float)m_colorScreen.getSize().x,
-                                                            1.0/(float)m_colorScreen.getSize().y));
+    m_lightingShader.setUniform("map_color",*m_PBRScreen.getTexture(PBRAlbedoScreen));
+    m_lightingShader.setUniform("map_normal",*m_PBRScreen.getTexture(PBRNormalScreen));
+    m_lightingShader.setUniform("map_depth",*m_PBRScreen.getTexture(PBRDepthScreen));
+    m_lightingShader.setUniform("view_ratio",sf::Vector2f(1.0/(float)m_PBRScreen.getSize().x,
+                                                            1.0/(float)m_PBRScreen.getSize().y));
 
     m_rendererStates.shader = &m_lightingShader;
 
@@ -165,7 +172,7 @@ void IsometricScene::ProcessRenderQueue(sf::RenderTarget *w)
     if(m_shadowCastingOption != NoShadow)
         RenderShadows(lightList,curView/*,m_colorScreen.getSize()*/);
 
-    m_colorScreen.setActive(true);
+    /*m_colorScreen.setActive(true);
         glClear(GL_DEPTH_BUFFER_BIT);
         glEnable(GL_DEPTH_TEST);
         glDepthMask(GL_TRUE);
@@ -187,7 +194,7 @@ void IsometricScene::ProcessRenderQueue(sf::RenderTarget *w)
         glDepthMask(GL_TRUE);
         m_normalScreen.clear();
         m_normalScreen.setView(curView);
-    m_normalScreen.setActive(false);
+    m_normalScreen.setActive(false);*/
 
 
 
@@ -222,7 +229,7 @@ void IsometricScene::ProcessRenderQueue(sf::RenderTarget *w)
         state.transform.translate(v.x, v.y);
         state.transform *= m_TransformIsoToCart;
 
-        m_colorScreen.setActive(true);
+        /*m_colorScreen.setActive(true);
             m_colorShader.setUniform("p_zPos",globalPos.z);
             (*renderIt)->PrepareShader(&m_colorShader);
             state.shader = &m_colorShader;
@@ -245,27 +252,32 @@ void IsometricScene::ProcessRenderQueue(sf::RenderTarget *w)
             (*renderIt)->PrepareShader(&m_depthShader);
             state.shader = &m_depthShader;
             (*renderIt)->Render(&m_depthScreen,state);
-        m_depthScreen.setActive(false);
+        m_depthScreen.setActive(false);*/
 
         m_PBRScreen.setActive(true);
-            /*m_geometryShader.setUniform("p_zPos",globalPos.z);
-            (*renderIt)->PrepareShader(&m_geometryShader);
-            state.shader = &m_geometryShader;*/
-            state.shader = nullptr;
+            m_PBRGeometryShader.setUniform("p_zPos",globalPos.z);
+            m_PBRGeometryShader.setUniform("enable_depthMap",false);
+            m_PBRGeometryShader.setUniform("enable_normalMap",false);
+            m_PBRGeometryShader.setUniform("p_normalProjMat",sf::Glsl::Mat3(m_normalProjMat.values));
+            m_PBRGeometryShader.setUniform("p_cartToIso2DProjMat",sf::Glsl::Mat3(m_cartToIsoMat.values));
+            m_PBRGeometryShader.setUniform("p_isoToCartZFactor",m_isoToCartMat.values[5]);
+            (*renderIt)->PrepareShader(&m_PBRGeometryShader);
+            state.shader = &m_PBRGeometryShader;
             (*renderIt)->Render(&m_PBRScreen,state);
         m_PBRScreen.setActive(false);
 
     }
 
-    m_colorScreen.display();
+   /*m_colorScreen.display();
     m_depthScreen.display();
-    m_normalScreen.display();
+    m_normalScreen.display();*/
 
     m_PBRScreen.display();
 
-    m_PBRScreen.getTexture(0).copyToImage().saveToFile("PBR0.png");
-    m_PBRScreen.getTexture(1).copyToImage().saveToFile("PBR1.png");
-    m_PBRScreen.getTexture(2).copyToImage().saveToFile("PBR2.png");
+    /*m_PBRScreen.getTexture(0)->copyToImage().saveToFile("PBR0.png");
+    m_PBRScreen.getTexture(1)->copyToImage().saveToFile("PBR1.png");
+    m_PBRScreen.getTexture(2)->copyToImage().saveToFile("PBR2.png");
+    m_PBRScreen.getTexture(3)->copyToImage().saveToFile("PBR3.png");*/
 
     /*m_colorScreen.getTexture().copyToImage().saveToFile("color.png");
     m_depthScreen.getTexture().copyToImage().saveToFile("depth.png");
@@ -387,15 +399,15 @@ void IsometricScene::SetSSAO(bool ssao)
     {
         m_lightingShader.setUniform("enable_SSAO", true);
         m_lightingShader.setUniform("map_SSAO", m_SSAOScreen.getTexture());
-        m_SSAOShader.setUniform("map_normal", m_normalScreen.getTexture());
-        m_SSAOShader.setUniform("map_depth", m_depthScreen.getTexture());
-        m_SSAOShader.setUniform("view_ratio",sf::Vector2f(1.0/(float)m_depthScreen.getSize().x,
-                                                            1.0/(float)m_depthScreen.getSize().y));
+        m_SSAOShader.setUniform("map_normal", *m_PBRScreen.getTexture(PBRNormalScreen));
+        m_SSAOShader.setUniform("map_depth", m_PBRScreen.getTexture(PBRDepthScreen));
+        m_SSAOShader.setUniform("view_ratio",sf::Vector2f(1.0/(float)m_PBRScreen.getSize().x,
+                                                            1.0/(float)m_PBRScreen.getSize().y));
 
-        m_SSAOrenderer.setSize(sf::Vector2f(m_depthScreen.getSize().x,
-                                            m_depthScreen.getSize().y));
+        m_SSAOrenderer.setSize(sf::Vector2f(m_PBRScreen.getSize().x,
+                                            m_PBRScreen.getSize().y));
 
-        m_SSAOrenderer.setTexture(&m_colorScreen.getTexture());
+        m_SSAOrenderer.setTexture(m_PBRScreen.getTexture(PBRAlbedoScreen));
     } else {
         m_lightingShader.setUniform("enable_SSAO", false);
     }

@@ -6,8 +6,16 @@
 #include <SFML/System/Err.hpp>
 
 
+
 namespace sf
 {
+
+unsigned int MultipleRenderTexture::getMaxColorAttachments()
+{
+    GLint maxAttach = 0;
+    glGetIntegerv(GL_MAX_COLOR_ATTACHMENTS_EXT, &maxAttach);
+    return maxAttach;
+}
 
 MultipleRenderTexture::MultipleRenderTexture() :
     m_context    (NULL),
@@ -15,8 +23,7 @@ MultipleRenderTexture::MultipleRenderTexture() :
     m_depthBuffer(0)
 {
     m_size = Vector2u(0,0);
-
-    m_textures = new Texture[GL_MAX_COLOR_ATTACHMENTS_EXT];
+    m_textures = NULL;
 }
 
 MultipleRenderTexture::~MultipleRenderTexture()
@@ -40,7 +47,8 @@ MultipleRenderTexture::~MultipleRenderTexture()
         delete m_context;
     }
 
-    delete m_textures;
+    if(m_textures != NULL)
+        delete m_textures;
 }
 
 
@@ -48,10 +56,15 @@ bool MultipleRenderTexture::create(unsigned int width, unsigned int height, bool
 {
     m_size = Vector2u(width, height);
 
+    if(m_textures != NULL)
+        delete m_textures;
+
+    m_textures = new Texture[getMaxColorAttachments()];
+
     if(m_context != NULL)
         delete m_context;
 
-    m_context = new Context;
+    m_context = new Context();
 
     if(!createFBO(width,height,depthBuffer))
         return false;
@@ -73,7 +86,7 @@ bool MultipleRenderTexture::addRenderTarget(unsigned int renderingLocation)
         return false;
     }
 
-    if(renderingLocation >= GL_MAX_COLOR_ATTACHMENTS_EXT)
+    if(renderingLocation >= getMaxColorAttachments())
     {
         err()<< "Impossible to add render target (location not available)" <<std::endl;
         return false;
@@ -110,7 +123,7 @@ bool MultipleRenderTexture::addRenderTarget(unsigned int renderingLocation)
     if (!addTargetToFBO(renderingLocation,curTexture->m_texture))
         return false;
 
-    m_activeTextures.push_back(renderingLocation);
+    m_activeTextures.push_back(renderingLocation+GL_COLOR_ATTACHMENT0_EXT);
 
     return true;
 }
@@ -137,8 +150,6 @@ bool MultipleRenderTexture::removeRenderTarget(unsigned int renderingLocation)
     return true;
 }
 
-//bool create(unsigned int width, unsigned int height, bool depthBuffer = false);
-
 /*void setSmooth(bool smooth);
 bool isSmooth() const;
 void setRepeated(bool repeated);
@@ -163,13 +174,13 @@ void MultipleRenderTexture::display()
 {
     if (setActive(true))
     {
-        glCheck(glFlush()); //m_impl->updateTexture(m_texture.m_texture);
+        glCheck(glFlush());
 
         std::vector<unsigned int>::iterator it;
         for(it = m_activeTextures.begin() ; it != m_activeTextures.end() ; ++it)
         {
-            m_textures[*it].m_pixelsFlipped = true;
-            m_textures[*it].invalidateMipmap();
+            m_textures[*it-GL_COLOR_ATTACHMENT0_EXT].m_pixelsFlipped = true;
+            m_textures[*it-GL_COLOR_ATTACHMENT0_EXT].invalidateMipmap();
         }
 
     }
@@ -181,23 +192,15 @@ Vector2u MultipleRenderTexture::getSize() const
     return m_size;
 }
 
-const Texture& MultipleRenderTexture::getTexture(unsigned int renderingLocation)
+Texture* MultipleRenderTexture::getTexture(unsigned int renderingLocation)
 {
-    /*std::vector<unsigned int>::iterator renderIt;
-    renderIt = FindRenderTarget(renderingLocation);
-    if(renderIt == m_activeTextures.end())
-    {
-        err() << "Impossible to remove render texture (cannot find render texture)" << std::endl;
-        return false;
-    }*/
-
-    if(renderingLocation >= GL_MAX_COLOR_ATTACHMENTS_EXT)
+    if(renderingLocation >= getMaxColorAttachments())
     {
         err()<< "Impossible to get texture from multiple render texture (location not available)" <<std::endl;
-        return m_textures[0];
+        return NULL;
     }
 
-    return m_textures[renderingLocation];
+    return &m_textures[renderingLocation];
 }
 
 
@@ -206,7 +209,7 @@ std::vector<unsigned int>::iterator MultipleRenderTexture::findRenderTarget(unsi
     std::vector<unsigned int>::iterator it;
     it = m_activeTextures.begin();
 
-    while(it != m_activeTextures.end() && *it != renderingLocation)
+    while(it != m_activeTextures.end() && *it != renderingLocation + GL_COLOR_ATTACHMENT0_EXT)
         ++it;
 
     return it;
@@ -245,7 +248,7 @@ bool MultipleRenderTexture::createFBO(unsigned int width, unsigned int height, b
 
 bool MultipleRenderTexture::addTargetToFBO(unsigned int renderingLocation, unsigned int textureId)
 {
-    if(renderingLocation >= GL_MAX_COLOR_ATTACHMENTS_EXT)
+    if(renderingLocation >= getMaxColorAttachments())
     {
         err()<< "Impossible to add render target (location not available)" <<std::endl;
         return false;

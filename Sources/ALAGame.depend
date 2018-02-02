@@ -5,7 +5,7 @@
 	"ALAGE/utils/Logger.h"
 	"include/states/TestingState.h"
 
-1517502059 source:c:\c++\alag\sources\alagengine\src\core\gapp.cpp
+1517609672 source:c:\c++\alag\sources\alagengine\src\core\gapp.cpp
 	<SFML/System.hpp>
 	"ALAGE/core/GApp.h"
 	"ALAGE/utils/Logger.h"
@@ -538,7 +538,7 @@
 	"ALAGE/gfx/TextureAsset.h"
 	"extlibs/tinyxml.h"
 
-1517567946 c:\c++\alag\sources\alagengine\include\alage\types.h
+1517587468 c:\c++\alag\sources\alagengine\include\alage\types.h
 	<iostream>
 	<SFML/Graphics.hpp>
 	<SFML/OpenGL.hpp>
@@ -767,7 +767,7 @@
 1517140944 source:c:\c++\alag\sources\alagengine\src\gfx\isometricshaders.cpp
 	<iostream>
 
-1517576600 c:\c++\alag\sources\alagengine\include\alage\gfx\iso\isometricscene.h
+1517587468 c:\c++\alag\sources\alagengine\include\alage\gfx\iso\isometricscene.h
 	"ALAGE/utils/Mathematics.h"
 	"ALAGE/gfx/SceneManager.h"
 	"ALAGE/gfx/iso/IsoSpriteEntity.h"
@@ -777,7 +777,7 @@
 1517410375 c:\c++\alag\sources\alagengine\include\alage\gfx\iso\isospriteentity.h
 	<ALAGE/gfx/SpriteEntity.h>
 
-1517581966 source:c:\c++\alag\sources\alagengine\src\gfx\iso\isometricscene.cpp
+1517611589 source:c:\c++\alag\sources\alagengine\src\gfx\iso\isometricscene.cpp
 	"ALAGE/gfx/iso/IsometricScene.h"
 	"ALAGE/utils/Logger.h"
 	"ALAGE/utils/Mathematics.h"
@@ -785,10 +785,10 @@
 	"ALAGE/gfx/iso/IsoSpriteEntity.h"
 	"../src/gfx/iso/IsometricShaders.cpp"
 
-1517567946 c:\c++\alag\sources\alagengine\src\gfx\iso\isometricshaders.cpp
+1517611276 c:\c++\alag\sources\alagengine\src\gfx\iso\isometricshaders.cpp
 	<iostream>
 
-1517567946 source:c:\c++\alag\sources\alagengine\src\gfx\iso\isometricshaders.cpp
+1517611276 source:c:\c++\alag\sources\alagengine\src\gfx\iso\isometricshaders.cpp
 	<iostream>
 
 1517476911 source:c:\c++\alag\sources\alagengine\src\gfx\iso\isorectentity.cpp
@@ -853,7 +853,8 @@
 	<SFML/Graphics/Drawable.hpp>
 	<SFML/Window/GlResource.hpp>
 
-1517577037 c:\c++\alag\sources\sfml\include\sfml\graphics\multiplerendertexture.hpp
+1517608955 c:\c++\alag\sources\sfml\include\sfml\graphics\multiplerendertexture.hpp
+	<SFML/Graphics/Export.hpp>
 	<SFML/Graphics/Texture.hpp>
 	<SFML/Graphics/RenderTarget.hpp>
 	<SFML/Window/Context.hpp>
