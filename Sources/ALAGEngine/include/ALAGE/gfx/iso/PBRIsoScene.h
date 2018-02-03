@@ -1,8 +1,8 @@
-#ifndef ISOMETRICSCENE_H
-#define ISOMETRICSCENE_H
+#ifndef PBRISOSCENE_H
+#define PBRISOSCENE_H
 
 #include "ALAGE/utils/Mathematics.h"
-#include "ALAGE/gfx/SceneManager.h"
+#include "ALAGE/gfx/DefaultScene.h"
 #include "ALAGE/gfx/iso/IsoSpriteEntity.h"
 #include "ALAGE/gfx/iso/IsoRectEntity.h"
 #include <SFML/OpenGL.hpp>
@@ -10,22 +10,20 @@
 namespace alag
 {
 
-const float DEPTH_BUFFER_NORMALISER = 0.001f;
-
 struct IsoViewAngle
 {
     float xyAngle;
     float zAngle;
 };
 
-class IsometricScene : public SceneManager
+class PBRIsoScene : public DefaultScene
 {
     friend void IsoSpriteEntity::RenderShadow(sf::RenderTarget*, Light*);
 
     public:
-        IsometricScene();
-        IsometricScene(IsoViewAngle);
-        virtual ~IsometricScene();
+        PBRIsoScene();
+        PBRIsoScene(IsoViewAngle);
+        virtual ~PBRIsoScene();
 
         virtual bool InitRenderer(sf::Vector2u);
         virtual sf::View GenerateView(Camera*);
@@ -60,6 +58,11 @@ class IsometricScene : public SceneManager
         void ComputeTrigonometry();
         int UpdateLighting(std::multimap<float, Light*> &lightList);
         //virtual void RenderShadows(std::multimap<float, Light*> &lightList, int = GL_MAX_LIGHTS);
+
+        void CompileDepthShader();
+        void CompilePBRGeometryShader();
+        void CompileLightingShader();
+        void CompileSSAOShader();
 
         sf::Shader *GetDepthShader();
 
@@ -101,6 +104,9 @@ class IsometricScene : public SceneManager
 
 
         static const IsoViewAngle DEFAULT_ISO_VIEW_ANGLE;
+        static const float DEPTH_BUFFER_NORMALISER;
+        static const float DEPTH_BUFFER_NORMALISER_INV;
+        static const int MAX_SHADOW_MAPS;
 };
 
 }

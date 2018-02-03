@@ -23,7 +23,7 @@ SpriteEntity::SpriteEntity(const sf::IntRect &r) : SceneEntity()
     sf::Sprite::setTextureRect(r);
     m_texture = nullptr;
     m_canBeLighted = true;
-    m_is3D = false;
+    m_usePBR = false;
 }
 
 
@@ -58,29 +58,13 @@ void SpriteEntity::PrepareShader(sf::Shader *shader)
     && m_texture != nullptr
     && m_texture->IsLoaded())
     {
-        shader->setUniform("map_color",*m_texture->GetTexture());
-        if(Is3D())
+        if(UsePBR())
         {
-            Texture3DAsset *myTexture3D = (Texture3DAsset*) m_texture;
-
-            if(myTexture3D->GetDepthMap() != nullptr)
-            {
-                shader->setUniform("map_depth",*myTexture3D->GetDepthMap());
-                shader->setUniform("enable_depthMap", true);
-            } else {
-                shader->setUniform("enable_depthMap", false);
-            }
-
-            if(myTexture3D->GetNormalMap() != nullptr)
-            {
-                shader->setUniform("map_normal",*myTexture3D->GetNormalMap());
-                shader->setUniform("enable_normalMap", true);
-            } else {
-                shader->setUniform("map_normal", false);
-            }
-
-            shader->setUniform("p_height",myTexture3D->GetHeight()*GetScale().y);
+            PBRTextureAsset *myPBRTexture = (PBRTextureAsset*) m_texture;
+            myPBRTexture->PrepareShader(shader);
+            shader->setUniform("p_height",myPBRTexture->GetHeight()*GetScale().y);
         } else {
+            shader->setUniform("map_albedo",*m_texture->GetTexture());
             shader->setUniform("enable_normalMap", false);
             shader->setUniform("enable_depthMap", false);
             shader->setUniform("p_height",0);
@@ -92,7 +76,7 @@ void SpriteEntity::PrepareShader(sf::Shader *shader)
 
 void SpriteEntity::SetTexture(TextureAsset *texture)
 {
-    m_is3D = false;
+    m_usePBR = false;
 
     if(m_texture != texture)
     {
@@ -110,10 +94,10 @@ void SpriteEntity::SetTexture(TextureAsset *texture)
 }
 
 
-void SpriteEntity::SetTexture(Texture3DAsset *texture)
+void SpriteEntity::SetTexture(PBRTextureAsset *texture)
 {
     SetTexture((TextureAsset*) texture);
-    m_is3D = true;
+    m_usePBR = true;
 }
 
 
@@ -161,9 +145,9 @@ void SpriteEntity::Notify(NotificationSender* sender, NotificationType notificat
     {
         if(notification == AssetLoadedNotification)
         {
-            bool was3D = m_is3D;
+            bool wasPBR = m_usePBR;
             SetTexture(m_texture);
-            m_is3D = was3D;
+            m_usePBR = wasPBR;
         }
         else if(notification == NotificationSenderDestroyed)
             m_texture = nullptr;

@@ -27,8 +27,8 @@ namespace alag
 const char *GApp::DEFAULT_APP_NAME = "ALAGEngine";
 const char *GApp::DEFAULT_CONFIG_FILE = "config.ini";
 
-const char *GApp::DEFAULT_WINDOW_WIDTH = "1600";
-const char *GApp::DEFAULT_WINDOW_HEIGHT = "900";
+const char *GApp::DEFAULT_WINDOW_WIDTH = "1024";
+const char *GApp::DEFAULT_WINDOW_HEIGHT = "768";
 const char *GApp::DEFAULT_SRGB = "false";
 
 

@@ -8,14 +8,14 @@
 
 namespace alag{
 
-class SceneManager;
+class DefaultScene;
 
 class SceneNode
 {
     public:
         SceneNode(const NodeTypeID&);
         SceneNode(const NodeTypeID&, SceneNode* parent);
-        SceneNode(const NodeTypeID&, SceneNode* parent, SceneManager* sceneManager);
+        SceneNode(const NodeTypeID&, SceneNode* parent, DefaultScene* scene);
         virtual ~SceneNode();
 
         void AddChildNode(SceneNode*);
@@ -60,7 +60,7 @@ class SceneNode
 
         const NodeTypeID& GetID();
         SceneNode* GetParent();
-        SceneManager*  GetSceneManager();
+        DefaultScene*  GetSceneManager();
 
         void SearchInsideForEntities(std::list<SceneEntity*>  *renderQueue);
 
@@ -74,13 +74,13 @@ class SceneNode
 
     protected:
         void SetParent(SceneNode *);
-        void SetSceneManager(SceneManager *);
+        void SetSceneManager(DefaultScene *);
         void SetID(const NodeTypeID &);
         NodeTypeID GenerateID();
 
         sf::Vector3f m_position;
 
-        SceneManager* m_sceneManager;
+        DefaultScene* m_sceneManager;
 
     private:
         NodeTypeID m_id;

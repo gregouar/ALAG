@@ -2,7 +2,7 @@
 #define SPRITEENTITY_H
 
 #include <SFML/Graphics.hpp>
-#include "ALAGE/gfx/Texture3DAsset.h"
+#include "ALAGE/gfx/PBRTextureAsset.h"
 #include "ALAGE/gfx/SceneEntity.h"
 
 
@@ -25,7 +25,7 @@ class SpriteEntity : public SceneEntity, protected sf::Sprite
         virtual void ComputeShadow(Light*){}
 
         virtual void SetTexture(TextureAsset *t);
-        virtual void SetTexture(Texture3DAsset *t);
+        virtual void SetTexture(PBRTextureAsset *t);
         void SetCenter(float x, float y);
         void SetCenter(sf::Vector2f);
         void SetScale(float x, float y);

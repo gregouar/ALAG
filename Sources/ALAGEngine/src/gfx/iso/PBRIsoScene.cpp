@@ -1,4 +1,4 @@
-#include "ALAGE/gfx/iso/IsometricScene.h"
+#include "ALAGE/gfx/iso/PBRIsoScene.h"
 
 
 #include "ALAGE/utils/Logger.h"
@@ -6,44 +6,48 @@
 #include "ALAGE/core/Config.h"
 
 #include "ALAGE/gfx/iso/IsoSpriteEntity.h"
-#include "../src/gfx/iso/IsometricShaders.cpp"
+//#include "../src/gfx/iso/PBRIsoShaders.cpp"
 
 namespace alag
 {
 
-const IsoViewAngle IsometricScene::DEFAULT_ISO_VIEW_ANGLE = {.xyAngle = 0,
+const IsoViewAngle PBRIsoScene::DEFAULT_ISO_VIEW_ANGLE = {.xyAngle = 0,
                                                              .zAngle = 90};
 
+const float PBRIsoScene::DEPTH_BUFFER_NORMALISER = 0.001;
+const float PBRIsoScene::DEPTH_BUFFER_NORMALISER_INV = 1000;
+const int PBRIsoScene::MAX_SHADOW_MAPS = 8;
 
-IsometricScene::IsometricScene() : IsometricScene(DEFAULT_ISO_VIEW_ANGLE)
+
+PBRIsoScene::PBRIsoScene() : PBRIsoScene(DEFAULT_ISO_VIEW_ANGLE)
 {
     //ctor
 }
 
-IsometricScene::IsometricScene(IsoViewAngle viewAngle)
+PBRIsoScene::PBRIsoScene(IsoViewAngle viewAngle)
 {
     SetViewAngle(viewAngle);
 
     /*m_colorShader.loadFromMemory(color_fragShader,sf::Shader::Fragment);
     m_depthShader.loadFromMemory(depth_fragShader,sf::Shader::Fragment);
     m_normalShader.loadFromMemory(normal_fragShader,sf::Shader::Fragment);*/
-    m_depthShader.loadFromMemory(depth_fragShader,sf::Shader::Fragment);
-    m_SSAOShader.loadFromMemory(vertexShader,SSAO_fragShader);
-    m_lightingShader.loadFromMemory(vertexShader,lighting_fragShader);
+    CompileDepthShader();
+    CompileSSAOShader();
+    CompileLightingShader();
+    CompilePBRGeometryShader();
 
     //m_PBRGeometryShader.loadFromMemory(PBRGeometry_vertShader,PBRGeometry_fragShader);
-    m_PBRGeometryShader.loadFromMemory(PBRGeometry_fragShader,sf::Shader::Fragment);
 
     SetAmbientLight(m_ambientLight);
 }
 
 
-IsometricScene::~IsometricScene()
+PBRIsoScene::~PBRIsoScene()
 {
     //dtor
 }
 
-bool IsometricScene::InitRenderer(sf::Vector2u windowSize)
+bool PBRIsoScene::InitRenderer(sf::Vector2u windowSize)
 {
     bool r = true;
 
@@ -97,9 +101,10 @@ bool IsometricScene::InitRenderer(sf::Vector2u windowSize)
     m_renderer.setTextureRect(sf::IntRect(0,0,windowSize.x*m_superSampling, windowSize.y*m_superSampling));
     m_renderer.setTexture(m_PBRScreen.getTexture(PBRAlbedoScreen));
 
-    m_lightingShader.setUniform("map_color",*m_PBRScreen.getTexture(PBRAlbedoScreen));
+    m_lightingShader.setUniform("map_albedo",*m_PBRScreen.getTexture(PBRAlbedoScreen));
     m_lightingShader.setUniform("map_normal",*m_PBRScreen.getTexture(PBRNormalScreen));
     m_lightingShader.setUniform("map_depth",*m_PBRScreen.getTexture(PBRDepthScreen));
+    m_lightingShader.setUniform("map_material",*m_PBRScreen.getTexture(PBRMaterialScreen));
     m_lightingShader.setUniform("view_ratio",sf::Vector2f(1.0/(float)m_PBRScreen.getSize().x,
                                                             1.0/(float)m_PBRScreen.getSize().y));
 
@@ -160,7 +165,7 @@ bool IsometricScene::InitRenderer(sf::Vector2u windowSize)
     return r;
 }
 
-void IsometricScene::ProcessRenderQueue(sf::RenderTarget *w)
+void PBRIsoScene::ProcessRenderQueue(sf::RenderTarget *w)
 {
     sf::View curView = GenerateView(m_currentCamera);
 
@@ -297,7 +302,7 @@ void IsometricScene::ProcessRenderQueue(sf::RenderTarget *w)
     w->draw(m_renderer,m_rendererStates);
 }
 
-void IsometricScene::RenderScene(sf::RenderTarget* w)
+void PBRIsoScene::RenderScene(sf::RenderTarget* w)
 {
     if(w != nullptr && m_currentCamera != nullptr)
     {
@@ -311,21 +316,21 @@ void IsometricScene::RenderScene(sf::RenderTarget* w)
 }
 
 
-int IsometricScene::UpdateLighting(std::multimap<float, Light*> &lightList)
+int PBRIsoScene::UpdateLighting(std::multimap<float, Light*> &lightList)
 {
-    int nbr_lights = SceneManager::UpdateLighting(lightList);
+    int nbr_lights = DefaultScene::UpdateLighting(lightList);
 
     m_lightingShader.setUniform("light_nbr",(int)nbr_lights);
 
     int curNbrLights = 0, curNbrShadows = 0;
 
-    float shadowCastingLights[8] = {-1,-1,-1,-1,-1,-1,-1,-1};
-    sf::Vector2f shadowShift[8];
-    sf::Vector2f shadowRatio[8];
+    float shadowCastingLights[MAX_SHADOW_MAPS] = {-1,-1,-1,-1,-1,-1,-1,-1};
+    sf::Vector2f shadowShift[MAX_SHADOW_MAPS];
+    sf::Vector2f shadowRatio[MAX_SHADOW_MAPS];
 
     std::multimap<float, Light*>::iterator lightIt;
     for(lightIt = lightList.begin() ; lightIt != lightList.end()
-    && curNbrLights < nbr_lights && curNbrShadows < 8 ; ++lightIt) /** REPLACE 8 BY CONSTANT**/
+    && curNbrLights < nbr_lights && curNbrShadows < MAX_SHADOW_MAPS ; ++lightIt)
     {
         std::ostringstream buffer;
         Light* curLight = lightIt->second;
@@ -346,16 +351,16 @@ int IsometricScene::UpdateLighting(std::multimap<float, Light*> &lightList)
         ++curNbrLights;
     }
 
-    m_lightingShader.setUniformArray("shadow_casters",shadowCastingLights, 8);
-    m_lightingShader.setUniformArray("shadow_shift",shadowShift, 8);
-    m_lightingShader.setUniformArray("shadow_ratio",shadowRatio, 8);
+    m_lightingShader.setUniformArray("shadow_casters",shadowCastingLights, MAX_SHADOW_MAPS);
+    m_lightingShader.setUniformArray("shadow_shift",shadowShift, MAX_SHADOW_MAPS);
+    m_lightingShader.setUniformArray("shadow_ratio",shadowRatio, MAX_SHADOW_MAPS);
 
     return nbr_lights;
 }
 
 
 
-IsoRectEntity* IsometricScene::CreateIsoRectEntity(sf::Vector2f rectSize)
+IsoRectEntity* PBRIsoScene::CreateIsoRectEntity(sf::Vector2f rectSize)
 {
     IsoRectEntity *e = new IsoRectEntity(rectSize);
     AddCreatedObject(GenerateObjectID(), e);
@@ -363,12 +368,12 @@ IsoRectEntity* IsometricScene::CreateIsoRectEntity(sf::Vector2f rectSize)
 }
 
 
-IsoSpriteEntity* IsometricScene::CreateIsoSpriteEntity(sf::Vector2i spriteSize)
+IsoSpriteEntity* PBRIsoScene::CreateIsoSpriteEntity(sf::Vector2i spriteSize)
 {
     return CreateIsoSpriteEntity(sf::IntRect(0,0,spriteSize.x,spriteSize.y));
 }
 
-IsoSpriteEntity* IsometricScene::CreateIsoSpriteEntity(sf::IntRect textureRect)
+IsoSpriteEntity* PBRIsoScene::CreateIsoSpriteEntity(sf::IntRect textureRect)
 {
     IsoSpriteEntity *e = new IsoSpriteEntity(textureRect);
     AddCreatedObject(GenerateObjectID(), e);
@@ -378,20 +383,20 @@ IsoSpriteEntity* IsometricScene::CreateIsoSpriteEntity(sf::IntRect textureRect)
 
 
 
-void IsometricScene::SetViewAngle(IsoViewAngle viewAngle)
+void PBRIsoScene::SetViewAngle(IsoViewAngle viewAngle)
 {
     m_viewAngle = viewAngle;
     ComputeTrigonometry();
 }
 
-void IsometricScene::SetAmbientLight(sf::Color light)
+void PBRIsoScene::SetAmbientLight(sf::Color light)
 {
-    SceneManager::SetAmbientLight(light);
+    DefaultScene::SetAmbientLight(light);
 
     m_lightingShader.setUniform("light_ambient",sf::Glsl::Vec4(m_ambientLight));
 }
 
-void IsometricScene::SetSSAO(bool ssao)
+void PBRIsoScene::SetSSAO(bool ssao)
 {
     m_enableSSAO = ssao;
 
@@ -413,9 +418,9 @@ void IsometricScene::SetSSAO(bool ssao)
     }
 }
 
-void IsometricScene::SetShadowCasting(ShadowCastingType type)
+void PBRIsoScene::SetShadowCasting(ShadowCastingType type)
 {
-    SceneManager::SetShadowCasting(type);
+    DefaultScene::SetShadowCasting(type);
 
 
     if(type == AllShadows || type == DirectionnalShadow)
@@ -429,21 +434,21 @@ void IsometricScene::SetShadowCasting(ShadowCastingType type)
         m_lightingShader.setUniform("enable_dynamicShadows", false);
 }
 
-void IsometricScene::EnableGammaCorrection()
+void PBRIsoScene::EnableGammaCorrection()
 {
-    SceneManager::EnableGammaCorrection();
+    DefaultScene::EnableGammaCorrection();
     m_lightingShader.setUniform("enable_sRGB", true);
 }
 
-void IsometricScene::DisableGammaCorrection()
+void PBRIsoScene::DisableGammaCorrection()
 {
-    SceneManager::DisableGammaCorrection();
+    DefaultScene::DisableGammaCorrection();
     m_lightingShader.setUniform("enable_sRGB", false);
 }
 
 
 
-void IsometricScene::ComputeTrigonometry()
+void PBRIsoScene::ComputeTrigonometry()
 {
      float cosXY = cos(m_viewAngle.xyAngle*PI/180.0);
      float sinXY = sin(m_viewAngle.xyAngle*PI/180.0);
@@ -481,44 +486,44 @@ void IsometricScene::ComputeTrigonometry()
 }
 
 
-Mat3x3 IsometricScene::GetIsoToCartMat()
+Mat3x3 PBRIsoScene::GetIsoToCartMat()
 {
     return m_isoToCartMat;
 }
 
-Mat3x3 IsometricScene::GetCartToIsoMat()
+Mat3x3 PBRIsoScene::GetCartToIsoMat()
 {
     return m_cartToIsoMat;
 }
 
-sf::Vector2f IsometricScene::ConvertIsoToCartesian(float x, float y, float z)
+sf::Vector2f PBRIsoScene::ConvertIsoToCartesian(float x, float y, float z)
 {
     return ConvertIsoToCartesian(sf::Vector3f(x,y,z));
 }
 
-sf::Vector2f IsometricScene::ConvertIsoToCartesian(sf::Vector2f p)
+sf::Vector2f PBRIsoScene::ConvertIsoToCartesian(sf::Vector2f p)
 {
     return m_isoToCartMat*p;
 }
 
-sf::Vector2f IsometricScene::ConvertIsoToCartesian(sf::Vector3f p)
+sf::Vector2f PBRIsoScene::ConvertIsoToCartesian(sf::Vector3f p)
 {
     sf::Vector3f r = m_isoToCartMat*p;
     return sf::Vector2f(r.x, r.y);
 }
 
 
-sf::Vector2f IsometricScene::ConvertCartesianToIso(float x, float y)
+sf::Vector2f PBRIsoScene::ConvertCartesianToIso(float x, float y)
 {
     return ConvertCartesianToIso(sf::Vector2f(x,y));
 }
 
-sf::Vector2f IsometricScene::ConvertCartesianToIso(sf::Vector2f p)
+sf::Vector2f PBRIsoScene::ConvertCartesianToIso(sf::Vector2f p)
 {
     return m_cartToIsoMat*p;
 }
 
-sf::Vector2f IsometricScene::ConvertMouseToScene(sf::Vector2i mouse)
+sf::Vector2f PBRIsoScene::ConvertMouseToScene(sf::Vector2i mouse)
 {
     sf::Vector2f scenePos = sf::Vector2f(mouse);
     if(m_last_target != nullptr && m_currentCamera != nullptr)
@@ -532,7 +537,7 @@ sf::Vector2f IsometricScene::ConvertMouseToScene(sf::Vector2i mouse)
     return scenePos;
 }
 
-sf::View IsometricScene::GenerateView(Camera* cam)
+sf::View PBRIsoScene::GenerateView(Camera* cam)
 {
     sf::View v;
     if(cam != nullptr)
@@ -545,7 +550,7 @@ sf::View IsometricScene::GenerateView(Camera* cam)
     return v;
 }
 
-sf::Shader* IsometricScene::GetDepthShader()
+sf::Shader* PBRIsoScene::GetDepthShader()
 {
     return &m_depthShader;
 }

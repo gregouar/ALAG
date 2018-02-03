@@ -1,5 +1,5 @@
 #include "ALAGE/gfx/SceneNode.h"
-#include "ALAGE/gfx/iso/IsometricScene.h"
+#include "ALAGE/gfx/iso/PBRIsoScene.h"
 #include "ALAGE/gfx/iso/IsoSpriteEntity.h"
 #include "ALAGE/core/AssetHandler.h"
 #include "ALAGE/utils/Mathematics.h"
@@ -32,7 +32,7 @@ void IsoSpriteEntity::PrepareShader(sf::Shader* shader)
 {
     SpriteEntity::PrepareShader(shader);
 
-    if(!Is3D())
+    if(!UsePBR())
     if(m_scene != nullptr)
     {
         float isoToCartZFactor = -m_scene->GetIsoToCartMat().values[5];
@@ -49,18 +49,18 @@ void IsoSpriteEntity::RenderShadow(sf::RenderTarget *w/*, const sf::RenderStates
 {
     SceneNode* node = GetParentNode();
 
-    if(Is3D())
+    if(UsePBR())
     if(node != nullptr && m_scene != nullptr)
     if(m_texture != nullptr && m_texture->IsLoaded())
     {
-        Texture3DAsset *myTexture3D = (Texture3DAsset*) m_texture;
+        PBRTextureAsset *myPBRTexture = (PBRTextureAsset*) m_texture;
         sf::Vector3f globalPos = node->GetGlobalPosition();
 
         sf::Shader* depthShader = m_scene->GetDepthShader();
-        depthShader->setUniform("map_color",m_shadowMap[light]);
+        //depthShader->setUniform("map_color",m_shadowMap[light]);
         depthShader->setUniform("map_depth",m_shadowMap[light]);
         depthShader->setUniform("enable_depthMap", true);
-        depthShader->setUniform("p_height",myTexture3D->GetHeight()*sf::Sprite::getScale().y);
+        depthShader->setUniform("p_height",myPBRTexture->GetHeight()*sf::Sprite::getScale().y);
         depthShader->setUniform("p_zPos",globalPos.z);
 
         sf::Vector3f light_direction = Normalize(light->GetDirection());
@@ -86,11 +86,11 @@ void IsoSpriteEntity::ComputeShadow(Light* light)
     {
         if(light->GetType() == DirectionnalLight
             && (GetShadowCastingType() == DirectionnalShadow || GetShadowCastingType() == AllShadows))
-        if(Is3D())
+        if(UsePBR())
         if(light->GetDirection().z < 0)
         {
-            Texture3DAsset* myTexture3D = (Texture3DAsset*)m_texture;
-            float height = myTexture3D->GetHeight()*getScale().y;
+            PBRTextureAsset* myPBRTexture = (PBRTextureAsset*)m_texture;
+            float height = myPBRTexture->GetHeight()*getScale().y;
             sf::Vector3f lightDirection = Normalize(light->GetDirection());
 
             Mat3x3 isoToCart = m_scene->GetIsoToCartMat();
@@ -118,7 +118,7 @@ void IsoSpriteEntity::ComputeShadow(Light* light)
 
             sf::Uint8 *shadow_map_array = new sf::Uint8[shadow_bounds.width*shadow_bounds.height*4];
 
-            sf::Texture* depth_texture = myTexture3D->GetDepthMap();
+            sf::Texture* depth_texture = myPBRTexture->GetDepthMap();
             sf::Image depth_img = depth_texture->copyToImage();
             size_t depth_texture_width = depth_img.getSize().x;
             const sf::Uint8* depth_array = depth_img.getPixelsPtr();
@@ -188,7 +188,7 @@ void IsoSpriteEntity::ComputeShadow(Light* light)
     }
 }
 
-void IsoSpriteEntity::SetIsoScene(IsometricScene *scene)
+void IsoSpriteEntity::SetIsoScene(PBRIsoScene *scene)
 {
     m_scene = scene;
 }

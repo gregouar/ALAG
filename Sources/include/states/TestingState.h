@@ -3,7 +3,7 @@
 
 #include "ALAGE/core/GState.h"
 #include "ALAGE/utils/singleton.h"
-#include "ALAGE/gfx/iso/IsometricScene.h"
+#include "ALAGE/gfx/iso/PBRIsoScene.h"
 
 
 class TestingState : public alag::GState, public Singleton<TestingState>
@@ -31,7 +31,7 @@ class TestingState : public alag::GState, public Singleton<TestingState>
         bool m_firstEntering;
         bool showfirstsecond;
 
-        alag::IsometricScene m_mainScene;
+        alag::PBRIsoScene m_mainScene;
 
         sf::Text m_fpsText;
         float m_nbrFPS, m_fpsCounter;

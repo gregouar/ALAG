@@ -1,4 +1,4 @@
-#include "ALAGE/gfx/SceneManager.h"
+#include "ALAGE/gfx/DefaultScene.h"
 
 #include "ALAGE/utils/Logger.h"
 #include "ALAGE/utils/Mathematics.h"
@@ -7,7 +7,7 @@ namespace alag
 {
 
 
-SceneManager::SceneManager() : m_rootNode(0,nullptr, this)
+DefaultScene::DefaultScene() : m_rootNode(0,nullptr, this)
 {
     m_rootNode.SetPosition(sf::Vector3f(0,0,0));
     m_curNewId = 0;
@@ -20,24 +20,24 @@ SceneManager::SceneManager() : m_rootNode(0,nullptr, this)
     m_enableSRGB = false;
 }
 
-SceneManager::~SceneManager()
+DefaultScene::~DefaultScene()
 {
     CleanAll();
 }
 
-void SceneManager::CleanAll()
+void DefaultScene::CleanAll()
 {
     m_rootNode.RemoveAndDestroyAllChilds();
     DestroyAllCreatedObjects();
 }
 
 
-bool SceneManager::InitRenderer(sf::Vector2u windowSize)
+bool DefaultScene::InitRenderer(sf::Vector2u windowSize)
 {
     return (true);
 }
 
-void SceneManager::Update(sf::Time elapsedTime)
+void DefaultScene::Update(sf::Time elapsedTime)
 {
     m_rootNode.Update(elapsedTime);
 
@@ -48,12 +48,12 @@ void SceneManager::Update(sf::Time elapsedTime)
     }
 }
 
-void SceneManager::AskToComputeRenderQueue()
+void DefaultScene::AskToComputeRenderQueue()
 {
     m_needToUpdateRenderQueue = true;
 }
 
-void SceneManager::ProcessRenderQueue(sf::RenderTarget *w)
+void DefaultScene::ProcessRenderQueue(sf::RenderTarget *w)
 {
     std::list<SceneEntity*>::iterator renderIt;
     for(renderIt = m_renderQueue.begin() ; renderIt != m_renderQueue.end(); ++renderIt)
@@ -73,7 +73,7 @@ void SceneManager::ProcessRenderQueue(sf::RenderTarget *w)
     }
 }
 
-void SceneManager::ComputeRenderQueue()
+void DefaultScene::ComputeRenderQueue()
 {
     m_renderQueue.clear();
     //AddToRenderQueue(&m_rootNode);
@@ -81,7 +81,7 @@ void SceneManager::ComputeRenderQueue()
 }
 
 
-int SceneManager::UpdateLighting(std::multimap<float, Light*> &lightList, int maxNbrLights)
+int DefaultScene::UpdateLighting(std::multimap<float, Light*> &lightList, int maxNbrLights)
 {
     int curNbrLights = 0;
 
@@ -146,7 +146,7 @@ int SceneManager::UpdateLighting(std::multimap<float, Light*> &lightList, int ma
 
 
 
-void SceneManager::RenderShadows(std::multimap<float, Light*> &lightList,const sf::View &view,
+void DefaultScene::RenderShadows(std::multimap<float, Light*> &lightList,const sf::View &view,
                                  /*const sf::Vector2u &screen_size,*/ int maxNbrLights)
 {
     int curNbrLights = 0;
@@ -172,7 +172,7 @@ void SceneManager::RenderShadows(std::multimap<float, Light*> &lightList,const s
 }
 
 
-/*void SceneManager::AddToRenderQueue(SceneNode *curNode)
+/*void DefaultScene::AddToRenderQueue(SceneNode *curNode)
 {
     if(curNode != nullptr)
     {
@@ -193,31 +193,31 @@ void SceneManager::RenderShadows(std::multimap<float, Light*> &lightList,const s
     }
 }*/
 
-SceneNode *SceneManager::GetRootNode()
+SceneNode *DefaultScene::GetRootNode()
 {
     return &m_rootNode;
 }
 
-RectEntity* SceneManager::CreateRectEntity(sf::Vector2f rectSize)
+RectEntity* DefaultScene::CreateRectEntity(sf::Vector2f rectSize)
 {
     RectEntity *e = new RectEntity(rectSize);
     AddCreatedObject(GenerateObjectID(), e);
     return e;
 }
 
-SpriteEntity* SceneManager::CreateSpriteEntity(sf::Vector2i spriteSize)
+SpriteEntity* DefaultScene::CreateSpriteEntity(sf::Vector2i spriteSize)
 {
     return CreateSpriteEntity(sf::IntRect(0,0,spriteSize.x,spriteSize.y));
 }
 
-SpriteEntity* SceneManager::CreateSpriteEntity(sf::IntRect textureRect)
+SpriteEntity* DefaultScene::CreateSpriteEntity(sf::IntRect textureRect)
 {
     SpriteEntity *e = new SpriteEntity(textureRect);
     AddCreatedObject(GenerateObjectID(), e);
     return e;
 }
 
-Light* SceneManager::CreateLight(LightType type, sf::Vector3f direction, sf::Color color)
+Light* DefaultScene::CreateLight(LightType type, sf::Vector3f direction, sf::Color color)
 {
     Light* light = new Light();
     light->SetType(type);
@@ -227,7 +227,7 @@ Light* SceneManager::CreateLight(LightType type, sf::Vector3f direction, sf::Col
     return light;
 }
 
-Camera* SceneManager::CreateCamera(sf::Vector2f viewSize)
+Camera* DefaultScene::CreateCamera(sf::Vector2f viewSize)
 {
     Camera* camera = new Camera();
     camera->SetSize(viewSize);
@@ -236,7 +236,7 @@ Camera* SceneManager::CreateCamera(sf::Vector2f viewSize)
 }
 
 
-void SceneManager::AddCreatedObject(const ObjectTypeID &id, SceneObject* obj)
+void DefaultScene::AddCreatedObject(const ObjectTypeID &id, SceneObject* obj)
 {
     std::map<ObjectTypeID, SceneObject*>::iterator entityIt;
     entityIt = m_createdObjects.find(id);
@@ -252,7 +252,7 @@ void SceneManager::AddCreatedObject(const ObjectTypeID &id, SceneObject* obj)
 }
 
 
-void SceneManager::DestroyCreatedObject(const ObjectTypeID &id)
+void DefaultScene::DestroyCreatedObject(const ObjectTypeID &id)
 {
     std::map<ObjectTypeID, SceneObject*>::iterator objIt;
     objIt = m_createdObjects.find(id);
@@ -269,13 +269,13 @@ void SceneManager::DestroyCreatedObject(const ObjectTypeID &id)
     }
 }
 
-void SceneManager::DestroyAllCreatedObjects()
+void DefaultScene::DestroyAllCreatedObjects()
 {
     while(!m_createdObjects.empty())
         DestroyCreatedObject(m_createdObjects.begin()->first);
 }
 
-sf::View SceneManager::GenerateView(Camera* cam)
+sf::View DefaultScene::GenerateView(Camera* cam)
 {
     sf::View v;
     if(cam != nullptr)
@@ -291,7 +291,7 @@ sf::View SceneManager::GenerateView(Camera* cam)
     return v;
 }
 
-sf::Vector2f SceneManager::ConvertMouseToScene(sf::Vector2i mouse)
+sf::Vector2f DefaultScene::ConvertMouseToScene(sf::Vector2i mouse)
 {
     sf::Vector2f scenePos = sf::Vector2f(mouse);
     if(m_last_target != nullptr && m_currentCamera != nullptr)
@@ -304,18 +304,18 @@ sf::Vector2f SceneManager::ConvertMouseToScene(sf::Vector2i mouse)
     return scenePos;
 }
 
-void SceneManager::SetCurrentCamera(Camera *cam)
+void DefaultScene::SetCurrentCamera(Camera *cam)
 {
     m_currentCamera = cam;
 }
 
-void SceneManager::SetAmbientLight(sf::Color light)
+void DefaultScene::SetAmbientLight(sf::Color light)
 {
     m_ambientLight = light;
     m_ambientLight.a = 255;
 }
 
-void SceneManager::SetShadowCasting(ShadowCastingType type)
+void DefaultScene::SetShadowCasting(ShadowCastingType type)
 {
     m_shadowCastingOption = type;
     /*if(type == AllShadows)
@@ -337,19 +337,19 @@ void SceneManager::SetShadowCasting(ShadowCastingType type)
 }
 
 
-void SceneManager::EnableGammaCorrection()
+void DefaultScene::EnableGammaCorrection()
 {
     m_enableSRGB = true;
 }
 
-void SceneManager::DisableGammaCorrection()
+void DefaultScene::DisableGammaCorrection()
 {
     m_enableSRGB = false;
 }
 
 
 
-ObjectTypeID SceneManager::GenerateObjectID()
+ObjectTypeID DefaultScene::GenerateObjectID()
 {
     return m_curNewId++;
 }

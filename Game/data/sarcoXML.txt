@@ -2,7 +2,10 @@
 <texture3D>
 	<name>Sarco</name>
 	<height>85</height>
-	<texture type="color">sarco-color.png</texture>
+	<texture type="albedo">sarco-color.png</texture>
 	<texture type="normal">sarco-normal.png</texture>
 	<texture type="depth">sarco-heightmap.png</texture>
+	<material type="roughness">0.5</material>
+	<material type="metalness">1</material>
+	<material type="translucency">0</material>
 </texture3D>

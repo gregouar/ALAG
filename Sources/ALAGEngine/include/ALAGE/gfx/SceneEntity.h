@@ -25,7 +25,7 @@ class SceneEntity : public NotificationListener, public ShadowCaster
         virtual void PrepareShader(sf::Shader *);
 
         bool CanBeLighted();
-        bool Is3D();
+        bool UsePBR();
 
         void EnableLighting();
         void DisableLighting();
@@ -36,7 +36,7 @@ class SceneEntity : public NotificationListener, public ShadowCaster
 
     protected:
         bool m_canBeLighted;
-        bool m_is3D;
+        bool m_usePBR;
         bool m_isLighted;
 
     private:

@@ -5,7 +5,7 @@
 	"ALAGE/utils/Logger.h"
 	"include/states/TestingState.h"
 
-1517616156 source:c:\c++\alag\sources\alagengine\src\core\gapp.cpp
+1517670518 source:c:\c++\alag\sources\alagengine\src\core\gapp.cpp
 	<SFML/System.hpp>
 	"ALAGE/core/GApp.h"
 	"ALAGE/utils/Logger.h"
@@ -33,22 +33,22 @@
 	<vector>
 	"GState.h"
 
-1517612999 source:c:\c++\alag\sources\src\states\testingstate.cpp
+1517673609 source:c:\c++\alag\sources\src\states\testingstate.cpp
 	"states/TestingState.h"
 	"ALAGE/core/GApp.h"
 	"ALAGE/core/EventManager.h"
 	"ALAGE/core/StateManager.h"
 	"ALAGE/core/AssetHandler.h"
 	"ALAGE/gfx/TextureAsset.h"
-	"ALAGE/gfx/Texture3DAsset.h"
+	"ALAGE/gfx/PBRTextureAsset.h"
 	"ALAGE/gfx/FontAsset.h"
 	"ALAGE/gfx/iso/IsoSpriteEntity.h"
 	"ALAGE/core/Config.h"
 
-1517504268 c:\c++\alag\sources\include\states\testingstate.h
+1517670472 c:\c++\alag\sources\include\states\testingstate.h
 	"ALAGE/core/GState.h"
 	"ALAGE/utils/singleton.h"
-	"ALAGE/gfx/iso/IsometricScene.h"
+	"ALAGE/gfx/iso/PBRIsoScene.h"
 
 1517212518 c:\c++\alag\sources\sfml\include\sfml\system.hpp
 	<SFML/Config.hpp>
@@ -637,15 +637,15 @@
 	"ALAGE/utils/Logger.h"
 	"ALAGE/utils/Mathematics.h"
 
-1517340981 c:\c++\alag\sources\alagengine\include\alage\gfx\scenenode.h
+1517670167 c:\c++\alag\sources\alagengine\include\alage\gfx\scenenode.h
 	<list>
 	<SFML/Graphics.hpp>
 	"ALAGE/Types.h"
 	"ALAGE/gfx/SceneEntity.h"
 
-1517402544 source:c:\c++\alag\sources\alagengine\src\gfx\scenenode.cpp
+1517670458 source:c:\c++\alag\sources\alagengine\src\gfx\scenenode.cpp
 	"ALAGE/gfx/SceneNode.h"
-	"ALAGE/gfx/SceneManager.h"
+	"ALAGE/gfx/DefaultScene.h"
 	"ALAGE/utils/Logger.h"
 	"ALAGE/utils/Mathematics.h"
 
@@ -654,7 +654,7 @@
 
 1516525754 c:\c++\alag\sources\alagengine\include\alage\gfx\quadtreenode.h
 
-1517408807 c:\c++\alag\sources\alagengine\include\alage\gfx\sceneentity.h
+1517670077 c:\c++\alag\sources\alagengine\include\alage\gfx\sceneentity.h
 	<SFML/Graphics.hpp>
 	"ALAGE/core/NotificationListener.h"
 	"ALAGE/core/Asset.h"
@@ -662,19 +662,18 @@
 	"ALAGE/gfx/ShadowCaster.h"
 	"ALAGE/gfx/Light.h"
 
-1517335149 c:\c++\alag\sources\alagengine\include\alage\gfx\rectentity.h
+1517670097 c:\c++\alag\sources\alagengine\include\alage\gfx\rectentity.h
 	<SFML/Graphics.hpp>
-	"ALAGE/gfx/Texture3DAsset.h"
+	"ALAGE/gfx/PBRTextureAsset.h"
 	"ALAGE/gfx/SceneEntity.h"
 
-1517508343 source:c:\c++\alag\sources\alagengine\src\gfx\rectentity.cpp
+1517670078 source:c:\c++\alag\sources\alagengine\src\gfx\rectentity.cpp
 	"ALAGE/gfx/RectEntity.h"
 	"ALAGE/core/AssetHandler.h"
-	"ALAGE/gfx/iso/IsometricScene.h"
 	"ALAGE/gfx/SceneNode.h"
 	"ALAGE/utils/Mathematics.h"
 
-1517401752 source:c:\c++\alag\sources\alagengine\src\gfx\sceneentity.cpp
+1517670425 source:c:\c++\alag\sources\alagengine\src\gfx\sceneentity.cpp
 	"ALAGE/gfx/SceneEntity.h"
 	"ALAGE/gfx/SceneNode.h"
 	"ALAGE/utils/Logger.h"
@@ -685,15 +684,15 @@
 1516702536 c:\c++\alag\sources\alagengine\include\alage\utils\mapiterator.h
 	<map>
 
-1517476911 source:c:\c++\alag\sources\alagengine\src\gfx\spriteentity.cpp
+1517673787 source:c:\c++\alag\sources\alagengine\src\gfx\spriteentity.cpp
 	"ALAGE/gfx/SpriteEntity.h"
 	"ALAGE/core/AssetHandler.h"
 	"ALAGE/gfx/SceneNode.h"
 	<SFML/Graphics.hpp>
 
-1517335761 c:\c++\alag\sources\alagengine\include\alage\gfx\spriteentity.h
+1517670104 c:\c++\alag\sources\alagengine\include\alage\gfx\spriteentity.h
 	<SFML/Graphics.hpp>
-	"ALAGE/gfx/Texture3DAsset.h"
+	"ALAGE/gfx/PBRTextureAsset.h"
 	"ALAGE/gfx/SceneEntity.h"
 
 1516723476 c:\c++\alag\sources\alagengine\include\alage\utils\singletonscleaner.h
@@ -746,7 +745,7 @@
 	"ALAGE/gfx/ShadowCaster.h"
 	"ALAGE/utils/TextureModifier.h"
 
-1517490996 c:\c++\alag\sources\alagengine\include\alage\gfx\light.h
+1517670184 c:\c++\alag\sources\alagengine\include\alage\gfx\light.h
 	"ALAGE/Types.h"
 	"ALAGE/gfx/SceneObject.h"
 
@@ -774,7 +773,7 @@
 	"ALAGE/gfx/iso/IsoRectEntity.h"
 	<SFML/OpenGL.hpp>
 
-1517410375 c:\c++\alag\sources\alagengine\include\alage\gfx\iso\isospriteentity.h
+1517670295 c:\c++\alag\sources\alagengine\include\alage\gfx\iso\isospriteentity.h
 	<ALAGE/gfx/SpriteEntity.h>
 
 1517613333 source:c:\c++\alag\sources\alagengine\src\gfx\iso\isometricscene.cpp
@@ -798,9 +797,9 @@
 1517352515 c:\c++\alag\sources\alagengine\include\alage\gfx\iso\isorectentity.h
 	<ALAGE/gfx/RectEntity.h>
 
-1517482472 source:c:\c++\alag\sources\alagengine\src\gfx\iso\isospriteentity.cpp
+1517673787 source:c:\c++\alag\sources\alagengine\src\gfx\iso\isospriteentity.cpp
 	"ALAGE/gfx/SceneNode.h"
-	"ALAGE/gfx/iso/IsometricScene.h"
+	"ALAGE/gfx/iso/PBRIsoScene.h"
 	"ALAGE/gfx/iso/IsoSpriteEntity.h"
 	"ALAGE/core/AssetHandler.h"
 	"ALAGE/utils/Mathematics.h"
@@ -869,4 +868,54 @@
 	<stdint.h>
 	<stdint.h>
 	<inttypes.h>
+
+1517670077 c:\c++\alag\sources\alagengine\include\alage\gfx\pbrtextureasset.h
+	"ALAGE/core/NotificationListener.h"
+	"ALAGE/gfx/TextureAsset.h"
+	"extlibs/tinyxml.h"
+
+1517670078 source:c:\c++\alag\sources\alagengine\src\gfx\defaultscene.cpp
+	"ALAGE/gfx/DefaultScene.h"
+	"ALAGE/utils/Logger.h"
+	"ALAGE/utils/Mathematics.h"
+
+1517668534 c:\c++\alag\sources\alagengine\include\alage\gfx\defaultscene.h
+	<SFML/OpenGL.hpp>
+	<SFML/Graphics.hpp>
+	"ALAGE/gfx/SceneNode.h"
+	"ALAGE/gfx/RectEntity.h"
+	"ALAGE/gfx/SpriteEntity.h"
+	"ALAGE/gfx/Camera.h"
+	"ALAGE/gfx/Light.h"
+
+1517675262 c:\c++\alag\sources\alagengine\include\alage\gfx\iso\pbrisoscene.h
+	"ALAGE/utils/Mathematics.h"
+	"ALAGE/gfx/DefaultScene.h"
+	"ALAGE/gfx/iso/IsoSpriteEntity.h"
+	"ALAGE/gfx/iso/IsoRectEntity.h"
+	<SFML/OpenGL.hpp>
+
+1517675260 source:c:\c++\alag\sources\alagengine\src\gfx\iso\pbrisoscene.cpp
+	"ALAGE/gfx/iso/PBRIsoScene.h"
+	"ALAGE/utils/Logger.h"
+	"ALAGE/utils/Mathematics.h"
+	"ALAGE/core/Config.h"
+	"ALAGE/gfx/iso/IsoSpriteEntity.h"
+
+1517674324 c:\c++\alag\sources\alagengine\src\gfx\iso\pbrisoshaders.cpp
+	"ALAGE/gfx/iso/PBRIsoScene.h"
+	<sstream>
+	<iostream>
+
+1517675275 source:c:\c++\alag\sources\alagengine\src\gfx\iso\pbrisoshaders.cpp
+	"ALAGE/gfx/iso/PBRIsoScene.h"
+	<sstream>
+	<iostream>
+
+1517674074 source:c:\c++\alag\sources\alagengine\src\gfx\pbrtextureasset.cpp
+	"ALAGE/core/AssetHandler.h"
+	"ALAGE/gfx/PBRTextureAsset.h"
+	"ALAGE/utils/Parser.h"
+	"ALAGE/utils/Logger.h"
+	<istream>
 

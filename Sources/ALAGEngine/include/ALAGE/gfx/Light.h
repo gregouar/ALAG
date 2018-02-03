@@ -11,7 +11,7 @@ class ShadowCaster;
 
 class Light : public SceneObject
 {
-    friend class SceneManager;
+    friend class DefaultScene;
 
     public:
         Light();

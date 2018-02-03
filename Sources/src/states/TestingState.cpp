@@ -6,7 +6,7 @@
 #include "ALAGE/core/AssetHandler.h"
 
 #include "ALAGE/gfx/TextureAsset.h"
-#include "ALAGE/gfx/Texture3DAsset.h"
+#include "ALAGE/gfx/PBRTextureAsset.h"
 #include "ALAGE/gfx/FontAsset.h"
 #include "ALAGE/gfx/iso/IsoSpriteEntity.h"
 
@@ -32,7 +32,7 @@ TestingState::~TestingState()
 void TestingState::Init()
 {
     AssetHandler<TextureAsset>* TextureHandler =  AssetHandler<TextureAsset>::Instance();
-    AssetHandler<Texture3DAsset>* Texture3DHandler =  AssetHandler<Texture3DAsset>::Instance();
+    AssetHandler<PBRTextureAsset>* PBRTextureHandler =  AssetHandler<PBRTextureAsset>::Instance();
 
     sf::Image bluePixel;
     bluePixel.create(1,1,sf::Color::Blue);
@@ -48,7 +48,7 @@ void TestingState::Init()
     m_cameraNode->AttachObject(m_camera);
     m_mainScene.SetCurrentCamera(m_camera);
 
-    Texture3DAsset *t3D =  Texture3DHandler->LoadAssetFromFile("../data/sarcoXML.txt");
+    PBRTextureAsset *t3D =  PBRTextureHandler->LoadAssetFromFile("../data/sarcoXML.txt");
 
     TextureHandler->LoadAssetFromFile("../data/sand_color.png",LoadTypeInThread);
     TextureHandler->LoadAssetFromFile("../data/sand_depth.png",LoadTypeInThread);
@@ -59,9 +59,9 @@ void TestingState::Init()
     IsoRectEntity *rectEntity = m_mainScene.CreateIsoRectEntity(sf::Vector2f(2048,2038));
     rectEntity->SetCenter(sf::Vector2f(512,  512));
    // rectEntity->SetTexture(TextureHandler->LoadAssetFromFile("../data/cobble_color.png",LoadTypeInThread));
-    //rectEntity->SetTexture(Texture3DHandler->LoadAssetFromFile("../data/wallXML.txt",LoadTypeInThread));
-    //rectEntity->SetTexture(Texture3DHandler->LoadAssetFromFile("../data/cobbleXML.txt",LoadTypeInThread));
-    rectEntity->SetTexture(Texture3DHandler->LoadAssetFromFile("../data/sandXML.txt",LoadTypeInThread));
+    //rectEntity->SetTexture(PBRTextureHandler->LoadAssetFromFile("../data/wallXML.txt",LoadTypeInThread));
+    //rectEntity->SetTexture(PBRTextureHandler->LoadAssetFromFile("../data/cobbleXML.txt",LoadTypeInThread));
+    rectEntity->SetTexture(PBRTextureHandler->LoadAssetFromFile("../data/sandXML.txt",LoadTypeInThread));
     //rectEntity->SetTexture(TextureHandler->LoadAssetFromFile("../data/cobble_color.png",LoadTypeInThread));
     //rectEntity->SetTexture(TextureHandler->LoadAssetFromFile("../data/sand_color.png",LoadTypeInThread));
   //  rectEntity->SetTexture(TextureHandler->LoadAssetFromFile("../data/sand.png",LoadTypeInThread));
@@ -89,7 +89,7 @@ void TestingState::Init()
 
     IsoSpriteEntity *sarco3DEntitybis = m_mainScene.CreateIsoSpriteEntity(sf::Vector2i(256,256));
     sarco3DEntitybis->SetTexture(t3D);
-    //sarco3DEntitybis->SetTexture(Texture3DHandler->LoadAssetFromFile("../data/sandXML.txt"));
+    //sarco3DEntitybis->SetTexture(PBRTextureHandler->LoadAssetFromFile("../data/sandXML.txt"));
     sarco3DEntitybis->SetCenter(128,128);
     m_sarcoNode->CreateChildNode(sf::Vector2f(-15,70))->AttachObject(sarco3DEntitybis);
 
@@ -114,13 +114,13 @@ void TestingState::Init()
 
     m_chene_node = m_mainScene.GetRootNode()->CreateChildNode(sf::Vector2f(150,-100));
     IsoSpriteEntity *cheneEntity = m_mainScene.CreateIsoSpriteEntity();
-    cheneEntity->SetTexture(Texture3DHandler->LoadAssetFromFile("../data/cheneXML.txt"));
+    cheneEntity->SetTexture(PBRTextureHandler->LoadAssetFromFile("../data/cheneXML.txt"));
     cheneEntity->SetCenter(192,320);
     cheneEntity->SetShadowCastingType(DirectionnalShadow);
     m_chene_node->AttachObject(cheneEntity);
 
     IsoSpriteEntity *abbayeEntity = m_mainScene.CreateIsoSpriteEntity();
-    abbayeEntity->SetTexture(Texture3DHandler->LoadAssetFromFile("../data/abbayeXML.txt",LoadTypeInThread));
+    abbayeEntity->SetTexture(PBRTextureHandler->LoadAssetFromFile("../data/abbayeXML.txt",LoadTypeInThread));
     abbayeEntity->SetCenter(960,540);
     abbayeEntity->SetShadowCastingType(DirectionnalShadow);
     m_mainScene.GetRootNode()->AttachObject(abbayeEntity);

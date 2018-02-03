@@ -1,5 +1,5 @@
-#ifndef SCENEMANAGER_H
-#define SCENEMANAGER_H
+#ifndef DEFAULTSCENE_H
+#define DEFAULTSCENE_H
 
 #include <SFML/OpenGL.hpp>
 #include <SFML/Graphics.hpp>
@@ -12,11 +12,11 @@
 namespace alag
 {
 
-class SceneManager
+class DefaultScene
 {
     public:
-        SceneManager();
-        virtual ~SceneManager();
+        DefaultScene();
+        virtual ~DefaultScene();
 
         virtual void CleanAll();
 
@@ -84,4 +84,4 @@ class SceneManager
 
 }
 
-#endif // SCENEMANAGER_H
+#endif // DEFAULTSCENE_H

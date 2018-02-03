@@ -10,7 +10,7 @@ SceneEntity::SceneEntity()
     m_isAnEntity = true;
     m_canBeLighted = false;
     m_isLighted = true;
-    m_is3D = false;
+    m_usePBR = false;
     m_ZDepth = 0.5;
     m_isAShadowCaster = true;
 }
@@ -25,9 +25,9 @@ bool SceneEntity::CanBeLighted()
     return m_isLighted & m_canBeLighted;
 }
 
-bool SceneEntity::Is3D()
+bool SceneEntity::UsePBR()
 {
-    return m_is3D;
+    return m_usePBR;
 }
 
 void SceneEntity::EnableLighting()

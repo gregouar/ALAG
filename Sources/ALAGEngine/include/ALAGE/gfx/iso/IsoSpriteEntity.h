@@ -6,11 +6,11 @@
 namespace alag
 {
 
-class IsometricScene;
+class PBRIsoScene;
 
 class IsoSpriteEntity : public SpriteEntity
 {
-    friend class IsometricScene;
+    friend class PBRIsoScene;
 
     public:
         IsoSpriteEntity();
@@ -26,10 +26,10 @@ class IsoSpriteEntity : public SpriteEntity
         //virtual void Notify(NotificationSender*, NotificationType);
 
     protected:
-        void SetIsoScene(IsometricScene *scene);
+        void SetIsoScene(PBRIsoScene *scene);
 
     private:
-        IsometricScene *m_scene;
+        PBRIsoScene *m_scene;
 };
 
 }

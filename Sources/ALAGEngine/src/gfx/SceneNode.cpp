@@ -1,6 +1,6 @@
 #include "ALAGE/gfx/SceneNode.h"
 
-#include "ALAGE/gfx/SceneManager.h"
+#include "ALAGE/gfx/DefaultScene.h"
 #include "ALAGE/utils/Logger.h"
 #include "ALAGE/utils/Mathematics.h"
 
@@ -24,7 +24,7 @@ SceneNode::SceneNode(const NodeTypeID &id, SceneNode *p)
     m_curNewId = 0;
 }
 
-SceneNode::SceneNode(const NodeTypeID &id, SceneNode *p, SceneManager* sceneManager) : SceneNode(id,p)
+SceneNode::SceneNode(const NodeTypeID &id, SceneNode *p, DefaultScene* sceneManager) : SceneNode(id,p)
 {
     SetSceneManager(sceneManager);
 }
@@ -335,7 +335,7 @@ const NodeTypeID& SceneNode::GetID()
     return m_id;
 }
 
-SceneManager* SceneNode::GetSceneManager()
+DefaultScene* SceneNode::GetSceneManager()
 {
     return m_sceneManager;
 }
@@ -352,7 +352,7 @@ void SceneNode::SetID(const NodeTypeID &id)
     m_id = id;
 }
 
-void SceneNode::SetSceneManager(SceneManager *sceneManager)
+void SceneNode::SetSceneManager(DefaultScene *sceneManager)
 {
     m_sceneManager = sceneManager;
     SceneNodeIterator childIt = GetChildIterator();

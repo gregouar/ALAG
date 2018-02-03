@@ -2,7 +2,7 @@
 #define RECTENTITY_H
 
 #include <SFML/Graphics.hpp>
-#include "ALAGE/gfx/Texture3DAsset.h"
+#include "ALAGE/gfx/PBRTextureAsset.h"
 #include "ALAGE/gfx/SceneEntity.h"
 
 namespace alag
@@ -22,7 +22,7 @@ class RectEntity : public SceneEntity, protected sf::RectangleShape
         virtual void ComputeShadow(Light*){}
 
         void SetTexture(TextureAsset *t);
-        void SetTexture(Texture3DAsset *t);
+        void SetTexture(PBRTextureAsset *t);
         void SetTextureRect(const sf::IntRect &);
         void SetCenter(sf::Vector2f);
 

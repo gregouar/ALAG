@@ -1,7 +1,6 @@
 #include "ALAGE/gfx/RectEntity.h"
 
 #include "ALAGE/core/AssetHandler.h"
-#include "ALAGE/gfx/iso/IsometricScene.h"
 #include "ALAGE/gfx/SceneNode.h"
 #include "ALAGE/utils/Mathematics.h"
 
@@ -18,7 +17,7 @@ RectEntity::RectEntity(sf::Vector2f s) : sf::RectangleShape(s)
     m_texture = nullptr;
 
     m_canBeLighted = true;
-    m_is3D = false;
+    m_usePBR = false;
 
     m_customTextureRect = false;
 }
@@ -46,29 +45,14 @@ void RectEntity::PrepareShader(sf::Shader *shader)
     && m_texture != nullptr)
     {
     //&& m_texture->IsLoaded())
-        shader->setUniform("map_color",*m_texture->GetTexture());
-        if(Is3D())
+
+        if(UsePBR())
         {
-            Texture3DAsset *myTexture3D = (Texture3DAsset*) m_texture;
+            PBRTextureAsset *myPBRTexture = (PBRTextureAsset*) m_texture;
+            myPBRTexture->PrepareShader(shader);
 
-            if(myTexture3D->GetDepthMap() != nullptr)
-            {
-                shader->setUniform("map_depth",*myTexture3D->GetDepthMap());
-                shader->setUniform("enable_depthMap", true);
-            } else {
-                shader->setUniform("enable_depthMap", false);
-            }
-
-            if(myTexture3D->GetNormalMap() != nullptr)
-            {
-                shader->setUniform("map_normal",*myTexture3D->GetNormalMap());
-                shader->setUniform("enable_normalMap", true);
-            } else {
-                shader->setUniform("enable_normalMap", false);
-            }
-
-            shader->setUniform("p_height",myTexture3D->GetHeight());
         } else {
+            shader->setUniform("map_albedo",*m_texture->GetTexture());
             shader->setUniform("p_height",0);
             shader->setUniform("enable_depthMap", false);
             shader->setUniform("enable_normalMap", false);
@@ -80,7 +64,7 @@ void RectEntity::PrepareShader(sf::Shader *shader)
 
 void RectEntity::SetTexture(TextureAsset *texture)
 {
-    m_is3D = false;
+    m_usePBR = false;
 
     if(m_texture != texture)
     {
@@ -103,10 +87,10 @@ void RectEntity::SetTexture(TextureAsset *texture)
 }
 
 
-void RectEntity::SetTexture(Texture3DAsset *texture)
+void RectEntity::SetTexture(PBRTextureAsset *texture)
 {
     SetTexture((TextureAsset*) texture);
-    m_is3D = true;
+    m_usePBR = true;
 }
 
 void RectEntity::SetTextureRect(const sf::IntRect &rect)
@@ -131,9 +115,9 @@ void RectEntity::Notify(NotificationSender* sender, NotificationType notificatio
     {
         if(notification == AssetLoadedNotification)
         {
-            bool was3D = m_is3D;
+            bool wasPBR = m_usePBR;
             SetTexture(m_texture);
-            m_is3D = was3D;
+            m_usePBR = wasPBR;
         }
         else if(notification == NotificationSenderDestroyed)
             m_texture = nullptr;
