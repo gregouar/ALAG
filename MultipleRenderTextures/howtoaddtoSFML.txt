@@ -1,0 +1,47 @@
+-Put "MultipleRenderTexture.hpp" into "include\SFML\Graphics"
+
+-Put "MultipleRenderTexture.cpp" into "src\SFML\Graphics"
+
+-Add in "include\SFML\Graphics\Texture.hpp":
+
+>> 	class MultipleRenderTexture;
+
+at the top and
+
+>> 	friend class MultipleRenderTexture;
+
+with the other friends declarations.
+
+-Add in "src\SFML\Graphics\CMakeLists.txt":
+
+>> 	${SRCROOT}/MultipleRenderTexture.cpp
+>> 	${INCROOT}/MultipleRenderTexture.hpp
+
+-Add in "src\SFML\Graphics\GLExtensions.hpp":
+
+>> 	#define GLEXT_glDrawBuffers                       glDrawBuffersOES
+
+with the other OES, and
+    
+>> 	#define GLEXT_glDrawBuffers                       glDrawBuffersEXT
+
+with the EXT.
+   	
+-Add in "src\SFML\Graphics\GLLoader.cpp"
+
+>> 	void (GL_FUNCPTR *sf_ptrc_glDrawBuffersEXT)(GLsizei, const GLenum *) = NULL;
+
+and
+
+>>	sf_ptrc_glDrawBuffersEXT = reinterpret_cast<void (GL_FUNCPTR *)(GLsizei, const GLenum*)>(glLoaderGetProcAddress("glDrawBuffers"));
+>>    	if (!sf_ptrc_glDrawBuffersEXT)
+>>        	numFailed++;
+
+and also
+
+>>	extern void (GL_FUNCPTR *sf_ptrc_glDrawBuffersEXT)(GLsizei, const GLenum*);
+>>	#define glDrawBuffersEXT sf_ptrc_glDrawBuffersEXT
+
+and finally
+
+>>	GLAPI void APIENTRY glDrawBuffers(GLsizei, const GLenum *);
