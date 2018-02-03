@@ -150,11 +150,55 @@ bool MultipleRenderTexture::removeRenderTarget(unsigned int renderingLocation)
     return true;
 }
 
-/*void setSmooth(bool smooth);
-bool isSmooth() const;
-void setRepeated(bool repeated);
-bool isRepeated() const;
-bool generateMipmap();*/
+void MultipleRenderTexture::setSmooth(unsigned int renderingLocation, bool smooth)
+{
+    std::vector<unsigned int>::iterator renderIt;
+    renderIt = findRenderTarget(renderingLocation);
+
+    if(renderIt != m_activeTextures.end())
+        m_textures[*renderIt-GL_COLOR_ATTACHMENT0_EXT].setSmooth(smooth);
+}
+
+bool MultipleRenderTexture::isSmooth(unsigned int renderingLocation)
+{
+    std::vector<unsigned int>::iterator renderIt;
+    renderIt = findRenderTarget(renderingLocation);
+
+    if(renderIt != m_activeTextures.end())
+        return m_textures[*renderIt-GL_COLOR_ATTACHMENT0_EXT].isSmooth();
+    return false;
+}
+
+void MultipleRenderTexture::setRepeated(unsigned int renderingLocation, bool repeated)
+{
+
+    std::vector<unsigned int>::iterator renderIt;
+    renderIt = findRenderTarget(renderingLocation);
+
+    if(renderIt != m_activeTextures.end())
+        m_textures[*renderIt-GL_COLOR_ATTACHMENT0_EXT].setRepeated(repeated);
+}
+
+bool MultipleRenderTexture::isRepeated(unsigned int renderingLocation)
+{
+
+    std::vector<unsigned int>::iterator renderIt;
+    renderIt = findRenderTarget(renderingLocation);
+
+    if(renderIt != m_activeTextures.end())
+        return m_textures[*renderIt-GL_COLOR_ATTACHMENT0_EXT].isRepeated();
+    return false;
+}
+
+bool MultipleRenderTexture::generateMipmap(unsigned int renderingLocation)
+{
+
+    std::vector<unsigned int>::iterator renderIt;
+    renderIt = findRenderTarget(renderingLocation);
+
+    if(renderIt != m_activeTextures.end())
+        m_textures[*renderIt-GL_COLOR_ATTACHMENT0_EXT].generateMipmap();
+}
 
 bool MultipleRenderTexture::setActive(bool active)
 {

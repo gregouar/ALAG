@@ -259,8 +259,8 @@ void IsometricScene::ProcessRenderQueue(sf::RenderTarget *w)
             m_PBRGeometryShader.setUniform("enable_depthMap",false);
             m_PBRGeometryShader.setUniform("enable_normalMap",false);
             m_PBRGeometryShader.setUniform("p_normalProjMat",sf::Glsl::Mat3(m_normalProjMat.values));
-            m_PBRGeometryShader.setUniform("p_cartToIso2DProjMat",sf::Glsl::Mat3(m_cartToIsoMat.values));
-            m_PBRGeometryShader.setUniform("p_isoToCartZFactor",m_isoToCartMat.values[5]);
+            //m_PBRGeometryShader.setUniform("p_cartToIso2DProjMat",sf::Glsl::Mat3(m_cartToIsoMat.values));
+            //m_PBRGeometryShader.setUniform("p_isoToCartZFactor",m_isoToCartMat.values[5]);
             (*renderIt)->PrepareShader(&m_PBRGeometryShader);
             state.shader = &m_PBRGeometryShader;
             (*renderIt)->Render(&m_PBRScreen,state);
@@ -466,31 +466,9 @@ void IsometricScene::ComputeTrigonometry()
                               -sinXY ,  sinZ * cosXY , cosZ * cosXY,
                                0     , -cosZ         , sinZ);
 
-    /* m_normalProjMat.values[0] = cosXY;
-     m_normalProjMat.values[1] = sinZ * sinXY;
-     m_normalProjMat.values[2] = cosZ * sinXY;
-     m_normalProjMat.values[3] = -sinXY;
-     m_normalProjMat.values[4] = sinZ * cosXY;
-     m_normalProjMat.values[5] = cosZ * cosXY;
-     m_normalProjMat.values[6] = 0;
-     m_normalProjMat.values[7] = -cosZ;
-     m_normalProjMat.values[8] = sinZ;*/
-
      m_normalProjMatInv = Mat3x3(   cosXY        , -sinXY        , 0,
                                     sinXY*sinZ   ,  cosXY*sinZ   , -cosZ,
                                     sinXY * cosZ ,  cosXY*cosZ   , sinZ);
-
-
-     /*m_normalProjMatInv.values[0] = cosXY;
-     m_normalProjMatInv.values[1] = -sinXY;
-     m_normalProjMatInv.values[2] = 0;
-     m_normalProjMatInv.values[3] = sinXY*sinZ;
-     m_normalProjMatInv.values[4] = cosXY*sinZ;
-     m_normalProjMatInv.values[5] = -cosZ;
-     m_normalProjMatInv.values[6] = sinXY * cosZ;
-     m_normalProjMatInv.values[7] = cosXY*cosZ;
-     m_normalProjMatInv.values[8] = sinZ;*/
-
 
     m_lightingShader.setUniform("p_cartToIso2DProjMat",sf::Glsl::Mat3(m_cartToIsoMat.values));
     m_lightingShader.setUniform("p_isoToCartMat",sf::Glsl::Mat3(m_isoToCartMat.values));

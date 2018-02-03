@@ -76,17 +76,17 @@ class IsometricScene : public SceneManager
         Mat3x3 m_isoToCartMat;
         Mat3x3 m_cartToIsoMat;
 
-        sf::Shader m_colorShader;
-        sf::Shader m_normalShader;
+        //sf::Shader m_colorShader;
+        //sf::Shader m_normalShader;
         sf::Shader m_depthShader;
         sf::Shader m_PBRGeometryShader;
         sf::Shader m_lightingShader;
 
-        int m_superSampling;
-        sf::RenderTexture m_colorScreen;
+        /*sf::RenderTexture m_colorScreen;
         sf::RenderTexture m_normalScreen;
-        sf::RenderTexture m_depthScreen;
+        sf::RenderTexture m_depthScreen;*/
 
+        int m_superSampling;
         sf::MultipleRenderTexture m_PBRScreen;
 
         sf::RectangleShape m_renderer;

@@ -27,8 +27,8 @@ namespace alag
 const char *GApp::DEFAULT_APP_NAME = "ALAGEngine";
 const char *GApp::DEFAULT_CONFIG_FILE = "config.ini";
 
-const char *GApp::DEFAULT_WINDOW_WIDTH = "800";
-const char *GApp::DEFAULT_WINDOW_HEIGHT = "600";
+const char *GApp::DEFAULT_WINDOW_WIDTH = "1600";
+const char *GApp::DEFAULT_WINDOW_HEIGHT = "900";
 const char *GApp::DEFAULT_SRGB = "false";
 
 
@@ -77,8 +77,6 @@ bool GApp::Init()
     sf::ContextSettings contextSettings;
     contextSettings.depthBits = 24;
     contextSettings.antialiasingLevel = 2;
-    contextSettings.majorVersion=3;
-    contextSettings.minorVersion=3;
     //contextSettings.sRgbCapable = Config::GetBool("window","srgb",DEFAULT_SRGB);
 
     m_window.create(videoMode, m_name, sf::Style::Close, contextSettings);
@@ -132,7 +130,6 @@ int GApp::Loop()
             m_stateManager.Draw(&m_window);
         }
 
-        //GfxEngine::Instance()->RenderWorld(&m_window);
         m_window.display();
     }
 

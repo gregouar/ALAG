@@ -20,11 +20,11 @@ public:
     bool addRenderTarget(unsigned int renderingLocation);
     bool removeRenderTarget(unsigned int renderingLocation);
 
-    /*void setSmooth(bool smooth);
-    bool isSmooth() const;
-    void setRepeated(bool repeated);
-    bool isRepeated() const;
-    bool generateMipmap();*/
+    void setSmooth(unsigned int renderingLocation, bool smooth);
+    bool isSmooth(unsigned int renderingLocation);
+    void setRepeated(unsigned int renderingLocation, bool repeated);
+    bool isRepeated(unsigned int renderingLocation);
+    bool generateMipmap(unsigned int renderingLocation);
 
     bool setActive(bool active);
     void display();

@@ -120,7 +120,7 @@ void TestingState::Init()
     m_chene_node->AttachObject(cheneEntity);
 
     IsoSpriteEntity *abbayeEntity = m_mainScene.CreateIsoSpriteEntity();
-    abbayeEntity->SetTexture(Texture3DHandler->LoadAssetFromFile("../data/abbayeXML.txt"));
+    abbayeEntity->SetTexture(Texture3DHandler->LoadAssetFromFile("../data/abbayeXML.txt",LoadTypeInThread));
     abbayeEntity->SetCenter(960,540);
     abbayeEntity->SetShadowCastingType(DirectionnalShadow);
     m_mainScene.GetRootNode()->AttachObject(abbayeEntity);
