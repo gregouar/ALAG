@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <texture3D>
 	<name>Cobble</name>
-	<height>5</height>
+	<height>10</height>
 	<texture type="albedo">cobble_color.png</texture>
 	<texture type="normal">cobble_normal.png</texture>
 	<texture type="depth">cobble_depth.png</texture>
-	<material type="roughness">0.5</material>
+	<material type="roughness">0.3</material>
 	<material type="metalness">0</material>
 	<material type="translucency">0</material>
 </texture3D>

@@ -299,6 +299,7 @@ void PBRIsoScene::ProcessRenderQueue(sf::RenderTarget *w)
     shift -= sf::Vector2f(curView.getSize().x/2, curView.getSize().y/2);
     m_lightingShader.setUniform("view_shift",shift);
     m_lightingShader.setUniform("view_zoom",m_currentCamera->GetZoom());
+    m_lightingShader.setUniform("view_pos",m_currentCamera->GetParentNode()->GetGlobalPosition());
     w->draw(m_renderer,m_rendererStates);
 }
 
@@ -394,6 +395,7 @@ void PBRIsoScene::SetAmbientLight(sf::Color light)
     DefaultScene::SetAmbientLight(light);
 
     m_lightingShader.setUniform("light_ambient",sf::Glsl::Vec4(m_ambientLight));
+    m_lightingShader.setUniform("p_exposure",.5f);
 }
 
 void PBRIsoScene::SetSSAO(bool ssao)

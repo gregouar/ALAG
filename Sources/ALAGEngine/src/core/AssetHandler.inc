@@ -166,6 +166,7 @@ void AssetHandler<AssetType>::AddToLoadingThread(AssetType* asset)
 
     if(asset != nullptr && !asset->IsLoaded())
     {
+
         m_assetsToLoadInThread.push_back(asset);
         if(m_assetsToLoadInThread.size() == 1)
             m_loadThread->launch();
@@ -299,28 +300,29 @@ void AssetHandler<AssetType>::SetDummyAsset(AssetType dummy)
 template<typename AssetType>
 void AssetHandler<AssetType>::LoadInThread()
 {
+    LockLoadMutex();
     while(!m_assetsToLoadInThread.empty())
     {
-        LockLoadMutex();
         if(m_assetsToLoadInThread.front() != nullptr)
         {
             if(!m_assetsToLoadInThread.front()->IsLoaded())
             {
                 AssetType* curAsset = m_assetsToLoadInThread.front();
-                m_assetsToLoadInThread.erase(m_assetsToLoadInThread.begin());
 
                 m_assetLoadingInThread = curAsset;
 
+                m_loadingCurAssetMutex.lock();
                 UnlockLoadMutex();
                 curAsset->LoadNow();
                 m_assetLoadingInThread = nullptr;
+                m_loadingCurAssetMutex.unlock();
                 LockLoadMutex();
             }
+            m_assetsToLoadInThread.erase(m_assetsToLoadInThread.begin());
         } else
             Logger::Error("Tried to load null asset in thread");
-
-        UnlockLoadMutex();
     }
+    UnlockLoadMutex();
 }
 
 
@@ -340,8 +342,13 @@ void AssetHandler<AssetType>::UnlockLoadMutex()
 template<typename AssetType>
 void AssetHandler<AssetType>::WaitForLoadingThread(AssetType *asset)
 {
-    if(asset != nullptr)
-    while(asset == m_assetLoadingInThread);
+    //if(asset != nullptr)
+    //while(asset == m_assetLoadingInThread){std::cout<<m_assetLoadingInThread<<std::endl;};
+    if(asset != nullptr && asset == m_assetLoadingInThread)
+    {
+        m_loadingCurAssetMutex.lock();
+        m_loadingCurAssetMutex.unlock();
+    }
 }
 
 

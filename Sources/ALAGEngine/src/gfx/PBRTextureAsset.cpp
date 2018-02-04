@@ -249,7 +249,6 @@ float PBRTextureAsset::GetTranslucency()
 
 void PBRTextureAsset::Notify(NotificationSender* sender, NotificationType notification)
 {
-
     if(notification == AssetLoadedNotification)
     if(sender == m_albedoMap || sender == m_depthMap
        || sender == m_normalMap || sender == m_materialMap)

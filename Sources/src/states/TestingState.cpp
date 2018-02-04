@@ -41,7 +41,8 @@ void TestingState::Init()
 
     m_mainScene.InitRenderer(m_manager->GetGApp()->GetWindowSize());
     m_mainScene.SetViewAngle({.xyAngle = 45, .zAngle=30});
-    m_cameraNode = m_mainScene.GetRootNode()->CreateChildNode(sf::Vector2f(0,0));
+    m_cameraNode = m_mainScene.GetRootNode()->CreateChildNode();
+    m_cameraNode->SetPosition(sf::Vector3f(0,0,750));
     m_camera = m_mainScene.CreateCamera(sf::Vector2f(
                              Config::GetInt("window","width",GApp::DEFAULT_WINDOW_WIDTH),
                              Config::GetInt("window","height",GApp::DEFAULT_WINDOW_HEIGHT)));
@@ -59,13 +60,13 @@ void TestingState::Init()
     IsoRectEntity *rectEntity = m_mainScene.CreateIsoRectEntity(sf::Vector2f(2048,2038));
     rectEntity->SetCenter(sf::Vector2f(512,  512));
    // rectEntity->SetTexture(TextureHandler->LoadAssetFromFile("../data/cobble_color.png",LoadTypeInThread));
-    //rectEntity->SetTexture(PBRTextureHandler->LoadAssetFromFile("../data/wallXML.txt",LoadTypeInThread));
-    //rectEntity->SetTexture(PBRTextureHandler->LoadAssetFromFile("../data/cobbleXML.txt",LoadTypeInThread));
-    rectEntity->SetTexture(PBRTextureHandler->LoadAssetFromFile("../data/sandXML.txt",LoadTypeInThread));
+    //rectEntity->SetTexture(PBRTextureHandler->LoadAssetFromFile("../data/sandXML.txt",LoadTypeInThread));
+    rectEntity->SetTexture(PBRTextureHandler->LoadAssetFromFile("../data/cobbleXML.txt",LoadTypeInThread));
+    //rectEntity->SetTexture(PBRTextureHandler->LoadAssetFromFile("../data/sandXML.txt",LoadTypeInThread));
     //rectEntity->SetTexture(TextureHandler->LoadAssetFromFile("../data/cobble_color.png",LoadTypeInThread));
     //rectEntity->SetTexture(TextureHandler->LoadAssetFromFile("../data/sand_color.png",LoadTypeInThread));
   //  rectEntity->SetTexture(TextureHandler->LoadAssetFromFile("../data/sand.png",LoadTypeInThread));
-    rectEntity->SetTextureRect(sf::IntRect(0,0,4096,4096));
+    rectEntity->SetTextureRect(sf::IntRect(0,0,2048,2048));
     rectNode->AttachObject(rectEntity);
 
     m_sarcoNode = m_mainScene.GetRootNode()->CreateChildNode();
@@ -104,7 +105,7 @@ void TestingState::Init()
    /* Light* sunLight = m_mainScene.CreateLight(DirectionnalLight,sf::Vector3f(-1,.5,-1), sf::Color(255,255,160));
     sunLight->SetConstantAttenuation(2);*/
     m_sunLight = m_mainScene.CreateLight(DirectionnalLight,sf::Vector3f(-1,-.2,-1), sf::Color(255,255,224));
-    m_sunLight->SetConstantAttenuation(1);
+    m_sunLight->SetConstantAttenuation(.1);
     m_mainScene.SetAmbientLight(sf::Color(64,64,96));
     m_sunLight->EnableShadowCasting();
     m_mainScene.GetRootNode()->AttachObject(m_sunLight);
@@ -127,9 +128,17 @@ void TestingState::Init()
     //m_mainScene.GetRootNode()->CreateChildNode(sf::Vector2f(0,0))->AttachObject(abbayeEntity);
 
 
+    /*IsoSpriteEntity *herbeEntity = m_mainScene.CreateIsoSpriteEntity();
+    herbeEntity->SetTexture(PBRTextureHandler->LoadAssetFromFile("../data/herbeXML.txt",LoadTypeInThread));
+    herbeEntity->SetCenter(960,540);
+    herbeEntity->SetShadowCastingType(DirectionnalShadow);
+    m_mainScene.GetRootNode()->AttachObject(herbeEntity);*/
+
+
     m_lightNode = m_mainScene.GetRootNode()->CreateChildNode();
     Light* light = m_mainScene.CreateLight();
     light->SetDiffuseColor(sf::Color(255,190,64));
+    light->SetConstantAttenuation(.01);
     light->SetLinearAttunation(.00001);
     light->SetQuadraticAttenuation(.00001);
     m_lightNode->AttachObject(light);
@@ -255,7 +264,9 @@ void TestingState::Update(sf::Time time)
 
     m_cameraNode->Move(m_mainScene.ConvertCartesianToIso(m_camMove.x,m_camMove.y)*(500*time.asSeconds()));
   //  m_cameraNode->Move(sf::Vector3f(0,0,m_camMove.z)*(100*time.asSeconds()));
-    m_camera->Zoom((1-m_camMove.z*time.asSeconds()));
+    //m_camera->Zoom((1-m_camMove.z*time.asSeconds()));
+
+    m_cameraNode->Move(0,0,m_camMove.z *(500*time.asSeconds()));
     m_sarcoNode->Move(20*time.asSeconds(),0,0);
 
     m_mainScene.Update(time);

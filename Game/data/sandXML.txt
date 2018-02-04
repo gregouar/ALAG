@@ -5,7 +5,7 @@
 	<texture type="albedo">sand_color.png</texture>
 	<texture type="normal">sand_normal.png</texture>
 	<texture type="depth">sand_depth.png</texture>
-	<material type="roughness">0.2</material>
+	<material type="roughness">.5</material>
 	<material type="metalness">0</material>
 	<material type="translucency">0</material>
 </texture3D>

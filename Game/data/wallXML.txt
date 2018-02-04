@@ -5,7 +5,7 @@
 	<texture type="albedo">wall_color.png</texture>
 	<texture type="normal">wall_normal.png</texture>
 	<texture type="depth">wall_depth.png</texture>
-	<material type="roughness">1</material>
+	<material type="roughness">.01</material>
 	<material type="metalness">0</material>
 	<material type="translucency">0</material>
 </texture3D>

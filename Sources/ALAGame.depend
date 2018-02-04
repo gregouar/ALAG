@@ -5,7 +5,7 @@
 	"ALAGE/utils/Logger.h"
 	"include/states/TestingState.h"
 
-1517670518 source:c:\c++\alag\sources\alagengine\src\core\gapp.cpp
+1517676025 source:c:\c++\alag\sources\alagengine\src\core\gapp.cpp
 	<SFML/System.hpp>
 	"ALAGE/core/GApp.h"
 	"ALAGE/utils/Logger.h"
@@ -33,7 +33,7 @@
 	<vector>
 	"GState.h"
 
-1517673609 source:c:\c++\alag\sources\src\states\testingstate.cpp
+1517769752 source:c:\c++\alag\sources\src\states\testingstate.cpp
 	"states/TestingState.h"
 	"ALAGE/core/GApp.h"
 	"ALAGE/core/EventManager.h"
@@ -496,7 +496,7 @@
 1516179549 source:c:\c++\alag\sources\alagengine\include\alage\core\assethandler.cpp
 	"AssetHandler.h"
 
-1516970799 c:\c++\alag\sources\alagengine\include\alage\core\assethandler.h
+1517767967 c:\c++\alag\sources\alagengine\include\alage\core\assethandler.h
 	"ALAGE/Types.h"
 	"ALAGE/core/Asset.h"
 	"ALAGE/utils/Singleton.h"
@@ -609,7 +609,7 @@
 	"extlibs/tinyxml.h"
 	<windows.h>
 
-1517096394 c:\c++\alag\sources\alagengine\src\core\assethandler.inc
+1517769487 c:\c++\alag\sources\alagengine\src\core\assethandler.inc
 	"ALAGE/utils/Logger.h"
 
 1517140738 source:c:\c++\alag\sources\alagengine\src\gfx\isometricscene.cpp
@@ -895,7 +895,7 @@
 	"ALAGE/gfx/iso/IsoRectEntity.h"
 	<SFML/OpenGL.hpp>
 
-1517675260 source:c:\c++\alag\sources\alagengine\src\gfx\iso\pbrisoscene.cpp
+1517748568 source:c:\c++\alag\sources\alagengine\src\gfx\iso\pbrisoscene.cpp
 	"ALAGE/gfx/iso/PBRIsoScene.h"
 	"ALAGE/utils/Logger.h"
 	"ALAGE/utils/Mathematics.h"
@@ -907,12 +907,12 @@
 	<sstream>
 	<iostream>
 
-1517675275 source:c:\c++\alag\sources\alagengine\src\gfx\iso\pbrisoshaders.cpp
+1517752217 source:c:\c++\alag\sources\alagengine\src\gfx\iso\pbrisoshaders.cpp
 	"ALAGE/gfx/iso/PBRIsoScene.h"
 	<sstream>
 	<iostream>
 
-1517674074 source:c:\c++\alag\sources\alagengine\src\gfx\pbrtextureasset.cpp
+1517768774 source:c:\c++\alag\sources\alagengine\src\gfx\pbrtextureasset.cpp
 	"ALAGE/core/AssetHandler.h"
 	"ALAGE/gfx/PBRTextureAsset.h"
 	"ALAGE/utils/Parser.h"
