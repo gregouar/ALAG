@@ -156,7 +156,7 @@ bool PBRIsoScene::InitRenderer(sf::Vector2u windowSize)
         sf::Color c = sf::Color::White;
         c.r = (int)(static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/255)));
         c.g = (int)(static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/255)));
-        c.r = 1;
+        c.r = 0;
         m_SSAONoisePattern.setPixel(x,y,c);
     }
 

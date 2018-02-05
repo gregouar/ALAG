@@ -29,8 +29,8 @@ void PBRIsoScene::CompileDepthShader()
     << DEPTH_BUFFER_NORMALISER <<
     ");" \
     "   gl_FragColor.r = gl_FragDepth;" \
-    "   gl_FragColor.g = (gl_FragDepth - 256.0 * floor(gl_FragDepth / 256.0))*256.0;" \
-    "   gl_FragColor.b = (gl_FragDepth - 65536.0 * floor(gl_FragDepth / (65536.0)))*65536.0;" \
+    "   gl_FragColor.g = (gl_FragDepth - floor(gl_FragDepth * 256.0)/256.0)*256.0;" \
+    "   gl_FragColor.b = (gl_FragDepth - floor(gl_FragDepth * (65536.0))/65536.0)*65536.0;" \
     "   gl_FragColor.a = colorAlpha;" \
     "}";
 
@@ -74,6 +74,8 @@ void PBRIsoScene::CompilePBRGeometryShader()
     "       heightPixel = (depthPixel.r+depthPixel.g+depthPixel.b)*.33*p_height;"
     "   }"
     "   float zPixel = heightPixel + p_zPos;" \
+    "   if(albedoPixel.a < .9)"
+    "       albedoPixel.a = 0;"
     "   gl_FragDepth = 1.0 - albedoPixel.a*(0.5+zPixel*"
     << DEPTH_BUFFER_NORMALISER <<
     ");" \
@@ -85,8 +87,8 @@ void PBRIsoScene::CompilePBRGeometryShader()
     "   NormalColor.rgb = 0.5+direction*0.5;" \
     "   NormalColor.a = albedoPixel.a;" \
     "   DepthColor.r = gl_FragDepth;" \
-    "   DepthColor.g = (gl_FragDepth - 256.0 * floor(gl_FragDepth / 256.0))*256.0;" \
-    "   DepthColor.b = (gl_FragDepth - 65536.0 * floor(gl_FragDepth / (65536.0)))*65536.0;" \
+    "   DepthColor.g = (gl_FragDepth -  floor(gl_FragDepth * 256.0)/256.0)*256.0;" \
+    "   DepthColor.b = (gl_FragDepth - floor(gl_FragDepth * 65536.0)/65536.0)*65536.0;" \
     "   DepthColor.a = albedoPixel.a;" \
     "   MaterialColor = materialPixel; " \
     "}";
@@ -150,7 +152,7 @@ void PBRIsoScene::CompileLightingShader()
 	"   float shadowHeight = (0.5-(shadowPixel.r+shadowPixel.g/256.0+shadowPixel.b/65536.0))*"
 	<< DEPTH_BUFFER_NORMALISER_INV <<
 	";"
-    "   return 1.0 - min(1.0,max(0.0, (shadowHeight-heightPixel)*0.05));"
+    "   return 1.0 - min(1.0,max(0.0, (shadowHeight-heightPixel-5.0)*0.05));"
     "}"
     ""
     "vec3 fresnelSchlick(float cosTheta, vec3 F0)"

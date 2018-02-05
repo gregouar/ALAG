@@ -61,8 +61,8 @@ void TestingState::Init()
     //Sprite3DEntity *sarco3DEntity = m_mainScene.CreateSprite3DEntity(sf::Vector2i(256,256));
     SpriteEntity *sarco3DEntity = m_mainScene.CreateIsoSpriteEntity();
     //sarco3DEntity->SetTexture(TextureHandler->LoadAssetFromFile("../data/sarco-color.png"));
-    sarco3DEntity->SetTexture(PBRTextureHandler->LoadAssetFromFile("../data/torusXML.txt",LoadTypeInThread));
-    sarco3DEntity->SetCenter(64,64);
+    sarco3DEntity->SetTexture(PBRTextureHandler->LoadAssetFromFile("../data/torusbXML.txt",LoadTypeInThread));
+    sarco3DEntity->SetCenter(128,128);
     sarco3DEntity->SetShadowCastingType(DirectionnalShadow);
     //sarco3DEntity->DesactivateLighting();
     m_sarco3DNode->AttachObject(sarco3DEntity);

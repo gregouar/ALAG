@@ -3,7 +3,7 @@ Texture loaded from file: ../data/sarco-color.png
 Texture loaded from file: ../data/sarco-normal.png
 Texture loaded from file: ../data/sarco-heightmap.png
 PBRTexture readed from file: ../data/sarcoXML.txt
-PBRTexture readed from file: ../data/torusXML.txt
+PBRTexture readed from file: ../data/torusbXML.txt
 Texture loaded from file: ../data/chene_color.png
 Texture loaded from file: ../data/sand_color.png
 Texture loaded from file: ../data/chene_normal.png
@@ -11,16 +11,15 @@ Texture loaded from file: ../data/sand_depth.png
 Texture loaded from file: ../data/chene_heightmap.png
 Texture loaded from file: ../data/chene_mat.png
 PBRTexture readed from file: ../data/cheneXML.txt
-PBRTexture readed from file: ../data/abbayeXML.txt
 Font loaded from file: ../data/arial.ttf
-PBRTexture readed from file: ../data/cobbleXML.txt
 Starting application
+PBRTexture readed from file: ../data/abbayeXML.txt
+PBRTexture readed from file: ../data/cobbleXML.txt
 Texture loaded from file: ../data/sand_normal.png
-Texture loaded from file: ../data/torus_albedo.png
-Texture loaded from file: ../data/torus_normal.png
-Texture loaded from file: ../data/torus_depth.png
-Texture loaded from file: ../data/torus_material.png
-PBR texture loaded from file: ../data/torusXML.txt
+Texture loaded from file: ../data/torusb.png
+Texture loaded from file: ../data/torusb_normal.png
+Texture loaded from file: ../data/torusb_depth.png
+PBR texture loaded from file: ../data/torusbXML.txt
 Texture loaded from file: ../data/abbaye_color.png
 Texture loaded from file: ../data/abbaye_normal.png
 Texture loaded from file: ../data/abbaye_heightmap.png
