@@ -27,7 +27,7 @@ class DefaultScene
         virtual void ProcessRenderQueue(sf::RenderTarget*);
         virtual void RenderScene(sf::RenderTarget*) = 0;
         virtual void RenderShadows(std::multimap<float, Light*> &,const sf::View &,
-                                   /*const sf::Vector2u &,*/ int = GL_MAX_LIGHTS);
+                                   /*const sf::Vector2u &,*/ int = -1); // -1 is GL_MAX_LIGHTS
 
         void AskToComputeRenderQueue();
 
@@ -60,7 +60,7 @@ class DefaultScene
         void AddCreatedObject(const ObjectTypeID &, SceneObject*);
         void AddToRenderQueue(SceneNode*);
 
-        virtual int UpdateLighting(std::multimap<float, Light*> &lightList, int = GL_MAX_LIGHTS);
+        virtual int UpdateLighting(std::multimap<float, Light*> &lightList, int = -1); //-1 is GL_MAX_LIGHTS
 
         //sf::View m_view; //Should remove this and create CameraEntity
         Camera *m_currentCamera;

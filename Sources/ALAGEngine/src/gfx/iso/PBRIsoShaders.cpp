@@ -28,9 +28,9 @@ void PBRIsoScene::CompileDepthShader()
     "   gl_FragDepth = 1.0 - colorAlpha*(0.5+zPixel*"
     << DEPTH_BUFFER_NORMALISER <<
     ");" \
-    "   gl_FragColor.r = gl_FragDepth;" \
-    "   gl_FragColor.g = (gl_FragDepth - floor(gl_FragDepth * 256.0)/256.0)*256.0;" \
-    "   gl_FragColor.b = (gl_FragDepth - floor(gl_FragDepth * (65536.0))/65536.0)*65536.0;" \
+    "   gl_FragColor.r = floor(gl_FragDepth * 255.0)/255.0;" \
+    "   gl_FragColor.g = floor((gl_FragDepth -  floor(gl_FragDepth * 255.0)/255.0)*65025.0)/255.0;" \
+    "   gl_FragColor.b = (gl_FragDepth - floor(gl_FragDepth * 65025.0)/65025.0)*65025.0;" \
     "   gl_FragColor.a = colorAlpha;" \
     "}";
 
@@ -47,6 +47,7 @@ void PBRIsoScene::CompilePBRGeometryShader()
     "layout (location = 1) out vec4 NormalColor;"
     "layout (location = 2) out vec4 DepthColor;"
     "layout (location = 3) out vec4 MaterialColor;"
+    "uniform bool p_alpha_pass;"
     "uniform sampler2D map_albedo;"  \
     "uniform bool enable_depthMap;" \
     "uniform sampler2D map_depth;" \
@@ -62,35 +63,37 @@ void PBRIsoScene::CompilePBRGeometryShader()
     "uniform float p_zPos;" \
     "void main()" \
     "{" \
+    "   gl_FragDepth = 1.0;"
     "   vec4 albedoPixel = texture2D(map_albedo, gl_TexCoord[0].xy);" \
-	"	vec3 direction = vec3(0,0,-1);"
-	"   if(enable_normalMap == true){"
-	"    direction = -1.0+2.0*texture2D(map_normal, gl_TexCoord[0].xy).rgb;"
-	"   }"
-	"   direction = direction * p_normalProjMat;"
-    "   float heightPixel = 0; "
-    "   if(enable_depthMap == true){"
-    "        vec4 depthPixel = texture2D(map_depth, gl_TexCoord[0].xy);" \
-    "       heightPixel = (depthPixel.r+depthPixel.g+depthPixel.b)*.33*p_height;"
+    "   if((albedoPixel.a > .2 && albedoPixel.a < .9 && p_alpha_pass == true) "
+    "   || (albedoPixel.a >= .9 && p_alpha_pass == false))"
+    "   {"
+	"	    vec3 direction = vec3(0,0,-1);"
+	"       if(enable_normalMap == true){"
+	"        direction = -1.0+2.0*texture2D(map_normal, gl_TexCoord[0].xy).rgb;"
+	"       }"
+	"       direction = direction * p_normalProjMat;"
+    "       float heightPixel = 0; "
+    "       if(enable_depthMap == true){"
+    "           vec4 depthPixel = texture2D(map_depth, gl_TexCoord[0].xy);" \
+    "           heightPixel = (depthPixel.r+depthPixel.g+depthPixel.b)*.33*p_height;"
+    "       }"
+    "       float zPixel = heightPixel + p_zPos;" \
+    "       gl_FragDepth = 1.0 - (0.5+zPixel*"
+    << DEPTH_BUFFER_NORMALISER << ");"
+    "       vec4 materialPixel = vec4(p_roughness,p_metalness,p_translucency,1.0);"
+    "       if(enable_materialMap == true){"
+    "           materialPixel.rgb = texture2D(map_material, gl_TexCoord[0].xy).rgb;"
+    "       }"
+    "       AlbedoColor = gl_Color*albedoPixel; " \
+    "       NormalColor.rgb = 0.5+direction*0.5;" \
+    "       NormalColor.a = 1.0;" \
+    "       DepthColor.r = floor(gl_FragDepth * 255.0)/255.0;" \
+    "       DepthColor.g = floor((gl_FragDepth -  floor(gl_FragDepth * 255.0)/255.0)*65025.0)/255.0;" \
+    "       DepthColor.b = (gl_FragDepth - floor(gl_FragDepth * 65025.0)/65025.0)*65025.0;" \
+    "       DepthColor.a = 1.0;" \
+    "       MaterialColor = materialPixel; " \
     "   }"
-    "   float zPixel = heightPixel + p_zPos;" \
-    "   if(albedoPixel.a < .9)"
-    "       albedoPixel.a = 0;"
-    "   gl_FragDepth = 1.0 - albedoPixel.a*(0.5+zPixel*"
-    << DEPTH_BUFFER_NORMALISER <<
-    ");" \
-    "   vec4 materialPixel = vec4(p_roughness,p_metalness,p_translucency,albedoPixel.a);"
-    "   if(enable_materialMap == true){"
-    "       materialPixel = texture2D(map_material, gl_TexCoord[0].xy);"
-    "   }"
-    "   AlbedoColor = gl_Color*albedoPixel; " \
-    "   NormalColor.rgb = 0.5+direction*0.5;" \
-    "   NormalColor.a = albedoPixel.a;" \
-    "   DepthColor.r = gl_FragDepth;" \
-    "   DepthColor.g = (gl_FragDepth -  floor(gl_FragDepth * 256.0)/256.0)*256.0;" \
-    "   DepthColor.b = (gl_FragDepth - floor(gl_FragDepth * 65536.0)/65536.0)*65536.0;" \
-    "   DepthColor.a = albedoPixel.a;" \
-    "   MaterialColor = materialPixel; " \
     "}";
 
     m_PBRGeometryShader.loadFromMemory(fragShader.str(),sf::Shader::Fragment);
@@ -118,6 +121,10 @@ void PBRIsoScene::CompileLightingShader()
     "uniform sampler2D map_normal;" \
     "uniform sampler2D map_depth;" \
     "uniform sampler2D map_material;" \
+    "uniform sampler2D alpha_albedo;" \
+    "uniform sampler2D alpha_normal;" \
+    "uniform sampler2D alpha_depth;" \
+    "uniform sampler2D alpha_material;" \
     "uniform float p_zPos;" \
     "uniform float view_zoom;"
     "uniform vec2 view_ratio;" \
@@ -146,14 +153,21 @@ void PBRIsoScene::CompileLightingShader()
     ""
     "float GetShadowCastValue(int curShadowMap, float heightPixel, vec2 shadowPos) {"
     "   vec4 shadowPixel;"
-    "   vec2 mapPos = (shadowPos-shadow_shift[curShadowMap])*shadow_ratio[curShadowMap];"
-	"   if(curShadowMap == 0)"
-	"       shadowPixel = texture2D(shadow_map_0, mapPos);"
-	"   float shadowHeight = (0.5-(shadowPixel.r+shadowPixel.g/256.0+shadowPixel.b/65536.0))*"
+    "   vec2 mapPos = (shadowPos-shadow_shift[curShadowMap])*shadow_ratio[curShadowMap];";
+    for(int i = 0 ; i < MAX_SHADOW_MAPS ; ++i)
+        fragShader<<"if(curShadowMap == "<<i<<")"
+        <<"shadowPixel = texture2D(shadow_map_"<<i<<", mapPos);";
+    fragShader<<
+	"   float shadowHeight = (0.5-(shadowPixel.r+shadowPixel.g/255.0+shadowPixel.b/65025.0))*"
 	<< DEPTH_BUFFER_NORMALISER_INV <<
 	";"
-    "   return 1.0 - min(1.0,max(0.0, (shadowHeight-heightPixel-5.0)*0.05));"
+    "   return 1.0 - min(1.0,max(0.0, (shadowHeight-heightPixel)*0.05));"
     "}"
+    ""
+    "vec3 fresnelSchlickRoughness(float cosTheta, vec3 F0, float roughness)"
+    "{"
+    "    return F0 + (max(vec3(1.0 - roughness), F0) - F0) * pow(1.0 - cosTheta, 5.0);"
+    "}   "
     ""
     "vec3 fresnelSchlick(float cosTheta, vec3 F0)"
     "{"
@@ -194,41 +208,98 @@ void PBRIsoScene::CompileLightingShader()
     "   vec4 normalPixel = texture2D(map_normal, gl_TexCoord[0].xy);" \
     "   vec4 depthPixel  = texture2D(map_depth, gl_TexCoord[0].xy);" \
     "   vec4 materialPixel  = texture2D(map_material, gl_TexCoord[0].xy);" \
-    "   vec3 direction = -1.0+2.0*normalPixel.rgb;"
+    "   vec3 direction = normalize(-1.0+2.0*normalPixel.rgb);"
     "   if(enable_sRGB == true)"
 	"       albedoPixel.rgb = pow(albedoPixel.rgb, vec3(2.2));"
-    "   float heightPixel = (0.5-(depthPixel.r+depthPixel.g/256.0+depthPixel.b/65536.0))*"
+    "   float heightPixel = (0.5-(depthPixel.r+depthPixel.g/255.0+depthPixel.b/65025.0))*"
     << DEPTH_BUFFER_NORMALISER_INV <<
     ";"
+    "   bool enable_alpha = false;"
+    "   vec4 a_albedoPixel = texture2D(alpha_albedo, gl_TexCoord[0].xy);"
+    "   float a_heightPixel = 0;"
+    "   if(a_albedoPixel.a > .1){"
+    "       vec4 a_depthPixel = texture2D(alpha_depth, gl_TexCoord[0].xy);"
+    "       a_heightPixel = (0.5-(a_depthPixel.r+a_depthPixel.g/255.0+a_depthPixel.b/65025.0))*"
+    << DEPTH_BUFFER_NORMALISER_INV <<";"
+    "       if(a_heightPixel > heightPixel)"
+    "           enable_alpha = true;"
+    "   }"
+    "   vec3 a_direction;"
+    "   vec4 a_materialPixel;"
+    "   if(enable_alpha == true) {"
+    "       vec4 a_normalPixel = texture2D(alpha_normal, gl_TexCoord[0].xy);" \
+    "       vec4 a_materialPixel  = texture2D(alpha_material, gl_TexCoord[0].xy);" \
+    "       a_direction = normalize(-1.0+2.0*a_normalPixel.rgb);"
+    "       if(enable_sRGB == true)"
+	"           a_albedoPixel.rgb = pow(a_albedoPixel.rgb, vec3(2.2));"
+    "   }"
+    ""
 	"   vec3 fragPos = v_vertex*view_zoom+vec3(view_shift.xy,0);"
+	"   vec3 a_fragPos = fragPos;"
 	"   fragPos.y -= heightPixel*p_isoToCartZFactor;"
 	"   fragPos = fragPos*p_cartToIso2DProjMat;"
 	"   fragPos.z = heightPixel;"
+	"   if(enable_alpha == true){"
+	"       a_fragPos.y -= a_heightPixel*p_isoToCartZFactor;"
+	"       a_fragPos = a_fragPos*p_cartToIso2DProjMat;"
+	"       a_fragPos.z = a_heightPixel;"
+	"   }"
+	""
     "   vec3 viewDirection = normalize(view_pos - fragPos);"
     "   vec3 surfaceReflection0 = vec3(0.04);"
     "   surfaceReflection0 = mix(surfaceReflection0, albedoPixel.rgb, materialPixel.g);"
-    "   gl_FragColor = gl_Color * light_ambient * albedoPixel; "
+    "   float FAmbient = fresnelSchlickRoughness(max(dot(direction, viewDirection), 0.0), surfaceReflection0, materialPixel.r);"
+    "   vec3 kSAmbient = FAmbient;"
+    "   vec3 kDAmbient = (1.0 - kSAmbient)*(1.0 - materialPixel.g);"
+    "   vec3 irradianceAmbient = light_ambient.rgb*light_ambient.a;"
+    "   gl_FragColor.rgb = (albedoPixel.rgb  * kDAmbient + kSAmbient)* irradianceAmbient; "
+    "   gl_FragColor.a = albedoPixel.a; "
+    ""
+    "   vec4 alpha_FragColor;"
+    "   vec3 a_surfaceReflection0 = vec3(0.04);"
+    "   vec3 a_viewDirection;"
+    "   if(enable_alpha == true) {"
+    "       a_viewDirection = normalize(view_pos - a_fragPos);"
+    "       a_surfaceReflection0 = mix(a_surfaceReflection0, a_albedoPixel.rgb, a_materialPixel.g);"
+    "       float a_FAmbient = fresnelSchlickRoughness(max(dot(a_direction, a_viewDirection), 0.0), a_surfaceReflection0, a_materialPixel.r);"
+    "       vec3 a_kSAmbient = a_FAmbient;"
+    "       vec3 a_kDAmbient = (1.0 - a_kSAmbient)*(1.0 - a_materialPixel.g);"
+    "       alpha_FragColor.rgb = (a_albedoPixel.rgb  * a_kDAmbient + a_kSAmbient)* irradianceAmbient; "
+    "       alpha_FragColor.a = a_albedoPixel.a; "
+    "   }"
+    ""
     "   int curShadowMap = 0;"
     "   for(int i = 0 ; i < light_nbr ; ++i)" \
 	"   {" \
 	"	    float attenuation = 0.0;" \
 	"       vec3 lightDirection = vec3(0,0,0);"
+	"	    float a_attenuation = 0.0;" \
+	"       vec3 a_lightDirection = vec3(0,0,0);"
 	"	    if(gl_LightSource[i].position.w == 0.0)" \
 	"	    {		" \
 	"	    	lightDirection = -gl_LightSource[i].position.xyz;" \
+	"	    	a_lightDirection = -gl_LightSource[i].position.xyz;" \
     "           attenuation = 1.0;"
+    "           a_attenuation = 1.0;"
 	"	    }" \
 	"	    else" \
 	"	    {" \
 	"	    	lightDirection = gl_LightSource[i].position.xyz - fragPos.xyz;" \
-	"	    	float dist = length(lightDirection)/100;" \
+	"	    	float dist = length(lightDirection)*0.01;" \
 	"           float dr = dist/gl_LightSource[i].constantAttenuation;"
 	"           float sqrtnom = 1.0 - dr*dr*dr*dr;"
     "           if(sqrtnom >= 0)"
-	"           attenuation = saturate(sqrtnom*sqrtnom/(dist*dist+1));"
-	/*"	    	attenuation = 1.0/(.2+" \
-	"	    					 dist*gl_LightSource[i].linearAttenuation +" \
-	"	    				     dist*dist*gl_LightSource[i].quadraticAttenuation);" \*/
+	"               attenuation = saturate(sqrtnom*sqrtnom/(dist*dist+1.0));"
+	""
+	"           if(enable_alpha){"
+	"	    	    a_lightDirection = gl_LightSource[i].position.xyz - a_fragPos.xyz;" \
+	"	    	    float a_dist = length(a_lightDirection)*0.01;" \
+	"               float a_dr = a_dist/gl_LightSource[i].constantAttenuation;"
+	"               float a_sqrtnom = 1.0 - a_dr*a_dr*a_dr*a_dr;"
+    "               if(a_sqrtnom >= 0)"
+	"                   a_attenuation = saturate(a_sqrtnom*a_sqrtnom/(a_dist*a_dist+1.0));"
+	"           }"
+	""
 	"	    }" \
     "       if((gl_LightSource[i].position.w == 0.0 && enable_directionalShadows == true)"
     "        ||(gl_LightSource[i].position.w != 0.0 && enable_dynamicShadows == true))"
@@ -239,16 +310,34 @@ void PBRIsoScene::CompileLightingShader()
 	"               vec3 v = vec3((heightPixel*lightDirection.xy/lightDirection.z), 0);"
 	"               shadowPos.x -= (v*p_isoToCartMat).x;"
 	"               shadowPos.y += (v*p_isoToCartMat).y;"
-	"               vec4 shadow_pixel= (0,0,0,0);"
+	//              SHOULD DO 4 TESTS FIRST AND THEN REFINE
 	"               attenuation *= (GetShadowCastValue(curShadowMap,heightPixel,shadowPos)*4"
-    "                            +GetShadowCastValue(curShadowMap,heightPixel,shadowPos+vec2(3,0))*2"
-    "                            +GetShadowCastValue(curShadowMap,heightPixel,shadowPos+vec2(-3,0))*2"
-    "                            +GetShadowCastValue(curShadowMap,heightPixel,shadowPos+vec2(0,3))*2"
-    "                            +GetShadowCastValue(curShadowMap,heightPixel,shadowPos+vec2(0,-3))*2"
-    "                            +GetShadowCastValue(curShadowMap,heightPixel,shadowPos+vec2(2,2))"
-    "                            +GetShadowCastValue(curShadowMap,heightPixel,shadowPos+vec2(-2,2))"
-    "                            +GetShadowCastValue(curShadowMap,heightPixel,shadowPos+vec2(-2,-2))"
-    "                            +GetShadowCastValue(curShadowMap,heightPixel,shadowPos+vec2(2,-2)))/16;"
+    "                            +GetShadowCastValue(curShadowMap,heightPixel,shadowPos+vec2(2,0))*2"
+    "                            +GetShadowCastValue(curShadowMap,heightPixel,shadowPos+vec2(-2,0))*2"
+    "                            +GetShadowCastValue(curShadowMap,heightPixel,shadowPos+vec2(0,2))*2"
+    "                            +GetShadowCastValue(curShadowMap,heightPixel,shadowPos+vec2(0,-2))*2"
+    "                            +GetShadowCastValue(curShadowMap,heightPixel,shadowPos+vec2(1,1))"
+    "                            +GetShadowCastValue(curShadowMap,heightPixel,shadowPos+vec2(-1,1))"
+    "                            +GetShadowCastValue(curShadowMap,heightPixel,shadowPos+vec2(-1,-1))"
+    "                            +GetShadowCastValue(curShadowMap,heightPixel,shadowPos+vec2(1,-1)))/16;"
+    ""
+    "               if(enable_alpha){"
+    "                   vec2 a_shadowPos = gl_FragCoord.xy*view_zoom;"
+	"                   a_shadowPos.y += a_heightPixel*p_isoToCartZFactor;"
+	"                   vec3 a_v = vec3((a_heightPixel*a_lightDirection.xy/a_lightDirection.z), 0);"
+	"                   a_shadowPos.x -= (a_v*p_isoToCartMat).x;"
+	"                   a_shadowPos.y += (a_v*p_isoToCartMat).y;"
+	"                   a_attenuation *= (GetShadowCastValue(curShadowMap,a_heightPixel,a_shadowPos));"
+   /* "                            +GetShadowCastValue(curShadowMap,heightPixel,shadowPos+vec2(2,0))*2"
+    "                            +GetShadowCastValue(curShadowMap,heightPixel,shadowPos+vec2(-2,0))*2"
+    "                            +GetShadowCastValue(curShadowMap,heightPixel,shadowPos+vec2(0,2))*2"
+    "                            +GetShadowCastValue(curShadowMap,heightPixel,shadowPos+vec2(0,-2))*2"
+    "                            +GetShadowCastValue(curShadowMap,heightPixel,shadowPos+vec2(1,1))"
+    "                            +GetShadowCastValue(curShadowMap,heightPixel,shadowPos+vec2(-1,1))"
+    "                            +GetShadowCastValue(curShadowMap,heightPixel,shadowPos+vec2(-1,-1))"
+    "                            +GetShadowCastValue(curShadowMap,heightPixel,shadowPos+vec2(1,-1)))/16;"*/
+    "               }"
+    ""
 	"           }"
 	"           ++curShadowMap;"
 	"       }"
@@ -268,8 +357,32 @@ void PBRIsoScene::CompileLightingShader()
 	"	    gl_FragColor.rgb += (kD * albedoPixel.rgb / PI + specular) * radiance * NdotL;"
 	"       float t = materialPixel.b;"
 	"	    gl_FragColor.rgb -= (albedoPixel.rgb/ PI) * radiance * min(dot(direction, lightDirection), 0.0)*t;"
+	""
+	"       if(enable_alpha){"
+	"           a_lightDirection = normalize(a_lightDirection);"
+    "           vec3 a_halfwayVector = normalize(a_viewDirection + a_lightDirection);"
+    "           vec3 a_radiance = gl_LightSource[i].diffuse * a_attenuation; "
+    "           float a_NDF = DistributionGGX(a_direction, a_halfwayVector, a_materialPixel.r); "
+    "           float a_G   = GeometrySmith(a_direction, a_viewDirection, a_lightDirection, a_materialPixel.r);"
+    "           vec3 a_F    = fresnelSchlick(max(dot(a_halfwayVector, a_viewDirection), 0.0), a_surfaceReflection0); "
+    "           vec3 a_kS = a_F;"
+    "           vec3 a_kD = vec3(1.0) - a_kS;"
+    "           a_kD *= 1.0 - a_materialPixel.g;"
+    "           vec3 a_nominator    = a_NDF * a_G * a_F;"
+    "           float a_denominator = 4.0 * max(dot(a_direction, a_viewDirection), 0.0) * max(dot(a_direction, a_lightDirection), 0.0);"
+    "           vec3 a_specular     = a_nominator / max(a_denominator, 0.01);"
+    "           float a_NdotL = max(dot(a_direction, a_lightDirection), 0.0);"
+	"	        alpha_FragColor.rgb += (a_kD * a_albedoPixel.rgb / PI + a_specular) * a_radiance * a_NdotL;"
+	//"           float a_t = max(a_materialPixel.b, a_albedoPixel.a);"
+	"           float a_t = a_materialPixel.b;"
+	"	        alpha_FragColor.rgb -= (a_albedoPixel.rgb/ PI) * a_radiance * min(dot(a_direction, a_lightDirection), 0.0)*a_t;"
+	"       }"
+	""
 	"   }"
 	//"   gl_FragColor.rgb = gl_FragColor.rgb/(gl_FragColor.rgb+vec3(1.0));"
+	"   if(enable_alpha == true){"
+    "       gl_FragColor.rgb = alpha_FragColor.rgb * alpha_FragColor.a + gl_FragColor.rgb*(1.0 - alpha_FragColor.a);"
+    "   }"
     "   gl_FragColor.rgb = vec3(1.0) - exp(-gl_FragColor.rgb * p_exposure);"
     "   if(enable_sRGB == true)"
 	"    gl_FragColor.rgb = pow(gl_FragColor.rgb, vec3(1.0/2.2));"
@@ -287,6 +400,8 @@ void PBRIsoScene::CompileLightingShader()
 	"                       )/16.0;"
     "       gl_FragColor.rgb *= occlusion;"
 	"   };"
+	/*"   vec2 mapPos = (gl_FragCoord.xy-shadow_shift[0])*shadow_ratio[0];"
+    "gl_FragColor *= texture2D(shadow_map_0, mapPos);"*/
     "}";
 
     m_lightingShader.loadFromMemory(vertexShader.str(),fragShader.str());
@@ -461,7 +576,7 @@ void PBRIsoScene::CompileSSAOShader()
     "   vec4 normalPixel = texture2D(map_normal, gl_TexCoord[0].xy);" \
     "   vec4 depthPixel = texture2D(map_depth, gl_TexCoord[0].xy);" \
     "   vec3 direction = -1.0+2.0*normalPixel.rgb;"
-    "   float heightPixel = (0.5-(depthPixel.r+depthPixel.g/256.0+depthPixel.b/65536.0))*"
+    "   float heightPixel = (0.5-(depthPixel.r+depthPixel.g/255.0+depthPixel.b/65025.0))*"
     << DEPTH_BUFFER_NORMALISER_INV <<
     ";"
 	"   vec3 fragPos = v_vertex;"
@@ -473,16 +588,16 @@ void PBRIsoScene::CompileSSAOShader()
 	"   vec3 t = normalize(rVec - direction * dot(rVec, direction));"
 	"   mat3 rot = mat3(t,cross(direction,t),direction);"
 	"   for(int i =0 ; i < 16 ; ++i){"
-	"       vec3 rayShift = rot * p_samplesHemisphere[i] * 20;"
+	"       vec3 rayShift = rot * p_samplesHemisphere[i] * 15;"
 	"       vec3 screenShift = view_zoom*rayShift*p_isoToCartMat;"
 	"       screenShift.y *= -1;"
 	"       vec3 screenPos = gl_FragCoord  + screenShift;"
 	"       vec3 occl_depthPixel = texture2D(map_depth, (screenPos.xy)*view_ratio);"
-	"       float occl_height = (0.5-(occl_depthPixel.r+occl_depthPixel.g/256.0+occl_depthPixel.b/65536.0))*"
+	"       float occl_height = (0.5-(occl_depthPixel.r+occl_depthPixel.g/255.0+occl_depthPixel.b/65025.0))*"
 	<< DEPTH_BUFFER_NORMALISER_INV <<
 	";"
-    "       if(occl_height > (fragPos.z+rayShift.z) + 1  "
-    "        && occl_height - (fragPos.z+rayShift.z) < 20)"
+    "       if(occl_height > (fragPos.z+rayShift.z) + .1  "
+    "        && occl_height - (fragPos.z+rayShift.z) < 15)"
     "           occlusion += 1.0;"
 	"   } "
     "   gl_FragColor.rgb = 1.0-occlusion/12.0;" \

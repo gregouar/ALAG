@@ -215,4 +215,11 @@ void Light::RenderShadowMap(const sf::View &view/*,const sf::Vector2u &screen_si
     m_shadowMap.setActive(false);
 }
 
+int Light::GetMaxNbrLights()
+{
+    int m = 0;
+    glGetIntegerv(GL_MAX_LIGHTS, &m);
+    return m;
+}
+
 }

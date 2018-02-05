@@ -14,8 +14,8 @@ namespace alag
 const IsoViewAngle PBRIsoScene::DEFAULT_ISO_VIEW_ANGLE = {.xyAngle = 0,
                                                              .zAngle = 90};
 
-const float PBRIsoScene::DEPTH_BUFFER_NORMALISER = 0.001;
-const float PBRIsoScene::DEPTH_BUFFER_NORMALISER_INV = 1000;
+const float PBRIsoScene::DEPTH_BUFFER_NORMALISER = 0.00001;
+const float PBRIsoScene::DEPTH_BUFFER_NORMALISER_INV = 100000;
 const int PBRIsoScene::MAX_SHADOW_MAPS = 8;
 
 
@@ -82,8 +82,16 @@ bool PBRIsoScene::InitRenderer(sf::Vector2u windowSize)
         r = false;
 
 
+    if(!m_alpha_PBRScreen.create(windowSize.x*m_superSampling, windowSize.y*m_superSampling, true))
+        r = false;
+
+    m_alpha_PBRScreen.addRenderTarget(PBRNormalScreen);
+    m_alpha_PBRScreen.addRenderTarget(PBRDepthScreen);
+    m_alpha_PBRScreen.addRenderTarget(PBRMaterialScreen);
+
     if(!m_PBRScreen.create(windowSize.x*m_superSampling, windowSize.y*m_superSampling, true))
         r = false;
+
 
     m_PBRScreen.addRenderTarget(PBRNormalScreen);
     m_PBRScreen.addRenderTarget(PBRDepthScreen);
@@ -111,6 +119,12 @@ bool PBRIsoScene::InitRenderer(sf::Vector2u windowSize)
     m_lightingShader.setUniform("map_normal",*m_PBRScreen.getTexture(PBRNormalScreen));
     m_lightingShader.setUniform("map_depth",*m_PBRScreen.getTexture(PBRDepthScreen));
     m_lightingShader.setUniform("map_material",*m_PBRScreen.getTexture(PBRMaterialScreen));
+
+    m_lightingShader.setUniform("alpha_albedo",*m_alpha_PBRScreen.getTexture(PBRAlbedoScreen));
+    m_lightingShader.setUniform("alpha_normal",*m_alpha_PBRScreen.getTexture(PBRNormalScreen));
+    m_lightingShader.setUniform("alpha_depth",*m_alpha_PBRScreen.getTexture(PBRDepthScreen));
+    m_lightingShader.setUniform("alpha_material",*m_alpha_PBRScreen.getTexture(PBRMaterialScreen));
+
     m_lightingShader.setUniform("view_ratio",sf::Vector2f(1.0/(float)m_PBRScreen.getSize().x,
                                                             1.0/(float)m_PBRScreen.getSize().y));
 
@@ -208,11 +222,20 @@ void PBRIsoScene::ProcessRenderQueue(sf::RenderTarget *w)
     m_normalScreen.setActive(false);*/
 
 
+    m_alpha_PBRScreen.setActive(true);
+        glClear(GL_DEPTH_BUFFER_BIT);
+        glEnable(GL_DEPTH_TEST);
+        glDepthMask(GL_TRUE);
+        //m_PBRScreen.clear();
+        m_alpha_PBRScreen.clear(sf::Color(0,0,0,0));
+        m_alpha_PBRScreen.setView(curView);
+    m_alpha_PBRScreen.setActive(false);
 
     m_PBRScreen.setActive(true);
         glClear(GL_DEPTH_BUFFER_BIT);
         glEnable(GL_DEPTH_TEST);
         glDepthMask(GL_TRUE);
+        //m_PBRScreen.clear();
         m_PBRScreen.clear();
         m_PBRScreen.setView(curView);
     m_PBRScreen.setActive(false);
@@ -265,15 +288,23 @@ void PBRIsoScene::ProcessRenderQueue(sf::RenderTarget *w)
             (*renderIt)->Render(&m_depthScreen,state);
         m_depthScreen.setActive(false);*/
 
+        m_PBRGeometryShader.setUniform("p_zPos",globalPos.z);
+        m_PBRGeometryShader.setUniform("enable_depthMap",false);
+        m_PBRGeometryShader.setUniform("enable_normalMap",false);
+        m_PBRGeometryShader.setUniform("p_normalProjMat",sf::Glsl::Mat3(m_normalProjMat.values));
+        (*renderIt)->PrepareShader(&m_PBRGeometryShader);
+        state.shader = &m_PBRGeometryShader;
+
+
+        m_PBRGeometryShader.setUniform("p_alpha_pass",1);
+        m_alpha_PBRScreen.setActive(true);
+        //m_PBRScreen.clear();
+            (*renderIt)->Render(&m_alpha_PBRScreen,state);
+        m_alpha_PBRScreen.setActive(false);
+
+        m_PBRGeometryShader.setUniform("p_alpha_pass",false);
         m_PBRScreen.setActive(true);
-            m_PBRGeometryShader.setUniform("p_zPos",globalPos.z);
-            m_PBRGeometryShader.setUniform("enable_depthMap",false);
-            m_PBRGeometryShader.setUniform("enable_normalMap",false);
-            m_PBRGeometryShader.setUniform("p_normalProjMat",sf::Glsl::Mat3(m_normalProjMat.values));
-            //m_PBRGeometryShader.setUniform("p_cartToIso2DProjMat",sf::Glsl::Mat3(m_cartToIsoMat.values));
-            //m_PBRGeometryShader.setUniform("p_isoToCartZFactor",m_isoToCartMat.values[5]);
-            (*renderIt)->PrepareShader(&m_PBRGeometryShader);
-            state.shader = &m_PBRGeometryShader;
+        //m_PBRScreen.clear();
             (*renderIt)->Render(&m_PBRScreen,state);
         m_PBRScreen.setActive(false);
 
@@ -283,12 +314,21 @@ void PBRIsoScene::ProcessRenderQueue(sf::RenderTarget *w)
     m_depthScreen.display();
     m_normalScreen.display();*/
 
+    m_alpha_PBRScreen.display();
     m_PBRScreen.display();
 
     /*m_PBRScreen.getTexture(0)->copyToImage().saveToFile("PBR0.png");
     m_PBRScreen.getTexture(1)->copyToImage().saveToFile("PBR1.png");
     m_PBRScreen.getTexture(2)->copyToImage().saveToFile("PBR2.png");
-    m_PBRScreen.getTexture(3)->copyToImage().saveToFile("PBR3.png");*/
+    m_PBRScreen.getTexture(3)->copyToImage().saveToFile("PBR3.png");
+    m_alpha_PBRScreen.getTexture(0)->copyToImage().saveToFile("aPBR0.png");
+    m_alpha_PBRScreen.getTexture(1)->copyToImage().saveToFile("aPBR1.png");
+    m_alpha_PBRScreen.getTexture(2)->copyToImage().saveToFile("aPBR2.png");
+    m_alpha_PBRScreen.getTexture(3)->copyToImage().saveToFile("aPBR3.png");*/
+    /*m_PBRScreen.getTexture(4)->copyToImage().saveToFile("PBR4.png");
+    m_PBRScreen.getTexture(5)->copyToImage().saveToFile("PBR5.png");
+    m_PBRScreen.getTexture(6)->copyToImage().saveToFile("PBR6.png");
+    m_PBRScreen.getTexture(7)->copyToImage().saveToFile("PBR7.png");*/
 
     /*m_colorScreen.getTexture().copyToImage().saveToFile("color.png");
     m_depthScreen.getTexture().copyToImage().saveToFile("depth.png");
@@ -502,6 +542,11 @@ Mat3x3 PBRIsoScene::GetIsoToCartMat()
 Mat3x3 PBRIsoScene::GetCartToIsoMat()
 {
     return m_cartToIsoMat;
+}
+
+const sf::Transform &PBRIsoScene::GetIsoToCartTransform()
+{
+    return m_TransformIsoToCart;
 }
 
 sf::Vector2f PBRIsoScene::ConvertIsoToCartesian(float x, float y, float z)

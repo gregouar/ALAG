@@ -43,6 +43,7 @@ class PBRIsoScene : public DefaultScene
 
         Mat3x3 GetIsoToCartMat();
         Mat3x3 GetCartToIsoMat();
+        const sf::Transform& GetIsoToCartTransform();
 
         virtual sf::Vector2f ConvertMouseToScene(sf::Vector2i);
 
@@ -91,6 +92,7 @@ class PBRIsoScene : public DefaultScene
 
         int m_superSampling;
         sf::MultipleRenderTexture m_PBRScreen;
+        sf::MultipleRenderTexture m_alpha_PBRScreen;
 
         sf::RectangleShape m_renderer;
         sf::RenderStates m_rendererStates;

@@ -12,8 +12,8 @@ Texture loaded from file: ../data/chene_heightmap.png
 Texture loaded from file: ../data/chene_mat.png
 PBRTexture readed from file: ../data/cheneXML.txt
 Font loaded from file: ../data/arial.ttf
-Starting application
 PBRTexture readed from file: ../data/abbayeXML.txt
+Starting application
 PBRTexture readed from file: ../data/cobbleXML.txt
 Texture loaded from file: ../data/sand_normal.png
 Texture loaded from file: ../data/torusb.png

@@ -83,6 +83,9 @@ void DefaultScene::ComputeRenderQueue()
 
 int DefaultScene::UpdateLighting(std::multimap<float, Light*> &lightList, int maxNbrLights)
 {
+    if(maxNbrLights == -1)
+        maxNbrLights = Light::GetMaxNbrLights();
+
     int curNbrLights = 0;
 
     std::multimap<float, Light*>::iterator lightIt;
@@ -153,6 +156,9 @@ int DefaultScene::UpdateLighting(std::multimap<float, Light*> &lightList, int ma
 void DefaultScene::RenderShadows(std::multimap<float, Light*> &lightList,const sf::View &view,
                                  /*const sf::Vector2u &screen_size,*/ int maxNbrLights)
 {
+    if(maxNbrLights == -1)
+        maxNbrLights = Light::GetMaxNbrLights();
+
     int curNbrLights = 0;
 
     std::multimap<float, Light*>::iterator lightIt;
