@@ -10,10 +10,12 @@ Light::Light()
     m_isALight = true;
     m_direction = sf::Vector3f(0,0,-1);
     m_diffuseColor = sf::Color::White;
-    m_specularColor = sf::Color::White;
-    m_constantAttenuation = 1;
+    //m_specularColor = sf::Color::White;
+    //m_constantAttenuation = 1;
+    m_radius = 50;
+    m_intensity = 1;
     m_linearAttenuation = 0;
-    m_quadraticAttenuation = 0;
+    m_quadraticAttenuation = 1;
     m_castShadow = false;
     m_shadowMaxShift = sf::IntRect(0,0,0,0);
     m_requireShadowComputation = false;
@@ -39,7 +41,7 @@ sf::Color Light::GetDiffuseColor()
     return m_diffuseColor;
 }
 
-sf::Color Light::GetSpecularColor()
+/*sf::Color Light::GetSpecularColor()
 {
     return m_specularColor;
 }
@@ -47,6 +49,16 @@ sf::Color Light::GetSpecularColor()
 float Light::GetConstantAttenuation()
 {
     return m_constantAttenuation;
+}*/
+
+float Light::GetRadius()
+{
+    return m_radius;
+}
+
+float Light::GetIntensity()
+{
+    return m_intensity;
 }
 
 float Light::GetLinearAttenuation()
@@ -82,7 +94,7 @@ void Light::SetDiffuseColor(sf::Color color)
     m_diffuseColor = color;
 }
 
-void Light::SetSpecularColor(sf::Color color)
+/*void Light::SetSpecularColor(sf::Color color)
 {
     m_specularColor = color;
 }
@@ -91,6 +103,18 @@ void Light::SetConstantAttenuation(float constAtt)
 {
     if(constAtt > 0)
         m_constantAttenuation = constAtt;
+}*/
+
+void Light::SetRadius(float radius)
+{
+    if(radius >= 0)
+        m_radius = radius;
+}
+
+void Light::SetIntensity(float intensity)
+{
+    if(intensity >= 0)
+        m_intensity = intensity;
 }
 
 void Light::SetLinearAttunation(float linAtt)
@@ -100,7 +124,8 @@ void Light::SetLinearAttunation(float linAtt)
 
 void Light::SetQuadraticAttenuation(float quadAtt)
 {
-    m_quadraticAttenuation = quadAtt;
+    if(quadAtt > 0)
+        m_quadraticAttenuation = quadAtt;
 }
 
 void Light::EnableShadowCasting()

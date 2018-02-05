@@ -155,7 +155,7 @@ void PBRIsoScene::CompileLightingShader()
     ""
     "vec3 fresnelSchlick(float cosTheta, vec3 F0)"
     "{"
-    "    return F0 + (1.0 - F0) * pow(1.0 - cosTheta, 5.0);"
+    "    return F0 + (1.0 - F0) * pow(1 - cosTheta, 5.0);"
     "}"
     ""
     "float DistributionGGX(vec3 N, vec3 H, float roughness)"
@@ -209,20 +209,24 @@ void PBRIsoScene::CompileLightingShader()
     "   int curShadowMap = 0;"
     "   for(int i = 0 ; i < light_nbr ; ++i)" \
 	"   {" \
-	"	    float attenuation = 1.0;" \
+	"	    float attenuation = 0.0;" \
 	"       vec3 lightDirection = vec3(0,0,0);"
 	"	    if(gl_LightSource[i].position.w == 0.0)" \
 	"	    {		" \
 	"	    	lightDirection = -gl_LightSource[i].position.xyz;" \
-    "           attenuation = 1.0/( gl_LightSource[i].constantAttenuation);"
+    "           attenuation = 1.0;"
 	"	    }" \
 	"	    else" \
 	"	    {" \
 	"	    	lightDirection = gl_LightSource[i].position.xyz - fragPos.xyz;" \
-	"	    	float dist = length(lightDirection);" \
-	"	    	attenuation = 1.0/( gl_LightSource[i].constantAttenuation +" \
+	"	    	float dist = length(lightDirection)/100;" \
+	"           float dr = dist/gl_LightSource[i].constantAttenuation;"
+	"           float sqrtnom = 1.0 - dr*dr*dr*dr;"
+    "           if(sqrtnom >= 0)"
+	"           attenuation = saturate(sqrtnom*sqrtnom/(dist*dist+1));"
+	/*"	    	attenuation = 1.0/(.2+" \
 	"	    					 dist*gl_LightSource[i].linearAttenuation +" \
-	"	    				     dist*dist*gl_LightSource[i].quadraticAttenuation);" \
+	"	    				     dist*dist*gl_LightSource[i].quadraticAttenuation);" \*/
 	"	    }" \
     "       if((gl_LightSource[i].position.w == 0.0 && enable_directionalShadows == true)"
     "        ||(gl_LightSource[i].position.w != 0.0 && enable_dynamicShadows == true))"
@@ -257,12 +261,17 @@ void PBRIsoScene::CompileLightingShader()
     "       kD *= 1.0 - materialPixel.g;"
     "       vec3 nominator    = NDF * G * F;"
     "       float denominator = 4.0 * max(dot(direction, viewDirection), 0.0) * max(dot(direction, lightDirection), 0.0);"
-    "       vec3 specular     = nominator / max(denominator, 0.001);"
+    "       vec3 specular     = nominator / max(denominator, 0.01);"
     "       float NdotL = max(dot(direction, lightDirection), 0.0);"
 	"	    gl_FragColor.rgb += (kD * albedoPixel.rgb / PI + specular) * radiance * NdotL;"
 	"       float t = materialPixel.b;"
 	"	    gl_FragColor.rgb -= (albedoPixel.rgb/ PI) * radiance * min(dot(direction, lightDirection), 0.0)*t;"
 	"   }"
+	//"   gl_FragColor.rgb = gl_FragColor.rgb/(gl_FragColor.rgb+vec3(1.0));"
+    "   gl_FragColor.rgb = vec3(1.0) - exp(-gl_FragColor.rgb * p_exposure);"
+    "   if(enable_sRGB == true)"
+	"    gl_FragColor.rgb = pow(gl_FragColor.rgb, vec3(1.0/2.2));"
+	// We put the SSAO outside of the gamma/hdr correction for artistic purpose but it should be before in general
     "   if(enable_SSAO == true) {"
 	"       float occlusion  = (texture2D(map_SSAO, gl_TexCoord[0].xy+vec2(0,0)*view_ratio).b*4"
 	"                      +texture2D(map_SSAO, gl_TexCoord[0].xy+(vec2(1,0))*view_ratio).b*2"
@@ -276,10 +285,6 @@ void PBRIsoScene::CompileLightingShader()
 	"                       )/16.0;"
     "       gl_FragColor.rgb *= occlusion;"
 	"   };"
-	//"   gl_FragColor.rgb = gl_FragColor.rgb/(gl_FragColor.rgb+vec3(1.0));"
-    "   gl_FragColor.rgb = vec3(1.0) - exp(-gl_FragColor.rgb * p_exposure);"
-    "   if(enable_sRGB == true)"
-	"    gl_FragColor.rgb = pow(gl_FragColor.rgb, vec3(1.0/2.2));"
     "}";
 
     m_lightingShader.loadFromMemory(vertexShader.str(),fragShader.str());

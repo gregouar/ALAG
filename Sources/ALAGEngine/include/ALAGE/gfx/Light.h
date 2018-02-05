@@ -20,8 +20,10 @@ class Light : public SceneObject
         LightType GetType();
         sf::Vector3f GetDirection();
         sf::Color GetDiffuseColor();
-        sf::Color GetSpecularColor();
-        float GetConstantAttenuation();
+        //sf::Color GetSpecularColor();
+        //float GetConstantAttenuation();
+        float GetRadius();
+        float GetIntensity();
         float GetLinearAttenuation();
         float GetQuadraticAttenuation();
         bool IsCastShadowEnabled();
@@ -29,8 +31,10 @@ class Light : public SceneObject
         void SetType(LightType);
         void SetDirection(sf::Vector3f);
         void SetDiffuseColor(sf::Color);
-        void SetSpecularColor(sf::Color);
-        void SetConstantAttenuation(float);
+        //void SetSpecularColor(sf::Color);
+        //void SetConstantAttenuation(float);
+        void SetRadius(float);
+        void SetIntensity(float);
         void SetLinearAttunation(float);
         void SetQuadraticAttenuation(float);
 
@@ -50,8 +54,10 @@ class Light : public SceneObject
         LightType    m_type;
         sf::Vector3f m_direction;
         sf::Color m_diffuseColor;
-        sf::Color m_specularColor;
-        float m_constantAttenuation;
+        //sf::Color m_specularColor;
+        //float m_constantAttenuation;
+        float m_radius;
+        float m_intensity;
         float m_linearAttenuation;
         float m_quadraticAttenuation;
 

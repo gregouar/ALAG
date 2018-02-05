@@ -107,6 +107,12 @@ class PBRIsoScene : public DefaultScene
         static const float DEPTH_BUFFER_NORMALISER;
         static const float DEPTH_BUFFER_NORMALISER_INV;
         static const int MAX_SHADOW_MAPS;
+
+        static const std::string DEFAULT_ENABLESSAO;
+        static const std::string DEFAULT_ENABLESRGB;
+        static const std::string DEFAULT_SUPERSAMPLING;
+        static const std::string DEFAULT_DIRECTIONALSHADOWSCASTING;
+        static const std::string DEFAULT_DYNAMICSHADOWSCASTING;
 };
 
 }

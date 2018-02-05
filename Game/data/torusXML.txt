@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<texture3D>
+	<name>Torus</name>
+	<height>20</height>
+	<texture type="albedo">torus_albedo.png</texture>
+	<texture type="normal">torus_normal.png</texture>
+	<texture type="depth">torus_depth.png</texture>
+	<texture type="material">torus_material.png</texture>
+</texture3D>

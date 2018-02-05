@@ -5,6 +5,7 @@
 	<texture type="albedo">chene_color.png</texture>
 	<texture type="normal">chene_normal.png</texture>
 	<texture type="depth">chene_heightmap.png</texture>
+	<texture type="material">chene_mat.png</texture>
 	<material type="roughness">1</material>
 	<material type="metalness">0</material>
 	<material type="translucency">0.5</material>

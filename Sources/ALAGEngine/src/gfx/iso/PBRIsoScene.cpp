@@ -19,6 +19,12 @@ const float PBRIsoScene::DEPTH_BUFFER_NORMALISER_INV = 1000;
 const int PBRIsoScene::MAX_SHADOW_MAPS = 8;
 
 
+const std::string PBRIsoScene::DEFAULT_ENABLESSAO = "true";
+const std::string PBRIsoScene::DEFAULT_ENABLESRGB = "true";
+const std::string PBRIsoScene::DEFAULT_SUPERSAMPLING = "1";
+const std::string PBRIsoScene::DEFAULT_DIRECTIONALSHADOWSCASTING = "true";
+const std::string PBRIsoScene::DEFAULT_DYNAMICSHADOWSCASTING = "true";
+
 PBRIsoScene::PBRIsoScene() : PBRIsoScene(DEFAULT_ISO_VIEW_ANGLE)
 {
     //ctor
@@ -52,10 +58,10 @@ bool PBRIsoScene::InitRenderer(sf::Vector2u windowSize)
     bool r = true;
 
 
-    m_superSampling = Config::GetInt("graphics","SuperSampling","1");
+    m_superSampling = Config::GetInt("graphics","SuperSampling",DEFAULT_SUPERSAMPLING);
 
-    bool directShadow = Config::GetBool("graphics","DirectionalShadowsCasting","1");
-    bool dynamicShadow = Config::GetBool("graphics","DynamicShadowsCasting","1");
+    bool directShadow = Config::GetBool("graphics","DirectionalShadowsCasting",DEFAULT_DIRECTIONALSHADOWSCASTING);
+    bool dynamicShadow = Config::GetBool("graphics","DynamicShadowsCasting",DEFAULT_DYNAMICSHADOWSCASTING);
 
     if(directShadow)
     {
@@ -112,12 +118,12 @@ bool PBRIsoScene::InitRenderer(sf::Vector2u windowSize)
 
 
     //m_lightingShader.setUniform("enable_sRGB",Config::GetBool("graphics","sRGB","true"));
-    if(Config::GetBool("graphics","sRGB","false"))
+    if(Config::GetBool("graphics","sRGB",DEFAULT_ENABLESRGB))
         EnableGammaCorrection();
     else
         DisableGammaCorrection();
 
-    SetSSAO(Config::GetBool("graphics","SSAO","true"));
+    SetSSAO(Config::GetBool("graphics","SSAO",DEFAULT_ENABLESSAO));
 
     sf::Glsl::Vec3 samplesHemisphere[16];
     samplesHemisphere[0] = sf::Glsl::Vec3(.4,0,.8);
@@ -395,7 +401,7 @@ void PBRIsoScene::SetAmbientLight(sf::Color light)
     DefaultScene::SetAmbientLight(light);
 
     m_lightingShader.setUniform("light_ambient",sf::Glsl::Vec4(m_ambientLight));
-    m_lightingShader.setUniform("p_exposure",.5f);
+    m_lightingShader.setUniform("p_exposure",.8f);
 }
 
 void PBRIsoScene::SetSSAO(bool ssao)

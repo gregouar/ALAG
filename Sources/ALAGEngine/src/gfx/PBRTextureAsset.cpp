@@ -177,7 +177,7 @@ void PBRTextureAsset::PrepareShader(sf::Shader *shader)
 
     if(GetMaterialMap() != nullptr)
     {
-        shader->setUniform("map_material",*GetNormalMap());
+        shader->setUniform("map_material",*GetMaterialMap());
         shader->setUniform("enable_materialMap", true);
     } else {
         shader->setUniform("enable_materialMap", false);

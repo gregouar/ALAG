@@ -5,7 +5,7 @@
 	<texture type="albedo">cobble_color.png</texture>
 	<texture type="normal">cobble_normal.png</texture>
 	<texture type="depth">cobble_depth.png</texture>
-	<material type="roughness">0.3</material>
+	<material type="roughness">0.5</material>
 	<material type="metalness">0</material>
 	<material type="translucency">0</material>
 </texture3D>
