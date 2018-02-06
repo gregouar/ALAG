@@ -106,8 +106,6 @@ class PBRIsoScene : public DefaultScene
 
 
         static const IsoViewAngle DEFAULT_ISO_VIEW_ANGLE;
-        static const float DEPTH_BUFFER_NORMALISER;
-        static const float DEPTH_BUFFER_NORMALISER_INV;
         static const int MAX_SHADOW_MAPS;
 
         static const std::string DEFAULT_ENABLESSAO;

@@ -14,8 +14,6 @@ namespace alag
 const IsoViewAngle PBRIsoScene::DEFAULT_ISO_VIEW_ANGLE = {.xyAngle = 0,
                                                              .zAngle = 90};
 
-const float PBRIsoScene::DEPTH_BUFFER_NORMALISER = 0.00001;
-const float PBRIsoScene::DEPTH_BUFFER_NORMALISER_INV = 100000;
 const int PBRIsoScene::MAX_SHADOW_MAPS = 8;
 
 
@@ -243,96 +241,48 @@ void PBRIsoScene::ProcessRenderQueue(sf::RenderTarget *w)
 
 
     std::list<SceneEntity*>::iterator renderIt;
-    for(renderIt = m_renderQueue.begin() ; renderIt != m_renderQueue.end(); ++renderIt)
+    sf::MultipleRenderTexture *renderTarget = nullptr;
+
+    for(int pass = 0 ; pass <= 1 ; ++pass)
     {
+        if(pass == 0)
+        {
+            m_PBRGeometryShader.setUniform("p_alpha_pass",false);
+            renderTarget = &m_PBRScreen;
+        } else if(pass == 1) {
+            m_PBRGeometryShader.setUniform("p_alpha_pass",true);
+            renderTarget = &m_alpha_PBRScreen;
+        }
+
         sf::RenderStates state;
-        state.transform = sf::Transform::Identity;
-
-        sf::Vector3f globalPos(0,0,0);
-
-        SceneNode *node = (*renderIt)->GetParentNode();
-        if(node != nullptr)
-            globalPos = node->GetGlobalPosition();
-
-        /*state.transform.translate(ConvertIsoToCartesian(0,0,globalPos.z));
-        state.transform *= m_TransformIsoToCart;
-        state.transform.translate(globalPos.x, globalPos.y);*/
-
-        sf::Vector3f v = m_isoToCartMat*globalPos;
-
-        state.transform.translate(v.x, v.y);
-        state.transform *= m_TransformIsoToCart;
-
-        /*m_colorScreen.setActive(true);
-            m_colorShader.setUniform("p_zPos",globalPos.z);
-            (*renderIt)->PrepareShader(&m_colorShader);
-            state.shader = &m_colorShader;
-            (*renderIt)->Render(&m_colorScreen,state);
-        m_colorScreen.setActive(false);
-
-        m_normalScreen.setActive(true);
-            m_normalShader.setUniform("p_zPos",globalPos.z);
-            m_normalShader.setUniform("enable_normalMap",false);
-            m_normalShader.setUniform("p_normalProjMat",sf::Glsl::Mat3(m_normalProjMat.values));
-            m_normalShader.setUniform("p_cartToIso2DProjMat",sf::Glsl::Mat3(m_cartToIsoMat.values));
-            m_normalShader.setUniform("p_isoToCartZFactor",m_isoToCartMat.values[5]);
-            (*renderIt)->PrepareShader(&m_normalShader);
-            state.shader = &m_normalShader;
-            (*renderIt)->Render(&m_normalScreen,state);
-        m_normalScreen.setActive(false);
-
-        m_depthScreen.setActive(true);
-            m_depthShader.setUniform("p_zPos",globalPos.z);
-            (*renderIt)->PrepareShader(&m_depthShader);
-            state.shader = &m_depthShader;
-            (*renderIt)->Render(&m_depthScreen,state);
-        m_depthScreen.setActive(false);*/
-
-        m_PBRGeometryShader.setUniform("p_zPos",globalPos.z);
-        m_PBRGeometryShader.setUniform("enable_depthMap",false);
-        m_PBRGeometryShader.setUniform("enable_normalMap",false);
-        m_PBRGeometryShader.setUniform("p_normalProjMat",sf::Glsl::Mat3(m_normalProjMat.values));
-        (*renderIt)->PrepareShader(&m_PBRGeometryShader);
         state.shader = &m_PBRGeometryShader;
 
+        renderTarget->setActive(true);
+        for(renderIt = m_renderQueue.begin() ; renderIt != m_renderQueue.end(); ++renderIt)
+        {
 
-        m_PBRGeometryShader.setUniform("p_alpha_pass",1);
-        m_alpha_PBRScreen.setActive(true);
-        //m_PBRScreen.clear();
-            (*renderIt)->Render(&m_alpha_PBRScreen,state);
-        m_alpha_PBRScreen.setActive(false);
+            sf::Vector3f globalPos(0,0,0);
 
-        m_PBRGeometryShader.setUniform("p_alpha_pass",false);
-        m_PBRScreen.setActive(true);
-        //m_PBRScreen.clear();
-            (*renderIt)->Render(&m_PBRScreen,state);
-        m_PBRScreen.setActive(false);
+            SceneNode *node = (*renderIt)->GetParentNode();
+            if(node != nullptr)
+                globalPos = node->GetGlobalPosition();
 
+            sf::Vector3f v = m_isoToCartMat*globalPos;
+
+            state.transform = sf::Transform::Identity;
+            state.transform.translate(v.x, v.y);
+            state.transform *= m_TransformIsoToCart;
+
+            m_PBRGeometryShader.setUniform("p_zPos",globalPos.z*PBRTextureAsset::DEPTH_BUFFER_NORMALISER);
+            //m_PBRGeometryShader.setUniform("enable_depthMap",false);
+            //m_PBRGeometryShader.setUniform("enable_normalMap",false);
+            m_PBRGeometryShader.setUniform("p_normalProjMat",sf::Glsl::Mat3(m_normalProjMat.values));
+            (*renderIt)->PrepareShader(&m_PBRGeometryShader);
+            (*renderIt)->Render(renderTarget,state);
+        }
+        renderTarget->display();
+        renderTarget->setActive(false);
     }
-
-   /*m_colorScreen.display();
-    m_depthScreen.display();
-    m_normalScreen.display();*/
-
-    m_alpha_PBRScreen.display();
-    m_PBRScreen.display();
-
-    /*m_PBRScreen.getTexture(0)->copyToImage().saveToFile("PBR0.png");
-    m_PBRScreen.getTexture(1)->copyToImage().saveToFile("PBR1.png");
-    m_PBRScreen.getTexture(2)->copyToImage().saveToFile("PBR2.png");
-    m_PBRScreen.getTexture(3)->copyToImage().saveToFile("PBR3.png");
-    m_alpha_PBRScreen.getTexture(0)->copyToImage().saveToFile("aPBR0.png");
-    m_alpha_PBRScreen.getTexture(1)->copyToImage().saveToFile("aPBR1.png");
-    m_alpha_PBRScreen.getTexture(2)->copyToImage().saveToFile("aPBR2.png");
-    m_alpha_PBRScreen.getTexture(3)->copyToImage().saveToFile("aPBR3.png");*/
-    /*m_PBRScreen.getTexture(4)->copyToImage().saveToFile("PBR4.png");
-    m_PBRScreen.getTexture(5)->copyToImage().saveToFile("PBR5.png");
-    m_PBRScreen.getTexture(6)->copyToImage().saveToFile("PBR6.png");
-    m_PBRScreen.getTexture(7)->copyToImage().saveToFile("PBR7.png");*/
-
-    /*m_colorScreen.getTexture().copyToImage().saveToFile("color.png");
-    m_depthScreen.getTexture().copyToImage().saveToFile("depth.png");
-    m_normalScreen.getTexture().copyToImage().saveToFile("normal.png");*/
 
     if(m_enableSSAO)
     {

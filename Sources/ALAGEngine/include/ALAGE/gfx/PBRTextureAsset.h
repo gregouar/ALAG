@@ -31,6 +31,9 @@ class PBRTextureAsset : public TextureAsset, public NotificationListener
 
         virtual void Notify(NotificationSender* , NotificationType);
 
+        static const float DEPTH_BUFFER_NORMALISER;
+        static const float DEPTH_BUFFER_NORMALISER_INV;
+
     protected:
         bool LoadFromXML(TiXmlHandle *);
 

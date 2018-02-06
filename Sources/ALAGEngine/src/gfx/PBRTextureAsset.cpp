@@ -7,6 +7,9 @@
 namespace alag
 {
 
+const float PBRTextureAsset::DEPTH_BUFFER_NORMALISER = 0.00001;
+const float PBRTextureAsset::DEPTH_BUFFER_NORMALISER_INV = 100000;
+
 PBRTextureAsset::PBRTextureAsset()
 {
     m_allowLoadFromFile = true;
@@ -183,7 +186,7 @@ void PBRTextureAsset::PrepareShader(sf::Shader *shader)
         shader->setUniform("enable_materialMap", false);
     }
 
-    shader->setUniform("p_height",GetHeight());
+    shader->setUniform("p_height",GetHeight()*DEPTH_BUFFER_NORMALISER);
     shader->setUniform("p_roughness",GetRoughness());
     shader->setUniform("p_metalness",GetMetalness());
     shader->setUniform("p_translucency",GetTranslucency());

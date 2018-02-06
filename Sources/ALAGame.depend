@@ -684,8 +684,9 @@
 1516702536 c:\c++\alag\sources\alagengine\include\alage\utils\mapiterator.h
 	<map>
 
-1517673787 source:c:\c++\alag\sources\alagengine\src\gfx\spriteentity.cpp
+1517926656 source:c:\c++\alag\sources\alagengine\src\gfx\spriteentity.cpp
 	"ALAGE/gfx/SpriteEntity.h"
+	"ALAGE/gfx/iso/PBRIsoScene.h"
 	"ALAGE/core/AssetHandler.h"
 	"ALAGE/gfx/SceneNode.h"
 	<SFML/Graphics.hpp>
@@ -797,7 +798,7 @@
 1517352515 c:\c++\alag\sources\alagengine\include\alage\gfx\iso\isorectentity.h
 	<ALAGE/gfx/RectEntity.h>
 
-1517856034 source:c:\c++\alag\sources\alagengine\src\gfx\iso\isospriteentity.cpp
+1517926912 source:c:\c++\alag\sources\alagengine\src\gfx\iso\isospriteentity.cpp
 	"ALAGE/gfx/SceneNode.h"
 	"ALAGE/gfx/iso/PBRIsoScene.h"
 	"ALAGE/gfx/iso/IsoSpriteEntity.h"
@@ -869,7 +870,7 @@
 	<stdint.h>
 	<inttypes.h>
 
-1517670077 c:\c++\alag\sources\alagengine\include\alage\gfx\pbrtextureasset.h
+1517926897 c:\c++\alag\sources\alagengine\include\alage\gfx\pbrtextureasset.h
 	"ALAGE/core/NotificationListener.h"
 	"ALAGE/gfx/TextureAsset.h"
 	"extlibs/tinyxml.h"
@@ -888,14 +889,14 @@
 	"ALAGE/gfx/Camera.h"
 	"ALAGE/gfx/Light.h"
 
-1517866405 c:\c++\alag\sources\alagengine\include\alage\gfx\iso\pbrisoscene.h
+1517926897 c:\c++\alag\sources\alagengine\include\alage\gfx\iso\pbrisoscene.h
 	"ALAGE/utils/Mathematics.h"
 	"ALAGE/gfx/DefaultScene.h"
 	"ALAGE/gfx/iso/IsoSpriteEntity.h"
 	"ALAGE/gfx/iso/IsoRectEntity.h"
 	<SFML/OpenGL.hpp>
 
-1517868694 source:c:\c++\alag\sources\alagengine\src\gfx\iso\pbrisoscene.cpp
+1517926917 source:c:\c++\alag\sources\alagengine\src\gfx\iso\pbrisoscene.cpp
 	"ALAGE/gfx/iso/PBRIsoScene.h"
 	"ALAGE/utils/Logger.h"
 	"ALAGE/utils/Mathematics.h"
@@ -907,12 +908,12 @@
 	<sstream>
 	<iostream>
 
-1517872410 source:c:\c++\alag\sources\alagengine\src\gfx\iso\pbrisoshaders.cpp
+1517926939 source:c:\c++\alag\sources\alagengine\src\gfx\iso\pbrisoshaders.cpp
 	"ALAGE/gfx/iso/PBRIsoScene.h"
 	<sstream>
 	<iostream>
 
-1517771066 source:c:\c++\alag\sources\alagengine\src\gfx\pbrtextureasset.cpp
+1517926947 source:c:\c++\alag\sources\alagengine\src\gfx\pbrtextureasset.cpp
 	"ALAGE/core/AssetHandler.h"
 	"ALAGE/gfx/PBRTextureAsset.h"
 	"ALAGE/utils/Parser.h"

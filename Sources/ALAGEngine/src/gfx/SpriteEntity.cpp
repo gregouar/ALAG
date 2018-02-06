@@ -1,5 +1,7 @@
 #include "ALAGE/gfx/SpriteEntity.h"
 
+
+#include "ALAGE/gfx/iso/PBRIsoScene.h"
 #include "ALAGE/core/AssetHandler.h"
 #include "ALAGE/gfx/SceneNode.h"
 #include <SFML/Graphics.hpp>
@@ -62,7 +64,7 @@ void SpriteEntity::PrepareShader(sf::Shader *shader)
         {
             PBRTextureAsset *myPBRTexture = (PBRTextureAsset*) m_texture;
             myPBRTexture->PrepareShader(shader);
-            shader->setUniform("p_height",myPBRTexture->GetHeight()*GetScale().y);
+            shader->setUniform("p_height",myPBRTexture->GetHeight()*GetScale().y*PBRTextureAsset::DEPTH_BUFFER_NORMALISER);
         } else {
             shader->setUniform("map_albedo",*m_texture->GetTexture());
             shader->setUniform("enable_normalMap", false);

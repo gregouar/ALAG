@@ -39,7 +39,8 @@ void IsoSpriteEntity::PrepareShader(sf::Shader* shader)
         shader->setUniform("enable_normalMap", false);
         shader->setUniform("map_depth",*AssetHandler<TextureAsset>::Instance()->LoadAssetFromFile("../data/heightmap.png")->GetTexture());
         shader->setUniform("enable_depthMap",true);
-        shader->setUniform("p_height",(-(float)sf::Sprite::getTextureRect().height*(float)getScale().y)/isoToCartZFactor);
+        shader->setUniform("p_height",(-(float)sf::Sprite::getTextureRect().height*(float)getScale().y)
+                                        /isoToCartZFactor*PBRTextureAsset::DEPTH_BUFFER_NORMALISER);
     }
 
     shader->setUniform("p_normalProjMatInv",sf::Glsl::Mat3(IdMat3X3));
@@ -60,8 +61,8 @@ void IsoSpriteEntity::RenderShadow(sf::RenderTarget *w/*, const sf::RenderStates
         //depthShader->setUniform("map_color",m_shadowMap[light]);
         depthShader->setUniform("map_depth",m_shadowMap[light]);
         depthShader->setUniform("enable_depthMap", true);
-        depthShader->setUniform("p_height",myPBRTexture->GetHeight()*sf::Sprite::getScale().y);
-        depthShader->setUniform("p_zPos",globalPos.z);
+        depthShader->setUniform("p_height",myPBRTexture->GetHeight()*sf::Sprite::getScale().y*PBRTextureAsset::DEPTH_BUFFER_NORMALISER);
+        depthShader->setUniform("p_zPos",globalPos.z*PBRTextureAsset::DEPTH_BUFFER_NORMALISER);
 
         sf::Vector3f light_direction = Normalize(light->GetDirection());
         globalPos -= sf::Vector3f(globalPos.z*light_direction.x/light_direction.z,
