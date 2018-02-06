@@ -57,11 +57,12 @@ void TestingState::Init()
 
 
     m_sarco3DNode = m_mainScene.GetRootNode()->CreateChildNode();
-    m_sarco3DNode->SetPosition(0,0);
+    m_sarco3DNode->SetPosition(0,0,0);
     //Sprite3DEntity *sarco3DEntity = m_mainScene.CreateSprite3DEntity(sf::Vector2i(256,256));
     SpriteEntity *sarco3DEntity = m_mainScene.CreateIsoSpriteEntity();
     //sarco3DEntity->SetTexture(TextureHandler->LoadAssetFromFile("../data/sarco-color.png"));
     sarco3DEntity->SetTexture(PBRTextureHandler->LoadAssetFromFile("../data/torusbXML.txt",LoadTypeInThread));
+    //sarco3DEntity->SetTexture(PBRTextureHandler->LoadAssetFromFile("../data/bedrockXML.txt",LoadTypeInThread));
     sarco3DEntity->SetCenter(128,128);
     sarco3DEntity->SetShadowCastingType(DirectionnalShadow);
     //sarco3DEntity->DesactivateLighting();
@@ -98,7 +99,7 @@ void TestingState::Init()
     m_sunLight->SetIntensity(5);
     m_sunLight->EnableShadowCasting();
     m_mainScene.GetRootNode()->AttachObject(m_sunLight);
-    m_mainScene.SetAmbientLight(sf::Color(128,24,32));
+    m_mainScene.SetAmbientLight(sf::Color(24,24,32));
     //m_mainScene.SetAmbientLight(sf::Color(64,64,128,24));
     //m_mainScene.SetAmbientLight(sf::Color(96,96,128));
    // m_mainScene.SetAmbientLight(sf::Color(32,48,128));
@@ -133,12 +134,12 @@ void TestingState::Init()
     rectEntity->SetCenter(sf::Vector2f(512,  512));
    // rectEntity->SetTexture(TextureHandler->LoadAssetFromFile("../data/cobble_color.png",LoadTypeInThread));
     //rectEntity->SetTexture(PBRTextureHandler->LoadAssetFromFile("../data/sandXML.txt",LoadTypeInThread));
-    rectEntity->SetTexture(PBRTextureHandler->LoadAssetFromFile("../data/cobbleXML.txt",LoadTypeInThread));
-    rectEntity->SetTexture(PBRTextureHandler->LoadAssetFromFile("../data/sandXML.txt",LoadTypeInThread));
+   // rectEntity->SetTexture(PBRTextureHandler->LoadAssetFromFile("../data/cobbleXML.txt",LoadTypeInThread));
+    //rectEntity->SetTexture(PBRTextureHandler->LoadAssetFromFile("../data/sandXML.txt",LoadTypeInThread));
     rectEntity->SetTexture(PBRTextureHandler->LoadAssetFromFile("../data/wetsandXML.txt",LoadTypeInThread));
     //rectEntity->SetTexture(TextureHandler->LoadAssetFromFile("../data/cobble_color.png",LoadTypeInThread));
     //rectEntity->SetTexture(TextureHandler->LoadAssetFromFile("../data/sand_color.png",LoadTypeInThread));
-  //  rectEntity->SetTexture(TextureHandler->LoadAssetFromFile("../data/sand.png",LoadTypeInThread));
+    //rectEntity->SetTexture(TextureHandler->LoadAssetFromFile("../data/sand.png",LoadTypeInThread));
     rectEntity->SetTextureRect(sf::IntRect(0,0,2048,2048));
     rectNode->AttachObject(rectEntity);
 

@@ -265,6 +265,12 @@ void PBRIsoScene::ProcessRenderQueue(sf::RenderTarget *w)
     m_lightingShader.setUniform("view_pos",m_currentCamera->GetParentNode()->GetGlobalPosition());
 
     m_PBRScreen.setActive(true);
+
+    m_PBRScreen.getTexture(PBRAlbedoScreen)->setSmooth(true);
+    m_PBRScreen.getTexture(PBRAlbedoScreen)->generateMipmap();
+
+    //m_PBRScreen.getTexture(PBRNormalScreen)->copyToImage().saveToFile("PBR1.png");
+
     m_lightingShader.setUniform("map_albedo",*m_PBRScreen.getTexture(PBRAlbedoScreen));
     m_lightingShader.setUniform("map_normal",*m_PBRScreen.getTexture(PBRNormalScreen));
     m_lightingShader.setUniform("map_depth",*m_PBRScreen.getTexture(PBRDepthScreen));
