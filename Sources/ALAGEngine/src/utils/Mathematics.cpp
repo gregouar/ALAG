@@ -49,6 +49,72 @@ void SfColorToGlColor(const sf::Color& sfColor, float glColor[4])
 
 namespace alag {
 
+Mat2x2::Mat2x2() : Mat2x2(0,0,0,0)
+{
+
+}
+
+Mat2x2::Mat2x2(sf::Vector2f u, sf::Vector2f v) : Mat2x2(u.x, u.y,
+                                                        v.x, v.y)
+{
+
+}
+
+Mat2x2::Mat2x2( float a, float b,
+                float c, float d )
+{
+    values[0] = a;
+    values[1] = b;
+    values[2] = c;
+    values[3] = d;
+}
+
+Mat2x2::~Mat2x2()
+{
+
+}
+
+Mat2x2 Mat2x2::operator+(Mat2x2 const& m)
+{
+    return Mat2x2(this->values[0]+m.values[0], this->values[1]+m.values[1],
+                  this->values[2]+m.values[2], this->values[3]+m.values[3]);
+}
+
+Mat2x2 Mat2x2::operator*(Mat2x2 const& m)
+{
+    sf::Vector2f u(m.values[0], m.values[2]);
+    sf::Vector2f v(m.values[1], m.values[3]);
+
+    u = (*this)*u;
+    v = (*this)*v;
+
+    return Mat2x2(u.x,v.x,
+                  u.y,v.y);
+
+}
+
+
+Mat2x2 Mat2x2::operator*(float const& k)
+{
+    return Mat2x2(this->values[0]*k,this->values[1]*k,
+                  this->values[2]*k,this->values[3]*k);
+
+}
+
+sf::Vector2f Mat2x2::operator*(sf::Vector2f const& v)
+{
+    sf::Vector2f r;
+    r.x = this->values[0]*v.x + this->values[1]*v.y;
+    r.y = this->values[2]*v.x + this->values[3]*v.y;
+    return r;
+}
+
+
+
+
+
+
+
 Mat3x3::Mat3x3() : Mat3x3(0,0,0,0,0,0,0,0,0)
 {
 

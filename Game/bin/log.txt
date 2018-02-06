@@ -1,4 +1,5 @@
 Initializing application
+Texture loaded from file: ../data/ibl_brdf_lut.png
 Texture loaded from file: ../data/sarco-color.png
 Texture loaded from file: ../data/sarco-normal.png
 Texture loaded from file: ../data/sarco-heightmap.png
@@ -11,11 +12,14 @@ Texture loaded from file: ../data/sand_depth.png
 Texture loaded from file: ../data/chene_heightmap.png
 Texture loaded from file: ../data/chene_mat.png
 PBRTexture readed from file: ../data/cheneXML.txt
-Font loaded from file: ../data/arial.ttf
 PBRTexture readed from file: ../data/abbayeXML.txt
-Starting application
+Font loaded from file: ../data/arial.ttf
 PBRTexture readed from file: ../data/cobbleXML.txt
+Starting application
+PBRTexture readed from file: ../data/sandXML.txt
+PBRTexture readed from file: ../data/wetsandXML.txt
 Texture loaded from file: ../data/sand_normal.png
+PBR texture loaded from file: ../data/sandXML.txt
 Texture loaded from file: ../data/torusb.png
 Texture loaded from file: ../data/torusb_normal.png
 Texture loaded from file: ../data/torusb_depth.png
@@ -28,4 +32,9 @@ Texture loaded from file: ../data/cobble_color.png
 Texture loaded from file: ../data/cobble_normal.png
 Texture loaded from file: ../data/cobble_depth.png
 PBR texture loaded from file: ../data/cobbleXML.txt
+Texture loaded from file: ../data/wetsand_albedo.png
+Texture loaded from file: ../data/wetsand_normal.png
+Texture loaded from file: ../data/wetsand_depth.png
+Texture loaded from file: ../data/wetsand_material.png
+PBR texture loaded from file: ../data/wetsandXML.txt
 Stopping application

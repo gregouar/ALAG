@@ -19,6 +19,25 @@ void SfColorToGlColor(const sf::Color&, float glColor[4]);
 
 namespace alag {
 
+class Mat2x2
+{
+    public:
+        Mat2x2();
+        Mat2x2(sf::Vector2f u, sf::Vector2f v);
+        Mat2x2( float, float,
+                float, float);
+
+        ~Mat2x2();
+
+        Mat2x2 operator+(Mat2x2 const& m);
+        Mat2x2 operator*(Mat2x2 const& m);
+        Mat2x2 operator*(float const& k);
+        sf::Vector2f operator*(sf::Vector2f const& v);
+
+        GLfloat values[4];
+};
+
+
 class Mat3x3
 {
     public:

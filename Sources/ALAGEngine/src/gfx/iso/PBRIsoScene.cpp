@@ -6,6 +6,8 @@
 #include "ALAGE/core/Config.h"
 
 #include "ALAGE/gfx/iso/IsoSpriteEntity.h"
+
+#include "ALAGE/core/AssetHandler.h"
 //#include "../src/gfx/iso/PBRIsoShaders.cpp"
 
 namespace alag
@@ -95,17 +97,6 @@ bool PBRIsoScene::InitRenderer(sf::Vector2u windowSize)
     m_PBRScreen.addRenderTarget(PBRDepthScreen);
     m_PBRScreen.addRenderTarget(PBRMaterialScreen);
 
-    /*m_colorScreen.setActive(true);
-        m_colorScreen.setSmooth(true);
-    m_colorScreen.setActive(false);
-
-    m_depthScreen.setActive(true);
-        m_depthScreen.setSmooth(true);
-    m_depthScreen.setActive(false);
-
-    m_normalScreen.setActive(true);
-        m_normalScreen.setSmooth(true);
-    m_normalScreen.setActive(false);*/
 
 
 
@@ -117,14 +108,14 @@ bool PBRIsoScene::InitRenderer(sf::Vector2u windowSize)
     m_lightingShader.setUniform("map_normal",*m_PBRScreen.getTexture(PBRNormalScreen));
     m_lightingShader.setUniform("map_depth",*m_PBRScreen.getTexture(PBRDepthScreen));
     m_lightingShader.setUniform("map_material",*m_PBRScreen.getTexture(PBRMaterialScreen));
-
-    m_lightingShader.setUniform("alpha_albedo",*m_alpha_PBRScreen.getTexture(PBRAlbedoScreen));
-    m_lightingShader.setUniform("alpha_normal",*m_alpha_PBRScreen.getTexture(PBRNormalScreen));
-    m_lightingShader.setUniform("alpha_depth",*m_alpha_PBRScreen.getTexture(PBRDepthScreen));
-    m_lightingShader.setUniform("alpha_material",*m_alpha_PBRScreen.getTexture(PBRMaterialScreen));
+    m_lightingShader.setUniform("map_depthTester",*m_PBRScreen.getTexture(PBRDepthScreen));
 
     m_lightingShader.setUniform("view_ratio",sf::Vector2f(1.0/(float)m_PBRScreen.getSize().x,
                                                             1.0/(float)m_PBRScreen.getSize().y));
+
+
+    TextureAsset *brdf_lut = AssetHandler<TextureAsset>::Instance()->LoadAssetFromFile("../data/ibl_brdf_lut.png");
+    m_lightingShader.setUniform("map_brdflut",*brdf_lut->GetTexture());
 
     m_rendererStates.shader = &m_lightingShader;
 
@@ -176,6 +167,7 @@ bool PBRIsoScene::InitRenderer(sf::Vector2u windowSize)
     m_SSAONoiseTexture.loadFromImage(m_SSAONoisePattern);
     m_SSAONoiseTexture.setRepeated(true);
     m_SSAOShader.setUniform("map_noise",m_SSAONoiseTexture);
+    m_lightingShader.setUniform("map_noise",m_SSAONoiseTexture);
 
     if(!r)
         Logger::Error("Cannot initialize isometric renderer");
@@ -194,31 +186,6 @@ void PBRIsoScene::ProcessRenderQueue(sf::RenderTarget *w)
 
     if(m_shadowCastingOption != NoShadow)
         RenderShadows(lightList,curView/*,m_colorScreen.getSize()*/);
-
-    /*m_colorScreen.setActive(true);
-        glClear(GL_DEPTH_BUFFER_BIT);
-        glEnable(GL_DEPTH_TEST);
-        glDepthMask(GL_TRUE);
-        m_colorScreen.clear();
-        m_colorScreen.setView(curView);
-    m_colorScreen.setActive(false);
-
-    m_depthScreen.setActive(true);
-        glClear(GL_DEPTH_BUFFER_BIT);
-        glEnable(GL_DEPTH_TEST);
-        glDepthMask(GL_TRUE);
-        m_depthScreen.clear(sf::Color::White);
-        m_depthScreen.setView(curView);
-    m_depthScreen.setActive(false);
-
-    m_normalScreen.setActive(true);
-        glClear(GL_DEPTH_BUFFER_BIT);
-        glEnable(GL_DEPTH_TEST);
-        glDepthMask(GL_TRUE);
-        m_normalScreen.clear();
-        m_normalScreen.setView(curView);
-    m_normalScreen.setActive(false);*/
-
 
     m_alpha_PBRScreen.setActive(true);
         glClear(GL_DEPTH_BUFFER_BIT);
@@ -296,7 +263,29 @@ void PBRIsoScene::ProcessRenderQueue(sf::RenderTarget *w)
     m_lightingShader.setUniform("view_shift",shift);
     m_lightingShader.setUniform("view_zoom",m_currentCamera->GetZoom());
     m_lightingShader.setUniform("view_pos",m_currentCamera->GetParentNode()->GetGlobalPosition());
+
+    m_PBRScreen.setActive(true);
+    m_lightingShader.setUniform("map_albedo",*m_PBRScreen.getTexture(PBRAlbedoScreen));
+    m_lightingShader.setUniform("map_normal",*m_PBRScreen.getTexture(PBRNormalScreen));
+    m_lightingShader.setUniform("map_depth",*m_PBRScreen.getTexture(PBRDepthScreen));
+    m_lightingShader.setUniform("map_material",*m_PBRScreen.getTexture(PBRMaterialScreen));
+    m_lightingShader.setUniform("enable_SSAO",m_enableSSAO);
+    m_lightingShader.setUniform("enable_depthTesting",false);
+
     w->draw(m_renderer,m_rendererStates);
+
+    m_alpha_PBRScreen.setActive(true);
+    m_lightingShader.setUniform("map_albedo",*m_alpha_PBRScreen.getTexture(PBRAlbedoScreen));
+    m_lightingShader.setUniform("map_normal",*m_alpha_PBRScreen.getTexture(PBRNormalScreen));
+    m_lightingShader.setUniform("map_depth",*m_alpha_PBRScreen.getTexture(PBRDepthScreen));
+    m_lightingShader.setUniform("map_material",*m_alpha_PBRScreen.getTexture(PBRMaterialScreen));
+    m_lightingShader.setUniform("enable_SSAO",false);
+    m_lightingShader.setUniform("enable_depthTesting",true);
+
+    w->draw(m_renderer,m_rendererStates);
+
+    m_PBRScreen.setActive(false);
+    m_alpha_PBRScreen.setActive(false);
 }
 
 void PBRIsoScene::RenderScene(sf::RenderTarget* w)
@@ -461,6 +450,9 @@ void PBRIsoScene::ComputeTrigonometry()
                              sinXY * sinZ , cosXY * sinZ , -cosZ,
                              0            , 0            , 0);
 
+     m_isoToCartMat2X2 = Mat2x2(cosXY        , -sinXY       ,
+                             sinXY * sinZ , cosXY * sinZ );
+
      m_cartToIsoMat = Mat3x3( cosXY , sinXY/sinZ, 0,
                              -sinXY , cosXY/sinZ, 0,
                               0     , 0         , 0);
@@ -475,6 +467,10 @@ void PBRIsoScene::ComputeTrigonometry()
 
     m_lightingShader.setUniform("p_cartToIso2DProjMat",sf::Glsl::Mat3(m_cartToIsoMat.values));
     m_lightingShader.setUniform("p_isoToCartMat",sf::Glsl::Mat3(m_isoToCartMat.values));
+   /* m_lightingShader.setUniform("p_isoToCartMat",sf::Glsl::Vec4(m_isoToCartMat.values[0],
+                                                                m_isoToCartMat.values[2],
+                                                                m_isoToCartMat.values[1],
+                                                                m_isoToCartMat.values[3]));*/
     m_lightingShader.setUniform("p_isoToCartZFactor",m_isoToCartMat.values[5]);
 
 

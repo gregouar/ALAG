@@ -78,6 +78,7 @@ class PBRIsoScene : public DefaultScene
         //Mat3x3 m_cartToIso2DProjMat;
 
         Mat3x3 m_isoToCartMat;
+        Mat2x2 m_isoToCartMat2X2;
         Mat3x3 m_cartToIsoMat;
 
         //sf::Shader m_colorShader;

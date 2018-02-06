@@ -5,7 +5,7 @@
 	"ALAGE/utils/Logger.h"
 	"include/states/TestingState.h"
 
-1517772741 source:c:\c++\alag\sources\alagengine\src\core\gapp.cpp
+1517950850 source:c:\c++\alag\sources\alagengine\src\core\gapp.cpp
 	<SFML/System.hpp>
 	"ALAGE/core/GApp.h"
 	"ALAGE/utils/Logger.h"
@@ -33,7 +33,7 @@
 	<vector>
 	"GState.h"
 
-1517856112 source:c:\c++\alag\sources\src\states\testingstate.cpp
+1517951161 source:c:\c++\alag\sources\src\states\testingstate.cpp
 	"states/TestingState.h"
 	"ALAGE/core/GApp.h"
 	"ALAGE/core/EventManager.h"
@@ -684,7 +684,7 @@
 1516702536 c:\c++\alag\sources\alagengine\include\alage\utils\mapiterator.h
 	<map>
 
-1517926656 source:c:\c++\alag\sources\alagengine\src\gfx\spriteentity.cpp
+1517926955 source:c:\c++\alag\sources\alagengine\src\gfx\spriteentity.cpp
 	"ALAGE/gfx/SpriteEntity.h"
 	"ALAGE/gfx/iso/PBRIsoScene.h"
 	"ALAGE/core/AssetHandler.h"
@@ -753,12 +753,12 @@
 1517341022 source:c:\c++\alag\sources\alagengine\src\gfx\sceneobject.cpp
 	"ALAGE/gfx/SceneObject.h"
 
-1517357081 c:\c++\alag\sources\alagengine\include\alage\utils\mathematics.h
+1517929514 c:\c++\alag\sources\alagengine\include\alage\utils\mathematics.h
 	<SFML/Graphics.hpp>
 	<SFML/OpenGL.hpp>
 	"ALAGE/Types.h"
 
-1517357585 source:c:\c++\alag\sources\alagengine\src\utils\mathematics.cpp
+1517929590 source:c:\c++\alag\sources\alagengine\src\utils\mathematics.cpp
 	"ALAGE/utils/Mathematics.h"
 
 1517140944 c:\c++\alag\sources\alagengine\src\gfx\isometricshaders.cpp
@@ -798,7 +798,7 @@
 1517352515 c:\c++\alag\sources\alagengine\include\alage\gfx\iso\isorectentity.h
 	<ALAGE/gfx/RectEntity.h>
 
-1517926912 source:c:\c++\alag\sources\alagengine\src\gfx\iso\isospriteentity.cpp
+1517938797 source:c:\c++\alag\sources\alagengine\src\gfx\iso\isospriteentity.cpp
 	"ALAGE/gfx/SceneNode.h"
 	"ALAGE/gfx/iso/PBRIsoScene.h"
 	"ALAGE/gfx/iso/IsoSpriteEntity.h"
@@ -889,26 +889,27 @@
 	"ALAGE/gfx/Camera.h"
 	"ALAGE/gfx/Light.h"
 
-1517926897 c:\c++\alag\sources\alagengine\include\alage\gfx\iso\pbrisoscene.h
+1517934885 c:\c++\alag\sources\alagengine\include\alage\gfx\iso\pbrisoscene.h
 	"ALAGE/utils/Mathematics.h"
 	"ALAGE/gfx/DefaultScene.h"
 	"ALAGE/gfx/iso/IsoSpriteEntity.h"
 	"ALAGE/gfx/iso/IsoRectEntity.h"
 	<SFML/OpenGL.hpp>
 
-1517926917 source:c:\c++\alag\sources\alagengine\src\gfx\iso\pbrisoscene.cpp
+1517944005 source:c:\c++\alag\sources\alagengine\src\gfx\iso\pbrisoscene.cpp
 	"ALAGE/gfx/iso/PBRIsoScene.h"
 	"ALAGE/utils/Logger.h"
 	"ALAGE/utils/Mathematics.h"
 	"ALAGE/core/Config.h"
 	"ALAGE/gfx/iso/IsoSpriteEntity.h"
+	"ALAGE/core/AssetHandler.h"
 
 1517674324 c:\c++\alag\sources\alagengine\src\gfx\iso\pbrisoshaders.cpp
 	"ALAGE/gfx/iso/PBRIsoScene.h"
 	<sstream>
 	<iostream>
 
-1517926939 source:c:\c++\alag\sources\alagengine\src\gfx\iso\pbrisoshaders.cpp
+1517947510 source:c:\c++\alag\sources\alagengine\src\gfx\iso\pbrisoshaders.cpp
 	"ALAGE/gfx/iso/PBRIsoScene.h"
 	<sstream>
 	<iostream>

@@ -176,7 +176,7 @@ void IsoSpriteEntity::ComputeShadow(Light* light)
             sf::Texture* shadowTexture = &m_shadowMap[light];
             shadowTexture->create(shadow_bounds.width,shadow_bounds.height);
             shadowTexture->update(shadow_map_array,shadow_bounds.width,shadow_bounds.height,0,0);
-            TextureModifier::BlurTexture(shadowTexture, 5);
+            TextureModifier::BlurTexture(shadowTexture, 3);
             m_shadowSprite[light].setTexture(*shadowTexture);
             m_shadowSprite[light].setOrigin(sf::Sprite::getOrigin()
                                             -sf::Vector2f(shadow_bounds.left, shadow_bounds.top));
