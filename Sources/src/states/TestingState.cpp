@@ -64,7 +64,8 @@ void TestingState::Init()
     sarco3DEntity->SetTexture(PBRTextureHandler->LoadAssetFromFile("../data/torusbXML.txt",LoadTypeInThread));
     //sarco3DEntity->SetTexture(PBRTextureHandler->LoadAssetFromFile("../data/bedrockXML.txt",LoadTypeInThread));
     sarco3DEntity->SetCenter(128,128);
-    sarco3DEntity->SetShadowCastingType(DirectionnalShadow);
+    //sarco3DEntity->SetShadowCastingType(DirectionnalShadow);
+    sarco3DEntity->SetColor(sf::Color(32,196,255,160));
     //sarco3DEntity->DesactivateLighting();
     m_sarco3DNode->AttachObject(sarco3DEntity);
 
@@ -95,8 +96,8 @@ void TestingState::Init()
 
    /* Light* sunLight = m_mainScene.CreateLight(DirectionnalLight,sf::Vector3f(-1,.5,-1), sf::Color(255,255,160));
     sunLight->SetConstantAttenuation(2);*/
-    m_sunLight = m_mainScene.CreateLight(DirectionnalLight,sf::Vector3f(-1,.2,-1), sf::Color(255,255,255));
-    m_sunLight->SetIntensity(5);
+    m_sunLight = m_mainScene.CreateLight(DirectionnalLight,sf::Vector3f(.2,-1,-1), sf::Color(255,255,255));
+    m_sunLight->SetIntensity(10);
     m_sunLight->EnableShadowCasting();
     m_mainScene.GetRootNode()->AttachObject(m_sunLight);
     m_mainScene.SetAmbientLight(sf::Color(96,127,255,96));
@@ -134,7 +135,7 @@ void TestingState::Init()
     rectEntity->SetCenter(sf::Vector2f(512,  512));
    // rectEntity->SetTexture(TextureHandler->LoadAssetFromFile("../data/cobble_color.png",LoadTypeInThread));
     //rectEntity->SetTexture(PBRTextureHandler->LoadAssetFromFile("../data/sandXML.txt",LoadTypeInThread));
-   // rectEntity->SetTexture(PBRTextureHandler->LoadAssetFromFile("../data/cobbleXML.txt",LoadTypeInThread));
+    rectEntity->SetTexture(PBRTextureHandler->LoadAssetFromFile("../data/cobbleXML.txt",LoadTypeInThread));
     //rectEntity->SetTexture(PBRTextureHandler->LoadAssetFromFile("../data/sandXML.txt",LoadTypeInThread));
     rectEntity->SetTexture(PBRTextureHandler->LoadAssetFromFile("../data/wetsandXML.txt",LoadTypeInThread));
     //rectEntity->SetTexture(TextureHandler->LoadAssetFromFile("../data/cobble_color.png",LoadTypeInThread));
@@ -145,16 +146,35 @@ void TestingState::Init()
 
 
 
-    m_lightNode = m_mainScene.GetRootNode()->CreateChildNode();
+    SceneNode *lightNode = m_mainScene.GetRootNode()->CreateChildNode();
     Light* light = m_mainScene.CreateLight();
     light->SetDiffuseColor(sf::Color(255,190,64));
+    light->SetIntensity(5);
+    light->SetRadius(3);
+    lightNode->SetPosition(130,720,75);
+    lightNode->AttachObject(light);
+
+    lightNode = m_mainScene.GetRootNode()->CreateChildNode();
+    light = m_mainScene.CreateLight();
+    light->SetDiffuseColor(sf::Color(255,190,64));
+    light->SetIntensity(5);
+    light->SetRadius(3);
+    lightNode->SetPosition(50,-175,75);
+    lightNode->AttachObject(light);
+
+
+
+
+    m_lightNode = m_mainScene.GetRootNode()->CreateChildNode();
+    Light* light2 = m_mainScene.CreateLight();
+    light2->SetDiffuseColor(sf::Color(160,96,160));
    // light->SetConstantAttenuation(5);
     //light->SetLinearAttenuation(1);
     //light->SetQuadraticAttenuation(.00001);
     //light->SetQuadraticAttenuation(1);
-    light->SetIntensity(10);
-    light->SetRadius(3);
-    m_lightNode->AttachObject(light);
+    light2->SetIntensity(10);
+    light2->SetRadius(3);
+    m_lightNode->AttachObject(light2);
 
    // font.loadFromFile("../data/arial.ttf");
     m_fpsText.setFont(*AssetHandler<FontAsset>::Instance()->LoadAssetFromFile("../data/arial.ttf")->GetFont());

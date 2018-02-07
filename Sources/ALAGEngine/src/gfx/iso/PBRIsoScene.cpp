@@ -215,6 +215,9 @@ void PBRIsoScene::ProcessRenderQueue(sf::RenderTarget *w)
 
     for(int pass = 0 ; pass <= 1 ; ++pass)
     {
+        sf::RenderStates state;
+        state.shader = &m_PBRGeometryShader;
+
         if(pass == 0)
         {
             m_PBRGeometryShader.setUniform("p_alpha_pass",false);
@@ -222,10 +225,9 @@ void PBRIsoScene::ProcessRenderQueue(sf::RenderTarget *w)
         } else if(pass == 1) {
             m_PBRGeometryShader.setUniform("p_alpha_pass",true);
             renderTarget = &m_alpha_PBRScreen;
+            state.blendMode = sf::BlendNone;
         }
 
-        sf::RenderStates state;
-        state.shader = &m_PBRGeometryShader;
 
         renderTarget->setActive(true);
 
@@ -282,8 +284,9 @@ void PBRIsoScene::ProcessRenderQueue(sf::RenderTarget *w)
     m_PBRScreen.getTexture(PBRAlbedoScreen)->setSmooth(true);
     m_PBRScreen.getTexture(PBRAlbedoScreen)->generateMipmap();
 
-   /* m_PBRScreen.getTexture(PBRNormalScreen)->copyToImage().saveToFile("PBR1.png");
-    m_PBRScreen.getTexture(PBRDepthScreen)->copyToImage().saveToFile("PBR2.png");*/
+    /*m_alpha_PBRScreen.getTexture(PBRNormalScreen)->copyToImage().saveToFile("aPBR1.png");
+    m_alpha_PBRScreen.getTexture(PBRDepthScreen)->copyToImage().saveToFile("aPBR2.png");
+    m_alpha_PBRScreen.getTexture(PBRAlbedoScreen)->copyToImage().saveToFile("aPBR0.png");*/
 
     m_lightingShader.setUniform("map_albedo",*m_PBRScreen.getTexture(PBRAlbedoScreen));
     m_lightingShader.setUniform("map_normal",*m_PBRScreen.getTexture(PBRNormalScreen));

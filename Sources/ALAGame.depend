@@ -1,26 +1,27 @@
 # depslib dependency file v1.0
-1517175920 source:c:\c++\alag\sources\main.cpp
+1518021940 source:c:\c++\alag\sources\main.cpp
 	<iostream>
 	"ALAGE/core/GApp.h"
 	"ALAGE/utils/Logger.h"
 	"include/states/TestingState.h"
 
-1517957297 source:c:\c++\alag\sources\alagengine\src\core\gapp.cpp
+1518022990 source:c:\c++\alag\sources\alagengine\src\core\gapp.cpp
 	<SFML/System.hpp>
+	<sstream>
 	"ALAGE/core/GApp.h"
 	"ALAGE/utils/Logger.h"
 	"ALAGE/utils/Parser.h"
 
-1517175920 c:\c++\alag\sources\alagengine\include\alage\core\gapp.h
+1518021974 c:\c++\alag\sources\alagengine\include\alage\core\gapp.h
 	<SFML/Graphics.hpp>
 	"ALAGE/core/Config.h"
 	"ALAGE/core/EventManager.h"
 	"ALAGE/core/StateManager.h"
 
-1516304415 source:c:\c++\alag\sources\alagengine\src\core\gstate.cpp
+1518021942 source:c:\c++\alag\sources\alagengine\src\core\gstate.cpp
 	"ALAGE/core/GState.h"
 
-1516460660 c:\c++\alag\sources\alagengine\include\alage\core\gstate.h
+1518021942 c:\c++\alag\sources\alagengine\include\alage\core\gstate.h
 	<SFML/Graphics.hpp>
 	"ALAGE/utils/singleton.h"
 
@@ -33,7 +34,7 @@
 	<vector>
 	"GState.h"
 
-1518006978 source:c:\c++\alag\sources\src\states\testingstate.cpp
+1518022855 source:c:\c++\alag\sources\src\states\testingstate.cpp
 	"states/TestingState.h"
 	"ALAGE/core/GApp.h"
 	"ALAGE/core/EventManager.h"
@@ -684,14 +685,14 @@
 1516702536 c:\c++\alag\sources\alagengine\include\alage\utils\mapiterator.h
 	<map>
 
-1517926955 source:c:\c++\alag\sources\alagengine\src\gfx\spriteentity.cpp
+1518022880 source:c:\c++\alag\sources\alagengine\src\gfx\spriteentity.cpp
 	"ALAGE/gfx/SpriteEntity.h"
 	"ALAGE/gfx/iso/PBRIsoScene.h"
 	"ALAGE/core/AssetHandler.h"
 	"ALAGE/gfx/SceneNode.h"
 	<SFML/Graphics.hpp>
 
-1517670104 c:\c++\alag\sources\alagengine\include\alage\gfx\spriteentity.h
+1518022855 c:\c++\alag\sources\alagengine\include\alage\gfx\spriteentity.h
 	<SFML/Graphics.hpp>
 	"ALAGE/gfx/PBRTextureAsset.h"
 	"ALAGE/gfx/SceneEntity.h"
@@ -896,7 +897,7 @@
 	"ALAGE/gfx/iso/IsoRectEntity.h"
 	<SFML/OpenGL.hpp>
 
-1518019375 source:c:\c++\alag\sources\alagengine\src\gfx\iso\pbrisoscene.cpp
+1518023435 source:c:\c++\alag\sources\alagengine\src\gfx\iso\pbrisoscene.cpp
 	"ALAGE/gfx/iso/PBRIsoScene.h"
 	"ALAGE/utils/Logger.h"
 	"ALAGE/utils/Mathematics.h"
@@ -909,7 +910,7 @@
 	<sstream>
 	<iostream>
 
-1518020180 source:c:\c++\alag\sources\alagengine\src\gfx\iso\pbrisoshaders.cpp
+1518020824 source:c:\c++\alag\sources\alagengine\src\gfx\iso\pbrisoshaders.cpp
 	"ALAGE/gfx/iso/PBRIsoScene.h"
 	<sstream>
 	<iostream>

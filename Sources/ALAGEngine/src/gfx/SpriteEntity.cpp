@@ -124,6 +124,11 @@ void SpriteEntity::SetScale(sf::Vector2f c)
     sf::Sprite::setScale(c);
 }
 
+void SpriteEntity::SetColor(sf::Color c)
+{
+    sf::Sprite::setColor(c);
+}
+
 
 void SpriteEntity::SetShadowCastingType(ShadowCastingType type)
 {

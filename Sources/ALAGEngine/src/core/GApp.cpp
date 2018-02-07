@@ -1,20 +1,6 @@
-/*Copyright (C) 2017 Naisse Grégoire
-
-This program is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 2 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License along
-with this program; if not, write to the Free Software Foundation, Inc.,
-51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.*/
 
 #include <SFML/System.hpp>
+#include <sstream>
 
 #include "ALAGE/core/GApp.h"
 #include "ALAGE/utils/Logger.h"
@@ -26,6 +12,7 @@ namespace alag
 
 const char *GApp::DEFAULT_APP_NAME = "ALAGEngine";
 const char *GApp::DEFAULT_CONFIG_FILE = "config.ini";
+const char *GApp::DEFAULT_SCREENSHOTPATH = "../screenshots/";
 
 const char *GApp::DEFAULT_WINDOW_WIDTH = "1024";
 const char *GApp::DEFAULT_WINDOW_HEIGHT = "768";
@@ -33,14 +20,14 @@ const char *GApp::DEFAULT_SRGB = "false";
 
 
 
-GApp::GApp()
+GApp::GApp() : GApp(DEFAULT_APP_NAME)
 {
-    m_name = DEFAULT_APP_NAME;
 }
 
 GApp::GApp(const std::string& name)
 {
     m_name = name;
+    m_screenshot_nbr = 1;
 }
 
 GApp::~GApp()
@@ -131,9 +118,25 @@ int GApp::Loop()
         }
 
         m_window.display();
+
+        /** NEED TO CHANGE TO CONFIG::PRINTSCREENKEY **/
+        if(m_eventManager.KeyPressed(sf::Keyboard::P))
+            Printscreen();
     }
 
     return 0;
+}
+
+void GApp::Printscreen()
+{
+    std::ostringstream buf;
+    buf<<DEFAULT_SCREENSHOTPATH<<"screenshot"<<m_screenshot_nbr++<<".png";
+
+    sf::Vector2u windowSize = m_window.getSize();
+    sf::Texture texture;
+    texture.create(windowSize.x, windowSize.y);
+    texture.update(m_window);
+    texture.copyToImage().saveToFile(buf.str());
 }
 
 sf::Vector2u GApp::GetWindowSize()
