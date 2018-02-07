@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<texture3D>
+	<name>Tree</name>
+	<height>600</height>
+	<texture type="albedo">tree_albedo.png</texture>
+	<texture type="normal">tree_normal.png</texture>
+	<texture type="depth">tree_heightmap.png</texture>
+	<texture type="material">tree_material.png</texture>
+</texture3D>

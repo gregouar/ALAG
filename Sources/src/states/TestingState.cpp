@@ -62,6 +62,7 @@ void TestingState::Init()
     SpriteEntity *sarco3DEntity = m_mainScene.CreateIsoSpriteEntity();
     //sarco3DEntity->SetTexture(TextureHandler->LoadAssetFromFile("../data/sarco-color.png"));
     sarco3DEntity->SetTexture(PBRTextureHandler->LoadAssetFromFile("../data/torusbXML.txt",LoadTypeInThread));
+    //sarco3DEntity->SetTexture(PBRTextureHandler->LoadAssetFromFile("../data/treeXML.txt",LoadTypeInThread));
     //sarco3DEntity->SetTexture(PBRTextureHandler->LoadAssetFromFile("../data/bedrockXML.txt",LoadTypeInThread));
     sarco3DEntity->SetCenter(128,128);
     //sarco3DEntity->SetShadowCastingType(DirectionnalShadow);
@@ -96,7 +97,7 @@ void TestingState::Init()
 
    /* Light* sunLight = m_mainScene.CreateLight(DirectionnalLight,sf::Vector3f(-1,.5,-1), sf::Color(255,255,160));
     sunLight->SetConstantAttenuation(2);*/
-    m_sunLight = m_mainScene.CreateLight(DirectionnalLight,sf::Vector3f(.2,-1,-1), sf::Color(255,255,255));
+    m_sunLight = m_mainScene.CreateLight(DirectionnalLight,sf::Vector3f(-1,.2,-1), sf::Color(255,255,255));
     m_sunLight->SetIntensity(10);
     m_sunLight->EnableShadowCasting();
     m_mainScene.GetRootNode()->AttachObject(m_sunLight);
@@ -109,9 +110,11 @@ void TestingState::Init()
 
     m_chene_node = m_mainScene.GetRootNode()->CreateChildNode(sf::Vector2f(150,-100));
     IsoSpriteEntity *cheneEntity = m_mainScene.CreateIsoSpriteEntity();
-    cheneEntity->SetTexture(PBRTextureHandler->LoadAssetFromFile("../data/cheneXML.txt"));
-    cheneEntity->SetCenter(192,320);
+    cheneEntity->SetTexture(PBRTextureHandler->LoadAssetFromFile("../data/treeXML.txt"));
+    //cheneEntity->SetCenter(192,320);
+    cheneEntity->SetCenter(256,512);
     cheneEntity->SetShadowCastingType(DirectionnalShadow);
+    m_chene_node->SetPosition(150,-100,-78);
     m_chene_node->AttachObject(cheneEntity);
 
     IsoSpriteEntity *abbayeEntity = m_mainScene.CreateIsoSpriteEntity();
