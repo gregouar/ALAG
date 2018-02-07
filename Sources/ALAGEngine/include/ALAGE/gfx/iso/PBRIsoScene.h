@@ -94,6 +94,7 @@ class PBRIsoScene : public DefaultScene
         int m_superSampling;
         sf::MultipleRenderTexture m_PBRScreen;
         sf::MultipleRenderTexture m_alpha_PBRScreen;
+        sf::MultipleRenderTexture m_lighting_PBRScreen;
 
         sf::RectangleShape m_renderer;
         sf::RenderStates m_rendererStates;

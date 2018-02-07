@@ -12,10 +12,10 @@ Texture loaded from file: ../data/sand_depth.png
 Texture loaded from file: ../data/chene_heightmap.png
 Texture loaded from file: ../data/chene_mat.png
 PBRTexture readed from file: ../data/cheneXML.txt
-Font loaded from file: ../data/arial.ttf
 PBRTexture readed from file: ../data/abbayeXML.txt
-Starting application
+Font loaded from file: ../data/arial.ttf
 PBRTexture readed from file: ../data/wetsandXML.txt
+Starting application
 Texture loaded from file: ../data/sand_normal.png
 Texture loaded from file: ../data/torusb.png
 Texture loaded from file: ../data/torusb_normal.png

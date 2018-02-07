@@ -121,7 +121,7 @@ int DefaultScene::UpdateLighting(std::multimap<float, Light*> &lightList, int ma
            /* SfColorToGlColor(curLight->GetSpecularColor(), glColor);
             glLightfv(GL_LIGHT0+curNbrLights, GL_SPECULAR, glColor);*/
            // glLightf(GL_LIGHT0+curNbrLights, GL_CONSTANT_ATTENUATION, curLight->GetConstantAttenuation());
-            glLightf(GL_LIGHT0+curNbrLights, GL_CONSTANT_ATTENUATION, curLight->GetRadius());
+            glLightf(GL_LIGHT0+curNbrLights, GL_CONSTANT_ATTENUATION, 1.0/curLight->GetRadius());
             glLightf(GL_LIGHT0+curNbrLights, GL_LINEAR_ATTENUATION, curLight->GetLinearAttenuation());
             glLightf(GL_LIGHT0+curNbrLights, GL_QUADRATIC_ATTENUATION, curLight->GetQuadraticAttenuation());
 
@@ -322,7 +322,7 @@ void DefaultScene::SetCurrentCamera(Camera *cam)
 void DefaultScene::SetAmbientLight(sf::Color light)
 {
     m_ambientLight = light;
-    m_ambientLight.a = 255;
+    //m_ambientLight.a = 255;
 }
 
 void DefaultScene::SetShadowCasting(ShadowCastingType type)

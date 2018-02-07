@@ -5,6 +5,8 @@
 #include <SFML/OpenGL.hpp>
 #include "ALAGE/Types.h"
 
+#define PI 3.14159265359
+
 const GLfloat IdMat3X3[9] = {1,0,0,0,1,0,0,0,1};
 
 float ComputeDotProduct(sf::Vector3f v, sf::Vector3f w);

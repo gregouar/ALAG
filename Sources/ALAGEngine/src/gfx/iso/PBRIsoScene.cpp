@@ -81,22 +81,25 @@ bool PBRIsoScene::InitRenderer(sf::Vector2u windowSize)
     if(!m_SSAOScreen.create(windowSize.x*m_superSampling, windowSize.y*m_superSampling, true))
         r = false;
 
-
     if(!m_alpha_PBRScreen.create(windowSize.x*m_superSampling, windowSize.y*m_superSampling, true))
         r = false;
 
-    m_alpha_PBRScreen.addRenderTarget(PBRNormalScreen);
-    m_alpha_PBRScreen.addRenderTarget(PBRDepthScreen);
-    m_alpha_PBRScreen.addRenderTarget(PBRMaterialScreen);
-
     if(!m_PBRScreen.create(windowSize.x*m_superSampling, windowSize.y*m_superSampling, true))
         r = false;
-
 
     m_PBRScreen.addRenderTarget(PBRNormalScreen);
     m_PBRScreen.addRenderTarget(PBRDepthScreen);
     m_PBRScreen.addRenderTarget(PBRMaterialScreen);
 
+    m_alpha_PBRScreen.addRenderTarget(PBRNormalScreen);
+    m_alpha_PBRScreen.addRenderTarget(PBRDepthScreen);
+    m_alpha_PBRScreen.addRenderTarget(PBRMaterialScreen);
+
+
+    if(!m_lighting_PBRScreen.create(windowSize.x*m_superSampling, windowSize.y*m_superSampling, true))
+        r = false;
+
+    m_lighting_PBRScreen.addRenderTarget(1); //Bloom
 
 
 
@@ -159,7 +162,7 @@ bool PBRIsoScene::InitRenderer(sf::Vector2u windowSize)
         sf::Color c = sf::Color::White;
         c.r = (int)(static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/255)));
         c.g = (int)(static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/255)));
-        c.r = 0;
+        c.b = 1.0;
         m_SSAONoisePattern.setPixel(x,y,c);
     }
 
@@ -187,7 +190,7 @@ void PBRIsoScene::ProcessRenderQueue(sf::RenderTarget *w)
     if(m_shadowCastingOption != NoShadow)
         RenderShadows(lightList,curView/*,m_colorScreen.getSize()*/);
 
-    m_alpha_PBRScreen.setActive(true);
+  /*  m_alpha_PBRScreen.setActive(true);
         glClear(GL_DEPTH_BUFFER_BIT);
         glEnable(GL_DEPTH_TEST);
         glDepthMask(GL_TRUE);
@@ -203,7 +206,7 @@ void PBRIsoScene::ProcessRenderQueue(sf::RenderTarget *w)
         //m_PBRScreen.clear();
         m_PBRScreen.clear();
         m_PBRScreen.setView(curView);
-    m_PBRScreen.setActive(false);
+    m_PBRScreen.setActive(false);*/
 
 
 
@@ -225,9 +228,15 @@ void PBRIsoScene::ProcessRenderQueue(sf::RenderTarget *w)
         state.shader = &m_PBRGeometryShader;
 
         renderTarget->setActive(true);
+
+        glClear(GL_DEPTH_BUFFER_BIT);
+        glEnable(GL_DEPTH_TEST);
+        glDepthMask(GL_TRUE);
+        renderTarget->clear(sf::Color(0,0,0,0));
+        renderTarget->setView(curView);
+
         for(renderIt = m_renderQueue.begin() ; renderIt != m_renderQueue.end(); ++renderIt)
         {
-
             sf::Vector3f globalPos(0,0,0);
 
             SceneNode *node = (*renderIt)->GetParentNode();
@@ -247,9 +256,11 @@ void PBRIsoScene::ProcessRenderQueue(sf::RenderTarget *w)
             (*renderIt)->PrepareShader(&m_PBRGeometryShader);
             (*renderIt)->Render(renderTarget,state);
         }
-        renderTarget->display();
+       // renderTarget->display();
         renderTarget->setActive(false);
     }
+
+    m_PBRScreen.display();
 
     if(m_enableSSAO)
     {
@@ -257,6 +268,8 @@ void PBRIsoScene::ProcessRenderQueue(sf::RenderTarget *w)
         m_SSAOScreen.draw(m_SSAOrenderer,&m_SSAOShader);
         m_SSAOScreen.display();
     }
+
+    m_alpha_PBRScreen.display();
 
     sf::Vector2f shift = curView.getCenter();
     shift -= sf::Vector2f(curView.getSize().x/2, curView.getSize().y/2);
@@ -269,7 +282,8 @@ void PBRIsoScene::ProcessRenderQueue(sf::RenderTarget *w)
     m_PBRScreen.getTexture(PBRAlbedoScreen)->setSmooth(true);
     m_PBRScreen.getTexture(PBRAlbedoScreen)->generateMipmap();
 
-    //m_PBRScreen.getTexture(PBRNormalScreen)->copyToImage().saveToFile("PBR1.png");
+   /* m_PBRScreen.getTexture(PBRNormalScreen)->copyToImage().saveToFile("PBR1.png");
+    m_PBRScreen.getTexture(PBRDepthScreen)->copyToImage().saveToFile("PBR2.png");*/
 
     m_lightingShader.setUniform("map_albedo",*m_PBRScreen.getTexture(PBRAlbedoScreen));
     m_lightingShader.setUniform("map_normal",*m_PBRScreen.getTexture(PBRNormalScreen));
@@ -480,8 +494,8 @@ void PBRIsoScene::ComputeTrigonometry()
     m_lightingShader.setUniform("p_isoToCartZFactor",m_isoToCartMat.values[5]);
 
 
-    m_SSAOShader.setUniform("p_cartToIso2DProjMat",sf::Glsl::Mat3(m_cartToIsoMat.values));
-    m_SSAOShader.setUniform("p_isoToCartZFactor",m_isoToCartMat.values[5]);
+    //m_SSAOShader.setUniform("p_cartToIso2DProjMat",sf::Glsl::Mat3(m_cartToIsoMat.values));
+    //m_SSAOShader.setUniform("p_isoToCartZFactor",m_isoToCartMat.values[5]);
     m_SSAOShader.setUniform("p_isoToCartMat",sf::Glsl::Mat3(m_isoToCartMat.values));
 }
 

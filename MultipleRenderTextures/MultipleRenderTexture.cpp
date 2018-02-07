@@ -125,6 +125,8 @@ bool MultipleRenderTexture::addRenderTarget(unsigned int renderingLocation)
 
     m_activeTextures.push_back(renderingLocation+GL_COLOR_ATTACHMENT0_EXT);
 
+    GLEXT_glDrawBuffers(m_activeTextures.size(),m_activeTextures.data());
+
     return true;
 }
 
@@ -208,8 +210,12 @@ bool MultipleRenderTexture::setActive(bool active)
     if(!m_context->setActive(active))
         return false;
 
-    if(active)
-        GLEXT_glDrawBuffers(m_activeTextures.size(),m_activeTextures.data());
+    /*if(active)
+    {
+        glCheck(GLEXT_glBindFramebuffer(GLEXT_GL_FRAMEBUFFER, m_frameBuffer));
+    } else {
+        glCheck(GLEXT_glBindFramebuffer(GLEXT_GL_FRAMEBUFFER, 0));
+    }*/
 
     return true;
 }
@@ -297,6 +303,8 @@ bool MultipleRenderTexture::addTargetToFBO(unsigned int renderingLocation, unsig
         err()<< "Impossible to add render target (location not available)" <<std::endl;
         return false;
     }
+
+    setActive(true);
 
     glCheck(GLEXT_glFramebufferTexture2D(GLEXT_GL_FRAMEBUFFER, GLEXT_GL_COLOR_ATTACHMENT0+renderingLocation
                                          , GL_TEXTURE_2D, textureId, 0));

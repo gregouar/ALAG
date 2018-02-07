@@ -9,8 +9,6 @@
 #include "AlAGE/utils/ListIterator.h"
 
 
-#define PI 3.14159265
-
 namespace alag
 {
 
