@@ -106,11 +106,11 @@ class PBRIsoScene : public DefaultScene
         sf::RenderStates m_rendererStates;
 
         bool m_enableBloom;
-        sf::RenderTexture m_bloomScreen;
+        sf::RenderTexture m_bloomScreen[2];
 
         bool m_enableSSAO;
         sf::Shader m_SSAOShader;
-        sf::RenderTexture m_SSAOScreen;
+        sf::RenderTexture m_SSAOScreen[2];
         sf::RectangleShape m_SSAOrenderer;
         sf::Texture m_SSAONoiseTexture;
         sf::Image m_SSAONoisePattern;
@@ -126,6 +126,7 @@ class PBRIsoScene : public DefaultScene
         static const std::string DEFAULT_DIRECTIONALSHADOWSCASTING;
         static const std::string DEFAULT_DYNAMICSHADOWSCASTING;
         static const float DEFAULT_BLOOMBLUR;
+        static const float DEFAULT_SSAOBLUR;
 };
 
 }
