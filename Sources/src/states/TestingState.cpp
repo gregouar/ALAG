@@ -43,6 +43,7 @@ void TestingState::Init()
     m_mainScene.SetViewAngle({.xyAngle = 45, .zAngle=30});
     m_cameraNode = m_mainScene.GetRootNode()->CreateChildNode();
     m_cameraNode->SetPosition(sf::Vector3f(1000,1000,750));
+    m_cameraNode->SetPosition(sf::Vector3f(3000,3000,2500));
     m_camera = m_mainScene.CreateCamera(sf::Vector2f(
                              Config::GetInt("window","width",GApp::DEFAULT_WINDOW_WIDTH),
                              Config::GetInt("window","height",GApp::DEFAULT_WINDOW_HEIGHT)));
@@ -64,9 +65,9 @@ void TestingState::Init()
     sarco3DEntity->SetTexture(PBRTextureHandler->LoadAssetFromFile("../data/torusbXML.txt",LoadTypeInThread));
     //sarco3DEntity->SetTexture(PBRTextureHandler->LoadAssetFromFile("../data/treeXML.txt",LoadTypeInThread));
     //sarco3DEntity->SetTexture(PBRTextureHandler->LoadAssetFromFile("../data/bedrockXML.txt",LoadTypeInThread));
-    sarco3DEntity->SetCenter(128,128);
-    //sarco3DEntity->SetShadowCastingType(DirectionnalShadow);
-    sarco3DEntity->SetColor(sf::Color(32,196,255,160));
+    sarco3DEntity->SetCenter(128,166);
+    sarco3DEntity->SetShadowCastingType(DirectionnalShadow);
+   // sarco3DEntity->SetColor(sf::Color(32,196,255,160));
     //sarco3DEntity->DesactivateLighting();
     m_sarco3DNode->AttachObject(sarco3DEntity);
 
@@ -74,7 +75,7 @@ void TestingState::Init()
     m_sarcoNode->SetPosition(-100,-30);
     IsoSpriteEntity *sarcoEntity = m_mainScene.CreateIsoSpriteEntity(sf::Vector2i(256,256));
     sarcoEntity->SetTexture(t3D);
-    sarcoEntity->SetCenter(128,128);
+    sarcoEntity->SetCenter(128,148);
     sarcoEntity->SetShadowCastingType(DirectionnalShadow);
     m_sarcoNode->AttachObject(sarcoEntity);
 
@@ -82,7 +83,7 @@ void TestingState::Init()
     IsoSpriteEntity *sarco3DEntitybis = m_mainScene.CreateIsoSpriteEntity(sf::Vector2i(256,256));
     sarco3DEntitybis->SetTexture(t3D);
     //sarco3DEntitybis->SetTexture(PBRTextureHandler->LoadAssetFromFile("../data/sandXML.txt"));
-    sarco3DEntitybis->SetCenter(128,128);
+    sarco3DEntitybis->SetCenter(128,148);
     sarco3DEntitybis->SetShadowCastingType(DirectionnalShadow);
     m_sarcoNode->CreateChildNode(sf::Vector2f(-15,70))->AttachObject(sarco3DEntitybis);
 
@@ -91,14 +92,14 @@ void TestingState::Init()
 
     IsoSpriteEntity *sarco3DEntityThird = m_mainScene.CreateIsoSpriteEntity(sf::Vector2i(256,256));
     sarco3DEntityThird->SetTexture(t3D);
-    sarco3DEntityThird->SetCenter(128,128);
+    sarco3DEntityThird->SetCenter(128,148);
     sarco3DEntityThird->SetShadowCastingType(DirectionnalShadow);
     m_mainScene.GetRootNode()->CreateChildNode(sf::Vector2f(100,100))->AttachObject(sarco3DEntityThird);
 
    /* Light* sunLight = m_mainScene.CreateLight(DirectionnalLight,sf::Vector3f(-1,.5,-1), sf::Color(255,255,160));
     sunLight->SetConstantAttenuation(2);*/
     m_sunLight = m_mainScene.CreateLight(DirectionnalLight,sf::Vector3f(-1,.2,-1), sf::Color(255,255,255));
-    m_sunLight->SetIntensity(10);
+    m_sunLight->SetIntensity(20);
     m_sunLight->EnableShadowCasting();
     m_mainScene.GetRootNode()->AttachObject(m_sunLight);
     m_mainScene.SetAmbientLight(sf::Color(96,127,255,96));
@@ -112,8 +113,9 @@ void TestingState::Init()
     IsoSpriteEntity *cheneEntity = m_mainScene.CreateIsoSpriteEntity();
     cheneEntity->SetTexture(PBRTextureHandler->LoadAssetFromFile("../data/treeXML.txt"));
     //cheneEntity->SetCenter(192,320);
-    cheneEntity->SetCenter(256,512);
+    cheneEntity->SetCenter(256,526);
     cheneEntity->SetShadowCastingType(DirectionnalShadow);
+    cheneEntity->SetShadowVolumeType(TwoSidedShadow);
     m_chene_node->SetPosition(150,-100,-78);
     m_chene_node->AttachObject(cheneEntity);
 
@@ -248,6 +250,11 @@ void TestingState::HandleEvents(alag::EventManager *event_manager)
         m_mainScene.SetSSAO(false);
     if(event_manager->KeyReleased(sf::Keyboard::O))
         m_mainScene.SetSSAO(true);
+
+    if(event_manager->KeyPressed(sf::Keyboard::B))
+        m_mainScene.SetBloom(false);
+    if(event_manager->KeyReleased(sf::Keyboard::B))
+        m_mainScene.SetBloom(true);
 
 
     if(event_manager->KeyPressed(sf::Keyboard::S))

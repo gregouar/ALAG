@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <texture3D>
 	<name>Torus</name>
-	<height>60</height>
+	<height>75</height>
 	<texture type="albedo">torusb.png</texture>
 	<texture type="normal">torusb_normal.png</texture>
 	<texture type="depth">torusb_depth.png</texture>
-	<material type="roughness">.5</material>
-	<material type="metalness">0</material>
+	<material type="roughness">.6</material>
+	<material type="metalness">1</material>
 	<material type="translucency">0</material>
 </texture3D>

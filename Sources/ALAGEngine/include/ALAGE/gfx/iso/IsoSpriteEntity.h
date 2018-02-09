@@ -23,10 +23,16 @@ class IsoSpriteEntity : public SpriteEntity
         virtual void ComputeShadow(Light*);
         void RenderShadow(sf::RenderTarget*, Light*);
 
+        ShadowVolumeType GetShadowVolumeType();
+
+        void SetShadowVolumeType(ShadowVolumeType);
+
         //virtual void Notify(NotificationSender*, NotificationType);
 
     protected:
         void SetIsoScene(PBRIsoScene *scene);
+
+        ShadowVolumeType m_shadowVolumeType;
 
     private:
         PBRIsoScene *m_scene;

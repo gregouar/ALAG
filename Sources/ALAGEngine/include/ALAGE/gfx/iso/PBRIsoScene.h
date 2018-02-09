@@ -53,6 +53,7 @@ class PBRIsoScene : public DefaultScene
         virtual void EnableGammaCorrection();
         virtual void DisableGammaCorrection();
 
+        void SetBloom(bool);
         void SetSSAO(bool);
 
     protected:
@@ -64,6 +65,8 @@ class PBRIsoScene : public DefaultScene
         void CompilePBRGeometryShader();
         void CompileLightingShader();
         void CompileSSAOShader();
+        void CompileBlurShader();
+        void CompileHDRBloomShader();
 
         sf::Shader *GetDepthShader();
 
@@ -86,6 +89,8 @@ class PBRIsoScene : public DefaultScene
         sf::Shader m_depthShader;
         sf::Shader m_PBRGeometryShader;
         sf::Shader m_lightingShader;
+        sf::Shader m_blurShader;
+        sf::Shader m_HDRBloomShader;
 
         /*sf::RenderTexture m_colorScreen;
         sf::RenderTexture m_normalScreen;
@@ -94,10 +99,14 @@ class PBRIsoScene : public DefaultScene
         int m_superSampling;
         sf::MultipleRenderTexture m_PBRScreen;
         sf::MultipleRenderTexture m_alpha_PBRScreen;
-        sf::MultipleRenderTexture m_lighting_PBRScreen;
+        sf::MultipleRenderTexture m_lighting_PBRScreen[2];
+        bool m_activeLightingPBRScreen;
 
         sf::RectangleShape m_renderer;
         sf::RenderStates m_rendererStates;
+
+        bool m_enableBloom;
+        sf::RenderTexture m_bloomScreen;
 
         bool m_enableSSAO;
         sf::Shader m_SSAOShader;
@@ -111,10 +120,12 @@ class PBRIsoScene : public DefaultScene
         static const int MAX_SHADOW_MAPS;
 
         static const std::string DEFAULT_ENABLESSAO;
+        static const std::string DEFAULT_ENABLEBLOOM;
         static const std::string DEFAULT_ENABLESRGB;
         static const std::string DEFAULT_SUPERSAMPLING;
         static const std::string DEFAULT_DIRECTIONALSHADOWSCASTING;
         static const std::string DEFAULT_DYNAMICSHADOWSCASTING;
+        static const float DEFAULT_BLOOMBLUR;
 };
 
 }

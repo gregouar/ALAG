@@ -16,8 +16,8 @@ public:
     MultipleRenderTexture();
     virtual ~MultipleRenderTexture();
 
-    bool create(unsigned int width, unsigned int height, bool depthBuffer = false);
-    bool addRenderTarget(unsigned int renderingLocation);
+    bool create(unsigned int width, unsigned int height, bool depthBuffer = false, bool useFloat = false);
+    bool addRenderTarget(unsigned int renderingLocation, bool useFloat = false);
     bool removeRenderTarget(unsigned int renderingLocation);
 
     void setSmooth(unsigned int renderingLocation, bool smooth);

@@ -52,7 +52,7 @@ MultipleRenderTexture::~MultipleRenderTexture()
 }
 
 
-bool MultipleRenderTexture::create(unsigned int width, unsigned int height, bool depthBuffer)
+bool MultipleRenderTexture::create(unsigned int width, unsigned int height, bool depthBuffer, bool useFloat)
 {
     m_size = Vector2u(width, height);
 
@@ -69,13 +69,13 @@ bool MultipleRenderTexture::create(unsigned int width, unsigned int height, bool
     if(!createFBO(width,height,depthBuffer))
         return false;
 
-    if(!addRenderTarget(0))
+    if(!addRenderTarget(0,useFloat))
         return false;
 
     return true;
 }
 
-bool MultipleRenderTexture::addRenderTarget(unsigned int renderingLocation)
+bool MultipleRenderTexture::addRenderTarget(unsigned int renderingLocation, bool useFloat)
 {
     std::vector<unsigned int>::iterator renderIt;
     renderIt = findRenderTarget(renderingLocation);
@@ -94,7 +94,7 @@ bool MultipleRenderTexture::addRenderTarget(unsigned int renderingLocation)
 
     Texture* curTexture = &m_textures[renderingLocation];
 
-    if (!curTexture->create(m_size.x, m_size.y))
+    if (!curTexture->create(m_size.x, m_size.y, useFloat))
     {
         err() << "Impossible to add render texture (failed to create the target texture)" << std::endl;
         return false;

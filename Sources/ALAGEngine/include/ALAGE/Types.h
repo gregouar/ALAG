@@ -53,6 +53,13 @@ enum ShadowCastingType
     AllShadows,
 };
 
+enum ShadowVolumeType
+{
+    OneSidedShadow,
+    TwoSidedShadow,
+    MirroredTwoSidedShadow,
+};
+
 enum PBRScreenType
 {
     PBRAlbedoScreen = 0,

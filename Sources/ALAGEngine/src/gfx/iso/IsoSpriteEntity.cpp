@@ -19,6 +19,7 @@ IsoSpriteEntity::IsoSpriteEntity(const sf::Vector2i &v) : IsoSpriteEntity(sf::In
 IsoSpriteEntity::IsoSpriteEntity(const sf::IntRect &r) : SpriteEntity(r)
 {
     m_scene = nullptr;
+    m_shadowVolumeType = OneSidedShadow;
 }
 
 
@@ -137,7 +138,7 @@ void IsoSpriteEntity::ComputeShadow(Light* light)
             sf::Vector2f proj_pos(0,0);
             for(size_t x = 0 ; x < depth_texture_width ; ++x)
             for(size_t y = 0 ; y < depth_img.getSize().y ; ++y)
-            if(depth_array[(x + y*depth_texture_width)*4+3] == 255)
+            if(depth_array[(x + y*depth_texture_width)*4+3] > 64)
             {
                 sf::Color color_pixel(depth_array[(x + y*depth_texture_width)*4],
                                       depth_array[(x + y*depth_texture_width)*4+1],
@@ -147,6 +148,7 @@ void IsoSpriteEntity::ComputeShadow(Light* light)
                 height_pixel *= height*0.00130718954;
 
                 sf::Vector2f pos(x,y);
+
                 pos.y -= height_pixel*isoToCart.values[5];
                 pos -= isoToCart*(sf::Vector2f(lightDirection.x/lightDirection.z,
                                                lightDirection.y/lightDirection.z)*height_pixel);
@@ -171,12 +173,47 @@ void IsoSpriteEntity::ComputeShadow(Light* light)
                         shadow_map_array[array_pos+3] = color_pixel.a;
                     }
                 }
+
+                if(m_shadowVolumeType == TwoSidedShadow ||
+                   m_shadowVolumeType == MirroredTwoSidedShadow)
+                {
+                    pos = sf::Vector2f(x,y);
+                    pos.y -= height_pixel*isoToCart.values[5];
+                    pos.y = 2*sf::Sprite::getOrigin().y - pos.y;
+
+                    if(m_shadowVolumeType == MirroredTwoSidedShadow)
+                        pos.x = 2*sf::Sprite::getOrigin().x - pos.x;
+
+                    pos -= isoToCart*(sf::Vector2f(lightDirection.x/lightDirection.z,
+                                                   lightDirection.y/lightDirection.z)*height_pixel);
+
+                    pos.x = (int)(pos.x+0.5) - shadow_bounds.left;
+                    pos.y = (int)(pos.y+0.5) - shadow_bounds.top;
+
+                    for(int dx = -1 ; dx <= 1 ; ++dx)
+                    for(int dy = -1 ; dy <= 1 ; ++dy)
+                    {
+                        int array_pos = ((pos.x+dx) + (pos.y+dy)*shadow_bounds.width)*4;
+
+                        if(array_pos >= 0 && array_pos < shadow_bounds.width*shadow_bounds.height*4)
+                        if(color_pixel.a*(color_pixel.r + color_pixel.g + color_pixel.b) >
+                           shadow_map_array[array_pos+3]*(shadow_map_array[array_pos]
+                                                          +shadow_map_array[array_pos+1]
+                                                          +shadow_map_array[array_pos+2]))
+                        {
+                            shadow_map_array[array_pos] = color_pixel.r;
+                            shadow_map_array[array_pos+1] = color_pixel.g;
+                            shadow_map_array[array_pos+2] = color_pixel.b;
+                            shadow_map_array[array_pos+3] = color_pixel.a;
+                        }
+                    }
+                }
             }
 
             sf::Texture* shadowTexture = &m_shadowMap[light];
             shadowTexture->create(shadow_bounds.width,shadow_bounds.height);
             shadowTexture->update(shadow_map_array,shadow_bounds.width,shadow_bounds.height,0,0);
-            TextureModifier::BlurTexture(shadowTexture, 3);
+            TextureModifier::BlurTexture(shadowTexture, 5);
             m_shadowSprite[light].setTexture(*shadowTexture);
             m_shadowSprite[light].setOrigin(sf::Sprite::getOrigin()
                                             -sf::Vector2f(shadow_bounds.left, shadow_bounds.top));
@@ -187,6 +224,16 @@ void IsoSpriteEntity::ComputeShadow(Light* light)
 
         AddToLightList(light);
     }
+}
+
+ShadowVolumeType IsoSpriteEntity::GetShadowVolumeType()
+{
+    return m_shadowVolumeType;
+}
+
+void IsoSpriteEntity::SetShadowVolumeType(ShadowVolumeType type)
+{
+    m_shadowVolumeType = type;
 }
 
 void IsoSpriteEntity::SetIsoScene(PBRIsoScene *scene)

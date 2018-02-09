@@ -83,7 +83,7 @@ public:
     /// \return True if creation has been successful
     ///
     ////////////////////////////////////////////////////////////
-    bool create(unsigned int width, unsigned int height, bool depthBuffer = false);
+    bool create(unsigned int width, unsigned int height, bool depthBuffer = false, bool useFloat = false);
 
     ////////////////////////////////////////////////////////////
     /// \brief Enable or disable texture smoothing

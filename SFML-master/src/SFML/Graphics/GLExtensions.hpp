@@ -257,6 +257,7 @@
     // Core since 2.1 - EXT_texture_sRGB
     #define GLEXT_texture_sRGB                        sfogl_ext_EXT_texture_sRGB
     #define GLEXT_GL_SRGB8_ALPHA8                     GL_SRGB8_ALPHA8_EXT
+    #define GLEXT_RGBA16F                             GL_RGBA16F_EXT
 
     // Core since 3.0 - EXT_framebuffer_object
     #define GLEXT_framebuffer_object                  sfogl_ext_EXT_framebuffer_object
