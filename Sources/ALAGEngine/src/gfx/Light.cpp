@@ -210,7 +210,7 @@ void Light::RenderShadowMap(const sf::View &view/*,const sf::Vector2u &screen_si
         for(casterIt = m_shadowCasterList.begin() ; casterIt != m_shadowCasterList.end() ; ++casterIt)
             (*casterIt)->RenderShadow(&m_shadowMap,this);
 
-        m_shadowMap.display();
+        m_shadowMap.display(false);
        // m_shadowMap.getTexture().copyToImage().saveToFile("shadow.png");
     m_shadowMap.setActive(false);
 }

@@ -13,6 +13,8 @@
 namespace alag
 {
 
+const bool DOFLUSH = true;
+
 const IsoViewAngle PBRIsoScene::DEFAULT_ISO_VIEW_ANGLE = {.xyAngle = 0,
                                                              .zAngle = 90};
 
@@ -26,7 +28,8 @@ const std::string PBRIsoScene::DEFAULT_SUPERSAMPLING = "1";
 const std::string PBRIsoScene::DEFAULT_DIRECTIONALSHADOWSCASTING = "true";
 const std::string PBRIsoScene::DEFAULT_DYNAMICSHADOWSCASTING = "true";
 const float PBRIsoScene::DEFAULT_BLOOMBLUR = 10.0;
-const float PBRIsoScene::DEFAULT_SSAOBLUR = 5.0;
+const float PBRIsoScene::DEFAULT_SSAOBLUR = 3.0;
+const float PBRIsoScene::SSAO_STRENGTH = 3.0;
 
 PBRIsoScene::PBRIsoScene() : PBRIsoScene(DEFAULT_ISO_VIEW_ANGLE)
 {
@@ -43,8 +46,6 @@ PBRIsoScene::PBRIsoScene(IsoViewAngle viewAngle)
     CompilePBRGeometryShader();
     CompileBlurShader();
     CompileHDRBloomShader();
-
-    //m_PBRGeometryShader.loadFromMemory(PBRGeometry_vertShader,PBRGeometry_fragShader);
 
     SetAmbientLight(m_ambientLight);
 }
@@ -122,8 +123,8 @@ bool PBRIsoScene::InitRenderer(sf::Vector2u windowSize)
     m_lightingShader.setUniform("view_ratio",sf::Vector2f(1.0/(float)m_PBRScreen.getSize().x,
                                                             1.0/(float)m_PBRScreen.getSize().y));
 
-    m_HDRBloomShader.setUniform("view_ratio",sf::Vector2f(1.0/(float)m_PBRScreen.getSize().x,
-                                                            1.0/(float)m_PBRScreen.getSize().y));
+    //m_HDRBloomShader.setUniform("view_ratio",sf::Vector2f(1.0/(float)m_PBRScreen.getSize().x,
+    //                                                        1.0/(float)m_PBRScreen.getSize().y));
 
     TextureAsset *brdf_lut = AssetHandler<TextureAsset>::Instance()->LoadAssetFromFile("../data/ibl_brdf_lut.png");
     m_lightingShader.setUniform("map_brdflut",*brdf_lut->GetTexture());
@@ -191,6 +192,12 @@ void PBRIsoScene::ProcessRenderQueue(sf::RenderTarget *w)
 {
     sf::View curView = GenerateView(m_currentCamera);
 
+    sf::Vector2f shift = curView.getCenter();
+    shift -= sf::Vector2f(curView.getSize().x/2, curView.getSize().y/2);
+    m_lightingShader.setUniform("view_shift",shift);
+    m_lightingShader.setUniform("view_zoom",m_currentCamera->GetZoom());
+    m_lightingShader.setUniform("view_pos",m_currentCamera->GetParentNode()->GetGlobalPosition());
+
     std::multimap<float, Light*> lightList;
     m_currentCamera->GetParentNode()->FindNearbyLights(&lightList);
 
@@ -221,7 +228,6 @@ void PBRIsoScene::ProcessRenderQueue(sf::RenderTarget *w)
             state.blendMode = sf::BlendNone;
         }
 
-
         renderTarget->setActive(true);
 
         glClear(GL_DEPTH_BUFFER_BIT);
@@ -251,7 +257,7 @@ void PBRIsoScene::ProcessRenderQueue(sf::RenderTarget *w)
             (*renderIt)->PrepareShader(&m_PBRGeometryShader);
             (*renderIt)->Render(renderTarget,state);
         }
-        renderTarget->display();
+        renderTarget->display(DOFLUSH);
         renderTarget->setActive(false);
     }
 
@@ -262,16 +268,16 @@ void PBRIsoScene::ProcessRenderQueue(sf::RenderTarget *w)
         m_SSAOShader.setUniform("view_zoom",1.0f/m_currentCamera->GetZoom());
 
         m_SSAOScreen[0].draw(m_SSAOrenderer,&m_SSAOShader);
-        m_SSAOScreen[0].display();
+        m_SSAOScreen[0].display(DOFLUSH);
 
         m_renderer.setTexture(&m_SSAOScreen[0].getTexture());
         m_blurShader.setUniform("offset",sf::Vector2f(DEFAULT_SSAOBLUR/(float)m_PBRScreen.getSize().x,0));
         m_SSAOScreen[1].draw(m_renderer,&m_blurShader);
-        m_SSAOScreen[1].display();
+        m_SSAOScreen[1].display(DOFLUSH);
         m_renderer.setTexture(&m_SSAOScreen[1].getTexture());
         m_blurShader.setUniform("offset",sf::Vector2f(0,DEFAULT_SSAOBLUR/(float)m_PBRScreen.getSize().x));
         m_SSAOScreen[0].draw(m_renderer,&m_blurShader);
-        m_SSAOScreen[0].display();
+        m_SSAOScreen[0].display(DOFLUSH);
 
       //  m_SSAOScreen[0].getTexture().copyToImage().saveToFile("SSAO0.png");
       //  m_SSAOScreen[1].getTexture().copyToImage().saveToFile("SSAO1.png");
@@ -279,20 +285,15 @@ void PBRIsoScene::ProcessRenderQueue(sf::RenderTarget *w)
 
     //m_alpha_PBRScreen.display();
 
-    sf::Vector2f shift = curView.getCenter();
-    shift -= sf::Vector2f(curView.getSize().x/2, curView.getSize().y/2);
-    m_lightingShader.setUniform("view_shift",shift);
-    m_lightingShader.setUniform("view_zoom",m_currentCamera->GetZoom());
-    m_lightingShader.setUniform("view_pos",m_currentCamera->GetParentNode()->GetGlobalPosition());
 
     m_PBRScreen.setActive(true);
 
 
     m_lighting_PBRScreen[m_activeLightingPBRScreen].clear();
 
-    /*m_alpha_PBRScreen.getTexture(PBRNormalScreen)->copyToImage().saveToFile("aPBR1.png");
-    m_alpha_PBRScreen.getTexture(PBRDepthScreen)->copyToImage().saveToFile("aPBR2.png");
-    m_alpha_PBRScreen.getTexture(PBRAlbedoScreen)->copyToImage().saveToFile("aPBR0.png");*/
+   /* m_PBRScreen.getTexture(PBRAlbedoScreen)->copyToImage().saveToFile("PBR0.png");
+    m_PBRScreen.getTexture(PBRNormalScreen)->copyToImage().saveToFile("PBR1.png");
+    m_PBRScreen.getTexture(PBRDepthScreen)->copyToImage().saveToFile("PBR2.png");*/
 
     m_renderer.setTexture(m_lighting_PBRScreen[m_activeLightingPBRScreen].getTexture(0));
 
@@ -300,7 +301,7 @@ void PBRIsoScene::ProcessRenderQueue(sf::RenderTarget *w)
     m_lightingShader.setUniform("map_normal",*m_PBRScreen.getTexture(PBRNormalScreen));
     m_lightingShader.setUniform("map_depth",*m_PBRScreen.getTexture(PBRDepthScreen));
     m_lightingShader.setUniform("map_material",*m_PBRScreen.getTexture(PBRMaterialScreen));
-    m_lightingShader.setUniform("enable_SSAO",m_enableSSAO);
+    //m_lightingShader.setUniform("enable_SSAO",m_enableSSAO);
 
     m_lighting_PBRScreen[m_activeLightingPBRScreen].draw(m_renderer,m_rendererStates);
 
@@ -308,38 +309,38 @@ void PBRIsoScene::ProcessRenderQueue(sf::RenderTarget *w)
     m_lightingShader.setUniform("map_normal",*m_alpha_PBRScreen.getTexture(PBRNormalScreen));
     m_lightingShader.setUniform("map_depth",*m_alpha_PBRScreen.getTexture(PBRDepthScreen));
     m_lightingShader.setUniform("map_material",*m_alpha_PBRScreen.getTexture(PBRMaterialScreen));
-    m_lightingShader.setUniform("enable_SSAO",false);
+    //m_lightingShader.setUniform("enable_SSAO",false);
 
     m_lighting_PBRScreen[m_activeLightingPBRScreen].draw(m_renderer,m_rendererStates);
 
-    m_lighting_PBRScreen[m_activeLightingPBRScreen].display();
+    if(m_enableSSAO)
+    {
+        m_renderer.setTexture(&m_SSAOScreen[0].getTexture());
+        m_lighting_PBRScreen[m_activeLightingPBRScreen].draw(m_renderer,sf::BlendMultiply);
+    }
+
+
+    m_lighting_PBRScreen[m_activeLightingPBRScreen].display(DOFLUSH);
 
     if(m_enableBloom)
     {
+       // m_lighting_PBRScreen[m_activeLightingPBRScreen].getTexture(1)->copyToImage().saveToFile("bloom.png");
         m_renderer.setTexture(m_lighting_PBRScreen[m_activeLightingPBRScreen].getTexture(1));
         m_blurShader.setUniform("offset",sf::Vector2f(DEFAULT_BLOOMBLUR/(float)m_PBRScreen.getSize().x,0));
         m_bloomScreen[0].draw(m_renderer,&m_blurShader);
-        m_bloomScreen[0].display();
+        m_bloomScreen[0].display(DOFLUSH);
         m_renderer.setTexture(&m_bloomScreen[0].getTexture());
         m_blurShader.setUniform("offset",sf::Vector2f(0,DEFAULT_BLOOMBLUR/(float)m_PBRScreen.getSize().x));
 
         m_bloomScreen[1].draw(m_renderer,&m_blurShader);
-        m_bloomScreen[1].display();
-
-        //m_bloomScreen.getTexture().copyToImage().saveToFile("bloom.png");
-
-        //sf::RenderStates bloom_state;
-        //bloom_state.shader = &m_blurShader;
-        //bloom_state.blendMode = sf::BlendAdd;
-        //w->draw(m_renderer,bloom_state);
+        m_bloomScreen[1].display(DOFLUSH);
+       // m_bloomScreen[1].getTexture().copyToImage().saveToFile("bloomblurred.png");
     }
-
 
     m_renderer.setTexture(m_lighting_PBRScreen[m_activeLightingPBRScreen].getTexture(0));
     w->draw(m_renderer, &m_HDRBloomShader);
 
-
-
+    m_lighting_PBRScreen[m_activeLightingPBRScreen].display(true);
     m_lightingShader.setUniform("map_environmental",*m_lighting_PBRScreen[m_activeLightingPBRScreen].getTexture(0));
     m_lighting_PBRScreen[m_activeLightingPBRScreen].getTexture(0)->setSmooth(true);
     m_lighting_PBRScreen[m_activeLightingPBRScreen].getTexture(0)->generateMipmap();
@@ -395,7 +396,7 @@ int PBRIsoScene::UpdateLighting(std::multimap<float, Light*> &lightList)
         ++curNbrLights;
     }
 
-    m_lightingShader.setUniformArray("shadow_casters",shadowCastingLights, MAX_SHADOW_MAPS);
+    m_lightingShader.setUniformArray("shadow_caster",shadowCastingLights, MAX_SHADOW_MAPS);
     m_lightingShader.setUniformArray("shadow_shift",shadowShift, MAX_SHADOW_MAPS);
     m_lightingShader.setUniformArray("shadow_ratio",shadowRatio, MAX_SHADOW_MAPS);
 
@@ -449,9 +450,9 @@ void PBRIsoScene::SetSSAO(bool ssao)
     if(m_enableSSAO)
     {
         //m_lightingShader.setUniform("enable_SSAO", true);
-        m_HDRBloomShader.setUniform("enable_SSAO", true);
+        //m_HDRBloomShader.setUniform("enable_SSAO", true);
        // m_lightingShader.setUniform("map_SSAO", m_SSAOScreen.getTexture());
-        m_HDRBloomShader.setUniform("map_SSAO", m_SSAOScreen[0].getTexture());
+       // m_HDRBloomShader.setUniform("map_SSAO", m_SSAOScreen[0].getTexture());
         m_SSAOShader.setUniform("map_normal", *m_PBRScreen.getTexture(PBRNormalScreen));
         m_SSAOShader.setUniform("map_depth", *m_PBRScreen.getTexture(PBRDepthScreen));
         m_SSAOShader.setUniform("view_ratio",sf::Vector2f(1.0/(float)m_PBRScreen.getSize().x,
@@ -463,7 +464,7 @@ void PBRIsoScene::SetSSAO(bool ssao)
         m_SSAOrenderer.setTexture(m_PBRScreen.getTexture(PBRAlbedoScreen));
     } else {
         //m_lightingShader.setUniform("enable_SSAO", false);
-        m_HDRBloomShader.setUniform("enable_SSAO", false);
+        //m_HDRBloomShader.setUniform("enable_SSAO", false);
     }
 }
 
@@ -548,7 +549,7 @@ void PBRIsoScene::ComputeTrigonometry()
                                     sinXY * cosZ ,  cosXY*cosZ   , sinZ);
 
 
-    m_lightingShader.setUniform("view_direction",sf::Glsl::Vec3(sf::Vector3f(cosXY*cosZ, sinXY*sinZ,sinZ)));
+   // m_lightingShader.setUniform("view_direction",sf::Glsl::Vec3(sf::Vector3f(cosXY*cosZ, sinXY*sinZ,sinZ)));
     m_lightingShader.setUniform("p_cartToIso2DProjMat",sf::Glsl::Mat3(m_cartToIsoMat.values));
     m_lightingShader.setUniform("p_isoToCartMat",sf::Glsl::Mat3(m_isoToCartMat.values));
    /* m_lightingShader.setUniform("p_isoToCartMat",sf::Glsl::Vec4(m_isoToCartMat.values[0],

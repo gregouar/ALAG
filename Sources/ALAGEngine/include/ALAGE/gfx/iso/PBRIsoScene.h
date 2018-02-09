@@ -127,6 +127,7 @@ class PBRIsoScene : public DefaultScene
         static const std::string DEFAULT_DYNAMICSHADOWSCASTING;
         static const float DEFAULT_BLOOMBLUR;
         static const float DEFAULT_SSAOBLUR;
+        static const float SSAO_STRENGTH;
 };
 
 }

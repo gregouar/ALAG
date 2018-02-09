@@ -67,7 +67,7 @@ void TestingState::Init()
     //sarco3DEntity->SetTexture(PBRTextureHandler->LoadAssetFromFile("../data/bedrockXML.txt",LoadTypeInThread));
     sarco3DEntity->SetCenter(128,166);
     sarco3DEntity->SetShadowCastingType(DirectionnalShadow);
-   // sarco3DEntity->SetColor(sf::Color(32,196,255,160));
+    //sarco3DEntity->SetColor(sf::Color(32,196,255,160));
     //sarco3DEntity->DesactivateLighting();
     m_sarco3DNode->AttachObject(sarco3DEntity);
 
@@ -147,6 +147,7 @@ void TestingState::Init()
     //rectEntity->SetTexture(TextureHandler->LoadAssetFromFile("../data/sand_color.png",LoadTypeInThread));
     //rectEntity->SetTexture(TextureHandler->LoadAssetFromFile("../data/sand.png",LoadTypeInThread));
     rectEntity->SetTextureRect(sf::IntRect(0,0,2048,2048));
+    //rectEntity->SetColor(sf::Color(255,0,0));
     rectNode->AttachObject(rectEntity);
 
 
@@ -297,9 +298,10 @@ void TestingState::Update(sf::Time time)
 
     m_cameraNode->Move(m_mainScene.ConvertCartesianToIso(m_camMove.x,m_camMove.y)*(500*time.asSeconds()));
   //  m_cameraNode->Move(sf::Vector3f(0,0,m_camMove.z)*(100*time.asSeconds()));
-    //m_camera->Zoom((1-m_camMove.z*time.asSeconds()));
+    m_camera->Zoom((1-m_camMove.z*time.asSeconds()));
 
-    m_cameraNode->Move(0,0,m_camMove.z *(500*time.asSeconds()));
+  //  m_cameraNode->Move(0,0,m_camMove.z *(500*time.asSeconds()));
+
     m_sarcoNode->Move(20*time.asSeconds(),0,0);
 
     m_mainScene.Update(time);

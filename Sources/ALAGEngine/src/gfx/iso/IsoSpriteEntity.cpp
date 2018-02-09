@@ -44,7 +44,7 @@ void IsoSpriteEntity::PrepareShader(sf::Shader* shader)
                                         /isoToCartZFactor*PBRTextureAsset::DEPTH_BUFFER_NORMALISER);
     }
 
-    shader->setUniform("p_normalProjMatInv",sf::Glsl::Mat3(IdMat3X3));
+    //shader->setUniform("p_normalProjMatInv",sf::Glsl::Mat3(IdMat3X3));
 }
 
 void IsoSpriteEntity::RenderShadow(sf::RenderTarget *w/*, const sf::RenderStates &state*/, Light* light)
@@ -74,7 +74,7 @@ void IsoSpriteEntity::RenderShadow(sf::RenderTarget *w/*, const sf::RenderStates
         sf::Vector3f t = m_scene->GetIsoToCartMat()*globalPos;
         state.transform.translate(t.x, t.y);
         state.shader = depthShader;
-        w->draw(m_shadowSprite[light], state);
+        w->draw(*m_shadowDrawable[light], state);
     }
 }
 
@@ -214,9 +214,19 @@ void IsoSpriteEntity::ComputeShadow(Light* light)
             shadowTexture->create(shadow_bounds.width,shadow_bounds.height);
             shadowTexture->update(shadow_map_array,shadow_bounds.width,shadow_bounds.height,0,0);
             TextureModifier::BlurTexture(shadowTexture, 5);
-            m_shadowSprite[light].setTexture(*shadowTexture);
-            m_shadowSprite[light].setOrigin(sf::Sprite::getOrigin()
+
+            std::map<Light*, sf::Drawable*>::iterator shadowIt;
+            shadowIt = m_shadowDrawable.find(light);
+            if(shadowIt != m_shadowDrawable.end())
+                delete m_shadowDrawable[light];
+
+            sf::Sprite *sprite = new sf::Sprite();
+
+            sprite->setTexture(*shadowTexture);
+            sprite->setOrigin(sf::Sprite::getOrigin()
                                             -sf::Vector2f(shadow_bounds.left, shadow_bounds.top));
+
+            m_shadowDrawable[light] = sprite;
 
 
             delete[] shadow_map_array;

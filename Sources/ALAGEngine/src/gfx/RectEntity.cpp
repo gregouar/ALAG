@@ -104,6 +104,11 @@ void RectEntity::SetCenter(sf::Vector2f c)
     sf::RectangleShape::setOrigin(c);
 }
 
+void RectEntity::SetColor(sf::Color c)
+{
+    sf::RectangleShape::setFillColor(c);
+}
+
 sf::Vector2f RectEntity::GetCenter()
 {
     return sf::RectangleShape::getOrigin();

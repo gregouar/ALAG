@@ -29,7 +29,7 @@ class ShadowCaster : public SceneObject
         void AskForAllShadowUpdate();
 
         std::map<Light*,sf::Texture> m_shadowMap;
-        std::map<Light*,sf::Sprite> m_shadowSprite;
+        std::map<Light*,sf::Drawable*> m_shadowDrawable;
         std::map<Light*,sf::IntRect> m_shadowMaxShift;
 
     private:

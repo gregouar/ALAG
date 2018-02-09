@@ -173,7 +173,7 @@ public:
     /// it may leave the texture in an undefined state.
     ///
     ////////////////////////////////////////////////////////////
-    void display();
+    void display(bool doFlush = true);
 
     ////////////////////////////////////////////////////////////
     /// \brief Return the size of the rendering region of the texture

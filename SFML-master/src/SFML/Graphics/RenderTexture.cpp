@@ -131,15 +131,14 @@ bool RenderTexture::setActive(bool active)
 
 
 ////////////////////////////////////////////////////////////
-void RenderTexture::display()
+void RenderTexture::display(bool doFlush)
 {
     // Update the target texture
-    if (setActive(true))
-    {
+    if (doFlush && setActive(true))
         m_impl->updateTexture(m_texture.m_texture);
-        m_texture.m_pixelsFlipped = true;
-        m_texture.invalidateMipmap();
-    }
+
+    m_texture.m_pixelsFlipped = true;
+    m_texture.invalidateMipmap();
 }
 
 

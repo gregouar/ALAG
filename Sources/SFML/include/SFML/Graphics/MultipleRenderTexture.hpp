@@ -27,7 +27,7 @@ public:
     bool generateMipmap(unsigned int renderingLocation);
 
     bool setActive(bool active);
-    void display();
+    void display(bool doFlush = true);
 
     virtual sf::Vector2u getSize() const;
     Texture* getTexture(unsigned int renderingLocation);

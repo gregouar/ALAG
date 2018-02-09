@@ -62,7 +62,6 @@ class DefaultScene
 
         virtual int UpdateLighting(std::multimap<float, Light*> &lightList, int = -1); //-1 is GL_MAX_LIGHTS
 
-        //sf::View m_view; //Should remove this and create CameraEntity
         Camera *m_currentCamera;
         SceneNode m_rootNode;
 

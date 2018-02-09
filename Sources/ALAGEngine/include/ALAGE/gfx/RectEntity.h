@@ -25,6 +25,7 @@ class RectEntity : public SceneEntity, protected sf::RectangleShape
         void SetTexture(PBRTextureAsset *t);
         void SetTextureRect(const sf::IntRect &);
         void SetCenter(sf::Vector2f);
+        void SetColor(sf::Color);
 
 
         sf::Vector2f GetCenter();

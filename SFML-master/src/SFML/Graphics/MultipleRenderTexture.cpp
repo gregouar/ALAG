@@ -220,19 +220,16 @@ bool MultipleRenderTexture::setActive(bool active)
     return true;
 }
 
-void MultipleRenderTexture::display()
+void MultipleRenderTexture::display(bool doFlush)
 {
-    if (setActive(true))
-    {
+    if (doFlush && setActive(true))
         glCheck(glFlush());
 
-        std::vector<unsigned int>::iterator it;
-        for(it = m_activeTextures.begin() ; it != m_activeTextures.end() ; ++it)
-        {
-            m_textures[*it-GL_COLOR_ATTACHMENT0_EXT].m_pixelsFlipped = true;
-            m_textures[*it-GL_COLOR_ATTACHMENT0_EXT].invalidateMipmap();
-        }
-
+    std::vector<unsigned int>::iterator it;
+    for(it = m_activeTextures.begin() ; it != m_activeTextures.end() ; ++it)
+    {
+        m_textures[*it-GL_COLOR_ATTACHMENT0_EXT].m_pixelsFlipped = true;
+        m_textures[*it-GL_COLOR_ATTACHMENT0_EXT].invalidateMipmap();
     }
 }
 

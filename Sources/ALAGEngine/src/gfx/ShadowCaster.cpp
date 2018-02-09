@@ -10,13 +10,20 @@ ShadowCaster::ShadowCaster()
 
 ShadowCaster::~ShadowCaster()
 {
-    //dtor
+    while(!m_shadowDrawable.empty())
+    {
+        delete m_shadowDrawable.begin()->second;
+        m_shadowDrawable.erase(m_shadowDrawable.begin());
+    }
 }
 
 
 void ShadowCaster::RenderShadow(sf::RenderTarget* w/*, const sf::RenderStates &state*/, Light* light)
 {
-    w->draw(m_shadowSprite[light]/*, state*/);
+    std::map<Light*, sf::Drawable*>::iterator shadowIt;
+    shadowIt = m_shadowDrawable.find(light);
+    if(shadowIt != m_shadowDrawable.end())
+        w->draw(*shadowIt->second/*, state*/);
 }
 
 

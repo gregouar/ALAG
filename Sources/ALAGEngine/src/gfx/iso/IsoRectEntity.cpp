@@ -27,7 +27,7 @@ void IsoRectEntity::PrepareShader(sf::Shader *shader)
     && m_texture != nullptr)
     {
         shader->setUniform("p_normalProjMat",sf::Glsl::Mat3(IdMat3X3));
-        shader->setUniform("p_isoToCartZFactor",0);
+       // shader->setUniform("p_isoToCartZFactor",0);
     }
 }
 
