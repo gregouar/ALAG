@@ -109,7 +109,31 @@ SceneNode* SceneNode::CreateChildNode()
     return CreateChildNode(GenerateID());
 }
 
+SceneNode* SceneNode::CreateChildNode(float x, float y)
+{
+    SceneNode* newNode = CreateChildNode(GenerateID());
+    if(newNode != nullptr)
+        newNode->SetPosition(x,y);
+    return newNode;
+}
+
+SceneNode* SceneNode::CreateChildNode(float x, float y, float z)
+{
+    SceneNode* newNode = CreateChildNode(GenerateID());
+    if(newNode != nullptr)
+        newNode->SetPosition(x,y,z);
+    return newNode;
+}
+
 SceneNode* SceneNode::CreateChildNode(sf::Vector2f p)
+{
+    SceneNode* newNode = CreateChildNode(GenerateID());
+    if(newNode != nullptr)
+        newNode->SetPosition(p);
+    return newNode;
+}
+
+SceneNode* SceneNode::CreateChildNode(sf::Vector3f p)
 {
     SceneNode* newNode = CreateChildNode(GenerateID());
     if(newNode != nullptr)

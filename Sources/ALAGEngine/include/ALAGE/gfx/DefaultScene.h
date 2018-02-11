@@ -36,9 +36,11 @@ class DefaultScene
         RectEntity*     CreateRectEntity(sf::Vector2f = sf::Vector2f(0,0));
         SpriteEntity*   CreateSpriteEntity(sf::Vector2i);
         SpriteEntity*   CreateSpriteEntity(sf::IntRect = sf::IntRect(0,0,0,0));
+        //GeometricShadowCaster* CreateGeometricShadowCaster();
 
         Light* CreateLight(LightType = OmniLight, sf::Vector3f = sf::Vector3f(0,0,-1),
                            sf::Color = sf::Color::White);
+
         Camera* CreateCamera(sf::Vector2f viewSize);
 
         void DestroyCreatedObject(const ObjectTypeID &);
@@ -62,6 +64,7 @@ class DefaultScene
 
         virtual int UpdateLighting(std::multimap<float, Light*> &lightList, int = -1); //-1 is GL_MAX_LIGHTS
 
+
         Camera *m_currentCamera;
         SceneNode m_rootNode;
 
@@ -77,8 +80,6 @@ class DefaultScene
         ObjectTypeID m_curNewId;
 
         bool m_needToUpdateRenderQueue;
-
-
 };
 
 }

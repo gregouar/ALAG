@@ -16,8 +16,16 @@ class GeometricShadowCaster : public ShadowCaster
         virtual ~GeometricShadowCaster();
 
         bool DoRequireShadowCasting();
+        virtual void ComputeShadow(Light*);
+
+        virtual void RenderShadow(sf::RenderTarget*, Light*);
+
+        void ConstructCube(float x, float y, float z);
+        void SetGeometry(sf::VertexArray , float height);
 
     protected:
+        sf::VertexArray m_geometry;
+        float m_height;
 
     private:
 };

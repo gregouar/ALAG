@@ -40,12 +40,13 @@ PBRIsoScene::PBRIsoScene(IsoViewAngle viewAngle)
 {
     SetViewAngle(viewAngle);
 
-    CompileDepthShader();
     CompileSSAOShader();
     CompileLightingShader();
     CompilePBRGeometryShader();
     CompileBlurShader();
     CompileHDRBloomShader();
+
+    CompileDepthShader();
 
     SetAmbientLight(m_ambientLight);
 }
@@ -369,7 +370,11 @@ int PBRIsoScene::UpdateLighting(std::multimap<float, Light*> &lightList)
 
     int curNbrLights = 0, curNbrShadows = 0;
 
-    float shadowCastingLights[MAX_SHADOW_MAPS] = {-1,-1,-1,-1,-1,-1,-1,-1};
+    float shadowCastingLights[MAX_SHADOW_MAPS];
+
+    for(size_t i = 0 ; i <  MAX_SHADOW_MAPS ; ++i)
+        shadowCastingLights[i] = -1;
+
     sf::Vector2f shadowShift[MAX_SHADOW_MAPS];
     sf::Vector2f shadowRatio[MAX_SHADOW_MAPS];
 
@@ -377,13 +382,13 @@ int PBRIsoScene::UpdateLighting(std::multimap<float, Light*> &lightList)
     for(lightIt = lightList.begin() ; lightIt != lightList.end()
     && curNbrLights < nbr_lights && curNbrShadows < MAX_SHADOW_MAPS ; ++lightIt)
     {
-        std::ostringstream buffer;
         Light* curLight = lightIt->second;
 
         if(curLight->IsCastShadowEnabled())
         {
+            std::ostringstream buffer;
             buffer <<"shadow_map_"<<curNbrShadows;
-            shadowCastingLights[curNbrShadows] = curNbrLights;
+            shadowCastingLights[curNbrShadows] = (float)curNbrLights;
             sf::IntRect cur_shift = curLight->GetShadowMaxShift();
             shadowShift[curNbrShadows] = sf::Vector2f(cur_shift.left,
                                                       -cur_shift.height - cur_shift.top ); /*GLSL Reverse y-coord*/
@@ -421,6 +426,14 @@ IsoSpriteEntity* PBRIsoScene::CreateIsoSpriteEntity(sf::Vector2i spriteSize)
 IsoSpriteEntity* PBRIsoScene::CreateIsoSpriteEntity(sf::IntRect textureRect)
 {
     IsoSpriteEntity *e = new IsoSpriteEntity(textureRect);
+    AddCreatedObject(GenerateObjectID(), e);
+    e->SetIsoScene(this);
+    return e;
+}
+
+IsoGeometricShadowCaster* PBRIsoScene::CreateIsoGeometricShadowCaster()
+{
+    IsoGeometricShadowCaster *e = new IsoGeometricShadowCaster();
     AddCreatedObject(GenerateObjectID(), e);
     e->SetIsoScene(this);
     return e;
@@ -497,7 +510,7 @@ void PBRIsoScene::SetShadowCasting(ShadowCastingType type)
         m_lightingShader.setUniform("enable_directionalShadows", false);
 
     if(type == AllShadows || type == DynamicShadow)
-        m_lightingShader.setUniform("enable_directionalShadows", true);
+        m_lightingShader.setUniform("enable_dynamicShadows", true);
     else
         m_lightingShader.setUniform("enable_dynamicShadows", false);
 }

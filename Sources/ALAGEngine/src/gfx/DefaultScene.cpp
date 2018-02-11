@@ -121,7 +121,7 @@ int DefaultScene::UpdateLighting(std::multimap<float, Light*> &lightList, int ma
            /* SfColorToGlColor(curLight->GetSpecularColor(), glColor);
             glLightfv(GL_LIGHT0+curNbrLights, GL_SPECULAR, glColor);*/
            // glLightf(GL_LIGHT0+curNbrLights, GL_CONSTANT_ATTENUATION, curLight->GetConstantAttenuation());
-            glLightf(GL_LIGHT0+curNbrLights, GL_CONSTANT_ATTENUATION, 1.0/curLight->GetRadius());
+            glLightf(GL_LIGHT0+curNbrLights, GL_CONSTANT_ATTENUATION, 1.0/(curLight->GetRadius()*0.01));
             glLightf(GL_LIGHT0+curNbrLights, GL_LINEAR_ATTENUATION, curLight->GetLinearAttenuation());
             glLightf(GL_LIGHT0+curNbrLights, GL_QUADRATIC_ATTENUATION, curLight->GetQuadraticAttenuation());
 

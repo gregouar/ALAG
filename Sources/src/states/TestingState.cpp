@@ -67,7 +67,7 @@ void TestingState::Init()
     //sarco3DEntity->SetTexture(PBRTextureHandler->LoadAssetFromFile("../data/bedrockXML.txt",LoadTypeInThread));
     sarco3DEntity->SetCenter(128,166);
     sarco3DEntity->SetShadowCastingType(DirectionnalShadow);
-    //sarco3DEntity->SetColor(sf::Color(32,196,255,160));
+    sarco3DEntity->SetColor(sf::Color(255,64,255));
     //sarco3DEntity->DesactivateLighting();
     m_sarco3DNode->AttachObject(sarco3DEntity);
 
@@ -99,10 +99,10 @@ void TestingState::Init()
    /* Light* sunLight = m_mainScene.CreateLight(DirectionnalLight,sf::Vector3f(-1,.5,-1), sf::Color(255,255,160));
     sunLight->SetConstantAttenuation(2);*/
     m_sunLight = m_mainScene.CreateLight(DirectionnalLight,sf::Vector3f(-1,.2,-1), sf::Color(255,255,255));
-    m_sunLight->SetIntensity(20);
+    m_sunLight->SetIntensity(.1);
     m_sunLight->EnableShadowCasting();
     m_mainScene.GetRootNode()->AttachObject(m_sunLight);
-    m_mainScene.SetAmbientLight(sf::Color(96,127,255,96));
+    m_mainScene.SetAmbientLight(sf::Color(96,127,255,8));
     //m_mainScene.SetAmbientLight(sf::Color(64,64,128,24));
     //m_mainScene.SetAmbientLight(sf::Color(96,96,128));
    // m_mainScene.SetAmbientLight(sf::Color(32,48,128));
@@ -152,11 +152,30 @@ void TestingState::Init()
 
 
 
+    SceneNode* nodeGeoShaCas = m_mainScene.GetRootNode()->CreateChildNode(-86,-7);
+    IsoGeometricShadowCaster* geoShaCas = m_mainScene.CreateIsoGeometricShadowCaster();
+    geoShaCas->ConstructCube(20,20,55);
+    nodeGeoShaCas->AttachObject(geoShaCas);
+
+
+    nodeGeoShaCas = m_mainScene.GetRootNode()->CreateChildNode(-86,-147);
+    geoShaCas = m_mainScene.CreateIsoGeometricShadowCaster();
+    geoShaCas->ConstructCube(20,20,55);
+    nodeGeoShaCas->AttachObject(geoShaCas);
+
+
+    nodeGeoShaCas = m_mainScene.GetRootNode()->CreateChildNode(-86,136);
+    geoShaCas = m_mainScene.CreateIsoGeometricShadowCaster();
+    geoShaCas->ConstructCube(20,20,55);
+    nodeGeoShaCas->AttachObject(geoShaCas);
+
+
+
     SceneNode *lightNode = m_mainScene.GetRootNode()->CreateChildNode();
     Light* light = m_mainScene.CreateLight();
     light->SetDiffuseColor(sf::Color(255,190,64));
     light->SetIntensity(5);
-    light->SetRadius(3);
+    light->SetRadius(300);
     lightNode->SetPosition(130,720,75);
     lightNode->AttachObject(light);
 
@@ -164,11 +183,9 @@ void TestingState::Init()
     light = m_mainScene.CreateLight();
     light->SetDiffuseColor(sf::Color(255,190,64));
     light->SetIntensity(5);
-    light->SetRadius(3);
+    light->SetRadius(300);
     lightNode->SetPosition(50,-175,75);
     lightNode->AttachObject(light);
-
-
 
 
     m_lightNode = m_mainScene.GetRootNode()->CreateChildNode();
@@ -179,7 +196,8 @@ void TestingState::Init()
     //light->SetQuadraticAttenuation(.00001);
     //light->SetQuadraticAttenuation(1);
     light2->SetIntensity(10);
-    light2->SetRadius(3);
+    light2->SetRadius(300);
+    light2->EnableShadowCasting();
     m_lightNode->AttachObject(light2);
 
    // font.loadFromFile("../data/arial.ttf");
@@ -274,6 +292,8 @@ void TestingState::HandleEvents(alag::EventManager *event_manager)
     {
         sf::Vector2i p(event_manager->MousePosition());
         m_sarco3DNode->SetPosition(m_mainScene.ConvertMouseToScene(p));
+        std::cout<<m_mainScene.ConvertMouseToScene(p).x<<" "
+                <<m_mainScene.ConvertMouseToScene(p).y<<std::endl;
     }
 
     if(event_manager->MouseButtonIsPressed(sf::Mouse::Right))

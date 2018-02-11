@@ -11,7 +11,9 @@ void PBRIsoScene::CompileDepthShader()
     std::ostringstream fragShader;
 
     fragShader<<
+    "uniform bool enable_albedoMap;"
     "uniform sampler2D map_albedo;" \
+    "uniform bool enable_depthColor;" \
     "uniform bool enable_depthMap;" \
     "uniform sampler2D map_depth;" \
     "uniform float p_height;" \
@@ -19,12 +21,17 @@ void PBRIsoScene::CompileDepthShader()
     "void main()" \
     "{" \
     "   const vec3 All33 = vec3(-.33);"
+    "   const vec4 All25 = vec4(-.25);"
     "   const vec2 All255 = vec2(0.00392156862,1.0);"
-    "   float colorAlpha = texture2D(map_albedo, gl_TexCoord[0].xy).a;" \
+    "   float colorAlpha = 1.0;" \
+    "   if(enable_albedoMap == true){"
+    "       colorAlpha = texture2D(map_albedo, gl_TexCoord[0].xy).a;}"
     "   float heightPixel = 0; "
     "   if(enable_depthMap == true){"
     "        vec3 depthPixel = texture2D(map_depth, gl_TexCoord[0].xy).rgb;" \
     "       heightPixel = dot(All33, depthPixel);"
+    "   } else if(enable_depthColor == true) {"
+    "       heightPixel = dot(All25, gl_Color);"
     "   }"
     "   float zPixel = heightPixel*p_height - p_zPos;" \
     "   float nzPixel = zPixel-0.5;"
@@ -172,7 +179,7 @@ void PBRIsoScene::CompileLightingShader()
    // "uniform float p_exposure;"
     "uniform vec4 light_ambient;" \
     "uniform int light_nbr;" \
-    "uniform int shadow_caster["<<MAX_SHADOW_MAPS<<"];";
+    "uniform float shadow_caster["<<MAX_SHADOW_MAPS<<"];";
     for(int i = 0 ; i < MAX_SHADOW_MAPS ; ++i)
         fragShader<<"uniform sampler2D shadow_map_"<<i<<";";
     fragShader<<
@@ -192,8 +199,8 @@ void PBRIsoScene::CompileLightingShader()
     "   vec3 shadowPixel;"
     "   vec2 mapPos = (shadowPos-shadow_shift[curShadowMap])*shadow_ratio[curShadowMap];";
     for(int i = 0 ; i < MAX_SHADOW_MAPS ; ++i)
-        fragShader<<"if(curShadowMap == "<<i<<")"
-        <<"shadowPixel = texture2D(shadow_map_"<<i<<", mapPos).rgb;";
+        fragShader<<"if(curShadowMap == "<<i<<"){"
+        <<"shadowPixel = texture2D(shadow_map_"<<i<<", mapPos).rgb;}";
     fragShader<<
 	"   float shadowDepth = ((shadowPixel.b*"<<1.0/255.0<<"+shadowPixel.g)*"<<1.0/255.0<<"+shadowPixel.r);"
     "   return 1.0 - min(1.0,max(0.0, (depth-shadowDepth)*5000.0));"
@@ -279,14 +286,14 @@ void PBRIsoScene::CompileLightingShader()
     "   vec3 irradianceAmbient = ambientLighting;"
     "   vec3 reflectionView = reflect(-viewDirection, direction);"
     "   vec3 reflectionColor = ambientLighting;"
-   /* "   if(reflectionView.z < 0){"
+    "   if(reflectionView.z < 0){"
 	"       vec2 groundPos = gl_FragCoord.xy*view_zoom;"
 	"       vec3 v = vec3((heightPixel/reflectionView.z)*reflectionView.xy,0.0);"
 	"       groundPos.xy += (heightPixel*p_isoToCartZFactor)*constantList.yx "
 	"                                  +(v*p_isoToCartMat).xy * constantList.zx;"
     "       vec3 groundColor = max(constantList.yyy,texture2DLod(map_environmental, groundPos*view_ratio,materialPixel.r*15.0).rgb) *50.0/(1.0+length(v)+abs(heightPixel));"
     "       reflectionColor = mix(groundColor, ambientLighting, reflectionView.z+1.0); "
-    "   }"*/
+    "   }"
     "   vec2 envBRDF  = texture2D(map_brdflut, vec2(max(dot(direction, viewDirection), 0.0), materialPixel.r)).rg;"
     "   vec3 specularAmbient = reflectionColor* (FAmbient * envBRDF.x + envBRDF.y);"
     "   gl_FragData[0].rgb = (albedoPixel.rgb * irradianceAmbient + specularAmbient); "
@@ -315,11 +322,14 @@ void PBRIsoScene::CompileLightingShader()
     "       if((gl_LightSource[i].position.w == 0.0 && enable_directionalShadows == true)"
     "        ||(gl_LightSource[i].position.w != 0.0 && enable_dynamicShadows == true))"
 	"       if(curShadowMap < "<<MAX_SHADOW_MAPS<<" && shadow_caster[curShadowMap] == i) {"
-	"           if(gl_LightSource[i].position.w == 0.0){"
 	"               vec2 shadowPos = gl_FragCoord.xy*view_zoom;"
+	"           if(gl_LightSource[i].position.w == 0.0){"
 	"               vec3 v = vec3((heightPixel/lightDirection.z)*lightDirection.xy,0.0);"
 	"               shadowPos.xy += (heightPixel*p_isoToCartZFactor)*constantList.yx "
 	"                                  +(v*p_isoToCartMat).xy * constantList.zx;"
+	"           } else {"
+	"               shadowPos.y += heightPixel*p_isoToCartZFactor;"
+	"           }"
 	"               float shadowing = (GetShadowCastValue(curShadowMap,depth,shadowPos)*2.0"
     "                            +GetShadowCastValue(curShadowMap,depth,shadowPos+vec2(2.0,-2.0)*rVec)"
     "                            +GetShadowCastValue(curShadowMap,depth,shadowPos+vec2(-2.0,2.0)*rVec)"
@@ -333,7 +343,6 @@ void PBRIsoScene::CompileLightingShader()
     "                            +GetShadowCastValue(curShadowMap,depth,shadowPos+vec2(0.0,-4.0)*rVec))*"<<1.0/8.0<<"; "
     "               }"
     "               attenuation *= shadowing;"
-	"           }"
 	"           ++curShadowMap;"
 	"       }"
 	"       lightDirection = normalize(lightDirection);"
@@ -522,9 +531,10 @@ void PBRIsoScene::CompileBlurShader()
 	"				texture2D(texture, gl_TexCoord[0].xy - offset * 0.6)	* 0.065984 + "
 	"				texture2D(texture, gl_TexCoord[0].xy - offset * 0.4)	* 0.121703 + "
 	"    			texture2D(texture, gl_TexCoord[0].xy - offset * 0.2)	* 0.175713); "*/
-   /* "    gl_FragColor =  gl_Color * "
-	"			   (texture2D(texture, gl_TexCoord[0].xy + offset * 1.0)	* 0.000001 + "
-	"			    texture2D(texture, gl_TexCoord[0].xy + offset * 0.9)	* 0.000001 + "
+    "    gl_FragColor =  gl_Color * "
+	"			   ("
+	//"               texture2D(texture, gl_TexCoord[0].xy + offset * 1.0)	* 0.000001 + "
+	//"			    texture2D(texture, gl_TexCoord[0].xy + offset * 0.9)	* 0.000001 + "
 	"			    texture2D(texture, gl_TexCoord[0].xy + offset * 0.8)	* 0.000078 + "
 	"			    texture2D(texture, gl_TexCoord[0].xy + offset * 0.7)	* 0.000489 + "
 	"			    texture2D(texture, gl_TexCoord[0].xy + offset * 0.6)	* 0.002403 + "
@@ -534,8 +544,8 @@ void PBRIsoScene::CompileBlurShader()
 	"				texture2D(texture, gl_TexCoord[0].xy + offset * 0.2)	* 0.120978 + "
 	"    			texture2D(texture, gl_TexCoord[0].xy + offset * 0.1)	* 0.174666 + "
 	"				texture2D(texture, gl_TexCoord[0].xy)	* 	0.197413 + "
-	"			    texture2D(texture, gl_TexCoord[0].xy - offset * 1.0)	* 0.000001 + "
-	"			    texture2D(texture, gl_TexCoord[0].xy - offset * 0.9)	* 0.000001 + "
+	//"			    texture2D(texture, gl_TexCoord[0].xy - offset * 1.0)	* 0.000001 + "
+	//"			    texture2D(texture, gl_TexCoord[0].xy - offset * 0.9)	* 0.000001 + "
 	"			    texture2D(texture, gl_TexCoord[0].xy - offset * 0.8)	* 0.000078 + "
 	"			    texture2D(texture, gl_TexCoord[0].xy - offset * 0.7)	* 0.000489 + "
 	"			    texture2D(texture, gl_TexCoord[0].xy - offset * 0.6)	* 0.002403 + "
@@ -543,8 +553,8 @@ void PBRIsoScene::CompileBlurShader()
 	"				texture2D(texture, gl_TexCoord[0].xy - offset * 0.4)	* 0.027835 + "
 	"				texture2D(texture, gl_TexCoord[0].xy - offset * 0.3)	* 0.065591 + "
 	"				texture2D(texture, gl_TexCoord[0].xy - offset * 0.2)	* 0.120978 + "
-	"    			texture2D(texture, gl_TexCoord[0].xy - offset * 0.1)	* 0.174666);"*/
-    "    gl_FragColor =  gl_Color * "
+	"    			texture2D(texture, gl_TexCoord[0].xy - offset * 0.1)	* 0.174666);"
+    /*"    gl_FragColor =  gl_Color * "
 	"			   (texture2D(texture, gl_TexCoord[0].xy + offset * 1.0)	* 0.011254 + "
 	"			    texture2D(texture, gl_TexCoord[0].xy + offset * 0.9)	* 0.016436 + "
 	"			    texture2D(texture, gl_TexCoord[0].xy + offset * 0.8)	* 0.023066 + "
@@ -565,7 +575,7 @@ void PBRIsoScene::CompileBlurShader()
 	"				texture2D(texture, gl_TexCoord[0].xy - offset * 0.4)	* 	0.060049 + "
 	"				texture2D(texture, gl_TexCoord[0].xy - offset * 0.3)	* 0.069041 + "
 	"				texture2D(texture, gl_TexCoord[0].xy - offset * 0.2)	* 	0.076276 + "
-	"    			texture2D(texture, gl_TexCoord[0].xy - offset * 0.1)	* 0.080977); "
+	"    			texture2D(texture, gl_TexCoord[0].xy - offset * 0.1)	* 0.080977); "*/
     "}";
 
     m_blurShader.loadFromMemory(fragShader.str(),sf::Shader::Fragment);

@@ -60,6 +60,7 @@ void IsoSpriteEntity::RenderShadow(sf::RenderTarget *w/*, const sf::RenderStates
 
         sf::Shader* depthShader = m_scene->GetDepthShader();
         //depthShader->setUniform("map_color",m_shadowMap[light]);
+        depthShader->setUniform("enable_albedoMap", false);
         depthShader->setUniform("map_depth",m_shadowMap[light]);
         depthShader->setUniform("enable_depthMap", true);
         depthShader->setUniform("p_height",myPBRTexture->GetHeight()*sf::Sprite::getScale().y*PBRTextureAsset::DEPTH_BUFFER_NORMALISER);

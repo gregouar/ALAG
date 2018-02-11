@@ -3,6 +3,7 @@
 
 #include "ALAGE/utils/Mathematics.h"
 #include "ALAGE/gfx/DefaultScene.h"
+#include "ALAGE/gfx/iso/IsoGeometricShadowCaster.h"
 #include "ALAGE/gfx/iso/IsoSpriteEntity.h"
 #include "ALAGE/gfx/iso/IsoRectEntity.h"
 #include <SFML/OpenGL.hpp>
@@ -19,6 +20,7 @@ struct IsoViewAngle
 class PBRIsoScene : public DefaultScene
 {
     friend void IsoSpriteEntity::RenderShadow(sf::RenderTarget*, Light*);
+    friend void IsoGeometricShadowCaster::RenderShadow(sf::RenderTarget*, Light*);
 
     public:
         PBRIsoScene();
@@ -34,6 +36,8 @@ class PBRIsoScene : public DefaultScene
         IsoRectEntity*   CreateIsoRectEntity(sf::Vector2f = sf::Vector2f(0,0));
         IsoSpriteEntity* CreateIsoSpriteEntity(sf::Vector2i);
         IsoSpriteEntity* CreateIsoSpriteEntity(sf::IntRect = sf::IntRect(0,0,0,0));
+
+        IsoGeometricShadowCaster* CreateIsoGeometricShadowCaster();
 
         sf::Vector2f ConvertIsoToCartesian(float, float, float = 0);
         sf::Vector2f ConvertIsoToCartesian(sf::Vector2f);
@@ -61,14 +65,14 @@ class PBRIsoScene : public DefaultScene
         int UpdateLighting(std::multimap<float, Light*> &lightList);
         //virtual void RenderShadows(std::multimap<float, Light*> &lightList, int = GL_MAX_LIGHTS);
 
+        sf::Shader *GetDepthShader();
+
         void CompileDepthShader();
         void CompilePBRGeometryShader();
         void CompileLightingShader();
         void CompileSSAOShader();
         void CompileBlurShader();
         void CompileHDRBloomShader();
-
-        sf::Shader *GetDepthShader();
 
     private:
         IsoViewAngle m_viewAngle;
