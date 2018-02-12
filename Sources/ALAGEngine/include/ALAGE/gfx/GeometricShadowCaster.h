@@ -21,6 +21,7 @@ class GeometricShadowCaster : public ShadowCaster
         virtual void RenderShadow(sf::RenderTarget*, Light*);
 
         void ConstructCube(float x, float y, float z);
+        void ConstructCylinder(float r, float z, unsigned int q = 16);
         void SetGeometry(sf::VertexArray , float height);
 
     protected:

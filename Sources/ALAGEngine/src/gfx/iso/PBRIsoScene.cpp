@@ -27,7 +27,7 @@ const std::string PBRIsoScene::DEFAULT_ENABLESRGB = "true";
 const std::string PBRIsoScene::DEFAULT_SUPERSAMPLING = "1";
 const std::string PBRIsoScene::DEFAULT_DIRECTIONALSHADOWSCASTING = "true";
 const std::string PBRIsoScene::DEFAULT_DYNAMICSHADOWSCASTING = "true";
-const float PBRIsoScene::DEFAULT_BLOOMBLUR = 10.0;
+const float PBRIsoScene::DEFAULT_BLOOMBLUR = 12.0;
 const float PBRIsoScene::DEFAULT_SSAOBLUR = 3.0;
 const float PBRIsoScene::SSAO_STRENGTH = 3.0;
 
@@ -81,6 +81,9 @@ bool PBRIsoScene::InitRenderer(sf::Vector2u windowSize)
     if(!m_SSAOScreen[1].create(windowSize.x*m_superSampling, windowSize.y*m_superSampling, true))
         r = false;
 
+    m_SSAOScreen[0].setSmooth(true);
+    m_SSAOScreen[1].setSmooth(true);
+
     if(!m_alpha_PBRScreen.create(windowSize.x*m_superSampling, windowSize.y*m_superSampling, true))
         r = false;
 
@@ -100,6 +103,7 @@ bool PBRIsoScene::InitRenderer(sf::Vector2u windowSize)
         r = false;
     if(!m_lighting_PBRScreen[1].create(windowSize.x*m_superSampling, windowSize.y*m_superSampling, false, true))
         r = false;
+
 
 
     if(!m_bloomScreen[0].create(windowSize.x*m_superSampling, windowSize.y*m_superSampling, false, true))
@@ -331,11 +335,21 @@ void PBRIsoScene::ProcessRenderQueue(sf::RenderTarget *w)
         m_bloomScreen[0].draw(m_renderer,&m_blurShader);
         m_bloomScreen[0].display(DOFLUSH);
         m_renderer.setTexture(&m_bloomScreen[0].getTexture());
-        m_blurShader.setUniform("offset",sf::Vector2f(0,DEFAULT_BLOOMBLUR/(float)m_PBRScreen.getSize().x));
-
+        m_blurShader.setUniform("offset",sf::Vector2f(0,DEFAULT_BLOOMBLUR/(float)m_PBRScreen.getSize().y));
         m_bloomScreen[1].draw(m_renderer,&m_blurShader);
         m_bloomScreen[1].display(DOFLUSH);
-       // m_bloomScreen[1].getTexture().copyToImage().saveToFile("bloomblurred.png");
+
+        m_renderer.setTexture(&m_bloomScreen[1].getTexture());
+        m_blurShader.setUniform("offset",sf::Vector2f(0.5*DEFAULT_BLOOMBLUR/(float)m_PBRScreen.getSize().x,0));
+        m_bloomScreen[0].draw(m_renderer,&m_blurShader);
+        m_bloomScreen[0].display(DOFLUSH);
+        m_renderer.setTexture(&m_bloomScreen[0].getTexture());
+        m_blurShader.setUniform("offset",sf::Vector2f(0,0.5*DEFAULT_BLOOMBLUR/(float)m_PBRScreen.getSize().y));
+        m_bloomScreen[1].draw(m_renderer,&m_blurShader);
+        m_bloomScreen[1].display(DOFLUSH);
+
+
+      //  m_bloomScreen[1].getTexture().copyToImage().saveToFile("bloomblurred1.png");
     }
 
     m_renderer.setTexture(m_lighting_PBRScreen[m_activeLightingPBRScreen].getTexture(0));
@@ -487,6 +501,8 @@ void PBRIsoScene::SetBloom(bool bloom)
     {
         m_lighting_PBRScreen[0].addRenderTarget(1,true);
         m_lighting_PBRScreen[1].addRenderTarget(1,true);
+        m_lighting_PBRScreen[0].getTexture(1)->setSmooth(true);
+        m_lighting_PBRScreen[1].getTexture(1)->setSmooth(true);
         m_lightingShader.setUniform("enable_bloom", true);
         m_HDRBloomShader.setUniform("enable_bloom", true);
     } else if(!bloom && m_enableBloom) {

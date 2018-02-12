@@ -495,8 +495,19 @@ void PBRIsoScene::CompileBlurShader()
     fragShader<<
     "uniform sampler2D texture;"
     "uniform vec2 offset;"
+    ""
+   // "uniform float offset_shift[3] = float[]( 0.0, 1.3846153846, 3.2307692308 );"
+    //"uniform float weight[3] = float[]( 0.2270270270, 0.3162162162, 0.0702702703 );"
+    ""
     "void main()"
     "{"
+    ""
+   /* "   gl_FragColor = texture2D(texture, gl_TexCoord[0].xy + offset * 1.0) * weight[0];"
+    "   for(int i = 1 ; i < 3 ; ++i){"
+    "       gl_FragColor += texture2D(texture, gl_TexCoord[0].xy + offset * offset_shift[i]) * weight[i];"
+    "       gl_FragColor += texture2D(texture, gl_TexCoord[0].xy - offset * offset_shift[i]) * weight[i];"
+    "   }"*/
+    ""
   /*  "    gl_FragColor =  gl_Color * "
     "                   (texture2D(texture, gl_TexCoord[0].xy + offset * 1.0)	* 0.06 + "
     "                    texture2D(texture, gl_TexCoord[0].xy + offset * 0.75)	* 0.09 + "
@@ -507,7 +518,7 @@ void PBRIsoScene::CompileBlurShader()
     "                    texture2D(texture, gl_TexCoord[0].xy - offset * 0.75)	* 0.09 + "
     "                    texture2D(texture, gl_TexCoord[0].xy - offset * 0.5)	* 0.12 + "
     "                    texture2D(texture, gl_TexCoord[0].xy - offset * 0.25)	* 0.15 ); "*/
-  /* "    gl_FragColor =  gl_Color * "
+   "    gl_FragColor =  gl_Color * "
 	"			   (texture2D(texture, gl_TexCoord[0].xy + offset * 1.0)	* 0.000003 + "
 	"				texture2D(texture, gl_TexCoord[0].xy + offset * 0.8)	* 0.000229 + "
 	"				texture2D(texture, gl_TexCoord[0].xy + offset * 0.6)	* 0.005977 + "
@@ -518,7 +529,7 @@ void PBRIsoScene::CompileBlurShader()
 	"				texture2D(texture, gl_TexCoord[0].xy - offset * 0.8)	* 0.000229 + "
 	"				texture2D(texture, gl_TexCoord[0].xy - offset * 0.6)	* 0.005977 + "
 	"				texture2D(texture, gl_TexCoord[0].xy - offset * 0.4)	* 0.060598 + "
-	"    			texture2D(texture, gl_TexCoord[0].xy - offset * 0.2)	* 0.24173); "*/
+	"    			texture2D(texture, gl_TexCoord[0].xy - offset * 0.2)	* 0.24173); "
    /* "    gl_FragColor =  gl_Color * "
 	"			   (texture2D(texture, gl_TexCoord[0].xy + offset * 1.0)	* 0.0093 + "
 	"				texture2D(texture, gl_TexCoord[0].xy + offset * 0.8)	* 0.028002 + "
@@ -531,7 +542,7 @@ void PBRIsoScene::CompileBlurShader()
 	"				texture2D(texture, gl_TexCoord[0].xy - offset * 0.6)	* 0.065984 + "
 	"				texture2D(texture, gl_TexCoord[0].xy - offset * 0.4)	* 0.121703 + "
 	"    			texture2D(texture, gl_TexCoord[0].xy - offset * 0.2)	* 0.175713); "*/
-    "    gl_FragColor =  gl_Color * "
+   /* "    gl_FragColor =  gl_Color * "
 	"			   ("
 	//"               texture2D(texture, gl_TexCoord[0].xy + offset * 1.0)	* 0.000001 + "
 	//"			    texture2D(texture, gl_TexCoord[0].xy + offset * 0.9)	* 0.000001 + "
@@ -553,7 +564,7 @@ void PBRIsoScene::CompileBlurShader()
 	"				texture2D(texture, gl_TexCoord[0].xy - offset * 0.4)	* 0.027835 + "
 	"				texture2D(texture, gl_TexCoord[0].xy - offset * 0.3)	* 0.065591 + "
 	"				texture2D(texture, gl_TexCoord[0].xy - offset * 0.2)	* 0.120978 + "
-	"    			texture2D(texture, gl_TexCoord[0].xy - offset * 0.1)	* 0.174666);"
+	"    			texture2D(texture, gl_TexCoord[0].xy - offset * 0.1)	* 0.174666);"*/
     /*"    gl_FragColor =  gl_Color * "
 	"			   (texture2D(texture, gl_TexCoord[0].xy + offset * 1.0)	* 0.011254 + "
 	"			    texture2D(texture, gl_TexCoord[0].xy + offset * 0.9)	* 0.016436 + "

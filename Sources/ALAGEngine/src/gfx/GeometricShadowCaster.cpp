@@ -302,6 +302,22 @@ void GeometricShadowCaster::ConstructCube(float x, float y, float z)
     m_height = z*4;
 }
 
+void GeometricShadowCaster::ConstructCylinder(float r, float z, unsigned int q)
+{
+    m_geometry = sf::VertexArray(sf::LineStrip,q+1);
+
+    for(size_t i = 0 ; i < q ; ++i)
+    {
+        m_geometry[i].position = sf::Vector2f(r*cos(2*PI*(float)i/(float)q),
+                                              r*sin(2*PI*(float)i/(float)q));
+        m_geometry[i].color = sf::Color(255,0,0,255);
+    }
+    m_geometry[q].position = sf::Vector2f(r*cos(0),r*sin(0));
+    m_geometry[q].color = sf::Color(255,0,0,255);
+
+    m_height = z*4;
+}
+
 void GeometricShadowCaster::SetGeometry(sf::VertexArray vArray , float height)
 {
     m_geometry = vArray;

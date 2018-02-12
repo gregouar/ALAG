@@ -102,7 +102,7 @@ void TestingState::Init()
     m_sunLight->SetIntensity(.1);
     m_sunLight->EnableShadowCasting();
     m_mainScene.GetRootNode()->AttachObject(m_sunLight);
-    m_mainScene.SetAmbientLight(sf::Color(96,127,255,8));
+    m_mainScene.SetAmbientLight(sf::Color(96,127,255,16));
     //m_mainScene.SetAmbientLight(sf::Color(64,64,128,24));
     //m_mainScene.SetAmbientLight(sf::Color(96,96,128));
    // m_mainScene.SetAmbientLight(sf::Color(32,48,128));
@@ -118,6 +118,12 @@ void TestingState::Init()
     cheneEntity->SetShadowVolumeType(TwoSidedShadow);
     m_chene_node->SetPosition(150,-100,-78);
     m_chene_node->AttachObject(cheneEntity);
+
+    SceneNode* tree_shadow_node = m_chene_node->CreateChildNode(-12,-12,78);
+    IsoGeometricShadowCaster* tree_dynamic_shadow = m_mainScene.CreateIsoGeometricShadowCaster();
+    tree_dynamic_shadow->ConstructCylinder(12,70);
+    tree_shadow_node->AttachObject(tree_dynamic_shadow);
+
 
     IsoSpriteEntity *abbayeEntity = m_mainScene.CreateIsoSpriteEntity();
     abbayeEntity->SetTexture(PBRTextureHandler->LoadAssetFromFile("../data/abbayeXML.txt",LoadTypeInThread));
@@ -143,6 +149,7 @@ void TestingState::Init()
     rectEntity->SetTexture(PBRTextureHandler->LoadAssetFromFile("../data/cobbleXML.txt",LoadTypeInThread));
     //rectEntity->SetTexture(PBRTextureHandler->LoadAssetFromFile("../data/sandXML.txt",LoadTypeInThread));
     rectEntity->SetTexture(PBRTextureHandler->LoadAssetFromFile("../data/wetsandXML.txt",LoadTypeInThread));
+   // rectEntity->SetTexture(PBRTextureHandler->LoadAssetFromFile("../data/waterXML.txt",LoadTypeInThread));
     //rectEntity->SetTexture(TextureHandler->LoadAssetFromFile("../data/cobble_color.png",LoadTypeInThread));
     //rectEntity->SetTexture(TextureHandler->LoadAssetFromFile("../data/sand_color.png",LoadTypeInThread));
     //rectEntity->SetTexture(TextureHandler->LoadAssetFromFile("../data/sand.png",LoadTypeInThread));
@@ -279,7 +286,7 @@ void TestingState::HandleEvents(alag::EventManager *event_manager)
     if(event_manager->KeyPressed(sf::Keyboard::S))
         m_mainScene.SetShadowCasting(NoShadow);
     if(event_manager->KeyReleased(sf::Keyboard::S))
-        m_mainScene.SetShadowCasting(DirectionnalShadow);
+        m_mainScene.SetShadowCasting(AllShadows);
 
 
     if(event_manager->KeyPressed(sf::Keyboard::G))
