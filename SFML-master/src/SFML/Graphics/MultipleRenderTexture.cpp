@@ -152,6 +152,21 @@ bool MultipleRenderTexture::removeRenderTarget(unsigned int renderingLocation)
     return true;
 }
 
+void MultipleRenderTexture::copyDepthBuffer(MultipleRenderTexture *source)
+{
+    if(source != NULL)
+    {
+        setActive(true);
+        GLEXT_glBindFramebuffer(GLEXT_GL_READ_FRAMEBUFFER, source->m_frameBuffer);
+        GLEXT_glBindFramebuffer(GLEXT_GL_DRAW_FRAMEBUFFER, m_frameBuffer);
+        GLEXT_glBlitFramebuffer(
+          0, 0, getSize().x, getSize().y, 0, 0, getSize().x, getSize().y, GL_DEPTH_BUFFER_BIT, GL_NEAREST
+        );
+        GLEXT_glBindFramebuffer(GLEXT_GL_FRAMEBUFFER, m_frameBuffer);
+    }
+}
+
+
 void MultipleRenderTexture::setSmooth(unsigned int renderingLocation, bool smooth)
 {
     std::vector<unsigned int>::iterator renderIt;

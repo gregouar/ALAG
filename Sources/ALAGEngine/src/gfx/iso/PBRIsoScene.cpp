@@ -1,6 +1,7 @@
 #include "ALAGE/gfx/iso/PBRIsoScene.h"
 
 
+#include "ALAGE/utils/Profiler.h"
 #include "ALAGE/utils/Logger.h"
 #include "ALAGE/utils/Mathematics.h"
 #include "ALAGE/core/Config.h"
@@ -13,7 +14,7 @@
 namespace alag
 {
 
-const bool DOFLUSH = true;
+const bool DOFLUSH = false;
 
 const IsoViewAngle PBRIsoScene::DEFAULT_ISO_VIEW_ANGLE = {.xyAngle = 0,
                                                              .zAngle = 90};
@@ -120,10 +121,10 @@ bool PBRIsoScene::InitRenderer(sf::Vector2u windowSize)
     m_lightingShader.setUniform("map_depth",*m_PBRScreen.getTexture(PBRDepthScreen));
     m_lightingShader.setUniform("map_material",*m_PBRScreen.getTexture(PBRMaterialScreen));
 
-    m_PBRGeometryShader.setUniform("map_depthTester",*m_PBRScreen.getTexture(PBRDepthScreen));
+   /* m_PBRGeometryShader.setUniform("map_depthTester",*m_PBRScreen.getTexture(PBRDepthScreen));
 
     m_PBRGeometryShader.setUniform("view_ratio",sf::Vector2f(1.0/(float)m_PBRScreen.getSize().x,
-                                                            1.0/(float)m_PBRScreen.getSize().y));
+                                                            1.0/(float)m_PBRScreen.getSize().y));*/
 
     m_lightingShader.setUniform("view_ratio",sf::Vector2f(1.0/(float)m_PBRScreen.getSize().x,
                                                             1.0/(float)m_PBRScreen.getSize().y));
@@ -203,14 +204,29 @@ void PBRIsoScene::ProcessRenderQueue(sf::RenderTarget *w)
     m_lightingShader.setUniform("view_zoom",m_currentCamera->GetZoom());
     m_lightingShader.setUniform("view_pos",m_currentCamera->GetParentNode()->GetGlobalPosition());
 
-    std::multimap<float, Light*> lightList;
-    m_currentCamera->GetParentNode()->FindNearbyLights(&lightList);
 
-    m_lighting_PBRScreen[m_activeLightingPBRScreen].setActive(true);
-    UpdateLighting(lightList);
+    Profiler::PushClock("Update lighting");
 
-    if(m_shadowCastingOption != NoShadow)
-        RenderShadows(lightList,curView/*,m_colorScreen.getSize()*/);
+        Profiler::PushClock("Find lights");
+        std::multimap<float, Light*> lightList;
+        m_currentCamera->GetParentNode()->FindNearbyLights(&lightList);
+        Profiler::PopClock();
+
+        Profiler::PushClock("Compute lights");
+        m_lighting_PBRScreen[m_activeLightingPBRScreen].setActive(true);
+        UpdateLighting(lightList);
+        Profiler::PopClock();
+
+        Profiler::PushClock("Render shadows");
+        if(m_shadowCastingOption != NoShadow)
+            RenderShadows(lightList,curView);
+        Profiler::PopClock();
+
+    Profiler::PopClock();
+
+
+
+    Profiler::PushClock("Render geometry");
 
     std::list<SceneEntity*>::iterator renderIt;
     sf::MultipleRenderTexture *renderTarget = nullptr;
@@ -222,19 +238,23 @@ void PBRIsoScene::ProcessRenderQueue(sf::RenderTarget *w)
 
         if(pass == 0)
         {
-            m_PBRGeometryShader.setUniform("enable_depthTesting",false);
+            Profiler::PushClock("Render opaque geometry");
+            //m_PBRGeometryShader.setUniform("enable_depthTesting",false);
             m_PBRGeometryShader.setUniform("p_alpha_pass",false);
             renderTarget = &m_PBRScreen;
             state.blendMode = sf::BlendNone;
         } else if(pass == 1) {
-            m_PBRGeometryShader.setUniform("enable_depthTesting",true);
+            Profiler::PushClock("Render alpha geometry");
+            //m_PBRGeometryShader.setUniform("enable_depthTesting",true);
             m_PBRGeometryShader.setUniform("p_alpha_pass",true);
             renderTarget = &m_alpha_PBRScreen;
             state.blendMode = sf::BlendNone;
+            m_alpha_PBRScreen.copyDepthBuffer(&m_PBRScreen);
         }
 
         renderTarget->setActive(true);
 
+        if(pass == 0)
         glClear(GL_DEPTH_BUFFER_BIT);
         glEnable(GL_DEPTH_TEST);
         glDepthMask(GL_TRUE);
@@ -264,12 +284,16 @@ void PBRIsoScene::ProcessRenderQueue(sf::RenderTarget *w)
         }
         renderTarget->display(DOFLUSH);
         renderTarget->setActive(false);
+        Profiler::PopClock();
     }
+
+    Profiler::PopClock();
 
     //m_PBRScreen.display();
 
     if(m_enableSSAO)
     {
+        Profiler::PushClock("SSAO");
         m_SSAOShader.setUniform("view_zoom",1.0f/m_currentCamera->GetZoom());
 
         m_SSAOScreen[0].draw(m_SSAOrenderer,&m_SSAOShader);
@@ -286,10 +310,13 @@ void PBRIsoScene::ProcessRenderQueue(sf::RenderTarget *w)
 
       //  m_SSAOScreen[0].getTexture().copyToImage().saveToFile("SSAO0.png");
       //  m_SSAOScreen[1].getTexture().copyToImage().saveToFile("SSAO1.png");
+        Profiler::PopClock();
     }
 
     //m_alpha_PBRScreen.display();
 
+
+    Profiler::PushClock("Render lighting");
 
     m_PBRScreen.setActive(true);
 
@@ -326,9 +353,11 @@ void PBRIsoScene::ProcessRenderQueue(sf::RenderTarget *w)
 
 
     m_lighting_PBRScreen[m_activeLightingPBRScreen].display(DOFLUSH);
+    Profiler::PopClock();
 
     if(m_enableBloom)
     {
+        Profiler::PushClock("Bloom");
        // m_lighting_PBRScreen[m_activeLightingPBRScreen].getTexture(1)->copyToImage().saveToFile("bloom.png");
         m_renderer.setTexture(m_lighting_PBRScreen[m_activeLightingPBRScreen].getTexture(1));
         m_blurShader.setUniform("offset",sf::Vector2f(DEFAULT_BLOOMBLUR/(float)m_PBRScreen.getSize().x,0));
@@ -348,14 +377,14 @@ void PBRIsoScene::ProcessRenderQueue(sf::RenderTarget *w)
         m_bloomScreen[1].draw(m_renderer,&m_blurShader);
         m_bloomScreen[1].display(DOFLUSH);
 
-
+        Profiler::PopClock();
       //  m_bloomScreen[1].getTexture().copyToImage().saveToFile("bloomblurred1.png");
     }
 
     m_renderer.setTexture(m_lighting_PBRScreen[m_activeLightingPBRScreen].getTexture(0));
     w->draw(m_renderer, &m_HDRBloomShader);
 
-    m_lighting_PBRScreen[m_activeLightingPBRScreen].display(true);
+    m_lighting_PBRScreen[m_activeLightingPBRScreen].display(DOFLUSH);
     m_lightingShader.setUniform("map_environmental",*m_lighting_PBRScreen[m_activeLightingPBRScreen].getTexture(0));
     m_lighting_PBRScreen[m_activeLightingPBRScreen].getTexture(0)->setSmooth(true);
     m_lighting_PBRScreen[m_activeLightingPBRScreen].getTexture(0)->generateMipmap();

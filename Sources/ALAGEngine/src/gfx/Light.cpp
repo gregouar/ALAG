@@ -176,10 +176,6 @@ void Light::UpdateShadow()
     }
 
     m_shadowMaxShift = max_shift;
-    /*m_shadowMaxShift.left -= 8;
-    m_shadowMaxShift.top -= 8;
-    m_shadowMaxShift.width += 16;
-    m_shadowMaxShift.height += 16;*/
     m_requireShadowComputation = false;
 }
 
@@ -189,9 +185,6 @@ void Light::RenderShadowMap(const sf::View &view/*,const sf::Vector2u &screen_si
     || m_shadowMap.getSize().y != (unsigned int)view.getSize().y + m_shadowMaxShift.height)
         m_shadowMap.create((unsigned int)view.getSize().x + m_shadowMaxShift.width,
                             (unsigned int)view.getSize().y + m_shadowMaxShift.height, true);
-
-   /* std::cout<<m_shadowMaxShift.left<<" "<<m_shadowMaxShift.top<<" "<<
-    m_shadowMaxShift.width<<" "<<m_shadowMaxShift.height<<std::endl;*/
 
     sf::View shadow_view = view;
     shadow_view.move(m_shadowMaxShift.width*0.5+m_shadowMaxShift.left,
@@ -210,8 +203,8 @@ void Light::RenderShadowMap(const sf::View &view/*,const sf::Vector2u &screen_si
         for(casterIt = m_shadowCasterList.begin() ; casterIt != m_shadowCasterList.end() ; ++casterIt)
             (*casterIt)->RenderShadow(&m_shadowMap,this);
 
+        //m_shadowMap.display();
         m_shadowMap.display(false);
-       // m_shadowMap.getTexture().copyToImage().saveToFile("shadow.png");
     m_shadowMap.setActive(false);
 }
 

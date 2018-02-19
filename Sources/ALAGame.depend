@@ -5,14 +5,15 @@
 	"ALAGE/utils/Logger.h"
 	"include/states/TestingState.h"
 
-1518110587 source:c:\c++\alag\sources\alagengine\src\core\gapp.cpp
+1518964927 source:c:\c++\alag\sources\alagengine\src\core\gapp.cpp
 	<SFML/System.hpp>
 	<sstream>
 	"ALAGE/core/GApp.h"
+	"ALAGE/utils/Profiler.h"
 	"ALAGE/utils/Logger.h"
 	"ALAGE/utils/Parser.h"
 
-1518021974 c:\c++\alag\sources\alagengine\include\alage\core\gapp.h
+1518979973 c:\c++\alag\sources\alagengine\include\alage\core\gapp.h
 	<SFML/Graphics.hpp>
 	"ALAGE/core/Config.h"
 	"ALAGE/core/EventManager.h"
@@ -34,7 +35,7 @@
 	<vector>
 	"GState.h"
 
-1518467322 source:c:\c++\alag\sources\src\states\testingstate.cpp
+1518979742 source:c:\c++\alag\sources\src\states\testingstate.cpp
 	"states/TestingState.h"
 	"ALAGE/core/GApp.h"
 	"ALAGE/core/EventManager.h"
@@ -685,7 +686,7 @@
 1516702536 c:\c++\alag\sources\alagengine\include\alage\utils\mapiterator.h
 	<map>
 
-1518022880 source:c:\c++\alag\sources\alagengine\src\gfx\spriteentity.cpp
+1519048463 source:c:\c++\alag\sources\alagengine\src\gfx\spriteentity.cpp
 	"ALAGE/gfx/SpriteEntity.h"
 	"ALAGE/gfx/iso/PBRIsoScene.h"
 	"ALAGE/core/AssetHandler.h"
@@ -742,7 +743,7 @@
 	<SFML/Graphics.hpp>
 	"ALAGE/gfx/SceneObject.h"
 
-1518375263 source:c:\c++\alag\sources\alagengine\src\gfx\light.cpp
+1518967058 source:c:\c++\alag\sources\alagengine\src\gfx\light.cpp
 	"ALAGE/gfx/Light.h"
 	"ALAGE/gfx/ShadowCaster.h"
 	"ALAGE/utils/TextureModifier.h"
@@ -816,7 +817,7 @@
 	"ALAGE/core/Asset.h"
 	<SFML/Graphics.hpp>
 
-1518381003 source:c:\c++\alag\sources\alagengine\src\gfx\geometricshadowcaster.cpp
+1518961041 source:c:\c++\alag\sources\alagengine\src\gfx\geometricshadowcaster.cpp
 	"ALAGE/gfx/GeometricShadowCaster.h"
 	"ALAGE/gfx/SceneNode.h"
 	"ALAGE/utils/Mathematics.h"
@@ -856,7 +857,7 @@
 	<SFML/Graphics/Drawable.hpp>
 	<SFML/Window/GlResource.hpp>
 
-1518172435 c:\c++\alag\sources\sfml\include\sfml\graphics\multiplerendertexture.hpp
+1519049063 c:\c++\alag\sources\sfml\include\sfml\graphics\multiplerendertexture.hpp
 	<SFML/Graphics/Export.hpp>
 	<SFML/Graphics/Texture.hpp>
 	<SFML/Graphics/RenderTarget.hpp>
@@ -900,8 +901,9 @@
 	"ALAGE/gfx/iso/IsoRectEntity.h"
 	<SFML/OpenGL.hpp>
 
-1518427526 source:c:\c++\alag\sources\alagengine\src\gfx\iso\pbrisoscene.cpp
+1519050962 source:c:\c++\alag\sources\alagengine\src\gfx\iso\pbrisoscene.cpp
 	"ALAGE/gfx/iso/PBRIsoScene.h"
+	"ALAGE/utils/Profiler.h"
 	"ALAGE/utils/Logger.h"
 	"ALAGE/utils/Mathematics.h"
 	"ALAGE/core/Config.h"
@@ -913,12 +915,12 @@
 	<sstream>
 	<iostream>
 
-1518427334 source:c:\c++\alag\sources\alagengine\src\gfx\iso\pbrisoshaders.cpp
+1519047862 source:c:\c++\alag\sources\alagengine\src\gfx\iso\pbrisoshaders.cpp
 	"ALAGE/gfx/iso/PBRIsoScene.h"
 	<sstream>
 	<iostream>
 
-1517926947 source:c:\c++\alag\sources\alagengine\src\gfx\pbrtextureasset.cpp
+1519047617 source:c:\c++\alag\sources\alagengine\src\gfx\pbrtextureasset.cpp
 	"ALAGE/core/AssetHandler.h"
 	"ALAGE/gfx/PBRTextureAsset.h"
 	"ALAGE/utils/Parser.h"
@@ -933,4 +935,13 @@
 	"ALAGE/gfx/iso/PBRIsoScene.h"
 	"ALAGE/gfx/iso/IsoGeometricShadowCaster.h"
 	"ALAGE/utils/Mathematics.h"
+
+1518964677 source:c:\c++\alag\sources\alagengine\src\utils\profiler.cpp
+	"ALAGE/utils/Profiler.h"
+
+1518963878 c:\c++\alag\sources\alagengine\include\alage\utils\profiler.h
+	<stack>
+	<sstream>
+	<SFML/System.hpp>
+	"ALAGE/utils/Singleton.h"
 

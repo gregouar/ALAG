@@ -20,6 +20,8 @@ public:
     bool addRenderTarget(unsigned int renderingLocation, bool useFloat = false);
     bool removeRenderTarget(unsigned int renderingLocation);
 
+    void copyDepthBuffer(MultipleRenderTexture *);
+
     void setSmooth(unsigned int renderingLocation, bool smooth);
     bool isSmooth(unsigned int renderingLocation);
     void setRepeated(unsigned int renderingLocation, bool repeated);

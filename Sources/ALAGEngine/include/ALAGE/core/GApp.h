@@ -50,6 +50,8 @@ class GApp
         static const char *DEFAULT_WINDOW_WIDTH;
         static const char *DEFAULT_WINDOW_HEIGHT;
         static const char *DEFAULT_SRGB;
+
+        static const bool ENABLE_PROFILER = true;
 };
 
 }

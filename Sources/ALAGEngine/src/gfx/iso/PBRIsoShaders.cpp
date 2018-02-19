@@ -39,7 +39,7 @@ void PBRIsoScene::CompileDepthShader()
     "   float r = floor(gl_FragDepth * 255.0);"
     "   float g = floor((gl_FragDepth*255.0 -  r)*255.0);"
     "   float b = floor((gl_FragDepth*65025.0 -  g - r*255.0)*255.0);"
-    "   gl_FragColor = vec4(r,g,b,colorAlpha)*All255.xxxy;"
+    "   gl_FragColor = vec4(r,g,b,1.0)*All255.xxxy;"
     "}";
 
     m_depthShader.loadFromMemory(fragShader.str(),sf::Shader::Fragment);
@@ -72,15 +72,15 @@ void PBRIsoScene::CompilePBRGeometryShader()
     "uniform sampler2D map_normal;" \
     "uniform bool enable_materialMap;" \
     "uniform sampler2D map_material;" \
-    "uniform sampler2D map_depthTester;" \
-    "uniform bool enable_depthTesting;"
+ /*   "uniform sampler2D map_depthTester;" \
+    "uniform bool enable_depthTesting;"*/
     "uniform float p_roughness;" \
     "uniform float p_metalness;" \
     "uniform float p_translucency;" \
     "uniform mat3 p_normalProjMat;" \
     "uniform float p_height;" \
     "uniform float p_zPos;" \
-    "uniform vec2 view_ratio;" \
+   // "uniform vec2 view_ratio;"
     ""
     "varying vec2 VaryingTexCoord0; "\
     ""
@@ -98,12 +98,12 @@ void PBRIsoScene::CompilePBRGeometryShader()
     "           heightPixel = dot(All33, depthPixel);"
     "       }"
     "       float zPixel = heightPixel*p_height - p_zPos +0.5;" \
-    "       float depthTest = 1.0;"
+   /* "       float depthTest = 1.0;"
     "       if(enable_depthTesting == true){"
     "           vec3 depthTestPixel = texture2D(map_depthTester, gl_FragCoord.xy*view_ratio).rgb;" \
     "           depthTest = ((depthTestPixel.b*"<<1.0/255.0<<"+depthTestPixel.g)*"<<1.0/255.0<<"+depthTestPixel.r);"
     "       }"
-    "       if(enable_depthTesting == false || zPixel <= depthTest){"
+    "       if(enable_depthTesting == false || zPixel <= depthTest){"*/
 	"	        vec4 direction = vec4(0,0,1.0,1.0);"
 	"           if(enable_normalMap == true){"
 	"               direction.xyz = 2.0*texture2D(map_normal, VaryingTexCoord0).rgb-1.0;"
@@ -121,13 +121,13 @@ void PBRIsoScene::CompilePBRGeometryShader()
     "           gl_FragData["<<PBRNormalScreen<<"] = (direction*0.5+0.5);" \
     "           gl_FragData["<<PBRDepthScreen<<"] = vec4(r,g,b,1.0)*All255.xxxy;"
     "           gl_FragData["<<PBRMaterialScreen<<"] = materialPixel; " \
-    "       }else {"
+   /* "       }else {"
     "           gl_FragDepth = 1.0;"
     "           gl_FragData["<<PBRAlbedoScreen<<"] = vec4(0,0,0,0);"
     "           gl_FragData["<<PBRNormalScreen<<"] = vec4(0,0,0,0);"
     "           gl_FragData["<<PBRDepthScreen<<"] = vec4(0,0,0,0);"
     "           gl_FragData["<<PBRMaterialScreen<<"] = vec4(0,0,0,0);"
-    "       }"
+    "       }"*/
     "   } else {"
     "       gl_FragDepth = 1.0;"
     "       gl_FragData["<<PBRAlbedoScreen<<"] = vec4(0,0,0,0);"

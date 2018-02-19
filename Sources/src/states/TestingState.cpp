@@ -67,7 +67,7 @@ void TestingState::Init()
     //sarco3DEntity->SetTexture(PBRTextureHandler->LoadAssetFromFile("../data/bedrockXML.txt",LoadTypeInThread));
     sarco3DEntity->SetCenter(128,166);
     sarco3DEntity->SetShadowCastingType(DirectionnalShadow);
-    sarco3DEntity->SetColor(sf::Color(255,64,255));
+   // sarco3DEntity->SetColor(sf::Color(255,64,255,128));
     //sarco3DEntity->DesactivateLighting();
     m_sarco3DNode->AttachObject(sarco3DEntity);
 
@@ -99,10 +99,10 @@ void TestingState::Init()
    /* Light* sunLight = m_mainScene.CreateLight(DirectionnalLight,sf::Vector3f(-1,.5,-1), sf::Color(255,255,160));
     sunLight->SetConstantAttenuation(2);*/
     m_sunLight = m_mainScene.CreateLight(DirectionnalLight,sf::Vector3f(-1,.2,-1), sf::Color(255,255,255));
-    m_sunLight->SetIntensity(.1);
+    m_sunLight->SetIntensity(20);
     m_sunLight->EnableShadowCasting();
     m_mainScene.GetRootNode()->AttachObject(m_sunLight);
-    m_mainScene.SetAmbientLight(sf::Color(96,127,255,16));
+    m_mainScene.SetAmbientLight(sf::Color(96,127,255,96));
     //m_mainScene.SetAmbientLight(sf::Color(64,64,128,24));
     //m_mainScene.SetAmbientLight(sf::Color(96,96,128));
    // m_mainScene.SetAmbientLight(sf::Color(32,48,128));
@@ -112,12 +112,24 @@ void TestingState::Init()
     m_chene_node = m_mainScene.GetRootNode()->CreateChildNode(sf::Vector2f(150,-100));
     IsoSpriteEntity *cheneEntity = m_mainScene.CreateIsoSpriteEntity();
     cheneEntity->SetTexture(PBRTextureHandler->LoadAssetFromFile("../data/treeXML.txt"));
-    //cheneEntity->SetCenter(192,320);
     cheneEntity->SetCenter(256,526);
     cheneEntity->SetShadowCastingType(DirectionnalShadow);
     cheneEntity->SetShadowVolumeType(TwoSidedShadow);
     m_chene_node->SetPosition(150,-100,-78);
     m_chene_node->AttachObject(cheneEntity);
+
+  /*  for(int i = 0 ; i < 10 ; ++i)
+    for(int j = 0 ; j < 10 ; ++j)
+    {
+        SceneNode *n = m_mainScene.GetRootNode()->CreateChildNode();
+        IsoSpriteEntity *e = m_mainScene.CreateIsoSpriteEntity();
+        e->SetTexture(PBRTextureHandler->LoadAssetFromFile("../data/treeXML.txt"));
+        e->SetCenter(256,526);
+       // e->SetShadowCastingType(DirectionnalShadow);
+       // e->SetShadowVolumeType(TwoSidedShadow);
+        n->SetPosition(i*100,j*100,-78);
+        n->AttachObject(e);
+    }*/
 
     SceneNode* tree_shadow_node = m_chene_node->CreateChildNode(-12,-12,78);
     IsoGeometricShadowCaster* tree_dynamic_shadow = m_mainScene.CreateIsoGeometricShadowCaster();

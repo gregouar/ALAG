@@ -3,6 +3,7 @@
 #include <sstream>
 
 #include "ALAGE/core/GApp.h"
+#include "ALAGE/utils/Profiler.h"
 #include "ALAGE/utils/Logger.h"
 #include "ALAGE/utils/Parser.h"
 
@@ -17,8 +18,6 @@ const char *GApp::DEFAULT_SCREENSHOTPATH = "../screenshots/";
 const char *GApp::DEFAULT_WINDOW_WIDTH = "1024";
 const char *GApp::DEFAULT_WINDOW_HEIGHT = "768";
 const char *GApp::DEFAULT_SRGB = "false";
-
-
 
 GApp::GApp() : GApp(DEFAULT_APP_NAME)
 {
@@ -104,6 +103,7 @@ int GApp::Loop()
     while(m_running)
     {
         sf::Time elapsed_time = clock.restart();
+        Profiler::ResetLoop(ENABLE_PROFILER);
 
         m_eventManager.Update(&m_window);
 
@@ -113,11 +113,20 @@ int GApp::Loop()
             Stop();
         else {
             m_stateManager.HandleEvents(&m_eventManager);
+
+            Profiler::PushClock("GApp update");
             m_stateManager.Update(elapsed_time);
+            Profiler::PopClock();
+
+            Profiler::PushClock("GApp draw");
             m_stateManager.Draw(&m_window);
+            Profiler::PopClock();
         }
 
+        Profiler::PushClock("GApp display");
         m_window.display();
+        Profiler::PopClock();
+
 
         /** NEED TO CHANGE TO CONFIG::PRINTSCREENKEY **/
         if(m_eventManager.KeyPressed(sf::Keyboard::P))
