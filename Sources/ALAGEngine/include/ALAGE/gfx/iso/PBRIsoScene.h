@@ -21,6 +21,7 @@ struct ScreenTile
 {
     sf::Vector2u position;
     std::list<SceneEntity*> entities;
+    std::list<SceneEntity*> newList;
     bool askForUpdate;
 };
 
