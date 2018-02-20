@@ -42,7 +42,7 @@ bool TextureAsset::LoadNow()
     bool loaded = true;
 
     if(!m_loaded) {
-        if(m_loadSource == LoadSourceFile)
+        if(m_loadSource == LoadSource_File)
         {
             if(!m_texture.loadFromFile(m_filePath))
             {
@@ -50,13 +50,13 @@ bool TextureAsset::LoadNow()
                 loaded = false;
             } else
                 Logger::Write("Texture loaded from file: "+m_filePath);
-        } else if(m_loadSource == LoadSourceMemory) {
+        } else if(m_loadSource == LoadSource_Memory) {
             if(!m_texture.loadFromMemory(m_loadData,m_loadDataSize))
             {
                 Logger::Error("Cannot load texture from memory");
                 loaded = false;
             }
-        } else if(m_loadSource == LoadSourceStream) {
+        } else if(m_loadSource == LoadSource_Stream) {
             if(!m_texture.loadFromStream(*m_loadStream))
             {
                 Logger::Error("Cannot load texture from stream");

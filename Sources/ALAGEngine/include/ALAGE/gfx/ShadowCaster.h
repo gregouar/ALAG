@@ -22,6 +22,8 @@ class ShadowCaster : public SceneObject
         bool IsRequiringShadowCasting(Light*);
         ShadowCastingType GetShadowCastingType();
 
+        virtual void Notify(NotificationSender*, NotificationType);
+
     protected:
         void AddToLightList(Light*);
         void ForceShadowCastingType(ShadowCastingType);

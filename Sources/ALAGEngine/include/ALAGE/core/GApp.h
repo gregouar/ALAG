@@ -51,7 +51,7 @@ class GApp
         static const char *DEFAULT_WINDOW_HEIGHT;
         static const char *DEFAULT_SRGB;
 
-        static const bool ENABLE_PROFILER = true;
+        static const bool ENABLE_PROFILER;
 };
 
 }

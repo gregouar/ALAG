@@ -137,9 +137,6 @@ void GeometricShadowCaster::ComputeShadow(Light* light)
 
         AddToLightList(light);
     }
-
-    /** NEED TO REMOVE THIS AND USE NOTIFICATION SYSTEM**/
-    AskForDynamicShadowUpdate();
 }
 
 

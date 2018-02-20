@@ -76,6 +76,7 @@ void DefaultScene::ProcessRenderQueue(sf::RenderTarget *w)
 void DefaultScene::ComputeRenderQueue()
 {
     m_renderQueue.clear();
+    //m_staticRenderQueue.clear();
     //AddToRenderQueue(&m_rootNode);
     m_rootNode.SearchInsideForEntities(&m_renderQueue);
 }

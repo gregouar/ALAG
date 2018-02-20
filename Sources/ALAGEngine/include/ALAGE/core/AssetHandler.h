@@ -20,13 +20,13 @@ template<class AssetType> class AssetHandler : public Singleton<AssetHandler<Ass
 
         AssetType* GetAsset(const AssetTypeID &assetID);
 
-        AssetType* LoadAssetFromFile(const std::string &, AssetLoadType = LoadTypeNow);
-        AssetType* LoadAssetFromMemory(void *data, std::size_t dataSize, AssetLoadType = LoadTypeNow);
-        AssetType* LoadAssetFromStream(sf::InputStream *stream, AssetLoadType = LoadTypeNow);
+        AssetType* LoadAssetFromFile(const std::string &, AssetLoadType = LoadType_Now);
+        AssetType* LoadAssetFromMemory(void *data, std::size_t dataSize, AssetLoadType = LoadType_Now);
+        AssetType* LoadAssetFromStream(sf::InputStream *stream, AssetLoadType = LoadType_Now);
 
-        AssetType* LoadAssetFromFile(const AssetTypeID& id,const std::string &, AssetLoadType = LoadTypeNow);
-        AssetType* LoadAssetFromMemory(const AssetTypeID& id, void *data, std::size_t dataSize, AssetLoadType = LoadTypeNow);
-        AssetType* LoadAssetFromStream(const AssetTypeID& id,sf::InputStream *stream, AssetLoadType = LoadTypeNow);
+        AssetType* LoadAssetFromFile(const AssetTypeID& id,const std::string &, AssetLoadType = LoadType_Now);
+        AssetType* LoadAssetFromMemory(const AssetTypeID& id, void *data, std::size_t dataSize, AssetLoadType = LoadType_Now);
+        AssetType* LoadAssetFromStream(const AssetTypeID& id,sf::InputStream *stream, AssetLoadType = LoadType_Now);
 
         AssetType* AddAsset(const AssetTypeID &assetID, bool plannedObsolescence=false, int lifeSpan=1);
 

@@ -36,6 +36,7 @@ void RectEntity::Render(sf::RenderTarget *w, const sf::RenderStates &state)
 {
     if(m_texture != nullptr)
         w->draw((*this), state);
+    AskForRenderUpdate(false);
 }
 
 
@@ -109,6 +110,17 @@ void RectEntity::SetColor(sf::Color c)
     sf::RectangleShape::setFillColor(c);
 }
 
+sf::FloatRect RectEntity::GetScreenBoundingRect(const Mat3x3& transMat)
+{
+    sf::FloatRect b;
+   /* b.position = -GetCenter();
+    b.size = -sf::RectangleShape::getSize();*/
+
+    /** NEED TO COMPUTE RECT IN SCREEN POS **/
+
+    return b;
+}
+
 sf::Vector2f RectEntity::GetCenter()
 {
     return sf::RectangleShape::getOrigin();
@@ -118,15 +130,17 @@ void RectEntity::Notify(NotificationSender* sender, NotificationType notificatio
 {
     if(m_texture == sender)
     {
-        if(notification == AssetLoadedNotification)
+        if(notification == Notification_AssetLoaded)
         {
             bool wasPBR = m_usePBR;
             SetTexture(m_texture);
             m_usePBR = wasPBR;
         }
-        else if(notification == NotificationSenderDestroyed)
+        else if(notification == Notification_SenderDestroyed)
             m_texture = nullptr;
     }
+
+    SceneEntity::Notify(sender, notification);
 }
 
 

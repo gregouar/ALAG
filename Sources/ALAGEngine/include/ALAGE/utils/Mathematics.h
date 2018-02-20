@@ -21,6 +21,12 @@ void SfColorToGlColor(const sf::Color&, float glColor[4]);
 
 namespace alag {
 
+struct Box
+{
+    sf::Vector3f position;
+    sf::Vector3f size;
+};
+
 class Mat2x2
 {
     public:

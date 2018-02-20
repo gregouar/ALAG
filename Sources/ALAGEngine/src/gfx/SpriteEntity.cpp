@@ -86,6 +86,7 @@ void SpriteEntity::Render(sf::RenderTarget *w, const sf::RenderStates &state)
 
         w->draw(quad, newState);*/
     }
+    AskForRenderUpdate(false);
 }
 
 
@@ -180,22 +181,29 @@ sf::Vector2f SpriteEntity::GetScale()
     return sf::Sprite::getScale();
 }
 
+sf::FloatRect SpriteEntity::GetScreenBoundingRect(const Mat3x3& transMat)
+{
+    return sf::Sprite::getGlobalBounds();
+}
+
 
 void SpriteEntity::Notify(NotificationSender* sender, NotificationType notification)
 {
     if(sender == m_texture)
     {
-        if(notification == AssetLoadedNotification)
+        if(notification == Notification_AssetLoaded)
         {
             bool wasPBR = m_usePBR;
             SetTexture(m_texture);
             m_usePBR = wasPBR;
         }
-        else if(notification == NotificationSenderDestroyed)
+        else if(notification == Notification_SenderDestroyed)
             m_texture = nullptr;
 
         ShadowCaster::AskForAllShadowUpdate();
     }
+
+    SceneEntity::Notify(sender, notification);
 }
 
 }

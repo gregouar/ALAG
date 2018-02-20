@@ -17,6 +17,13 @@ struct IsoViewAngle
     float zAngle;
 };
 
+struct ScreenTile
+{
+    sf::Vector2u position;
+    std::list<SceneEntity*> entities;
+    bool askForUpdate;
+};
+
 class PBRIsoScene : public DefaultScene
 {
     friend void IsoSpriteEntity::RenderShadow(sf::RenderTarget*, Light*);
@@ -29,9 +36,14 @@ class PBRIsoScene : public DefaultScene
 
         virtual bool InitRenderer(sf::Vector2u);
         virtual sf::View GenerateView(Camera*);
-        virtual void ProcessRenderQueue(sf::RenderTarget*);
         virtual void RenderScene(sf::RenderTarget*);
 
+        virtual void ProcessRenderQueue(sf::RenderTarget*);
+        void RenderStaticGeometry(const sf::View &curView);
+        void RenderDynamicGeometry(const sf::View &curView);
+        void RenderLighting();
+        void RenderBloom();
+        void RenderSSAO();
 
         IsoRectEntity*   CreateIsoRectEntity(sf::Vector2f = sf::Vector2f(0,0));
         IsoSpriteEntity* CreateIsoSpriteEntity(sf::Vector2i);
@@ -96,11 +108,13 @@ class PBRIsoScene : public DefaultScene
         sf::Shader m_blurShader;
         sf::Shader m_HDRBloomShader;
 
-        /*sf::RenderTexture m_colorScreen;
-        sf::RenderTexture m_normalScreen;
-        sf::RenderTexture m_depthScreen;*/
+        ScreenTile *m_screenTiles;
+        sf::Vector2u m_nbrTiles;
+        sf::Vector2f m_tilesShift;
+        sf::MultipleRenderTexture m_staticGeometryScreen;
 
         int m_superSampling;
+
         sf::MultipleRenderTexture m_PBRScreen;
         sf::MultipleRenderTexture m_alpha_PBRScreen;
         sf::MultipleRenderTexture m_lighting_PBRScreen[2];
@@ -122,6 +136,8 @@ class PBRIsoScene : public DefaultScene
 
         static const IsoViewAngle DEFAULT_ISO_VIEW_ANGLE;
         static const int MAX_SHADOW_MAPS;
+
+        static const int SCREENTILE_SIZE;
 
         static const std::string DEFAULT_ENABLESSAO;
         static const std::string DEFAULT_ENABLEBLOOM;

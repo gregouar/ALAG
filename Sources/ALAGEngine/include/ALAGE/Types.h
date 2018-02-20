@@ -20,22 +20,25 @@ class ShadowCaster;
 
 enum AssetLoadType
 {
-    LoadTypeNow = 0,
-    LoadTypeInThread = 1,
+    LoadType_Now = 0,
+    LoadType_InThread = 1,
 };
 
 enum AssetLoadSource
 {
-    NoLoadSource,
-    LoadSourceFile,
-    LoadSourceMemory,
-    LoadSourceStream,
+    LoadSource_None,
+    LoadSource_File,
+    LoadSource_Memory,
+    LoadSource_Stream,
 };
 
 enum NotificationType
 {
-    NotificationSenderDestroyed,
-    AssetLoadedNotification,
+    Notification_SenderDestroyed,
+    Notification_AssetLoaded,
+    Notification_SceneNodeDetroyed,
+    Notification_SceneNodeMoved,
+   // Notification_LightMoved,
 };
 
 enum LightType

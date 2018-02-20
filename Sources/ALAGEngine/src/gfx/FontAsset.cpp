@@ -29,7 +29,7 @@ bool FontAsset::LoadNow()
     bool loaded = true;
 
     if(!m_loaded) {
-        if(m_loadSource == LoadSourceFile)
+        if(m_loadSource == LoadSource_File)
         {
             if(!m_font.loadFromFile(m_filePath))
             {

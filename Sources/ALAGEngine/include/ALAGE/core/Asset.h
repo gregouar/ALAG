@@ -17,9 +17,9 @@ class Asset : public NotificationSender
         Asset(const AssetTypeID &);
         virtual ~Asset();
 
-        virtual bool LoadFromFile(const std::string &, AssetLoadType = LoadTypeNow);
-        virtual bool LoadFromMemory(void *data, std::size_t size, AssetLoadType = LoadTypeNow);
-        virtual bool LoadFromStream(sf::InputStream *stream, AssetLoadType = LoadTypeNow);
+        virtual bool LoadFromFile(const std::string &, AssetLoadType = LoadType_Now);
+        virtual bool LoadFromMemory(void *data, std::size_t size, AssetLoadType = LoadType_Now);
+        virtual bool LoadFromStream(sf::InputStream *stream, AssetLoadType = LoadType_Now);
 
         virtual bool LoadNow();
 

@@ -51,4 +51,15 @@ void SceneObject::Update(const sf::Time &elapsed_time)
 }
 
 
+void SceneObject::Notify(NotificationSender* sender, NotificationType type)
+{
+    if(sender == (NotificationSender*)m_parentNode)
+    {
+        if(type == Notification_SceneNodeDetroyed)
+            m_parentNode = nullptr;
+    }
+}
+
+
+
 }

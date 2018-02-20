@@ -11,7 +11,7 @@ Asset::Asset()
     m_allowLoadFromFile = false;
     m_allowLoadFromMemory = false;
     m_allowLoadFromStream = false;
-    m_loadSource = NoLoadSource;
+    m_loadSource = LoadSource_None;
     m_loaded = false;
 }
 
@@ -33,7 +33,7 @@ bool Asset::LoadFromFile(const std::string &filePath, AssetLoadType loadType)
         return (false);
     }
 
-    m_loadSource = LoadSourceFile;
+    m_loadSource = LoadSource_File;
     m_filePath = filePath;
     m_fileDirectory = Parser::FindFileDirectory(m_filePath);
     m_loadType = loadType;
@@ -49,7 +49,7 @@ bool Asset::LoadFromMemory(void *data, std::size_t dataSize, AssetLoadType loadT
         return (false);
     }
 
-    m_loadSource = LoadSourceMemory;
+    m_loadSource = LoadSource_Memory;
     m_loadData = data;
     m_loadDataSize = dataSize;
     m_loadType = loadType;
@@ -65,7 +65,7 @@ bool Asset::LoadFromStream(sf::InputStream *stream, AssetLoadType loadType)
         return (false);
     }
 
-    m_loadSource = LoadSourceStream;
+    m_loadSource = LoadSource_Stream;
     m_loadStream = stream;
     m_loadType = loadType;
 
@@ -75,7 +75,7 @@ bool Asset::LoadFromStream(sf::InputStream *stream, AssetLoadType loadType)
 bool Asset::LoadNow()
 {
     if(IsLoaded())
-        SendNotification(AssetLoadedNotification);
+        SendNotification(Notification_AssetLoaded);
     return (IsLoaded());
 }
 
@@ -86,7 +86,7 @@ bool Asset::IsLoaded()
 
 const std::string &Asset::GetFilePath()
 {
-    if(m_loadSource == LoadSourceFile)
+    if(m_loadSource == LoadSource_File)
         return m_filePath;
     return emptyString;
 }

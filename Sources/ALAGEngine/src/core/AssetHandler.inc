@@ -56,7 +56,7 @@ AssetType* AssetHandler<AssetType>::LoadAssetFromFile(const AssetTypeID& id,
 	if(filesIter != m_filesList.end())
 	{
         AssetType* foundedAsset = GetAsset(filesIter->second);
-        if(loadType == LoadTypeNow && foundedAsset != nullptr)
+        if(loadType == LoadType_Now && foundedAsset != nullptr)
         {
             foundedAsset->ForceLoadType(loadType);
 
@@ -70,7 +70,7 @@ AssetType* AssetHandler<AssetType>::LoadAssetFromFile(const AssetTypeID& id,
 
     AssetType* newAsset = AddAsset(id);
     newAsset->LoadFromFile(filePath, loadType);
-    if(loadType == LoadTypeNow)
+    if(loadType == LoadType_Now)
         newAsset->LoadNow();
     else
         AddToLoadingThread(newAsset);
@@ -94,7 +94,7 @@ AssetType* AssetHandler<AssetType>::LoadAssetFromMemory(const AssetTypeID& id,
 {
     Asset* newAsset = AddAsset(id);
     newAsset->LoadFromMemory(data, dataSize, loadType);
-    if(loadType == LoadTypeNow)
+    if(loadType == LoadType_Now)
         newAsset->LoadNow();
     else
         AddToLoadingThread(newAsset);
@@ -116,7 +116,7 @@ AssetType* AssetHandler<AssetType>::LoadAssetFromStream(const AssetTypeID& id,
 {
     Asset* newAsset = AddAsset(id);
     newAsset->LoadFromStream(stream, loadType);
-    if(loadType == LoadTypeNow)
+    if(loadType == LoadType_Now)
         newAsset->LoadNow();
     else
         AddToLoadingThread(newAsset);
@@ -240,7 +240,7 @@ void AssetHandler<AssetType>::DeleteAsset(const AssetTypeID &assetID)
             if(!iter->second->GetFilePath().empty())
                 m_filesList.erase(m_filesList.find(iter->second->GetFilePath()));
 
-            if(!iter->second->IsLoaded() && iter->second->GetLoadType() == LoadTypeInThread)
+            if(!iter->second->IsLoaded() && iter->second->GetLoadType() == LoadType_InThread)
                 RemoveFromLoadingThread(iter->second);
 
             delete iter->second;

@@ -52,7 +52,7 @@ bool PBRTextureAsset::LoadNow()
 
     if(!m_loaded)
     {
-        if(m_loadSource == LoadSourceFile)
+        if(m_loadSource == LoadSource_File)
         {
             TiXmlDocument file(m_filePath.c_str());
 
@@ -77,7 +77,7 @@ bool PBRTextureAsset::LoadNow()
             loaded = false;
         }
 
-        if(m_loadType == LoadTypeNow)
+        if(m_loadType == LoadType_Now)
             m_loaded = loaded;
     }
 
@@ -252,7 +252,7 @@ float PBRTextureAsset::GetTranslucency()
 
 void PBRTextureAsset::Notify(NotificationSender* sender, NotificationType notification)
 {
-    if(notification == AssetLoadedNotification)
+    if(notification == Notification_AssetLoaded)
     if(sender == m_albedoMap || sender == m_depthMap
        || sender == m_normalMap || sender == m_materialMap)
     {
@@ -266,7 +266,7 @@ void PBRTextureAsset::Notify(NotificationSender* sender, NotificationType notifi
         }
     }
 
-    if(notification == NotificationSenderDestroyed)
+    if(notification == Notification_SenderDestroyed)
     {
         if(sender == m_albedoMap)
             m_albedoMap = nullptr;

@@ -47,6 +47,8 @@ class Light : public SceneObject
         void RenderShadowMap(const sf::View &/*,const sf::Vector2u &*/);
         void UpdateShadow();
 
+        virtual void Notify(NotificationSender*, NotificationType);
+
         static int GetMaxNbrLights();
 
     protected:

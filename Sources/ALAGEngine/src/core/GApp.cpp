@@ -19,6 +19,8 @@ const char *GApp::DEFAULT_WINDOW_WIDTH = "1024";
 const char *GApp::DEFAULT_WINDOW_HEIGHT = "768";
 const char *GApp::DEFAULT_SRGB = "false";
 
+const bool GApp::ENABLE_PROFILER = false;
+
 GApp::GApp() : GApp(DEFAULT_APP_NAME)
 {
 }
@@ -62,7 +64,7 @@ bool GApp::Init()
 
     sf::ContextSettings contextSettings;
     contextSettings.depthBits = 24;
-    contextSettings.antialiasingLevel = 2;
+    contextSettings.antialiasingLevel = 0;
     //contextSettings.sRgbCapable = Config::GetBool("window","srgb",DEFAULT_SRGB);
 
     m_window.create(videoMode, m_name, sf::Style::Close, contextSettings);

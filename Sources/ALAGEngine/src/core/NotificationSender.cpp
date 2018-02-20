@@ -16,7 +16,7 @@ NotificationSender::~NotificationSender()
     for(listenerIt = m_listenerToNotifyEverything.begin() ;
         listenerIt != m_listenerToNotifyEverything.end() ; ++listenerIt)
         {
-            (*listenerIt)->Notify(this, NotificationSenderDestroyed);
+            (*listenerIt)->Notify(this, Notification_SenderDestroyed);
             (*listenerIt)->NotifySenderDestruction(this);
         }
 
@@ -24,7 +24,7 @@ NotificationSender::~NotificationSender()
     for(typeIt = m_listenerToNotify.begin() ; typeIt != m_listenerToNotify.end() ; ++typeIt)
         for(listenerIt = typeIt->second.begin() ; listenerIt != typeIt->second.end() ; ++listenerIt)
         {
-            (*listenerIt)->Notify(this, NotificationSenderDestroyed);
+            (*listenerIt)->Notify(this, Notification_SenderDestroyed);
             (*listenerIt)->NotifySenderDestruction(this);
         }
 }

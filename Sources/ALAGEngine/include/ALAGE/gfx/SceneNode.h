@@ -10,7 +10,7 @@ namespace alag{
 
 class DefaultScene;
 
-class SceneNode
+class SceneNode : public NotificationSender, public NotificationListener
 {
     public:
         SceneNode(const NodeTypeID&);
@@ -75,6 +75,8 @@ class SceneNode
 
         void Update(const sf::Time &);
 
+        virtual void Notify(NotificationSender*, NotificationType);
+
     protected:
         void SetParent(SceneNode *);
         void SetSceneManager(DefaultScene *);
@@ -82,6 +84,7 @@ class SceneNode
         NodeTypeID GenerateID();
 
         sf::Vector3f m_position;
+        sf::Vector3f m_globalPosition;
 
         DefaultScene* m_sceneManager;
 

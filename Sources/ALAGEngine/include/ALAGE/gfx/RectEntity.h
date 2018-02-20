@@ -29,6 +29,7 @@ class RectEntity : public SceneEntity, protected sf::RectangleShape
 
 
         sf::Vector2f GetCenter();
+        virtual sf::FloatRect GetScreenBoundingRect(const Mat3x3 &);
 
         virtual void Notify(NotificationSender*, NotificationType);
 

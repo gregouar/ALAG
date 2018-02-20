@@ -36,6 +36,7 @@ class SpriteEntity : public SceneEntity, protected sf::Sprite
 
         sf::Vector2f GetCenter();
         sf::Vector2f GetScale();
+        virtual sf::FloatRect GetScreenBoundingRect(const Mat3x3 &);
 
         virtual void Notify(NotificationSender*, NotificationType);
 

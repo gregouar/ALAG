@@ -208,11 +208,27 @@ void Light::RenderShadowMap(const sf::View &view/*,const sf::Vector2u &screen_si
     m_shadowMap.setActive(false);
 }
 
+
+void Light::Notify(NotificationSender* sender, NotificationType type)
+{
+    if(sender == (NotificationSender*)m_parentNode)
+    {
+        if(type == Notification_SceneNodeMoved
+        && GetType() == OmniLight)
+            m_requireShadowComputation = true;
+    }
+
+    SceneObject::Notify(sender, type);
+}
+
+
+
 int Light::GetMaxNbrLights()
 {
     int m = 0;
     glGetIntegerv(GL_MAX_LIGHTS, &m);
     return m;
 }
+
 
 }

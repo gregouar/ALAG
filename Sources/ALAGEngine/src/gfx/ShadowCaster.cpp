@@ -82,4 +82,22 @@ void ShadowCaster::ForceShadowCastingType(ShadowCastingType type)
     m_shadowCastingType = type;
 }
 
+
+void ShadowCaster::Notify(NotificationSender* sender, NotificationType type)
+{
+    /*std::map<Light*, bool>::iterator lightIt;
+    lightIt = m_requireShadowCasting.find((Light*)sender);
+    if(lightIt != m_requireShadowCasting.end()
+    && type == Notification_LightMoved)
+        lightIt->second = true;*/
+
+    if(sender == (NotificationSender*)m_parentNode)
+    {
+        if(type == Notification_SceneNodeMoved)
+            AskForDynamicShadowUpdate();
+    }
+
+    SceneObject::Notify(sender, type);
+}
+
 }

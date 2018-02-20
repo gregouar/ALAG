@@ -60,7 +60,7 @@ class DefaultScene
     protected:
         ObjectTypeID GenerateObjectID();
         void AddCreatedObject(const ObjectTypeID &, SceneObject*);
-        void AddToRenderQueue(SceneNode*);
+    //    void AddToRenderQueue(SceneNode*);
 
         virtual int UpdateLighting(std::multimap<float, Light*> &lightList, int = -1); //-1 is GL_MAX_LIGHTS
 
@@ -73,6 +73,7 @@ class DefaultScene
         bool m_enableSRGB;
 
         std::list<SceneEntity*> m_renderQueue;
+        //std::list<SceneEntity*> m_staticRenderQueue;
         sf::RenderTarget *m_last_target;
 
     private:

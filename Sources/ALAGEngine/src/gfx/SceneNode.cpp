@@ -22,6 +22,9 @@ SceneNode::SceneNode(const NodeTypeID &id, SceneNode *p)
 
     m_id = id;
     m_curNewId = 0;
+
+    m_globalPosition = sf::Vector3f(0,0,0);
+    m_position = sf::Vector3f(0,0,0);
 }
 
 SceneNode::SceneNode(const NodeTypeID &id, SceneNode *p, DefaultScene* sceneManager) : SceneNode(id,p)
@@ -58,7 +61,10 @@ void SceneNode::AddChildNode(const NodeTypeID &id, SceneNode* node)
     m_childs[id] = node;
 
     if(node != nullptr)
+    {
         node->SetSceneManager(m_sceneManager);
+        AskForAllNotifications(node);
+    }
 
     if(m_sceneManager != nullptr)
         m_sceneManager->AskToComputeRenderQueue();
@@ -81,6 +87,8 @@ SceneNode* SceneNode::RemoveChildNode(const NodeTypeID &id)
     }
 
     node = childsIt->second;
+
+    RemoveFromAllNotificationList(node);
 
     std::list<NodeTypeID>::iterator createdChildsIt;
     createdChildsIt = std::find(m_createdChildsList.begin(),
@@ -155,12 +163,16 @@ SceneNode* SceneNode::CreateChildNode(const NodeTypeID &id)
     }
 
     SceneNode* newNode = new SceneNode(id, this);
-    m_childs[id] = newNode;
     m_createdChildsList.push_back(id);
+
+    AddChildNode(id, newNode);
+
+
+   /* m_childs[id] = newNode;
     newNode->SetSceneManager(m_sceneManager);
 
     if(m_sceneManager != nullptr)
-        m_sceneManager->AskToComputeRenderQueue();
+        m_sceneManager->AskToComputeRenderQueue();*/
 
     return newNode;
 }
@@ -253,10 +265,13 @@ void SceneNode::AttachObject(SceneObject *e)
             m_lights.push_back((Light*)e);
 
         if(e->IsAShadowCaster())
-            m_shadowCasters.push_back(dynamic_cast<ShadowCaster*>(e));
+            //m_shadowCasters.push_back(dynamic_cast<ShadowCaster*>(e));
+            m_shadowCasters.push_back((ShadowCaster*)e);
 
         if(e->SetParentNode(this) != nullptr)
             Logger::Warning("Attaching entity which has already a parent node");
+
+        AskForAllNotifications(e);
     } else
         Logger::Error("Cannot attach null entity");
 
@@ -276,6 +291,8 @@ void SceneNode::DetachObject(SceneObject *e)
 
     if(e != nullptr && e->IsAShadowCaster())
         m_shadowCasters.remove((ShadowCaster*)e);
+
+    RemoveFromAllNotificationList(e);
 }
 
 SceneEntityIterator SceneNode::GetEntityIterator()
@@ -337,8 +354,15 @@ void SceneNode::SetPosition(sf::Vector3f pos)
 {
     m_position = pos;
 
+    if(m_parent != nullptr)
+        m_globalPosition = m_parent->GetGlobalPosition() + pos;
+    else
+        m_globalPosition = pos;
+
     if(m_sceneManager != nullptr)
         m_sceneManager->AskToComputeRenderQueue();
+
+    SendNotification(Notification_SceneNodeMoved);
 }
 
 sf::Vector3f SceneNode::GetPosition()
@@ -348,9 +372,10 @@ sf::Vector3f SceneNode::GetPosition()
 
 sf::Vector3f SceneNode::GetGlobalPosition()
 {
-    if(m_parent != nullptr)
+   /* if(m_parent != nullptr)
         return m_parent->GetGlobalPosition() + GetPosition();
-    return GetPosition();
+    return GetPosition();*/
+    return m_globalPosition;
 }
 
 
@@ -497,6 +522,16 @@ void SceneNode::Update(const sf::Time &elapsed_time)
     {
         nodeIt.GetElement()->Update(elapsed_time);
         ++nodeIt;
+    }
+}
+
+void SceneNode::Notify(NotificationSender* sender, NotificationType type)
+{
+    /** Auto Update Global Position Here ETC **/
+    if(sender == m_parent)
+    {
+        if(type == Notification_SceneNodeMoved)
+            SetPosition(m_position);
     }
 }
 
