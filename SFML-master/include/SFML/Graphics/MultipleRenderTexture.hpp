@@ -20,7 +20,11 @@ public:
     bool addRenderTarget(unsigned int renderingLocation, bool useFloat = false);
     bool removeRenderTarget(unsigned int renderingLocation);
 
-    void copyDepthBuffer(MultipleRenderTexture *);
+    bool copyDepthBuffer(MultipleRenderTexture *);
+    bool copyDepthBuffer(MultipleRenderTexture *, const sf::FloatRect &sourceRect, const sf::FloatRect &targetRect);
+    bool copyBuffer(MultipleRenderTexture *, unsigned int sourceLocation, const sf::FloatRect &sourceRect,
+                                             unsigned int targetLocation, const sf::FloatRect &targetRect);
+    bool copyBuffer(MultipleRenderTexture *, unsigned int sourceLocation, unsigned int targetLocation);
 
     void setSmooth(unsigned int renderingLocation, bool smooth);
     bool isSmooth(unsigned int renderingLocation);

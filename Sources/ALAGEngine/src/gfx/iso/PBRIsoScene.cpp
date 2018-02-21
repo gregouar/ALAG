@@ -20,7 +20,7 @@ const IsoViewAngle PBRIsoScene::DEFAULT_ISO_VIEW_ANGLE = {.xyAngle = 0,
                                                              .zAngle = 90};
 
 const int PBRIsoScene::MAX_SHADOW_MAPS = 8;
-const int PBRIsoScene::SCREENTILE_SIZE = 64;
+const int PBRIsoScene::SCREENTILE_SIZE = 128;
 
 const std::string PBRIsoScene::DEFAULT_ENABLESSAO = "true";
 const std::string PBRIsoScene::DEFAULT_ENABLEBLOOM = "true";
@@ -103,8 +103,9 @@ bool PBRIsoScene::InitRenderer(sf::Vector2u windowSize)
     {
         m_screenTiles[x + y*m_nbrTiles.x].askForUpdate = true;
         m_screenTiles[x + y*m_nbrTiles.x].position = sf::Vector2u(x*SCREENTILE_SIZE,
-                                                       y*SCREENTILE_SIZE);
+                                                                  y*SCREENTILE_SIZE);
     }
+   // m_tilesShift = sf::Vector2f(SCREENTILE_SIZE,SCREENTILE_SIZE);
     m_tilesShift = sf::Vector2f(0,0);
 
     if(!m_staticGeometryScreen.create( m_nbrTiles.x*SCREENTILE_SIZE,
@@ -430,12 +431,11 @@ void PBRIsoScene::RenderStaticGeometry(const sf::View &curView)
         viewport.top = (float)(*tilesIt)->position.y/(m_nbrTiles.y*SCREENTILE_SIZE);
         tileScreenView.setViewport(viewport);
         tileScreenView.setCenter(viewPos.x+(*tilesIt)->position.x+SCREENTILE_SIZE/2,
-                                 viewPos.y+(*tilesIt)->position.y+SCREENTILE_SIZE/2);
+                                 viewPos.y+(*tilesIt)->position.y+SCREENTILE_SIZE/2); /** ADD ZOOM HERE **/
 
 
         std::list<SceneEntity*>::iterator renderIt;
         sf::MultipleRenderTexture *renderTarget = nullptr;
-
 
         sf::RenderStates state;
         state.shader = &m_PBRGeometryShader;
@@ -496,8 +496,11 @@ void PBRIsoScene::RenderStaticGeometry(const sf::View &curView)
         }
     }
 
-    m_staticGeometryScreen.setActive(true);
-    m_staticGeometryScreen.getTexture(0)->copyToImage().saveToFile("static.png");
+   /* m_staticGeometryScreen.setActive(true);
+    m_staticGeometryScreen.getTexture(0)->copyToImage().saveToFile("static0.png");
+    m_staticGeometryScreen.getTexture(1)->copyToImage().saveToFile("static1.png");
+    m_staticGeometryScreen.getTexture(2)->copyToImage().saveToFile("static2.png");
+    m_staticGeometryScreen.getTexture(3)->copyToImage().saveToFile("static3.png");*/
 }
 
 void PBRIsoScene::RenderDynamicGeometry(const sf::View &curView)
@@ -516,6 +519,25 @@ void PBRIsoScene::RenderDynamicGeometry(const sf::View &curView)
             m_PBRGeometryShader.setUniform("p_alpha_pass",false);
             renderTarget = &m_PBRScreen;
             state.blendMode = sf::BlendNone;
+
+            sf::FloatRect sourceRect = sf::FloatRect(m_tilesShift.x,m_tilesShift.y,
+                                                     m_PBRScreen.getSize().x,m_PBRScreen.getSize().y);
+            sf::FloatRect targetRect = sf::FloatRect(0,0,m_PBRScreen.getSize().x,
+                                                     m_PBRScreen.getSize().y);
+
+            m_PBRScreen.copyDepthBuffer(&m_staticGeometryScreen, sourceRect, targetRect);
+            m_PBRScreen.copyBuffer(&m_staticGeometryScreen,PBRAlbedoScreen,sourceRect,
+                                   PBRAlbedoScreen, targetRect);
+            m_PBRScreen.copyBuffer(&m_staticGeometryScreen,PBRDepthScreen,sourceRect,
+                                   PBRDepthScreen, targetRect);
+            m_PBRScreen.copyBuffer(&m_staticGeometryScreen,PBRMaterialScreen,sourceRect,
+                                   PBRMaterialScreen, targetRect);
+            m_PBRScreen.copyBuffer(&m_staticGeometryScreen,PBRNormalScreen,sourceRect,
+                                   PBRNormalScreen, targetRect);
+
+            //m_PBRScreen.setActive(true);
+            //m_PBRScreen.getTexture(0)->copyToImage().saveToFile("statiTest.png");
+
         } else if(pass == 1) {
             Profiler::PushClock("Render alpha geometry");
             m_PBRGeometryShader.setUniform("p_alpha_pass",true);
@@ -527,11 +549,13 @@ void PBRIsoScene::RenderDynamicGeometry(const sf::View &curView)
         renderTarget->setActive(true);
 
         if(pass == 0)
-            glClear(GL_DEPTH_BUFFER_BIT);
+        {
+            //glClear(GL_DEPTH_BUFFER_BIT);
+        } else
+            renderTarget->clear(sf::Color(0,0,0,0));
 
         glEnable(GL_DEPTH_TEST);
         glDepthMask(GL_TRUE);
-        renderTarget->clear(sf::Color(0,0,0,0));
         renderTarget->setView(curView);
 
         for(renderIt = m_renderQueue.begin() ; renderIt != m_renderQueue.end(); ++renderIt)

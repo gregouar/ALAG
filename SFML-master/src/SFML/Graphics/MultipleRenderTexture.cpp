@@ -152,7 +152,8 @@ bool MultipleRenderTexture::removeRenderTarget(unsigned int renderingLocation)
     return true;
 }
 
-void MultipleRenderTexture::copyDepthBuffer(MultipleRenderTexture *source)
+bool MultipleRenderTexture::copyDepthBuffer(MultipleRenderTexture *source, const sf::FloatRect &sourceRect,
+                                             const sf::FloatRect &targetRect)
 {
     if(source != NULL)
     {
@@ -160,12 +161,95 @@ void MultipleRenderTexture::copyDepthBuffer(MultipleRenderTexture *source)
         GLEXT_glBindFramebuffer(GLEXT_GL_READ_FRAMEBUFFER, source->m_frameBuffer);
         GLEXT_glBindFramebuffer(GLEXT_GL_DRAW_FRAMEBUFFER, m_frameBuffer);
         GLEXT_glBlitFramebuffer(
-          0, 0, getSize().x, getSize().y, 0, 0, getSize().x, getSize().y, GL_DEPTH_BUFFER_BIT, GL_NEAREST
+            sourceRect.left, source->getSize().y-(sourceRect.height+sourceRect.top),
+            sourceRect.left+sourceRect.width, source->getSize().y-sourceRect.top,
+            targetRect.left, this->getSize().y-(targetRect.height+targetRect.top),
+            targetRect.left+targetRect.width, this->getSize().y-targetRect.top,
+             GL_DEPTH_BUFFER_BIT, GL_NEAREST
         );
         GLEXT_glBindFramebuffer(GLEXT_GL_FRAMEBUFFER, m_frameBuffer);
+
+        return true;
     }
+
+    return false;
 }
 
+bool MultipleRenderTexture::copyDepthBuffer(MultipleRenderTexture *source)
+{
+    if(source != NULL)
+    {
+        return copyDepthBuffer(source,
+                        sf::FloatRect(0,0,source->getSize().x,source->getSize().y),
+                        sf::FloatRect(0,0,getSize().x,getSize().y));
+    }
+    return false;
+}
+
+
+bool MultipleRenderTexture::copyBuffer(MultipleRenderTexture *source,
+                                        unsigned int sourceLocation, const sf::FloatRect &sourceRect,
+                                        unsigned int targetLocation, const sf::FloatRect &targetRect)
+{
+    if(source != NULL)
+    {
+        this->setActive(true);
+
+       // Texture* sourceTexture = source->getTexture(sourceLocation);
+       // Texture* targetTexture = this->getTexture(targetLocation);
+
+
+        std::vector<unsigned int>::iterator sourceIt, targetIt;
+        sourceIt = source->findRenderTarget(sourceLocation);
+        if(sourceIt == source->m_activeTextures.end())
+        {
+            err() << "Impossible to copy render texture (cannot find render texture in source)" << std::endl;
+            return false;
+        }
+        targetIt = this->findRenderTarget(targetLocation);
+        if(targetIt == this->m_activeTextures.end())
+        {
+            err() << "Impossible to copy render texture (cannot find render texture in target)" << std::endl;
+            return false;
+        }
+
+
+        //if(sourceTexture != NULL && targetTexture != NULL)
+        //{
+            GLEXT_glBindFramebuffer(GLEXT_GL_READ_FRAMEBUFFER, source->m_frameBuffer);
+            GLEXT_glBindFramebuffer(GLEXT_GL_DRAW_FRAMEBUFFER, m_frameBuffer);
+
+            glReadBuffer(*sourceIt);
+            glDrawBuffer(*targetIt);
+
+            GLEXT_glBlitFramebuffer(
+                sourceRect.left, source->getSize().y-(sourceRect.height+sourceRect.top),
+                sourceRect.left+sourceRect.width, source->getSize().y-sourceRect.top,
+                targetRect.left, this->getSize().y-(targetRect.height+targetRect.top),
+                targetRect.left+targetRect.width, this->getSize().y-targetRect.top,
+                 GL_COLOR_BUFFER_BIT, GL_NEAREST
+            );
+            GLEXT_glBindFramebuffer(GLEXT_GL_FRAMEBUFFER, m_frameBuffer);
+            GLEXT_glDrawBuffers(m_activeTextures.size(),m_activeTextures.data());
+        //}
+
+        /*targetTexture->update(*sourceTexture,targetLocation.x, targetLocation);*/
+        return true;
+    }
+
+    return false;
+}
+
+bool MultipleRenderTexture::copyBuffer(MultipleRenderTexture *source, unsigned int sourceLocation, unsigned int targetLocation)
+{
+    if(source != NULL)
+    {
+       return  copyBuffer(source,
+                    sourceLocation, sf::FloatRect(0,0,source->getSize().x,source->getSize().y),
+                    targetLocation, sf::FloatRect(0,0,getSize().x,getSize().y));
+    }
+    return false;
+}
 
 void MultipleRenderTexture::setSmooth(unsigned int renderingLocation, bool smooth)
 {

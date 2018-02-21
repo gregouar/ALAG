@@ -65,7 +65,8 @@ void TestingState::Init()
     torusEntity->SetTexture(PBRTextureHandler->LoadAssetFromFile("../data/torusbXML.txt",LoadType_InThread));
     //sarco3DEntity->SetTexture(PBRTextureHandler->LoadAssetFromFile("../data/treeXML.txt",LoadType_InThread));
     //sarco3DEntity->SetTexture(PBRTextureHandler->LoadAssetFromFile("../data/bedrockXML.txt",LoadType_InThread));
-    torusEntity->SetCenter(128,166);
+    //torusEntity->SetCenter(128,166);
+    torusEntity->SetCenter(128,128);
     torusEntity->SetShadowCastingType(DirectionnalShadow);
    // sarco3DEntity->SetColor(sf::Color(255,64,255,128));
     torusEntity->SetColor(sf::Color(128,128,128));
@@ -85,6 +86,7 @@ void TestingState::Init()
     IsoSpriteEntity *sarco3DEntitybis = m_mainScene.CreateIsoSpriteEntity(sf::Vector2i(256,256));
     sarco3DEntitybis->SetTexture(t3D);
     //sarco3DEntitybis->SetTexture(PBRTextureHandler->LoadAssetFromFile("../data/sandXML.txt"));
+    //sarco3DEntitybis->SetCenter(128,148);
     sarco3DEntitybis->SetCenter(128,148);
     sarco3DEntitybis->SetShadowCastingType(DirectionnalShadow);
     m_sarcoNode->CreateChildNode(sf::Vector2f(-15,70))->AttachObject(sarco3DEntitybis);
@@ -100,11 +102,11 @@ void TestingState::Init()
 
    /* Light* sunLight = m_mainScene.CreateLight(DirectionnalLight,sf::Vector3f(-1,.5,-1), sf::Color(255,255,160));
     sunLight->SetConstantAttenuation(2);*/
-    m_sunLight = m_mainScene.CreateLight(DirectionnalLight,sf::Vector3f(-1,.2,-1), sf::Color(255,255,255));
-    m_sunLight->SetIntensity(.1);
+    m_sunLight = m_mainScene.CreateLight(DirectionnalLight,sf::Vector3f(-.2,-1,-1), sf::Color(255,255,255));
+    m_sunLight->SetIntensity(10);
     m_sunLight->EnableShadowCasting();
     m_mainScene.GetRootNode()->AttachObject(m_sunLight);
-    m_mainScene.SetAmbientLight(sf::Color(96,127,255,16));
+    m_mainScene.SetAmbientLight(sf::Color(96,127,255,96));
     //m_mainScene.SetAmbientLight(sf::Color(64,64,128,24));
     //m_mainScene.SetAmbientLight(sf::Color(96,96,128));
    // m_mainScene.SetAmbientLight(sf::Color(32,48,128));
@@ -120,15 +122,16 @@ void TestingState::Init()
     m_chene_node->SetPosition(150,-100,-78);
     m_chene_node->AttachObject(cheneEntity);
 
-  /*  for(int i = 0 ; i < 10 ; ++i)
-    for(int j = 0 ; j < 10 ; ++j)
+    /*for(int i = -10 ; i < 10 ; ++i)
+    for(int j = -10 ; j < 10 ; ++j)
     {
         SceneNode *n = m_mainScene.GetRootNode()->CreateChildNode();
         IsoSpriteEntity *e = m_mainScene.CreateIsoSpriteEntity();
         e->SetTexture(PBRTextureHandler->LoadAssetFromFile("../data/treeXML.txt"));
         e->SetCenter(256,526);
+        e->SetStatic(true);
        // e->SetShadowCastingType(DirectionnalShadow);
-       // e->SetShadowVolumeType(TwoSidedShadow);
+        //e->SetShadowVolumeType(TwoSidedShadow);
         n->SetPosition(i*100,j*100,-78);
         n->AttachObject(e);
     }*/
