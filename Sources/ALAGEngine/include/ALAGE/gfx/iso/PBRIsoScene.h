@@ -39,7 +39,7 @@ class PBRIsoScene : public DefaultScene
         virtual sf::View GenerateView(Camera*);
         virtual void RenderScene(sf::RenderTarget*);
 
-        virtual void ProcessRenderQueue(sf::RenderTarget*);
+        virtual void ProcessRenderQueue();
         void RenderStaticGeometry(const sf::View &curView);
         void RenderDynamicGeometry(const sf::View &curView);
         void RenderLighting();
@@ -109,10 +109,13 @@ class PBRIsoScene : public DefaultScene
         sf::Shader m_blurShader;
         sf::Shader m_HDRBloomShader;
 
-        ScreenTile *m_screenTiles;
+        std::vector<ScreenTile> m_screenTiles;
         sf::Vector2u m_nbrTiles;
         sf::Vector2f m_tilesShift;
         sf::MultipleRenderTexture m_staticGeometryScreen;
+        sf::MultipleRenderTexture m_staticGeometrySwapBuffer;
+        bool m_firstStaticRender;
+        sf::View m_lastStaticRenderView;
 
         int m_superSampling;
 

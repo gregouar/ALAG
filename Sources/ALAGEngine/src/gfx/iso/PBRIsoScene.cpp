@@ -51,14 +51,15 @@ PBRIsoScene::PBRIsoScene(IsoViewAngle viewAngle)
 
     SetAmbientLight(m_ambientLight);
 
-    m_screenTiles = nullptr;
+    //m_screenTiles = nullptr;
+    m_firstStaticRender = true;
 }
 
 
 PBRIsoScene::~PBRIsoScene()
 {
-    if(m_screenTiles != nullptr)
-        delete m_screenTiles;
+   // if(m_screenTiles != nullptr)
+     //   delete m_screenTiles;
 }
 
 bool PBRIsoScene::InitRenderer(sf::Vector2u windowSize)
@@ -92,27 +93,44 @@ bool PBRIsoScene::InitRenderer(sf::Vector2u windowSize)
     m_nbrTiles.x = ceil(windowSize.x/SCREENTILE_SIZE) + 1;
     m_nbrTiles.y = ceil(windowSize.y/SCREENTILE_SIZE) + 1;
 
-    if(m_screenTiles != nullptr)
-        delete m_screenTiles;
+    //if(m_screenTiles != nullptr)
+      //  delete m_screenTiles;
 
-    m_screenTiles = new ScreenTile[m_nbrTiles.x*m_nbrTiles.y];
-    for(size_t x = 0 ; x < m_nbrTiles.x ; ++x)
+   // m_screenTiles = new ScreenTile[m_nbrTiles.x*m_nbrTiles.y];
+    m_screenTiles.resize(m_nbrTiles.x*m_nbrTiles.y);
+
+    std::vector<ScreenTile>::iterator tileIt = m_screenTiles.begin();
+
     for(size_t y = 0 ; y < m_nbrTiles.y ; ++y)
+    for(size_t x = 0 ; x < m_nbrTiles.x ; ++x)
     {
-        m_screenTiles[x + y*m_nbrTiles.x].askForUpdate = true;
-        m_screenTiles[x + y*m_nbrTiles.x].position = sf::Vector2u(x*SCREENTILE_SIZE,
-                                                                  y*SCREENTILE_SIZE);
+        tileIt->askForUpdate = true;
+        tileIt->position = sf::Vector2u(x*SCREENTILE_SIZE,
+                                        y*SCREENTILE_SIZE);
+        ++tileIt;
     }
    // m_tilesShift = sf::Vector2f(SCREENTILE_SIZE,SCREENTILE_SIZE);
     m_tilesShift = sf::Vector2f(0,0);
 
     if(!m_staticGeometryScreen.create( m_nbrTiles.x*SCREENTILE_SIZE,
-                                       m_nbrTiles.y*SCREENTILE_SIZE, true))
+                                       m_nbrTiles.y*SCREENTILE_SIZE))
         r = false;
 
+    if(!m_staticGeometrySwapBuffer.create( m_nbrTiles.x*SCREENTILE_SIZE,
+                                       m_nbrTiles.y*SCREENTILE_SIZE))
+        r = false;
+
+    m_staticGeometryScreen.addDepthStencilBuffer();
+    m_staticGeometryScreen.addRenderTarget(PBRAlbedoScreen);
     m_staticGeometryScreen.addRenderTarget(PBRNormalScreen);
     m_staticGeometryScreen.addRenderTarget(PBRDepthScreen);
     m_staticGeometryScreen.addRenderTarget(PBRMaterialScreen);
+
+    m_staticGeometrySwapBuffer.addDepthStencilBuffer();
+    m_staticGeometrySwapBuffer.addRenderTarget(PBRAlbedoScreen);
+    m_staticGeometrySwapBuffer.addRenderTarget(PBRNormalScreen);
+    m_staticGeometrySwapBuffer.addRenderTarget(PBRDepthScreen);
+    m_staticGeometrySwapBuffer.addRenderTarget(PBRMaterialScreen);
 
     /*m_staticGeometryScreen.setActive(true);
     glEnable(GL_DEPTH_TEST);
@@ -121,25 +139,31 @@ bool PBRIsoScene::InitRenderer(sf::Vector2u windowSize)
     m_staticGeometryScreen.clear(sf::Color(0,0,0,0));*/
     //m_staticGeometryScreen.setActive(false);
 
-    if(!m_alpha_PBRScreen.create(windowSize.x*m_superSampling, windowSize.y*m_superSampling, true))
+    if(!m_alpha_PBRScreen.create(windowSize.x*m_superSampling, windowSize.y*m_superSampling))
         r = false;
 
-    if(!m_PBRScreen.create(windowSize.x*m_superSampling, windowSize.y*m_superSampling, true))
+    if(!m_PBRScreen.create(windowSize.x*m_superSampling, windowSize.y*m_superSampling))
         r = false;
 
+    m_PBRScreen.addDepthBuffer();
+    m_PBRScreen.addRenderTarget(PBRAlbedoScreen);
     m_PBRScreen.addRenderTarget(PBRNormalScreen);
     m_PBRScreen.addRenderTarget(PBRDepthScreen);
     m_PBRScreen.addRenderTarget(PBRMaterialScreen);
 
+    m_alpha_PBRScreen.addDepthBuffer();
+    m_alpha_PBRScreen.addRenderTarget(PBRAlbedoScreen);
     m_alpha_PBRScreen.addRenderTarget(PBRNormalScreen);
     m_alpha_PBRScreen.addRenderTarget(PBRDepthScreen);
     m_alpha_PBRScreen.addRenderTarget(PBRMaterialScreen);
 
+    if(!m_lighting_PBRScreen[0].create(windowSize.x*m_superSampling, windowSize.y*m_superSampling))
+        r = false;
+    if(!m_lighting_PBRScreen[1].create(windowSize.x*m_superSampling, windowSize.y*m_superSampling))
+        r = false;
 
-    if(!m_lighting_PBRScreen[0].create(windowSize.x*m_superSampling, windowSize.y*m_superSampling, false, true))
-        r = false;
-    if(!m_lighting_PBRScreen[1].create(windowSize.x*m_superSampling, windowSize.y*m_superSampling, false, true))
-        r = false;
+    m_lighting_PBRScreen[0].addRenderTarget(0,true);
+    m_lighting_PBRScreen[1].addRenderTarget(0,true);
 
     if(!m_bloomScreen[0].create(windowSize.x*m_superSampling, windowSize.y*m_superSampling, false, true))
         r = false;
@@ -228,7 +252,7 @@ bool PBRIsoScene::InitRenderer(sf::Vector2u windowSize)
     return r;
 }
 
-void PBRIsoScene::ProcessRenderQueue(sf::RenderTarget *w)
+void PBRIsoScene::ProcessRenderQueue()
 {
     sf::View curView = GenerateView(m_currentCamera);
 
@@ -295,8 +319,7 @@ void PBRIsoScene::RenderScene(sf::RenderTarget* w)
 
         sf::View oldView = w->getView();
         w->setView(w->getDefaultView());
-        ProcessRenderQueue(w);
-
+        ProcessRenderQueue();
 
         m_renderer.setTexture(m_lighting_PBRScreen[m_activeLightingPBRScreen].getTexture(0));
         w->draw(m_renderer, &m_HDRBloomShader);
@@ -306,7 +329,6 @@ void PBRIsoScene::RenderScene(sf::RenderTarget* w)
         m_lighting_PBRScreen[m_activeLightingPBRScreen].getTexture(0)->setSmooth(true);
         m_lighting_PBRScreen[m_activeLightingPBRScreen].getTexture(0)->generateMipmap();
         m_activeLightingPBRScreen = !m_activeLightingPBRScreen;
-
 
         w->setView(oldView);
     }
@@ -364,11 +386,104 @@ void PBRIsoScene::RenderStaticGeometry(const sf::View &curView)
     std::list<ScreenTile*> tilesToRender;
     std::list<SceneEntity*> entitiesToRender;
 
+    Profiler::PushClock("Prepare static geometry");
+
+    if(!m_firstStaticRender)
+        m_tilesShift += curView.getCenter() - m_lastStaticRenderView.getCenter();
+
+    if(m_tilesShift.x < 0 || m_tilesShift.x >= SCREENTILE_SIZE
+    || m_tilesShift.y < 0 || m_tilesShift.y >= SCREENTILE_SIZE)
+    {
+        sf::Vector2i shifting;
+        shifting.x = m_tilesShift.x/SCREENTILE_SIZE;
+        shifting.y = m_tilesShift.y/SCREENTILE_SIZE;
+
+        if(m_tilesShift.x < 0)
+            shifting.x--;
+        if(m_tilesShift.y < 0)
+            shifting.y--;
+
+        if(shifting.x < (int)m_nbrTiles.x && shifting.x > -(int)m_nbrTiles.x
+        && shifting.y < (int)m_nbrTiles.y && shifting.y > -(int)m_nbrTiles.y)
+        {
+
+            sf::FloatRect sourceRect, targetRect;
+
+            if(shifting.x > 0)
+            {
+                sourceRect.left = shifting.x * SCREENTILE_SIZE;
+                sourceRect.width = (m_nbrTiles.x - shifting.x) * SCREENTILE_SIZE;
+                targetRect.left = 0;
+                targetRect.width = sourceRect.width;
+            }
+            else
+            {
+                sourceRect.left = 0;
+                sourceRect.width = (m_nbrTiles.x + shifting.x) * SCREENTILE_SIZE;
+                targetRect.left = -shifting.x * SCREENTILE_SIZE;
+                targetRect.width = sourceRect.width;
+            }
+
+            if(shifting.y > 0)
+            {
+                sourceRect.top = shifting.y * SCREENTILE_SIZE;
+                sourceRect.height = (m_nbrTiles.y - shifting.y) * SCREENTILE_SIZE;
+                targetRect.top = 0;
+                targetRect.height = sourceRect.height;
+            }
+            else
+            {
+                sourceRect.top = 0;
+                sourceRect.height = (m_nbrTiles.y + shifting.y) * SCREENTILE_SIZE;
+                targetRect.top = -shifting.y * SCREENTILE_SIZE;
+                targetRect.height = sourceRect.height;
+            }
+
+            m_staticGeometrySwapBuffer.copyDepthBuffer(&m_staticGeometryScreen, sourceRect, targetRect);
+            m_staticGeometrySwapBuffer.copyBuffer(&m_staticGeometryScreen,PBRAlbedoScreen,sourceRect,
+                                   PBRAlbedoScreen, targetRect);
+            m_staticGeometrySwapBuffer.copyBuffer(&m_staticGeometryScreen,PBRDepthScreen,sourceRect,
+                                   PBRDepthScreen, targetRect);
+            m_staticGeometrySwapBuffer.copyBuffer(&m_staticGeometryScreen,PBRMaterialScreen,sourceRect,
+                                   PBRMaterialScreen, targetRect);
+            m_staticGeometrySwapBuffer.copyBuffer(&m_staticGeometryScreen,PBRNormalScreen,sourceRect,
+                                   PBRNormalScreen, targetRect);
+
+            m_staticGeometryScreen.copyDepthBuffer(&m_staticGeometrySwapBuffer);
+            m_staticGeometryScreen.copyBuffer(&m_staticGeometrySwapBuffer,PBRAlbedoScreen,PBRAlbedoScreen);
+            m_staticGeometryScreen.copyBuffer(&m_staticGeometrySwapBuffer,PBRDepthScreen,PBRDepthScreen);
+            m_staticGeometryScreen.copyBuffer(&m_staticGeometrySwapBuffer,PBRMaterialScreen,PBRMaterialScreen);
+            m_staticGeometryScreen.copyBuffer(&m_staticGeometrySwapBuffer,PBRNormalScreen,PBRNormalScreen);
+
+            for(size_t y = 0 ; y < m_nbrTiles.y ; ++y)
+            for(size_t x = 0 ; x < m_nbrTiles.x ; ++x)
+            {
+                int truex = x, truey = y;
+
+                if(shifting.x < 0)
+                    truex = m_nbrTiles.x - x - 1;
+                if(shifting.y < 0)
+                    truey = m_nbrTiles.y - y - 1;
+
+                if(truex+shifting.x >= 0 && truex+shifting.x < (int)m_nbrTiles.x
+                && truey+shifting.y >= 0 && truey+shifting.y < (int)m_nbrTiles.y)
+                    m_screenTiles[truex+truey*m_nbrTiles.x].entities =
+                        m_screenTiles[(truex+shifting.x) + (truey+shifting.y)*m_nbrTiles.x].entities;
+                else
+                    m_screenTiles[truex+truey*m_nbrTiles.x].askForUpdate = true;
+            }
+
+            m_tilesShift.x -= shifting.x*SCREENTILE_SIZE;
+            m_tilesShift.y -= shifting.y*SCREENTILE_SIZE;
+        }
+        else
+            m_tilesShift = sf::Vector2f(0,0); //We need to update to all scene
+    }
+
     sf::Vector2f viewPos;
     viewPos.x = curView.getCenter().x - curView.getSize().x/2 - m_tilesShift.x;
     viewPos.y = curView.getCenter().y - curView.getSize().y/2 - m_tilesShift.y;
 
-    Profiler::PushClock("Prepare static geometry");
 
     std::list<SceneEntity*>::iterator renderIt;
     for(renderIt = m_renderQueue.begin() ; renderIt != m_renderQueue.end(); ++renderIt)
@@ -382,7 +497,8 @@ void PBRIsoScene::RenderStaticGeometry(const sf::View &curView)
 
             sf::FloatRect rect  = (*renderIt)->GetScreenBoundingRect(m_isoToCartMat);
             rect.left += globalPos.x - viewPos.x;
-            rect.top += globalPos.y - viewPos.y;
+            rect.top  += globalPos.y - viewPos.y;
+
 
             for(int  x = std::max(0, (int)floor(rect.left/SCREENTILE_SIZE)) ;
                         x < std::min((int)m_nbrTiles.x, (int)ceil((float)(rect.left+rect.width)/SCREENTILE_SIZE)) ;
@@ -391,44 +507,48 @@ void PBRIsoScene::RenderStaticGeometry(const sf::View &curView)
                         y < std::min((int)m_nbrTiles.y, (int)ceil((float)(rect.top+rect.height)/SCREENTILE_SIZE));
                         ++y)
             {
+                int n = x+y*m_nbrTiles.x;
                 if((*renderIt)->IsAskingForRenderUpdate())
-                    m_screenTiles[x+y*m_nbrTiles.x].askForUpdate = true;
-                m_screenTiles[x+y*m_nbrTiles.x].newList.push_back(*renderIt);
+                    m_screenTiles[n].askForUpdate = true;
+                m_screenTiles[n].newList.push_back(*renderIt);
             }
         }
     }
 
-    for(size_t x = 0 ; x < m_nbrTiles.x ; ++x)
-    for(size_t y = 0 ; y < m_nbrTiles.y ; ++y)
+
+    std::vector<ScreenTile>::iterator tileIt;
+
+    /*for(size_t x = 0 ; x < m_nbrTiles.x ; ++x)
+    for(size_t y = 0 ; y < m_nbrTiles.y ; ++y)*/
+    for(tileIt = m_screenTiles.begin() ; tileIt != m_screenTiles.end() ; ++tileIt)
     {
-        size_t n = x+y*m_nbrTiles.x;
+        if(!tileIt->askForUpdate)
+        if(tileIt->newList != tileIt->entities)
+            tileIt->askForUpdate = true;
 
-        /** DO A TRUE COMPARISON HERE **/
-        if(m_screenTiles[n].newList.size() !=  m_screenTiles[n].entities.size())
+        if(tileIt->askForUpdate)
         {
-            m_screenTiles[n].askForUpdate = true;
-            m_screenTiles[n].entities.clear();
-            m_screenTiles[n].entities = m_screenTiles[n].newList;
-            m_screenTiles[n].newList = std::list<SceneEntity*>();
-        }
+            tileIt->entities.clear();
+            tileIt->entities = tileIt->newList;
+            tileIt->newList = std::list<SceneEntity*>();
 
-        if(m_screenTiles[n].askForUpdate)
-        {
-            tilesToRender.push_back(&m_screenTiles[n]);
+            tilesToRender.push_back(&(*tileIt));
             entitiesToRender.insert(entitiesToRender.end(),
-                                    m_screenTiles[n].entities.begin(),
-                                    m_screenTiles[n].entities.end());
+                                    tileIt->entities.begin(),
+                                    tileIt->entities.end());
             entitiesToRender.sort();
             entitiesToRender.unique();
         }
 
-        m_screenTiles[n].newList.clear();
+        tileIt->newList.clear();
     }
-
-
     Profiler::PopClock();
 
     sf::View tileScreenView = curView;
+
+    m_staticGeometryScreen.setActive(true);
+    glClearStencil(0);
+    glClear(GL_STENCIL_BUFFER_BIT);
 
     std::list<ScreenTile*>::iterator tilesIt;
     for(tilesIt = tilesToRender.begin() ; tilesIt != tilesToRender.end() ; ++tilesIt)
@@ -457,9 +577,11 @@ void PBRIsoScene::RenderStaticGeometry(const sf::View &curView)
             glScissor((*tilesIt)->position.x,renderTarget->getSize().y-(*tilesIt)->position.y-SCREENTILE_SIZE,
                       SCREENTILE_SIZE,SCREENTILE_SIZE);
             glEnable(GL_SCISSOR_TEST);
-                renderTarget->clear(sf::Color(0,0,0,0));
+                //renderTarget->clear(sf::Color(0,0,0,0));
            // if(pass == 0)
-                glClear(GL_DEPTH_BUFFER_BIT);
+                glClearStencil(1);
+                glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+
             glDisable(GL_SCISSOR_TEST);
         }
     }
@@ -513,12 +635,21 @@ void PBRIsoScene::RenderStaticGeometry(const sf::View &curView)
             m_PBRGeometryShader.setUniform("p_normalProjMat",sf::Glsl::Mat3(m_normalProjMat.values));
             (*renderIt)->PrepareShader(&m_PBRGeometryShader);
 
+            glEnable(GL_STENCIL_TEST);
+            glStencilFunc(GL_EQUAL, 1, 1);
+            glStencilMask(0);
+
             glEnable(GL_DEPTH_TEST);
             glDepthMask(GL_TRUE);
+
             (*renderIt)->Render(renderTarget,state);
+
         }
         renderTarget->display(DOFLUSH);
     }
+
+    m_lastStaticRenderView = curView;
+    m_firstStaticRender = false;
 
    /* m_staticGeometryScreen.setActive(true);
     m_staticGeometryScreen.getTexture(0)->copyToImage().saveToFile("static0.png");

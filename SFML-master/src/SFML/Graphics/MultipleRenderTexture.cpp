@@ -20,7 +20,8 @@ unsigned int MultipleRenderTexture::getMaxColorAttachments()
 MultipleRenderTexture::MultipleRenderTexture() :
     m_context    (NULL),
     m_frameBuffer(0),
-    m_depthBuffer(0)
+    m_depthBuffer(0)//,
+   // m_stencilBuffer(0)
 {
     m_size = Vector2u(0,0);
     m_textures = NULL;
@@ -32,11 +33,8 @@ MultipleRenderTexture::~MultipleRenderTexture()
     {
         m_context->setActive(true);
 
-        if (m_depthBuffer)
-        {
-            GLuint depthBuffer = static_cast<GLuint>(m_depthBuffer);
-            glCheck(GLEXT_glDeleteFramebuffers(1, &depthBuffer));
-        }
+        removeDepthBuffer();
+        //removeStencilBuffer();
 
         if (m_frameBuffer)
         {
@@ -52,7 +50,7 @@ MultipleRenderTexture::~MultipleRenderTexture()
 }
 
 
-bool MultipleRenderTexture::create(unsigned int width, unsigned int height, bool depthBuffer, bool useFloat)
+bool MultipleRenderTexture::create(unsigned int width, unsigned int height)
 {
     m_size = Vector2u(width, height);
 
@@ -66,11 +64,11 @@ bool MultipleRenderTexture::create(unsigned int width, unsigned int height, bool
 
     m_context = new Context();
 
-    if(!createFBO(width,height,depthBuffer))
+    if(!createFBO(width,height))
         return false;
 
-    if(!addRenderTarget(0,useFloat))
-        return false;
+    //if(!addRenderTarget(0,useFloat))
+      //  return false;
 
     return true;
 }
@@ -130,7 +128,49 @@ bool MultipleRenderTexture::addRenderTarget(unsigned int renderingLocation, bool
     return true;
 }
 
+bool MultipleRenderTexture::addDepthBuffer()
+{
+    if(m_depthBuffer)
+        removeDepthBuffer();
 
+    if(m_frameBuffer && !m_depthBuffer)
+    {
+        setActive(true);
+        GLuint depth = 0;
+        glCheck(GLEXT_glGenRenderbuffers(1, &depth));
+        m_depthBuffer = static_cast<unsigned int>(depth);
+        if (!m_depthBuffer)
+        {
+            err() << "Impossible to add depth buffer (failed to create the attached depth buffer)" << std::endl;
+            return false;
+        }
+        glCheck(GLEXT_glBindRenderbuffer(GLEXT_GL_RENDERBUFFER, m_depthBuffer));
+        glCheck(GLEXT_glRenderbufferStorage(GLEXT_GL_RENDERBUFFER, GLEXT_GL_DEPTH_COMPONENT, m_size.x, m_size.y));
+        glCheck(GLEXT_glFramebufferRenderbuffer(GLEXT_GL_FRAMEBUFFER, GLEXT_GL_DEPTH_ATTACHMENT, GLEXT_GL_RENDERBUFFER, m_depthBuffer));
+    }
+}
+
+bool MultipleRenderTexture::addDepthStencilBuffer()
+{
+    if(m_depthBuffer)
+        removeDepthBuffer();
+
+    if(m_frameBuffer && !m_depthBuffer)
+    {
+        setActive(true);
+        GLuint depth = 0;
+        glCheck(GLEXT_glGenRenderbuffers(1, &depth));
+        m_depthBuffer = static_cast<unsigned int>(depth);
+        if (!m_depthBuffer)
+        {
+            err() << "Impossible to add depth buffer (failed to create the attached depth buffer)" << std::endl;
+            return false;
+        }
+        glCheck(GLEXT_glBindRenderbuffer(GLEXT_GL_RENDERBUFFER, m_depthBuffer));
+        glCheck(GLEXT_glRenderbufferStorage(GLEXT_GL_RENDERBUFFER, GLEXT_GL_DEPTH24_STENCIL8, m_size.x, m_size.y));
+        glCheck(GLEXT_glFramebufferRenderbuffer(GLEXT_GL_FRAMEBUFFER, GLEXT_GL_DEPTH_STENCIL_ATTACHMENT, GLEXT_GL_RENDERBUFFER, m_depthBuffer));
+    }
+}
 
 bool MultipleRenderTexture::removeRenderTarget(unsigned int renderingLocation)
 {
@@ -151,6 +191,25 @@ bool MultipleRenderTexture::removeRenderTarget(unsigned int renderingLocation)
     m_activeTextures.erase(renderIt);
     return true;
 }
+
+bool MultipleRenderTexture::removeDepthBuffer()
+{
+    if (m_depthBuffer)
+    {
+        GLuint depthBuffer = static_cast<GLuint>(m_depthBuffer);
+        glCheck(GLEXT_glDeleteFramebuffers(1, &depthBuffer));
+    }
+}
+
+/*bool MultipleRenderTexture::removeStencilBuffer()
+{
+    if (m_stencilBuffer)
+    {
+        GLuint stencilBuffer = static_cast<GLuint>(m_stencilBuffer);
+        glCheck(GLEXT_glDeleteFramebuffers(1, &stencilBuffer));
+    }
+}*/
+
 
 bool MultipleRenderTexture::copyDepthBuffer(MultipleRenderTexture *source, const sf::FloatRect &sourceRect,
                                              const sf::FloatRect &targetRect)
@@ -180,6 +239,47 @@ bool MultipleRenderTexture::copyDepthBuffer(MultipleRenderTexture *source)
     if(source != NULL)
     {
         return copyDepthBuffer(source,
+                        sf::FloatRect(0,0,source->getSize().x,source->getSize().y),
+                        sf::FloatRect(0,0,getSize().x,getSize().y));
+    }
+    return false;
+}
+
+bool MultipleRenderTexture::copyDepthStencilBuffer(MultipleRenderTexture *source, const sf::FloatRect &sourceRect,
+                                             const sf::FloatRect &targetRect)
+{
+    if(source != NULL)
+    {
+        setActive(true);
+        GLEXT_glBindFramebuffer(GLEXT_GL_READ_FRAMEBUFFER, source->m_frameBuffer);
+        GLEXT_glBindFramebuffer(GLEXT_GL_DRAW_FRAMEBUFFER, m_frameBuffer);
+        GLEXT_glBlitFramebuffer(
+            sourceRect.left, source->getSize().y-(sourceRect.height+sourceRect.top),
+            sourceRect.left+sourceRect.width, source->getSize().y-sourceRect.top,
+            targetRect.left, this->getSize().y-(targetRect.height+targetRect.top),
+            targetRect.left+targetRect.width, this->getSize().y-targetRect.top,
+             GL_DEPTH_BUFFER_BIT, GL_NEAREST
+        );
+        GLEXT_glBlitFramebuffer(
+            sourceRect.left, source->getSize().y-(sourceRect.height+sourceRect.top),
+            sourceRect.left+sourceRect.width, source->getSize().y-sourceRect.top,
+            targetRect.left, this->getSize().y-(targetRect.height+targetRect.top),
+            targetRect.left+targetRect.width, this->getSize().y-targetRect.top,
+             GL_STENCIL_BUFFER_BIT, GL_NEAREST
+        );
+        GLEXT_glBindFramebuffer(GLEXT_GL_FRAMEBUFFER, m_frameBuffer);
+
+        return true;
+    }
+
+    return false;
+}
+
+bool MultipleRenderTexture::copyDepthStencilBuffer(MultipleRenderTexture *source)
+{
+    if(source != NULL)
+    {
+        return copyDepthStencilBuffer(source,
                         sf::FloatRect(0,0,source->getSize().x,source->getSize().y),
                         sf::FloatRect(0,0,getSize().x,getSize().y));
     }
@@ -361,7 +461,7 @@ std::vector<unsigned int>::iterator MultipleRenderTexture::findRenderTarget(unsi
     return it;
 }
 
-bool MultipleRenderTexture::createFBO(unsigned int width, unsigned int height, bool depthBuffer)
+bool MultipleRenderTexture::createFBO(unsigned int width, unsigned int height)
 {
     GLuint frameBuffer = 0;
     glCheck(GLEXT_glGenFramebuffers(1, &frameBuffer));
@@ -372,21 +472,6 @@ bool MultipleRenderTexture::createFBO(unsigned int width, unsigned int height, b
         return false;
     }
     glCheck(GLEXT_glBindFramebuffer(GLEXT_GL_FRAMEBUFFER, m_frameBuffer));
-
-    if (depthBuffer)
-    {
-        GLuint depth = 0;
-        glCheck(GLEXT_glGenRenderbuffers(1, &depth));
-        m_depthBuffer = static_cast<unsigned int>(depth);
-        if (!m_depthBuffer)
-        {
-            err() << "Impossible to create render texture (failed to create the attached depth buffer)" << std::endl;
-            return false;
-        }
-        glCheck(GLEXT_glBindRenderbuffer(GLEXT_GL_RENDERBUFFER, m_depthBuffer));
-        glCheck(GLEXT_glRenderbufferStorage(GLEXT_GL_RENDERBUFFER, GLEXT_GL_DEPTH_COMPONENT, width, height));
-        glCheck(GLEXT_glFramebufferRenderbuffer(GLEXT_GL_FRAMEBUFFER, GLEXT_GL_DEPTH_ATTACHMENT, GLEXT_GL_RENDERBUFFER, m_depthBuffer));
-    }
 
     RenderTarget::initialize();
 }
@@ -417,126 +502,5 @@ bool MultipleRenderTexture::addTargetToFBO(unsigned int renderingLocation, unsig
 
     return true;
 }
-
-/*void MultipleRenderTexture::UpdateFBO()
-{
-        size_t nbrTextures = m_activeTextures.size();
-        unsigned int *attachments = new unsigned int[nbrTextures];
-
-        for(size_t i = 0 ; i < nbrTextures ; ++i)
-            attachments[i] = m_activeTextures[i];
-
-        attachments[2] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
-}*/
-
-
-/*
-////////////////////////////////////////////////////////////
-bool RenderTexture::create(unsigned int width, unsigned int height, bool depthBuffer)
-{
-    // Create the texture
-    if (!m_texture.create(width, height))
-    {
-        err() << "Impossible to create render texture (failed to create the target texture)" << std::endl;
-        return false;
-    }
-
-    // We disable smoothing by default for render textures
-    setSmooth(false);
-
-    // Create the implementation
-    delete m_impl;
-    if (priv::RenderTextureImplFBO::isAvailable())
-    {
-        // Use frame-buffer object (FBO)
-        m_impl = new priv::RenderTextureImplFBO;
-
-        // Mark the texture as being a framebuffer object attachment
-        m_texture.m_fboAttachment = true;
-    }
-    else
-    {
-        // Use default implementation
-        m_impl = new priv::RenderTextureImplDefault;
-    }
-
-    // Initialize the render texture
-    if (!m_impl->create(width, height, m_texture.m_texture, depthBuffer))
-        return false;
-
-    // We can now initialize the render target part
-    RenderTarget::initialize();
-
-    return true;
-}
-
-
-////////////////////////////////////////////////////////////
-void RenderTexture::setSmooth(bool smooth)
-{
-    m_texture.setSmooth(smooth);
-}
-
-
-////////////////////////////////////////////////////////////
-bool RenderTexture::isSmooth() const
-{
-    return m_texture.isSmooth();
-}
-
-
-////////////////////////////////////////////////////////////
-void RenderTexture::setRepeated(bool repeated)
-{
-    m_texture.setRepeated(repeated);
-}
-
-
-////////////////////////////////////////////////////////////
-bool RenderTexture::isRepeated() const
-{
-    return m_texture.isRepeated();
-}
-
-
-////////////////////////////////////////////////////////////
-bool RenderTexture::generateMipmap()
-{
-    return m_texture.generateMipmap();
-}
-
-
-////////////////////////////////////////////////////////////
-bool RenderTexture::setActive(bool active)
-{
-    return m_impl && m_impl->activate(active);
-}
-
-
-////////////////////////////////////////////////////////////
-void RenderTexture::display()
-{
-    // Update the target texture
-    if (setActive(true))
-    {
-        m_impl->updateTexture(m_texture.m_texture);
-        m_texture.m_pixelsFlipped = true;
-        m_texture.invalidateMipmap();
-    }
-}
-
-
-////////////////////////////////////////////////////////////
-Vector2u RenderTexture::getSize() const
-{
-    return m_texture.getSize();
-}
-
-
-////////////////////////////////////////////////////////////
-const Texture& RenderTexture::getTexture() const
-{
-    return m_texture;
-}*/
 
 }

@@ -70,7 +70,7 @@ void TestingState::Init()
     torusEntity->SetShadowCastingType(DirectionnalShadow);
    // sarco3DEntity->SetColor(sf::Color(255,64,255,128));
     torusEntity->SetColor(sf::Color(128,128,128));
-    torusEntity->SetStatic(true);
+    torusEntity->SetStatic(false);
     //sarco3DEntity->DesactivateLighting();
     m_sarco3DNode->AttachObject(torusEntity);
 
@@ -122,7 +122,7 @@ void TestingState::Init()
     m_chene_node->SetPosition(150,-100,-78);
     m_chene_node->AttachObject(cheneEntity);
 
-    for(int i = -10 ; i < 10 ; ++i)
+   /* for(int i = -10 ; i < 10 ; ++i)
     for(int j = -10 ; j < 10 ; ++j)
     {
         SceneNode *n = m_mainScene.GetRootNode()->CreateChildNode();
@@ -134,7 +134,7 @@ void TestingState::Init()
         //e->SetShadowVolumeType(TwoSidedShadow);
         n->SetPosition(i*100,j*100,-78);
         n->AttachObject(e);
-    }
+    }*/
 
     SceneNode* tree_shadow_node = m_chene_node->CreateChildNode(-12,-12,78);
     IsoGeometricShadowCaster* tree_dynamic_shadow = m_mainScene.CreateIsoGeometricShadowCaster();
@@ -146,6 +146,7 @@ void TestingState::Init()
     abbayeEntity->SetTexture(PBRTextureHandler->LoadAssetFromFile("../data/abbayeXML.txt",LoadType_InThread));
     abbayeEntity->SetCenter(960,540);
     abbayeEntity->SetShadowCastingType(DirectionnalShadow);
+    abbayeEntity->SetStatic(true);
     m_mainScene.GetRootNode()->AttachObject(abbayeEntity);
     //m_mainScene.GetRootNode()->CreateChildNode(sf::Vector2f(0,0))->AttachObject(abbayeEntity);
 
@@ -324,6 +325,7 @@ void TestingState::HandleEvents(alag::EventManager *event_manager)
     {
         sf::Vector2i p(event_manager->MousePosition());
         m_chene_node->SetPosition(m_mainScene.ConvertMouseToScene(p));
+        //m_cameraNode->SetPosition(m_mainScene.ConvertMouseToScene(p)+sf::Vector2f(3000,3000));
     }
 
 
@@ -339,8 +341,8 @@ void TestingState::Update(sf::Time time)
     ++m_fpsCounter;
     m_totalTime += time;
 
-    m_chene_node->Move(m_mainScene.ConvertCartesianToIso(m_camMove.x,m_camMove.y)*(500*time.asSeconds()));
-    //m_cameraNode->Move(m_mainScene.ConvertCartesianToIso(m_camMove.x,m_camMove.y)*(500*time.asSeconds()));
+    //m_chene_node->Move(m_mainScene.ConvertCartesianToIso(m_camMove.x,m_camMove.y)*(500*time.asSeconds()));
+    m_cameraNode->Move(m_mainScene.ConvertCartesianToIso(m_camMove.x,m_camMove.y)*(500*time.asSeconds()));
   //  m_cameraNode->Move(sf::Vector3f(0,0,m_camMove.z)*(100*time.asSeconds()));
     m_camera->Zoom((1-m_camMove.z*time.asSeconds()));
 
