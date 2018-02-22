@@ -89,7 +89,7 @@ void PBRIsoScene::CompilePBRGeometryShader()
     "   const vec3 All33 = vec3(-.33);"
     "   const vec2 All255 = vec2(0.00392156862,1.0);"
     "   vec4 albedoPixel = gl_Color*texture2D(map_albedo, VaryingTexCoord0);" \
-    "   if((p_alpha_pass == true && albedoPixel.a > .2 && albedoPixel.a < .9) "
+    "   if((p_alpha_pass == true && /*albedoPixel.a > .2 &&*/ albedoPixel.a < .9) "
     "   || (p_alpha_pass == false && albedoPixel.a >= .9))"
     "   {"
     "       float heightPixel = 0; "

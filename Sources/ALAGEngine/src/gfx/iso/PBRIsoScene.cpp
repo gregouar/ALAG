@@ -89,8 +89,6 @@ bool PBRIsoScene::InitRenderer(sf::Vector2u windowSize)
     m_SSAOScreen[1].setSmooth(true);
 
 
-
-
     m_nbrTiles.x = ceil(windowSize.x/SCREENTILE_SIZE) + 1;
     m_nbrTiles.y = ceil(windowSize.y/SCREENTILE_SIZE) + 1;
 
@@ -116,6 +114,12 @@ bool PBRIsoScene::InitRenderer(sf::Vector2u windowSize)
     m_staticGeometryScreen.addRenderTarget(PBRDepthScreen);
     m_staticGeometryScreen.addRenderTarget(PBRMaterialScreen);
 
+    /*m_staticGeometryScreen.setActive(true);
+    glEnable(GL_DEPTH_TEST);
+    glDepthMask(GL_TRUE);
+    glClear(GL_DEPTH_BUFFER_BIT);
+    m_staticGeometryScreen.clear(sf::Color(0,0,0,0));*/
+    //m_staticGeometryScreen.setActive(false);
 
     if(!m_alpha_PBRScreen.create(windowSize.x*m_superSampling, windowSize.y*m_superSampling, true))
         r = false;
@@ -358,10 +362,13 @@ int PBRIsoScene::UpdateLighting(std::multimap<float, Light*> &lightList)
 void PBRIsoScene::RenderStaticGeometry(const sf::View &curView)
 {
     std::list<ScreenTile*> tilesToRender;
+    std::list<SceneEntity*> entitiesToRender;
 
     sf::Vector2f viewPos;
     viewPos.x = curView.getCenter().x - curView.getSize().x/2 - m_tilesShift.x;
     viewPos.y = curView.getCenter().y - curView.getSize().y/2 - m_tilesShift.y;
+
+    Profiler::PushClock("Prepare static geometry");
 
     std::list<SceneEntity*>::iterator renderIt;
     for(renderIt = m_renderQueue.begin() ; renderIt != m_renderQueue.end(); ++renderIt)
@@ -376,8 +383,6 @@ void PBRIsoScene::RenderStaticGeometry(const sf::View &curView)
             sf::FloatRect rect  = (*renderIt)->GetScreenBoundingRect(m_isoToCartMat);
             rect.left += globalPos.x - viewPos.x;
             rect.top += globalPos.y - viewPos.y;
-
-           // std::cout<<rect.left<<" "<<rect.top<<" "<<rect.width<<" "<<rect.height<<std::endl;
 
             for(int  x = std::max(0, (int)floor(rect.left/SCREENTILE_SIZE)) ;
                         x < std::min((int)m_nbrTiles.x, (int)ceil((float)(rect.left+rect.width)/SCREENTILE_SIZE)) ;
@@ -408,46 +413,38 @@ void PBRIsoScene::RenderStaticGeometry(const sf::View &curView)
         }
 
         if(m_screenTiles[n].askForUpdate)
+        {
             tilesToRender.push_back(&m_screenTiles[n]);
+            entitiesToRender.insert(entitiesToRender.end(),
+                                    m_screenTiles[n].entities.begin(),
+                                    m_screenTiles[n].entities.end());
+            entitiesToRender.sort();
+            entitiesToRender.unique();
+        }
 
         m_screenTiles[n].newList.clear();
     }
 
 
-    sf::FloatRect viewport;
-    viewport.width = 1.0/m_nbrTiles.x;
-    viewport.height = 1.0/m_nbrTiles.y;
+    Profiler::PopClock();
 
     sf::View tileScreenView = curView;
-    tileScreenView.setSize(SCREENTILE_SIZE,SCREENTILE_SIZE); /** PUT ZOOM HERE **/
-
 
     std::list<ScreenTile*>::iterator tilesIt;
     for(tilesIt = tilesToRender.begin() ; tilesIt != tilesToRender.end() ; ++tilesIt)
     {
         (*tilesIt)->askForUpdate = false;
 
-        viewport.left = (float)(*tilesIt)->position.x/(m_nbrTiles.x*SCREENTILE_SIZE);
-        viewport.top = (float)(*tilesIt)->position.y/(m_nbrTiles.y*SCREENTILE_SIZE);
-        tileScreenView.setViewport(viewport);
-        tileScreenView.setCenter(viewPos.x+(*tilesIt)->position.x+SCREENTILE_SIZE/2,
-                                 viewPos.y+(*tilesIt)->position.y+SCREENTILE_SIZE/2); /** ADD ZOOM HERE **/
-
-
-        std::list<SceneEntity*>::iterator renderIt;
         sf::MultipleRenderTexture *renderTarget = nullptr;
-
-        sf::RenderStates state;
-        state.shader = &m_PBRGeometryShader;
 
         /** Should maybe inverse pass and tiles**/
         //for(int pass = 0 ; pass <= 1 ; ++pass)
         {
             //if(pass == 0)
             {
-                m_PBRGeometryShader.setUniform("p_alpha_pass",false);
+                //m_PBRGeometryShader.setUniform("p_alpha_pass",false);
                 renderTarget = &m_staticGeometryScreen;
-                state.blendMode = sf::BlendNone;
+                //state.blendMode = sf::BlendNone;
             }/* else if(pass == 1) {
                 Profiler::PushClock("Render alpha geometry");
                 m_PBRGeometryShader.setUniform("p_alpha_pass",true);
@@ -460,40 +457,67 @@ void PBRIsoScene::RenderStaticGeometry(const sf::View &curView)
             glScissor((*tilesIt)->position.x,renderTarget->getSize().y-(*tilesIt)->position.y-SCREENTILE_SIZE,
                       SCREENTILE_SIZE,SCREENTILE_SIZE);
             glEnable(GL_SCISSOR_TEST);
+                renderTarget->clear(sf::Color(0,0,0,0));
            // if(pass == 0)
                 glClear(GL_DEPTH_BUFFER_BIT);
-            renderTarget->clear(sf::Color(0,0,0,0));
             glDisable(GL_SCISSOR_TEST);
+        }
+    }
+
+    {
+
+        sf::MultipleRenderTexture *renderTarget = nullptr;
+
+        sf::RenderStates state;
+        state.shader = &m_PBRGeometryShader;
+
+        tileScreenView = curView;
+        tileScreenView.setSize(m_staticGeometryScreen.getSize().x,
+                               m_staticGeometryScreen.getSize().y);
+        /*tileScreenView.move(-m_tilesShift.x+SCREENTILE_SIZE/2,
+                            -m_tilesShift.y+SCREENTILE_SIZE/2);*/
+        tileScreenView.setCenter(viewPos.x + tileScreenView.getSize().x/2,
+                                 viewPos.y + tileScreenView.getSize().y/2);
+
+         //if(pass == 0)
+        {
+            m_PBRGeometryShader.setUniform("p_alpha_pass",false);
+            renderTarget = &m_staticGeometryScreen;
+            state.blendMode = sf::BlendNone;
+        }/* else if(pass == 1) {
+            Profiler::PushClock("Render alpha geometry");
+            m_PBRGeometryShader.setUniform("p_alpha_pass",true);
+            renderTarget = &m_alpha_PBRScreen;
+            state.blendMode = sf::BlendNone;
+            m_alpha_PBRScreen.copyDepthBuffer(&m_PBRScreen);
+        }*/
+
+        renderTarget->setView(tileScreenView);
+        renderTarget->setActive(true);
+
+        for(renderIt = entitiesToRender.begin() ; renderIt != entitiesToRender.end() ; ++renderIt)
+        {
+            sf::Vector3f globalPos(0,0,0);
+
+            SceneNode *node = (*renderIt)->GetParentNode();
+            if(node != nullptr)
+                globalPos = node->GetGlobalPosition();
+
+            sf::Vector3f v = m_isoToCartMat*globalPos;
+
+            state.transform = sf::Transform::Identity;
+            state.transform.translate(v.x, v.y);
+            state.transform *= m_TransformIsoToCart;
+
+            m_PBRGeometryShader.setUniform("p_zPos",globalPos.z*PBRTextureAsset::DEPTH_BUFFER_NORMALISER);
+            m_PBRGeometryShader.setUniform("p_normalProjMat",sf::Glsl::Mat3(m_normalProjMat.values));
+            (*renderIt)->PrepareShader(&m_PBRGeometryShader);
 
             glEnable(GL_DEPTH_TEST);
             glDepthMask(GL_TRUE);
-            renderTarget->setView(tileScreenView);
-
-            for(renderIt = (*tilesIt)->entities.begin() ;
-                renderIt != (*tilesIt)->entities.end();
-                ++renderIt)
-            {
-                sf::Vector3f globalPos(0,0,0);
-
-                SceneNode *node = (*renderIt)->GetParentNode();
-                if(node != nullptr)
-                    globalPos = node->GetGlobalPosition();
-
-                sf::Vector3f v = m_isoToCartMat*globalPos;
-
-                state.transform = sf::Transform::Identity;
-                state.transform.translate(v.x, v.y);
-                state.transform *= m_TransformIsoToCart;
-
-                m_PBRGeometryShader.setUniform("p_zPos",globalPos.z*PBRTextureAsset::DEPTH_BUFFER_NORMALISER);
-                m_PBRGeometryShader.setUniform("p_normalProjMat",sf::Glsl::Mat3(m_normalProjMat.values));
-                (*renderIt)->PrepareShader(&m_PBRGeometryShader);
-                (*renderIt)->Render(renderTarget,state);
-                //std::cout<<"test"<<std::endl;
-            }
-            renderTarget->display(DOFLUSH);
-            //renderTarget->setActive(false);
+            (*renderIt)->Render(renderTarget,state);
         }
+        renderTarget->display(DOFLUSH);
     }
 
    /* m_staticGeometryScreen.setActive(true);

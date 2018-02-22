@@ -201,6 +201,7 @@ void SpriteEntity::Notify(NotificationSender* sender, NotificationType notificat
             m_texture = nullptr;
 
         ShadowCaster::AskForAllShadowUpdate();
+        AskForRenderUpdate();
     }
 
     SceneEntity::Notify(sender, notification);

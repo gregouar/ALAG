@@ -138,6 +138,8 @@ void RectEntity::Notify(NotificationSender* sender, NotificationType notificatio
         }
         else if(notification == Notification_SenderDestroyed)
             m_texture = nullptr;
+
+        AskForRenderUpdate();
     }
 
     SceneEntity::Notify(sender, notification);
