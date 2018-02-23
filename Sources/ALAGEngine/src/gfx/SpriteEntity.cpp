@@ -41,50 +41,13 @@ void SpriteEntity::Render(sf::RenderTarget *w)
 
 void SpriteEntity::Render(sf::RenderTarget *w, const sf::RenderStates &state)
 {
-    //w->draw((*this), state);
-
     if(m_texture != nullptr && m_texture->IsLoaded())
     {
         sf::RenderStates newState = state;
         newState.transform = sf::Transform::Identity;
         newState.transform.translate(state.transform.transformPoint(0,0));
-        //newState.shader = NULL;
 
-         w->draw((*this), newState);
-
-       /*for(int i = 0 ; i < 10 ; ++i){
-            for(int j = 0 ; j < 10 ; ++j)
-            {
-                newState.transform.translate(10,0);
-                w->draw((*this), newState);
-            }
-                newState.transform.translate(-100,10);
-        }*/
-
-
-        /*sf::VertexArray quad(sf::Quads, 4*100);
-        for(int i = 0 ; i < 10 ; ++i)
-        for(int j = 0 ; j < 10 ; ++j)
-        {
-            quad[(i+j*10)*4+0].position = sf::Vector2f(i*10,j*10) -sf::Sprite::getOrigin();
-            quad[(i+j*10)*4+1].position = sf::Vector2f(i*10,j*10)-sf::Sprite::getOrigin() + sf::Vector2f(sf::Sprite::getTextureRect().width,0);
-            quad[(i+j*10)*4+2].position = sf::Vector2f(i*10,j*10)-sf::Sprite::getOrigin() + sf::Vector2f(sf::Sprite::getTextureRect().width,
-                                                           sf::Sprite::getTextureRect().height);
-            quad[(i+j*10)*4+3].position = sf::Vector2f(i*10,j*10)-sf::Sprite::getOrigin() + sf::Vector2f(0,sf::Sprite::getTextureRect().height);
-
-            quad[(i+j*10)*4+0].texCoords = sf::Vector2f(sf::Sprite::getTextureRect().left,
-                                             sf::Sprite::getTextureRect().top);
-            quad[(i+j*10)*4+1].texCoords = sf::Vector2f(sf::Sprite::getTextureRect().left + sf::Sprite::getTextureRect().width,
-                                             sf::Sprite::getTextureRect().top);
-            quad[(i+j*10)*4+2].texCoords = sf::Vector2f(sf::Sprite::getTextureRect().left + sf::Sprite::getTextureRect().width,
-                                             sf::Sprite::getTextureRect().top + sf::Sprite::getTextureRect().height);
-            quad[(i+j*10)*4+3].texCoords = sf::Vector2f(sf::Sprite::getTextureRect().left,
-                                             sf::Sprite::getTextureRect().top + sf::Sprite::getTextureRect().height);
-        }
-
-        newState.texture = sf::Sprite::getTexture();
-
-        w->draw(quad, newState);*/
+        w->draw((*this), newState);
     }
     AskForRenderUpdate(false);
 }

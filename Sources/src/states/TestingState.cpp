@@ -67,10 +67,10 @@ void TestingState::Init()
     //sarco3DEntity->SetTexture(PBRTextureHandler->LoadAssetFromFile("../data/bedrockXML.txt",LoadType_InThread));
     //torusEntity->SetCenter(128,166);
     torusEntity->SetCenter(128,128);
-    torusEntity->SetShadowCastingType(DirectionnalShadow);
-   // sarco3DEntity->SetColor(sf::Color(255,64,255,128));
-    torusEntity->SetColor(sf::Color(128,128,128));
-    torusEntity->SetStatic(false);
+    //torusEntity->SetShadowCastingType(DirectionnalShadow);
+    torusEntity->SetColor(sf::Color(255,64,255,128));
+   // torusEntity->SetColor(sf::Color(128,128,128));
+    torusEntity->SetStatic(true);
     //sarco3DEntity->DesactivateLighting();
     m_sarco3DNode->AttachObject(torusEntity);
 
@@ -122,7 +122,7 @@ void TestingState::Init()
     m_chene_node->SetPosition(150,-100,-78);
     m_chene_node->AttachObject(cheneEntity);
 
-   /* for(int i = -10 ; i < 10 ; ++i)
+    for(int i = -10 ; i < 10 ; ++i)
     for(int j = -10 ; j < 10 ; ++j)
     {
         SceneNode *n = m_mainScene.GetRootNode()->CreateChildNode();
@@ -134,7 +134,7 @@ void TestingState::Init()
         //e->SetShadowVolumeType(TwoSidedShadow);
         n->SetPosition(i*100,j*100,-78);
         n->AttachObject(e);
-    }*/
+    }
 
     SceneNode* tree_shadow_node = m_chene_node->CreateChildNode(-12,-12,78);
     IsoGeometricShadowCaster* tree_dynamic_shadow = m_mainScene.CreateIsoGeometricShadowCaster();

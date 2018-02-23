@@ -81,6 +81,7 @@ class PBRIsoScene : public DefaultScene
         sf::Shader *GetDepthShader();
 
         void CompileDepthShader();
+        void CompileDepthCopierShader();
         void CompilePBRGeometryShader();
         void CompileLightingShader();
         void CompileSSAOShader();
@@ -104,6 +105,7 @@ class PBRIsoScene : public DefaultScene
         //sf::Shader m_colorShader;
         //sf::Shader m_normalShader;
         sf::Shader m_depthShader;
+        sf::Shader m_depthCopierShader;
         sf::Shader m_PBRGeometryShader;
         sf::Shader m_lightingShader;
         sf::Shader m_blurShader;
@@ -113,6 +115,7 @@ class PBRIsoScene : public DefaultScene
         sf::Vector2u m_nbrTiles;
         sf::Vector2f m_tilesShift;
         sf::MultipleRenderTexture m_staticGeometryScreen;
+        sf::MultipleRenderTexture m_alpha_staticGeometryScreen;
         sf::MultipleRenderTexture m_staticGeometrySwapBuffer;
         bool m_firstStaticRender;
         sf::View m_lastStaticRenderView;
