@@ -64,6 +64,7 @@ void PBRIsoScene::CompileDepthCopierShader()
     "uniform sampler2D map_material;" \
     "uniform sampler2D map_depth;" \
     "uniform sampler2D map_depthTester;" \
+    "uniform bool enable_depthTesting;"
     "uniform vec2 view_ratio;"
     "varying vec2 VaryingTexCoord0; "\
     "void main()" \
@@ -72,11 +73,14 @@ void PBRIsoScene::CompileDepthCopierShader()
     "       float depth = 1.0;"
     "       if(depthPixel.a != 0)"
     "           depth =((depthPixel.b*"<<1.0/255.0<<"+depthPixel.g)*"<<1.0/255.0<<"+depthPixel.r);"
-     "      vec4 depthTestPixel = texture2D(map_depthTester, gl_FragCoord.xy*view_ratio);" \
+     "      vec4 depthTestPixel = vec4(0.0);" \
      "      float depthTest = 1.0;"
-    "       if(depthTestPixel.a != 0)"
-     "          depthTest = ((depthTestPixel.b*"<<1.0/255.0<<"+depthTestPixel.g)*"<<1.0/255.0<<"+depthTestPixel.r);"
-     "      if(depth <= depthTest){"
+     "      if(enable_depthTesting == true){"
+     "          depthTestPixel = texture2D(map_depthTester, gl_FragCoord.xy*view_ratio);"
+    "           if(depthTestPixel.a != 0.0)"
+     "           depthTest = ((depthTestPixel.b*"<<1.0/255.0<<"+depthTestPixel.g)*"<<1.0/255.0<<"+depthTestPixel.r);"
+     "      } "
+     "      if(enable_depthTesting == false || (enable_depthTesting && depth <= depthTest)){"
     "           gl_FragData["<<PBRAlbedoScreen<<"] = texture2D(map_albedo, VaryingTexCoord0); " \
     "           gl_FragData["<<PBRNormalScreen<<"] = texture2D(map_normal, VaryingTexCoord0);" \
     "           gl_FragData["<<PBRDepthScreen<<"] = depthPixel;"

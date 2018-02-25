@@ -30,7 +30,7 @@ const std::string PBRIsoScene::DEFAULT_DIRECTIONALSHADOWSCASTING = "true";
 const std::string PBRIsoScene::DEFAULT_DYNAMICSHADOWSCASTING = "true";
 const float PBRIsoScene::DEFAULT_BLOOMBLUR = 12.0;
 const float PBRIsoScene::DEFAULT_SSAOBLUR = 3.0;
-const float PBRIsoScene::SSAO_STRENGTH = 3.0;
+const float PBRIsoScene::SSAO_STRENGTH = 2.0;
 
 PBRIsoScene::PBRIsoScene() : PBRIsoScene(DEFAULT_ISO_VIEW_ANGLE)
 {
@@ -453,7 +453,7 @@ void PBRIsoScene::RenderStaticGeometry(const sf::View &curView)
                 targetRect.height = sourceRect.height;
             }
 
-            m_staticGeometrySwapBuffer.copyDepthBuffer(&m_staticGeometryScreen, sourceRect, targetRect);
+           /*m_staticGeometrySwapBuffer.copyDepthBuffer(&m_staticGeometryScreen, sourceRect, targetRect);
             m_staticGeometrySwapBuffer.copyBuffer(&m_staticGeometryScreen,PBRAlbedoScreen,sourceRect,
                                    PBRAlbedoScreen, targetRect);
             m_staticGeometrySwapBuffer.copyBuffer(&m_staticGeometryScreen,PBRDepthScreen,sourceRect,
@@ -461,15 +461,19 @@ void PBRIsoScene::RenderStaticGeometry(const sf::View &curView)
             m_staticGeometrySwapBuffer.copyBuffer(&m_staticGeometryScreen,PBRMaterialScreen,sourceRect,
                                    PBRMaterialScreen, targetRect);
             m_staticGeometrySwapBuffer.copyBuffer(&m_staticGeometryScreen,PBRNormalScreen,sourceRect,
-                                   PBRNormalScreen, targetRect);
+                                   PBRNormalScreen, targetRect);*/
 
-            m_staticGeometryScreen.copyDepthBuffer(&m_staticGeometrySwapBuffer);
+            CopyPBRScreen(&m_staticGeometryScreen, sourceRect, &m_staticGeometrySwapBuffer, targetRect);
+
+           /* m_staticGeometryScreen.copyDepthBuffer(&m_staticGeometrySwapBuffer);
             m_staticGeometryScreen.copyBuffer(&m_staticGeometrySwapBuffer,PBRAlbedoScreen,PBRAlbedoScreen);
             m_staticGeometryScreen.copyBuffer(&m_staticGeometrySwapBuffer,PBRDepthScreen,PBRDepthScreen);
             m_staticGeometryScreen.copyBuffer(&m_staticGeometrySwapBuffer,PBRMaterialScreen,PBRMaterialScreen);
-            m_staticGeometryScreen.copyBuffer(&m_staticGeometrySwapBuffer,PBRNormalScreen,PBRNormalScreen);
+            m_staticGeometryScreen.copyBuffer(&m_staticGeometrySwapBuffer,PBRNormalScreen,PBRNormalScreen);*/
 
-            m_staticGeometrySwapBuffer.copyDepthBuffer(&m_alpha_staticGeometryScreen, sourceRect, targetRect);
+            CopyPBRScreen(&m_staticGeometrySwapBuffer, &m_staticGeometryScreen);
+
+           /* m_staticGeometrySwapBuffer.copyDepthBuffer(&m_alpha_staticGeometryScreen, sourceRect, targetRect);
             m_staticGeometrySwapBuffer.copyBuffer(&m_alpha_staticGeometryScreen,PBRAlbedoScreen,sourceRect,
                                    PBRAlbedoScreen, targetRect);
             m_staticGeometrySwapBuffer.copyBuffer(&m_alpha_staticGeometryScreen,PBRDepthScreen,sourceRect,
@@ -477,13 +481,17 @@ void PBRIsoScene::RenderStaticGeometry(const sf::View &curView)
             m_staticGeometrySwapBuffer.copyBuffer(&m_alpha_staticGeometryScreen,PBRMaterialScreen,sourceRect,
                                    PBRMaterialScreen, targetRect);
             m_staticGeometrySwapBuffer.copyBuffer(&m_alpha_staticGeometryScreen,PBRNormalScreen,sourceRect,
-                                   PBRNormalScreen, targetRect);
+                                   PBRNormalScreen, targetRect);*/
 
-            m_alpha_staticGeometryScreen.copyDepthBuffer(&m_staticGeometrySwapBuffer);
+            CopyPBRScreen(&m_alpha_staticGeometryScreen, sourceRect, &m_staticGeometrySwapBuffer, targetRect);
+
+            /*m_alpha_staticGeometryScreen.copyDepthBuffer(&m_staticGeometrySwapBuffer);
             m_alpha_staticGeometryScreen.copyBuffer(&m_staticGeometrySwapBuffer,PBRAlbedoScreen,PBRAlbedoScreen);
             m_alpha_staticGeometryScreen.copyBuffer(&m_staticGeometrySwapBuffer,PBRDepthScreen,PBRDepthScreen);
             m_alpha_staticGeometryScreen.copyBuffer(&m_staticGeometrySwapBuffer,PBRMaterialScreen,PBRMaterialScreen);
-            m_alpha_staticGeometryScreen.copyBuffer(&m_staticGeometrySwapBuffer,PBRNormalScreen,PBRNormalScreen);
+            m_alpha_staticGeometryScreen.copyBuffer(&m_staticGeometrySwapBuffer,PBRNormalScreen,PBRNormalScreen);*/
+
+            CopyPBRScreen(&m_staticGeometrySwapBuffer, &m_alpha_staticGeometryScreen);
 
             for(size_t y = 0 ; y < m_nbrTiles.y ; ++y)
             for(size_t x = 0 ; x < m_nbrTiles.x ; ++x)
@@ -721,11 +729,16 @@ void PBRIsoScene::RenderDynamicGeometry(const sf::View &curView)
             //m_PBRGeometryShader.setUniform("enable_depthTesting",true);
             renderTarget = &m_alpha_PBRScreen;
             state.blendMode = sf::BlendNone;
+
             m_alpha_PBRScreen.setActive(true);
-            m_alpha_PBRScreen.clear(sf::Color(0,0,0,0));
-            glClear(GL_DEPTH_BUFFER_BIT);
-            //m_alpha_PBRScreen.copyDepthBuffer(&m_PBRScreen);
-            m_alpha_PBRScreen.copyDepthBuffer(&m_alpha_staticGeometryScreen, sourceRect, targetRect);
+
+            CopyPBRScreen(&m_alpha_staticGeometryScreen, sourceRect,
+                          &m_alpha_PBRScreen, targetRect, m_PBRScreen.getTexture(PBRDepthScreen));
+
+           /* m_alpha_PBRScreen.setActive(true);
+           // m_alpha_PBRScreen.clear(sf::Color(0,0,0,0));
+            //glClear(GL_DEPTH_BUFFER_BIT);
+           // m_alpha_PBRScreen.copyDepthBuffer(&m_alpha_staticGeometryScreen, sourceRect, targetRect);
 
             glDepthFunc(GL_ALWAYS);
             glEnable(GL_DEPTH_TEST);
@@ -736,6 +749,7 @@ void PBRIsoScene::RenderDynamicGeometry(const sf::View &curView)
             m_depthCopierShader.setUniform("map_depth",*m_alpha_staticGeometryScreen.getTexture(PBRDepthScreen));
             m_depthCopierShader.setUniform("map_material",*m_alpha_staticGeometryScreen.getTexture(PBRMaterialScreen));
             m_depthCopierShader.setUniform("map_depthTester",*m_PBRScreen.getTexture(PBRDepthScreen));
+            m_depthCopierShader.setUniform("enable_depthTesting",true);
             sf::RectangleShape rect;
             rect.setSize(sf::Vector2f(m_alpha_PBRScreen.getSize().x, m_alpha_PBRScreen.getSize().y));
 
@@ -750,16 +764,7 @@ void PBRIsoScene::RenderDynamicGeometry(const sf::View &curView)
             s.blendMode = sf::BlendNone;
             s.shader = &m_depthCopierShader;
             m_alpha_PBRScreen.setView(m_alpha_PBRScreen.getDefaultView());
-            m_alpha_PBRScreen.draw(rect,s);
-
-            /*m_alpha_PBRScreen.copyBuffer(&m_alpha_staticGeometryScreen,PBRAlbedoScreen,sourceRect,
-                                   PBRAlbedoScreen, targetRect);
-            m_alpha_PBRScreen.copyBuffer(&m_alpha_staticGeometryScreen,PBRDepthScreen,sourceRect,
-                                   PBRDepthScreen, targetRect);
-            m_alpha_PBRScreen.copyBuffer(&m_alpha_staticGeometryScreen,PBRMaterialScreen,sourceRect,
-                                   PBRMaterialScreen, targetRect);
-            m_alpha_PBRScreen.copyBuffer(&m_alpha_staticGeometryScreen,PBRNormalScreen,sourceRect,
-                                   PBRNormalScreen, targetRect);*/
+            m_alpha_PBRScreen.draw(rect,s);*/
         }
 
         renderTarget->setActive(true);
@@ -863,7 +868,6 @@ void PBRIsoScene::RenderSSAO()
     m_SSAOScreen[0].draw(m_renderer,&m_blurShader);
     m_SSAOScreen[0].display(DOFLUSH);
 }
-
 
 IsoRectEntity* PBRIsoScene::CreateIsoRectEntity(sf::Vector2f rectSize)
 {
@@ -1107,6 +1111,62 @@ sf::View PBRIsoScene::GenerateView(Camera* cam)
 sf::Shader* PBRIsoScene::GetDepthShader()
 {
     return &m_depthShader;
+}
+
+void PBRIsoScene::CopyPBRScreen(sf::MultipleRenderTexture *source, sf::FloatRect sourceRect,
+                    sf::MultipleRenderTexture *target, sf::FloatRect targetRect, sf::Texture *depthTester)
+{
+    if(source != nullptr && target != nullptr)
+    {
+        target->setActive(true);
+
+        glDepthFunc(GL_ALWAYS);
+        glEnable(GL_DEPTH_TEST);
+        glDepthMask(GL_TRUE);
+
+        m_depthCopierShader.setUniform("map_albedo",*source->getTexture(PBRAlbedoScreen));
+        m_depthCopierShader.setUniform("map_normal",*source->getTexture(PBRNormalScreen));
+        m_depthCopierShader.setUniform("map_depth",*source->getTexture(PBRDepthScreen));
+        m_depthCopierShader.setUniform("map_material",*source->getTexture(PBRMaterialScreen));
+
+        if(depthTester != nullptr)
+        {
+            m_depthCopierShader.setUniform("map_depthTester",*depthTester);
+            m_depthCopierShader.setUniform("enable_depthTesting",true);
+        } else {
+            m_depthCopierShader.setUniform("enable_depthTesting",false);
+        }
+
+        sf::RectangleShape rect;
+        rect.setPosition(targetRect.left, targetRect.top);
+        rect.setSize(sf::Vector2f(targetRect.width, targetRect.height));
+
+        sf::IntRect textRect = sf::IntRect(sourceRect.left,sourceRect.top,
+                                            sourceRect.width,sourceRect.height);
+
+        rect.setTexture(source->getTexture(PBRAlbedoScreen));
+        rect.setTextureRect(textRect);
+
+        sf::RenderStates s;
+        s.blendMode = sf::BlendNone;
+        s.shader = &m_depthCopierShader;
+
+        sf::View oldView = target->getView();
+        target->setView(target->getDefaultView());
+        target->draw(rect,s);
+        target->setView(oldView);
+
+        target->display(DOFLUSH);
+
+        glDepthFunc(GL_LESS);
+    }
+}
+
+void PBRIsoScene::CopyPBRScreen(sf::MultipleRenderTexture *source,
+                                          sf::MultipleRenderTexture *target, sf::Texture *depthTester)
+{
+    CopyPBRScreen(source, sf::FloatRect(0,0,source->getSize().x,source->getSize().y),
+                  target, sf::FloatRect(0,0,target->getSize().x,target->getSize().y), depthTester);
 }
 
 }

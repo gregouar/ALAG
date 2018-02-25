@@ -70,7 +70,7 @@ void TestingState::Init()
     //torusEntity->SetShadowCastingType(DirectionnalShadow);
     torusEntity->SetColor(sf::Color(255,64,255,128));
    // torusEntity->SetColor(sf::Color(128,128,128));
-    torusEntity->SetStatic(true);
+    torusEntity->SetStatic(false);
     //sarco3DEntity->DesactivateLighting();
     m_sarco3DNode->AttachObject(torusEntity);
 
@@ -122,7 +122,7 @@ void TestingState::Init()
     m_chene_node->SetPosition(150,-100,-78);
     m_chene_node->AttachObject(cheneEntity);
 
-    for(int i = -10 ; i < 10 ; ++i)
+   /* for(int i = -10 ; i < 10 ; ++i)
     for(int j = -10 ; j < 10 ; ++j)
     {
         SceneNode *n = m_mainScene.GetRootNode()->CreateChildNode();
@@ -134,7 +134,7 @@ void TestingState::Init()
         //e->SetShadowVolumeType(TwoSidedShadow);
         n->SetPosition(i*100,j*100,-78);
         n->AttachObject(e);
-    }
+    }*/
 
     SceneNode* tree_shadow_node = m_chene_node->CreateChildNode(-12,-12,78);
     IsoGeometricShadowCaster* tree_dynamic_shadow = m_mainScene.CreateIsoGeometricShadowCaster();
@@ -341,6 +341,9 @@ void TestingState::Update(sf::Time time)
     ++m_fpsCounter;
     m_totalTime += time;
 
+    if(time.asMicroseconds() > m_worstTime.asMicroseconds())
+        m_worstTime = time;
+
     //m_chene_node->Move(m_mainScene.ConvertCartesianToIso(m_camMove.x,m_camMove.y)*(500*time.asSeconds()));
     m_cameraNode->Move(m_mainScene.ConvertCartesianToIso(m_camMove.x,m_camMove.y)*(500*time.asSeconds()));
   //  m_cameraNode->Move(sf::Vector3f(0,0,m_camMove.z)*(100*time.asSeconds()));
@@ -355,18 +358,20 @@ void TestingState::Update(sf::Time time)
 
 void TestingState::Draw(sf::RenderTarget* renderer)
 {
-    if(m_totalTime.asSeconds() > .1)
-    {
-        m_nbrFPS = (float)m_fpsCounter/m_totalTime.asSeconds();
-        m_totalTime = sf::Time::Zero;
-        m_fpsCounter = 0;
-    }
 
     m_mainScene.RenderScene(renderer);
 
     std::ostringstream buf;
-    buf<<m_nbrFPS;
+    buf<<m_nbrFPS<<" ("<<1.0/m_worstTime.asSeconds()<<")";
     m_fpsText.setString(buf.str());
     renderer->resetGLStates();
     renderer->draw(m_fpsText);
+
+    if(m_totalTime.asSeconds() > .5)
+    {
+        m_nbrFPS = (float)m_fpsCounter/m_totalTime.asSeconds();
+        m_totalTime = sf::Time::Zero;
+        m_fpsCounter = 0;
+        m_worstTime = sf::Time::Zero;
+    }
 }

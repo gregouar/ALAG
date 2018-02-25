@@ -35,6 +35,7 @@ class TestingState : public alag::GState, public Singleton<TestingState>
 
         sf::Text m_fpsText;
         float m_nbrFPS, m_fpsCounter;
+        sf::Time m_worstTime;
 
         sf::Vector3f m_camMove;
 

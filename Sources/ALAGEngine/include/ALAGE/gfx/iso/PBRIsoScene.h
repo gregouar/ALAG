@@ -78,6 +78,11 @@ class PBRIsoScene : public DefaultScene
         int UpdateLighting(std::multimap<float, Light*> &lightList);
         //virtual void RenderShadows(std::multimap<float, Light*> &lightList, int = GL_MAX_LIGHTS);
 
+        void CopyPBRScreen(sf::MultipleRenderTexture *source, sf::FloatRect sourceRect,
+                           sf::MultipleRenderTexture *target, sf::FloatRect targetRect, sf::Texture *depthTester = nullptr);
+        void CopyPBRScreen(sf::MultipleRenderTexture *source,
+                           sf::MultipleRenderTexture *target, sf::Texture *depthTester = nullptr);
+
         sf::Shader *GetDepthShader();
 
         void CompileDepthShader();
