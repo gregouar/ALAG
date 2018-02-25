@@ -205,7 +205,7 @@ void Light::RenderShadowMap(const sf::View &view/*,const sf::Vector2u &screen_si
 
         //m_shadowMap.display();
         m_shadowMap.display(false);
-    m_shadowMap.setActive(false);
+   // m_shadowMap.setActive(false);
 }
 
 

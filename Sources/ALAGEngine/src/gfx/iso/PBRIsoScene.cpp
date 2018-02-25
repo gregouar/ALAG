@@ -603,7 +603,7 @@ void PBRIsoScene::RenderStaticGeometry(const sf::View &curView)
             if(!m_firstStaticRender)
                 (*tilesIt)->askForUpdate = false;
 
-            renderTarget->setActive(true);
+            //renderTarget->setActive(true);
             glScissor((*tilesIt)->position.x,renderTarget->getSize().y-(*tilesIt)->position.y-SCREENTILE_SIZE,
                       SCREENTILE_SIZE,SCREENTILE_SIZE);
             glEnable(GL_SCISSOR_TEST);
@@ -692,8 +692,8 @@ void PBRIsoScene::RenderDynamicGeometry(const sf::View &curView)
 
     for(int pass = 0 ; pass <= 1 ; ++pass)
     {
-        sf::RenderStates state;
-        state.shader = &m_PBRGeometryShader;
+       // sf::RenderStates state;
+       // state.shader = &m_PBRGeometryShader;
 
 
         sf::FloatRect sourceRect = sf::FloatRect(m_tilesShift.x,m_tilesShift.y,
@@ -707,10 +707,9 @@ void PBRIsoScene::RenderDynamicGeometry(const sf::View &curView)
             m_PBRGeometryShader.setUniform("p_alpha_pass",false);
            // m_PBRGeometryShader.setUniform("enable_depthTesting",false);
             renderTarget = &m_PBRScreen;
-            state.blendMode = sf::BlendNone;
+           // state.blendMode = sf::BlendNone;
 
-            /** MAYBE DO ALL 5 COPIES IN ONE PASS WITH SHADER**/
-            m_PBRScreen.copyDepthBuffer(&m_staticGeometryScreen, sourceRect, targetRect);
+           /* m_PBRScreen.copyDepthBuffer(&m_staticGeometryScreen, sourceRect, targetRect);
             m_PBRScreen.copyBuffer(&m_staticGeometryScreen,PBRAlbedoScreen,sourceRect,
                                    PBRAlbedoScreen, targetRect);
             m_PBRScreen.copyBuffer(&m_staticGeometryScreen,PBRDepthScreen,sourceRect,
@@ -718,7 +717,9 @@ void PBRIsoScene::RenderDynamicGeometry(const sf::View &curView)
             m_PBRScreen.copyBuffer(&m_staticGeometryScreen,PBRMaterialScreen,sourceRect,
                                    PBRMaterialScreen, targetRect);
             m_PBRScreen.copyBuffer(&m_staticGeometryScreen,PBRNormalScreen,sourceRect,
-                                   PBRNormalScreen, targetRect);
+                                   PBRNormalScreen, targetRect);*/
+
+            CopyPBRScreen(&m_staticGeometryScreen, sourceRect, &m_PBRScreen, targetRect);
 
             //m_PBRScreen.setActive(true);
             //m_PBRScreen.getTexture(0)->copyToImage().saveToFile("statiTest.png");
@@ -728,9 +729,9 @@ void PBRIsoScene::RenderDynamicGeometry(const sf::View &curView)
             m_PBRGeometryShader.setUniform("p_alpha_pass",true);
             //m_PBRGeometryShader.setUniform("enable_depthTesting",true);
             renderTarget = &m_alpha_PBRScreen;
-            state.blendMode = sf::BlendNone;
+           // state.blendMode = sf::BlendNone;
 
-            m_alpha_PBRScreen.setActive(true);
+            //m_alpha_PBRScreen.setActive(true);
 
             CopyPBRScreen(&m_alpha_staticGeometryScreen, sourceRect,
                           &m_alpha_PBRScreen, targetRect, m_PBRScreen.getTexture(PBRDepthScreen));
@@ -776,33 +777,22 @@ void PBRIsoScene::RenderDynamicGeometry(const sf::View &curView)
 
         for(renderIt = m_renderQueue.begin() ; renderIt != m_renderQueue.end(); ++renderIt)
         if(!(*renderIt)->IsStatic())
-        {
-            sf::Vector3f globalPos(0,0,0);
+            RenderEntity(renderTarget,*renderIt);
 
-            SceneNode *node = (*renderIt)->GetParentNode();
-            if(node != nullptr)
-                globalPos = node->GetGlobalPosition();
-
-            sf::Vector3f v = m_isoToCartMat*globalPos;
-
-            state.transform = sf::Transform::Identity;
-            state.transform.translate(v.x, v.y);
-            state.transform *= m_TransformIsoToCart;
-
-            m_PBRGeometryShader.setUniform("p_zPos",globalPos.z*PBRTextureAsset::DEPTH_BUFFER_NORMALISER);
-            m_PBRGeometryShader.setUniform("p_normalProjMat",sf::Glsl::Mat3(m_normalProjMat.values));
-            (*renderIt)->PrepareShader(&m_PBRGeometryShader);
-            (*renderIt)->Render(renderTarget,state);
-        }
         renderTarget->display(DOFLUSH);
-        renderTarget->setActive(false);
+       // renderTarget->setActive(false);
         Profiler::PopClock();
     }
 }
 
 void PBRIsoScene::RenderLighting()
 {
-    m_renderer.setTexture(m_lighting_PBRScreen[m_activeLightingPBRScreen].getTexture(0));
+    m_lighting_PBRScreen[m_activeLightingPBRScreen].setActive(true);
+    m_lighting_PBRScreen[m_activeLightingPBRScreen].clear();
+    glDisable(GL_DEPTH_TEST);
+    glDepthMask(GL_FALSE);
+
+    m_renderer.setTexture(m_PBRScreen.getTexture(PBRAlbedoScreen));
 
     m_lightingShader.setUniform("map_albedo",*m_PBRScreen.getTexture(PBRAlbedoScreen));
     m_lightingShader.setUniform("map_normal",*m_PBRScreen.getTexture(PBRNormalScreen));
@@ -867,6 +857,33 @@ void PBRIsoScene::RenderSSAO()
     m_blurShader.setUniform("offset",sf::Vector2f(0,DEFAULT_SSAOBLUR/(float)m_PBRScreen.getSize().x));
     m_SSAOScreen[0].draw(m_renderer,&m_blurShader);
     m_SSAOScreen[0].display(DOFLUSH);
+}
+
+void PBRIsoScene::RenderEntity(sf::RenderTarget* renderTarget,SceneEntity *entity)
+{
+    if(entity != nullptr)
+    {
+        sf::RenderStates state;
+        state.shader = &m_PBRGeometryShader;
+        state.blendMode = sf::BlendNone;
+
+        sf::Vector3f globalPos(0,0,0);
+
+        SceneNode *node = entity->GetParentNode();
+        if(node != nullptr)
+            globalPos = node->GetGlobalPosition();
+
+        sf::Vector3f v = m_isoToCartMat*globalPos;
+
+        state.transform = sf::Transform::Identity;
+        state.transform.translate(v.x, v.y);
+        state.transform *= m_TransformIsoToCart;
+
+        m_PBRGeometryShader.setUniform("p_zPos",globalPos.z*PBRTextureAsset::DEPTH_BUFFER_NORMALISER);
+        m_PBRGeometryShader.setUniform("p_normalProjMat",sf::Glsl::Mat3(m_normalProjMat.values));
+        entity->PrepareShader(&m_PBRGeometryShader);
+        entity->Render(renderTarget,state);
+    }
 }
 
 IsoRectEntity* PBRIsoScene::CreateIsoRectEntity(sf::Vector2f rectSize)

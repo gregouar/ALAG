@@ -28,6 +28,7 @@ class DefaultScene
         virtual void RenderScene(sf::RenderTarget*) = 0;
         virtual void RenderShadows(std::multimap<float, Light*> &,const sf::View &,
                                    /*const sf::Vector2u &,*/ int = -1); // -1 is GL_MAX_LIGHTS
+        virtual void RenderEntity(sf::RenderTarget* ,SceneEntity*);
 
         void AskToComputeRenderQueue();
 

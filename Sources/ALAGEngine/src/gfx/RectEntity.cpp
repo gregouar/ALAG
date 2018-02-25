@@ -112,7 +112,7 @@ void RectEntity::SetColor(sf::Color c)
 
 sf::FloatRect RectEntity::GetScreenBoundingRect(const Mat3x3& transMat)
 {
-    sf::FloatRect b;
+    sf::FloatRect b(0,0,sf::RectangleShape::getSize().x,sf::RectangleShape::getSize().y);
    /* b.position = -GetCenter();
     b.size = -sf::RectangleShape::getSize();*/
 

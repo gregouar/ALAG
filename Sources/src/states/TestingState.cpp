@@ -67,9 +67,9 @@ void TestingState::Init()
     //sarco3DEntity->SetTexture(PBRTextureHandler->LoadAssetFromFile("../data/bedrockXML.txt",LoadType_InThread));
     //torusEntity->SetCenter(128,166);
     torusEntity->SetCenter(128,128);
-    //torusEntity->SetShadowCastingType(DirectionnalShadow);
-    torusEntity->SetColor(sf::Color(255,64,255,128));
-   // torusEntity->SetColor(sf::Color(128,128,128));
+    torusEntity->SetShadowCastingType(DirectionnalShadow);
+    //torusEntity->SetColor(sf::Color(255,64,255,128));
+    torusEntity->SetColor(sf::Color(128,128,128));
     torusEntity->SetStatic(false);
     //sarco3DEntity->DesactivateLighting();
     m_sarco3DNode->AttachObject(torusEntity);
@@ -102,7 +102,7 @@ void TestingState::Init()
 
    /* Light* sunLight = m_mainScene.CreateLight(DirectionnalLight,sf::Vector3f(-1,.5,-1), sf::Color(255,255,160));
     sunLight->SetConstantAttenuation(2);*/
-    m_sunLight = m_mainScene.CreateLight(DirectionnalLight,sf::Vector3f(-.2,-1,-1), sf::Color(255,255,255));
+    m_sunLight = m_mainScene.CreateLight(DirectionnalLight,sf::Vector3f(-1,.2,-1), sf::Color(255,255,255));
     m_sunLight->SetIntensity(10);
     m_sunLight->EnableShadowCasting();
     m_mainScene.GetRootNode()->AttachObject(m_sunLight);
@@ -119,6 +119,7 @@ void TestingState::Init()
     cheneEntity->SetCenter(256,526);
     cheneEntity->SetShadowCastingType(DirectionnalShadow);
     cheneEntity->SetShadowVolumeType(TwoSidedShadow);
+    cheneEntity->SetStatic(true);
     m_chene_node->SetPosition(150,-100,-78);
     m_chene_node->AttachObject(cheneEntity);
 
@@ -172,6 +173,8 @@ void TestingState::Init()
     //rectEntity->SetTexture(TextureHandler->LoadAssetFromFile("../data/sand_color.png",LoadType_InThread));
     //rectEntity->SetTexture(TextureHandler->LoadAssetFromFile("../data/sand.png",LoadType_InThread));
     rectEntity->SetTextureRect(sf::IntRect(0,0,2048,2048));
+
+    //rectEntity->SetStatic(true);
     //rectEntity->SetColor(sf::Color(255,0,0));
     rectNode->AttachObject(rectEntity);
 

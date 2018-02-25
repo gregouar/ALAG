@@ -35,7 +35,7 @@
 	<vector>
 	"GState.h"
 
-1519555294 source:c:\c++\alag\sources\src\states\testingstate.cpp
+1519566426 source:c:\c++\alag\sources\src\states\testingstate.cpp
 	"states/TestingState.h"
 	"ALAGE/core/GApp.h"
 	"ALAGE/core/EventManager.h"
@@ -670,7 +670,7 @@
 	"ALAGE/gfx/PBRTextureAsset.h"
 	"ALAGE/gfx/SceneEntity.h"
 
-1519232972 source:c:\c++\alag\sources\alagengine\src\gfx\rectentity.cpp
+1519565768 source:c:\c++\alag\sources\alagengine\src\gfx\rectentity.cpp
 	"ALAGE/gfx/RectEntity.h"
 	"ALAGE/core/AssetHandler.h"
 	"ALAGE/gfx/SceneNode.h"
@@ -746,7 +746,7 @@
 	<SFML/Graphics.hpp>
 	"ALAGE/gfx/SceneObject.h"
 
-1519161306 source:c:\c++\alag\sources\alagengine\src\gfx\light.cpp
+1519566315 source:c:\c++\alag\sources\alagengine\src\gfx\light.cpp
 	"ALAGE/gfx/Light.h"
 	"ALAGE/gfx/ShadowCaster.h"
 	"ALAGE/utils/TextureModifier.h"
@@ -860,7 +860,7 @@
 	<SFML/Graphics/Drawable.hpp>
 	<SFML/Window/GlResource.hpp>
 
-1519331950 c:\c++\alag\sources\sfml\include\sfml\graphics\multiplerendertexture.hpp
+1519340124 c:\c++\alag\sources\sfml\include\sfml\graphics\multiplerendertexture.hpp
 	<SFML/Graphics/Export.hpp>
 	<SFML/Graphics/Texture.hpp>
 	<SFML/Graphics/RenderTarget.hpp>
@@ -882,12 +882,12 @@
 	"ALAGE/gfx/TextureAsset.h"
 	"extlibs/tinyxml.h"
 
-1519151721 source:c:\c++\alag\sources\alagengine\src\gfx\defaultscene.cpp
+1519567287 source:c:\c++\alag\sources\alagengine\src\gfx\defaultscene.cpp
 	"ALAGE/gfx/DefaultScene.h"
 	"ALAGE/utils/Logger.h"
 	"ALAGE/utils/Mathematics.h"
 
-1519151713 c:\c++\alag\sources\alagengine\include\alage\gfx\defaultscene.h
+1519567282 c:\c++\alag\sources\alagengine\include\alage\gfx\defaultscene.h
 	<SFML/OpenGL.hpp>
 	<SFML/Graphics.hpp>
 	"ALAGE/gfx/SceneNode.h"
@@ -896,7 +896,7 @@
 	"ALAGE/gfx/Camera.h"
 	"ALAGE/gfx/Light.h"
 
-1519554445 c:\c++\alag\sources\alagengine\include\alage\gfx\iso\pbrisoscene.h
+1519567282 c:\c++\alag\sources\alagengine\include\alage\gfx\iso\pbrisoscene.h
 	"ALAGE/utils/Mathematics.h"
 	"ALAGE/gfx/DefaultScene.h"
 	"ALAGE/gfx/iso/IsoGeometricShadowCaster.h"
@@ -904,7 +904,7 @@
 	"ALAGE/gfx/iso/IsoRectEntity.h"
 	<SFML/OpenGL.hpp>
 
-1519555264 source:c:\c++\alag\sources\alagengine\src\gfx\iso\pbrisoscene.cpp
+1519566315 source:c:\c++\alag\sources\alagengine\src\gfx\iso\pbrisoscene.cpp
 	"ALAGE/gfx/iso/PBRIsoScene.h"
 	"ALAGE/utils/Profiler.h"
 	"ALAGE/utils/Logger.h"

@@ -57,20 +57,23 @@ void DefaultScene::ProcessRenderQueue(sf::RenderTarget *w)
 {
     std::list<SceneEntity*>::iterator renderIt;
     for(renderIt = m_renderQueue.begin() ; renderIt != m_renderQueue.end(); ++renderIt)
-    {
-        sf::RenderStates state;
-        state.transform = sf::Transform::Identity;
+        RenderEntity(w,*renderIt);
+}
 
-        sf::Vector3f globalPos(0,0,0);
+void DefaultScene::RenderEntity(sf::RenderTarget *w, SceneEntity *entity)
+{
+    sf::RenderStates state;
+    state.transform = sf::Transform::Identity;
 
-        SceneNode *node = (*renderIt)->GetParentNode();
-        if(node != nullptr)
-            globalPos = node->GetGlobalPosition();
+    sf::Vector3f globalPos(0,0,0);
 
-        state.transform.translate(globalPos.x, globalPos.y);
+    SceneNode *node = entity->GetParentNode();
+    if(node != nullptr)
+        globalPos = node->GetGlobalPosition();
 
-        (*renderIt)->Render(w,state);
-    }
+    state.transform.translate(globalPos.x, globalPos.y);
+
+    entity->Render(w,state);
 }
 
 void DefaultScene::ComputeRenderQueue()

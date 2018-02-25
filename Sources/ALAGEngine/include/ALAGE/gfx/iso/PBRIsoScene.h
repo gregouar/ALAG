@@ -40,6 +40,7 @@ class PBRIsoScene : public DefaultScene
         virtual void RenderScene(sf::RenderTarget*);
 
         virtual void ProcessRenderQueue();
+        virtual void RenderEntity(sf::RenderTarget* ,SceneEntity*);
         void RenderStaticGeometry(const sf::View &curView);
         void RenderDynamicGeometry(const sf::View &curView);
         void RenderLighting();
