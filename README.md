@@ -1,2 +1,2 @@
 # ALAG
-A Lovecraftian Adventure Game
+A 2.5D Isometric Shading Engine
