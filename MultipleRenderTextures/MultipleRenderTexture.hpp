@@ -16,9 +16,21 @@ public:
     MultipleRenderTexture();
     virtual ~MultipleRenderTexture();
 
-    bool create(unsigned int width, unsigned int height, bool depthBuffer = false);
-    bool addRenderTarget(unsigned int renderingLocation);
+    bool create(unsigned int width, unsigned int height);
+    bool addRenderTarget(unsigned int renderingLocation, bool useFloat = false);
+    bool addDepthBuffer();
+    bool addDepthStencilBuffer();
     bool removeRenderTarget(unsigned int renderingLocation);
+    bool removeDepthBuffer();
+    //bool removeStencilBuffer();
+
+    bool copyDepthBuffer(MultipleRenderTexture *);
+    bool copyDepthBuffer(MultipleRenderTexture *, const sf::FloatRect &sourceRect, const sf::FloatRect &targetRect);
+    bool copyDepthStencilBuffer(MultipleRenderTexture *);
+    bool copyDepthStencilBuffer(MultipleRenderTexture *, const sf::FloatRect &sourceRect, const sf::FloatRect &targetRect);
+    bool copyBuffer(MultipleRenderTexture *, unsigned int sourceLocation, const sf::FloatRect &sourceRect,
+                                             unsigned int targetLocation, const sf::FloatRect &targetRect);
+    bool copyBuffer(MultipleRenderTexture *, unsigned int sourceLocation, unsigned int targetLocation);
 
     void setSmooth(unsigned int renderingLocation, bool smooth);
     bool isSmooth(unsigned int renderingLocation);
@@ -27,7 +39,7 @@ public:
     bool generateMipmap(unsigned int renderingLocation);
 
     bool setActive(bool active);
-    void display();
+    void display(bool doFlush = true);
 
     virtual sf::Vector2u getSize() const;
     Texture* getTexture(unsigned int renderingLocation);
@@ -35,7 +47,7 @@ public:
 
 protected:
     std::vector<unsigned int>::iterator findRenderTarget(unsigned int renderingLocation);
-    bool createFBO(unsigned int width, unsigned int height, bool depthBuffer = false);
+    bool createFBO(unsigned int width, unsigned int height);
     bool addTargetToFBO(unsigned int renderingLocation, unsigned int);
 
     static unsigned int getMaxColorAttachments();

@@ -123,19 +123,22 @@ void TestingState::Init()
     m_chene_node->SetPosition(150,-100,-78);
     m_chene_node->AttachObject(cheneEntity);
 
-   /* for(int i = -10 ; i < 10 ; ++i)
-    for(int j = -10 ; j < 10 ; ++j)
+    for(int i = -20 ; i < 20 ; ++i)
+    for(int j = -20 ; j < 20 ; ++j)
     {
         SceneNode *n = m_mainScene.GetRootNode()->CreateChildNode();
         IsoSpriteEntity *e = m_mainScene.CreateIsoSpriteEntity();
-        e->SetTexture(PBRTextureHandler->LoadAssetFromFile("../data/treeXML.txt"));
-        e->SetCenter(256,526);
+        //e->SetTexture(PBRTextureHandler->LoadAssetFromFile("../data/treeXML.txt"));
+        e->SetTexture(PBRTextureHandler->LoadAssetFromFile("../data/torusbXML.txt"));
+      //  e->SetCenter(256,526);
+        e->SetCenter(128,160);
         e->SetStatic(true);
        // e->SetShadowCastingType(DirectionnalShadow);
         //e->SetShadowVolumeType(TwoSidedShadow);
-        n->SetPosition(i*100,j*100,-78);
+        //n->SetPosition(i*100,j*100,-78);
+        n->SetPosition(i*50,j*50,0);
         n->AttachObject(e);
-    }*/
+    }
 
     SceneNode* tree_shadow_node = m_chene_node->CreateChildNode(-12,-12,78);
     IsoGeometricShadowCaster* tree_dynamic_shadow = m_mainScene.CreateIsoGeometricShadowCaster();

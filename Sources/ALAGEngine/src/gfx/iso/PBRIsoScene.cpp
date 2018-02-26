@@ -420,7 +420,6 @@ void PBRIsoScene::RenderStaticGeometry(const sf::View &curView)
         if(shifting.x < (int)m_nbrTiles.x && shifting.x > -(int)m_nbrTiles.x
         && shifting.y < (int)m_nbrTiles.y && shifting.y > -(int)m_nbrTiles.y)
         {
-
             sf::FloatRect sourceRect, targetRect;
 
             if(shifting.x > 0)
@@ -524,33 +523,38 @@ void PBRIsoScene::RenderStaticGeometry(const sf::View &curView)
 
 
     std::list<SceneEntity*>::iterator renderIt;
-    for(renderIt = m_renderQueue.begin() ; renderIt != m_renderQueue.end(); ++renderIt)
-    if((*renderIt)->IsStatic())
+    for(renderIt = m_renderQueue.begin() ; renderIt != m_renderQueue.end(); )
     {
-        SceneNode *node = (*renderIt)->GetParentNode();
-        if(node != nullptr)
+        if((*renderIt)->IsStatic())
         {
-            /**Need to take zoom into consideration somewhere**/
-            sf::Vector3f globalPos = m_isoToCartMat*node->GetGlobalPosition();
-
-            sf::FloatRect rect  = (*renderIt)->GetScreenBoundingRect(m_isoToCartMat);
-            rect.left += globalPos.x - viewPos.x;
-            rect.top  += globalPos.y - viewPos.y;
-
-
-            for(int  x = std::max(0, (int)floor(rect.left/SCREENTILE_SIZE)) ;
-                        x < std::min((int)m_nbrTiles.x, (int)ceil((float)(rect.left+rect.width)/SCREENTILE_SIZE)) ;
-                        ++x)
-            for(int  y = std::max(0, (int)floor(rect.top/SCREENTILE_SIZE)) ;
-                        y < std::min((int)m_nbrTiles.y, (int)ceil((float)(rect.top+rect.height)/SCREENTILE_SIZE));
-                        ++y)
+            SceneNode *node = (*renderIt)->GetParentNode();
+            if(node != nullptr)
             {
-                int n = x+y*m_nbrTiles.x;
-                if((*renderIt)->IsAskingForRenderUpdate())
-                    m_screenTiles[n].askForUpdate = true;
-                m_screenTiles[n].newList.push_back(*renderIt);
+                /**Need to take zoom into consideration somewhere**/
+                sf::Vector3f globalPos = m_isoToCartMat*node->GetGlobalPosition();
+
+                sf::FloatRect rect  = (*renderIt)->GetScreenBoundingRect(m_isoToCartMat);
+                rect.left += globalPos.x - viewPos.x;
+                rect.top  += globalPos.y - viewPos.y;
+
+
+                for(int  x = std::max(0, (int)floor(rect.left/SCREENTILE_SIZE)) ;
+                            x < std::min((int)m_nbrTiles.x, (int)ceil((float)(rect.left+rect.width)/SCREENTILE_SIZE)) ;
+                            ++x)
+                for(int  y = std::max(0, (int)floor(rect.top/SCREENTILE_SIZE)) ;
+                            y < std::min((int)m_nbrTiles.y, (int)ceil((float)(rect.top+rect.height)/SCREENTILE_SIZE));
+                            ++y)
+                {
+                    int n = x+y*m_nbrTiles.x;
+                    if((*renderIt)->IsAskingForRenderUpdate())
+                        m_screenTiles[n].askForUpdate = true;
+                    m_screenTiles[n].newList.push_back(*renderIt);
+                }
             }
-        }
+
+            renderIt = m_renderQueue.erase(renderIt);
+        } else
+            ++renderIt;
     }
 
 

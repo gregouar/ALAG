@@ -11,6 +11,17 @@ at the top and
 >> 	friend class MultipleRenderTexture;
 
 with the other friends declarations.
+Also change bool create(unsigned int width, unsigned int height); to 
+>> bool create(unsigned int width, unsigned int height, bool useFloat=false);
+
+-In "src\SFML\Graphics\Texture.cpp", in 
+bool Texture::create(unsigned int width, unsigned int height, bool useFloat)
+ add:
+
+>>    if(useFloat)
+>>        glCheck(glTexImage2D(GL_TEXTURE_2D, 0, GLEXT_RGBA16F, m_actualSize.x, m_actualSize.y, 0, GL_RGBA, GL_FLOAT, NULL));
+>>    else
+>>        glCheck(glTexImage2D(GL_TEXTURE_2D, 0, (m_sRgb ? GLEXT_GL_SRGB8_ALPHA8 : GL_RGBA), m_actualSize.x, m_actualSize.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL));
 
 -Add in "src\SFML\Graphics\CMakeLists.txt":
 
@@ -20,15 +31,23 @@ with the other friends declarations.
 -Add in "src\SFML\Graphics\GLExtensions.hpp":
 
 >> 	#define GLEXT_glDrawBuffers                       glDrawBuffersOES
+>>  #define GLEXT_GL_DEPTH_STENCIL_ATTACHMENT         GL_DEPTH_STENCIL_ATTACHMENT_OES
+>>	#define GLEXT_GL_DEPTH24_STENCIL8                 GL_DEPTH24_STENCIL8_OES
 
 with the other OES, and
     
+>>  #define GLEXT_RGBA16F                             GL_RGBA16F_EXT
 >> 	#define GLEXT_glDrawBuffers                       glDrawBuffersEXT
+>>  #define GLEXT_GL_DEPTH_STENCIL_ATTACHMENT         GL_DEPTH_STENCIL_ATTACHMENT_EXT
+>>  #define GLEXT_GL_DEPTH24_STENCIL8                 GL_DEPTH24_STENCIL8_EXT
 
 with the EXT.
    	
 -Add in "src\SFML\Graphics\GLLoader.cpp"
 
+>>  #define GL_RGBA16F_EXT 0x881A
+>>  #define GL_DEPTH_STENCIL_ATTACHMENT_EXT 0x821A
+>>  #define GL_DEPTH24_STENCIL8_EXT 0x88F0
 >> 	void (GL_FUNCPTR *sf_ptrc_glDrawBuffersEXT)(GLsizei, const GLenum *) = NULL;
 
 and
