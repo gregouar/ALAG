@@ -118,6 +118,38 @@ sf::FloatRect RectEntity::GetScreenBoundingRect(const Mat3x3& transMat)
 
     /** NEED TO COMPUTE RECT IN SCREEN POS **/
 
+    sf::Vector2f upper_left(0,0), lower_right(0,0);
+
+    for(size_t i = 0 ; i < 3 ; ++i)
+    {
+        sf::Vector2f p(0,0);
+
+        if(i == 0)
+            p = sf::Vector2f(b.width,0);
+        else if(i == 1)
+            p = sf::Vector2f(b.width, b.height);
+        else if(i == 2)
+            p = sf::Vector2f(0, b.height);
+
+        p = transMat * p;
+
+        if(p.x < upper_left.x)
+            upper_left.x = p.x;
+        if(p.x > lower_right.x)
+            lower_right.x = p.x;
+        if(p.y < upper_left.y)
+            upper_left.y = p.y;
+        if(p.y > lower_right.y)
+            lower_right.y = p.y;
+    }
+
+    sf::Vector2f c = transMat * sf::RectangleShape::getOrigin();
+
+    b.left = upper_left.x - c.x;
+    b.top = upper_left.y - c.y;
+    b.width  = lower_right.x - upper_left.x;
+    b.height = lower_right.y - upper_left.y;
+
     return b;
 }
 

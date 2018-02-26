@@ -179,7 +179,7 @@ Mat3x3 Mat3x3::operator*(float const& k)
 
 }
 
-sf::Vector3f Mat3x3::operator*(sf::Vector3f const& v)
+sf::Vector3f Mat3x3::operator*(sf::Vector3f const& v) const
 {
     sf::Vector3f r;
     r.x = this->values[0]*v.x + this->values[1]*v.y + this->values[2]*v.z;
@@ -188,7 +188,7 @@ sf::Vector3f Mat3x3::operator*(sf::Vector3f const& v)
     return r;
 }
 
-sf::Vector2f Mat3x3::operator*(sf::Vector2f const& v)
+sf::Vector2f Mat3x3::operator*(sf::Vector2f const& v) const
 {
     sf::Vector2f r;
     r.x = this->values[0]*v.x + this->values[1]*v.y;

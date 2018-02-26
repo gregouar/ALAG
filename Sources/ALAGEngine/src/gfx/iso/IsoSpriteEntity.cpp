@@ -135,6 +135,11 @@ void IsoSpriteEntity::ComputeShadow(Light* light)
             }
 
 
+
+            sf::Vector2i shrinked_shadow_UL(shadow_bounds.width,shadow_bounds.height),
+                         shrinked_shadow_LR(0,0);
+            int blur_radius = 5;
+
             float height_pixel = 0;
             sf::Vector2f proj_pos(0,0);
             for(size_t x = 0 ; x < depth_texture_width ; ++x)
@@ -172,6 +177,15 @@ void IsoSpriteEntity::ComputeShadow(Light* light)
                         shadow_map_array[array_pos+1] = color_pixel.g;
                         shadow_map_array[array_pos+2] = color_pixel.b;
                         shadow_map_array[array_pos+3] = color_pixel.a;
+
+                        if(pos.x + dx - blur_radius < shrinked_shadow_UL.x)
+                            shrinked_shadow_UL.x = pos.x + dx - blur_radius;
+                        if(pos.x + dx + blur_radius > shrinked_shadow_LR.x)
+                            shrinked_shadow_LR.x = pos.x + dx + blur_radius;
+                        if(pos.y + dy - blur_radius < shrinked_shadow_UL.y)
+                            shrinked_shadow_UL.y = pos.y + dy - blur_radius;
+                        if(pos.y + dy + blur_radius > shrinked_shadow_LR.y)
+                            shrinked_shadow_LR.y = pos.y + dy + blur_radius;
                     }
                 }
 
@@ -206,15 +220,36 @@ void IsoSpriteEntity::ComputeShadow(Light* light)
                             shadow_map_array[array_pos+1] = color_pixel.g;
                             shadow_map_array[array_pos+2] = color_pixel.b;
                             shadow_map_array[array_pos+3] = color_pixel.a;
+
+                            if(pos.x + dx - blur_radius < shrinked_shadow_UL.x)
+                                shrinked_shadow_UL.x = pos.x + dx - blur_radius;
+                            if(pos.x + dx + blur_radius > shrinked_shadow_LR.x)
+                                shrinked_shadow_LR.x = pos.x + dx + blur_radius;
+                            if(pos.y + dy - blur_radius < shrinked_shadow_UL.y)
+                                shrinked_shadow_UL.y = pos.y + dy - blur_radius;
+                            if(pos.y + dy + blur_radius > shrinked_shadow_LR.y)
+                                shrinked_shadow_LR.y = pos.y + dy + blur_radius;
                         }
                     }
                 }
             }
 
+
+            sf::IntRect shrinked_shadow_bounds(shrinked_shadow_UL.x,shrinked_shadow_UL.y,
+                                               shrinked_shadow_LR.x - shrinked_shadow_UL.x,
+                                               shrinked_shadow_LR.y - shrinked_shadow_UL.y);
+
+            sf::Image shadowImg, shadowImgShrinked;
+            shadowImg.create(shadow_bounds.width,shadow_bounds.height,shadow_map_array);
+            shadowImgShrinked.create(shrinked_shadow_bounds.width, shrinked_shadow_bounds.height);
+            shadowImgShrinked.copy(shadowImg, 0, 0, shrinked_shadow_bounds);
+
+
             sf::Texture* shadowTexture = &m_shadowMap[light];
-            shadowTexture->create(shadow_bounds.width,shadow_bounds.height);
-            shadowTexture->update(shadow_map_array,shadow_bounds.width,shadow_bounds.height,0,0);
-            TextureModifier::BlurTexture(shadowTexture, 5);
+            shadowTexture->loadFromImage(shadowImgShrinked);
+           // shadowTexture->create(shadow_bounds.width,shadow_bounds.height);
+            //shadowTexture->update(shadow_map_array,shadow_bounds.width,shadow_bounds.height,0,0);
+            TextureModifier::BlurTexture(shadowTexture, blur_radius);
 
             std::map<Light*, sf::Drawable*>::iterator shadowIt;
             shadowIt = m_shadowDrawable.find(light);
@@ -225,10 +260,10 @@ void IsoSpriteEntity::ComputeShadow(Light* light)
 
             sprite->setTexture(*shadowTexture);
             sprite->setOrigin(sf::Sprite::getOrigin()
-                                            -sf::Vector2f(shadow_bounds.left, shadow_bounds.top));
+                                            -sf::Vector2f(shadow_bounds.left+shrinked_shadow_bounds.left,
+                                                          shadow_bounds.top+shrinked_shadow_bounds.top));
 
             m_shadowDrawable[light] = sprite;
-
 
             delete[] shadow_map_array;
         }

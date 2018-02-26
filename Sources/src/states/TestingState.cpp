@@ -58,7 +58,7 @@ void TestingState::Init()
 
 
     m_sarco3DNode = m_mainScene.GetRootNode()->CreateChildNode();
-    m_sarco3DNode->SetPosition(0,0,0);
+    m_sarco3DNode->SetPosition(100,250,0);
     //Sprite3DEntity *sarco3DEntity = m_mainScene.CreateSprite3DEntity(sf::Vector2i(256,256));
     SpriteEntity *torusEntity = m_mainScene.CreateIsoSpriteEntity();
     //sarco3DEntity->SetTexture(TextureHandler->LoadAssetFromFile("../data/sarco-color.png"));
@@ -98,11 +98,12 @@ void TestingState::Init()
     sarco3DEntityThird->SetTexture(t3D);
     sarco3DEntityThird->SetCenter(128,148);
     sarco3DEntityThird->SetShadowCastingType(DirectionnalShadow);
+    sarco3DEntityThird->SetStatic(true);
     m_mainScene.GetRootNode()->CreateChildNode(sf::Vector2f(100,100))->AttachObject(sarco3DEntityThird);
 
    /* Light* sunLight = m_mainScene.CreateLight(DirectionnalLight,sf::Vector3f(-1,.5,-1), sf::Color(255,255,160));
     sunLight->SetConstantAttenuation(2);*/
-    m_sunLight = m_mainScene.CreateLight(DirectionnalLight,sf::Vector3f(-1,.2,-1), sf::Color(255,255,255));
+    m_sunLight = m_mainScene.CreateLight(DirectionnalLight,sf::Vector3f(-1 ,-.2,-1), sf::Color(255,255,255));
     m_sunLight->SetIntensity(10);
     m_sunLight->EnableShadowCasting();
     m_mainScene.GetRootNode()->AttachObject(m_sunLight);
@@ -123,7 +124,7 @@ void TestingState::Init()
     m_chene_node->SetPosition(150,-100,-78);
     m_chene_node->AttachObject(cheneEntity);
 
-    for(int i = -20 ; i < 20 ; ++i)
+   /* for(int i = -20 ; i < 20 ; ++i)
     for(int j = -20 ; j < 20 ; ++j)
     {
         SceneNode *n = m_mainScene.GetRootNode()->CreateChildNode();
@@ -138,7 +139,7 @@ void TestingState::Init()
         //n->SetPosition(i*100,j*100,-78);
         n->SetPosition(i*50,j*50,0);
         n->AttachObject(e);
-    }
+    }*/
 
     SceneNode* tree_shadow_node = m_chene_node->CreateChildNode(-12,-12,78);
     IsoGeometricShadowCaster* tree_dynamic_shadow = m_mainScene.CreateIsoGeometricShadowCaster();
@@ -164,7 +165,7 @@ void TestingState::Init()
 
 
     SceneNode* rectNode = m_mainScene.GetRootNode()->CreateChildNode();
-    IsoRectEntity *rectEntity = m_mainScene.CreateIsoRectEntity(sf::Vector2f(2048,2038));
+    IsoRectEntity *rectEntity = m_mainScene.CreateIsoRectEntity(sf::Vector2f(2048,2048));
     rectEntity->SetCenter(sf::Vector2f(512,  512));
    // rectEntity->SetTexture(TextureHandler->LoadAssetFromFile("../data/cobble_color.png",LoadType_InThread));
     //rectEntity->SetTexture(PBRTextureHandler->LoadAssetFromFile("../data/sandXML.txt",LoadType_InThread));
@@ -177,9 +178,19 @@ void TestingState::Init()
     //rectEntity->SetTexture(TextureHandler->LoadAssetFromFile("../data/sand.png",LoadType_InThread));
     rectEntity->SetTextureRect(sf::IntRect(0,0,2048,2048));
 
-    //rectEntity->SetStatic(true);
+    rectEntity->SetStatic(true);
     //rectEntity->SetColor(sf::Color(255,0,0));
     rectNode->AttachObject(rectEntity);
+
+    /*sf::FloatRect f = rectEntity->GetScreenBoundingRect(m_mainScene.GetIsoToCartMat());
+    rectNode = m_mainScene.GetRootNode()->CreateChildNode();
+    IsoSpriteEntity *r = m_mainScene.CreateIsoSpriteEntity();
+    r->SetScale(f.width,f.height);
+    sf::Vector2f v(f.left, f.top);
+    rectNode->Move(m_mainScene.GetCartToIsoMat()*v);
+    std::cout<<f.left<<" "<<f.top<<" "<<f.width<<" "<<f.height<<std::endl;
+    r->SetTexture(TextureHandler->GetDummyAsset());
+    rectNode->AttachObject(r);*/
 
 
 

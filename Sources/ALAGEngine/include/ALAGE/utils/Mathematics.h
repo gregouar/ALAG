@@ -60,8 +60,8 @@ class Mat3x3
         Mat3x3 operator+(Mat3x3 const& m);
         Mat3x3 operator*(Mat3x3 const& m);
         Mat3x3 operator*(float const& k);
-        sf::Vector3f operator*(sf::Vector3f const& v);
-        sf::Vector2f operator*(sf::Vector2f const& v);
+        sf::Vector3f operator*(sf::Vector3f const& v) const;
+        sf::Vector2f operator*(sf::Vector2f const& v) const;
 
         GLfloat values[9];
 };

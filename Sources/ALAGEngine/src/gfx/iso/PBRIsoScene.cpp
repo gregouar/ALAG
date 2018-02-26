@@ -787,6 +787,8 @@ void PBRIsoScene::RenderDynamicGeometry(const sf::View &curView)
        // renderTarget->setActive(false);
         Profiler::PopClock();
     }
+
+  //  m_PBRScreen.getTexture(PBRDepthScreen)->copyToImage().saveToFile("PBR2.png");
 }
 
 void PBRIsoScene::RenderLighting()
