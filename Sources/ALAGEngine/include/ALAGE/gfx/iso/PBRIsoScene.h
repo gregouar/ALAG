@@ -43,6 +43,7 @@ class PBRIsoScene : public DefaultScene
         virtual void RenderEntity(sf::RenderTarget* ,SceneEntity*);
         void RenderStaticGeometry(const sf::View &curView);
         void RenderDynamicGeometry(const sf::View &curView);
+        void RenderEnvironmentMap();
         void RenderLighting();
         void RenderBloom();
         void RenderSSAO();
@@ -134,8 +135,8 @@ class PBRIsoScene : public DefaultScene
 
         sf::MultipleRenderTexture m_PBRScreen;
         sf::MultipleRenderTexture m_alpha_PBRScreen;
-        sf::MultipleRenderTexture m_lighting_PBRScreen[2];
-        bool m_activeLightingPBRScreen;
+        sf::MultipleRenderTexture m_lighting_PBRScreen;
+        sf::RenderTexture m_environment_PBRScreen[2];
 
         sf::RectangleShape m_renderer;
         sf::RenderStates m_rendererStates;
@@ -166,6 +167,7 @@ class PBRIsoScene : public DefaultScene
         static const std::string DEFAULT_DYNAMICSHADOWSCASTING;
         static const float DEFAULT_BLOOMBLUR;
         static const float DEFAULT_SSAOBLUR;
+        static const float DEFAULT_ENVBLUR;
         static const float SSAO_STRENGTH;
 };
 

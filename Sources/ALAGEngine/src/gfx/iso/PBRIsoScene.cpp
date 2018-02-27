@@ -31,6 +31,7 @@ const std::string PBRIsoScene::DEFAULT_DIRECTIONALSHADOWSCASTING = "true";
 const std::string PBRIsoScene::DEFAULT_DYNAMICSHADOWSCASTING = "true";
 const float PBRIsoScene::DEFAULT_BLOOMBLUR = 12.0;
 const float PBRIsoScene::DEFAULT_SSAOBLUR = 3.0;
+const float PBRIsoScene::DEFAULT_ENVBLUR = 10.0;
 const float PBRIsoScene::SSAO_STRENGTH = 2.0;
 
 PBRIsoScene::PBRIsoScene() : PBRIsoScene(DEFAULT_ISO_VIEW_ANGLE)
@@ -82,14 +83,6 @@ bool PBRIsoScene::InitRenderer(sf::Vector2u windowSize)
             SetShadowCasting(DirectionnalShadow);
     } else if(dynamicShadow)
         SetShadowCasting(DynamicShadow);
-
-    if(!m_SSAOScreen[0].create(windowSize.x*m_superSampling, windowSize.y*m_superSampling, true))
-        r = false;
-    if(!m_SSAOScreen[1].create(windowSize.x*m_superSampling, windowSize.y*m_superSampling, true))
-        r = false;
-
-    m_SSAOScreen[0].setSmooth(true);
-    m_SSAOScreen[1].setSmooth(true);
 
 
     m_nbrTiles.x = ceil(windowSize.x/SCREENTILE_SIZE) + 1;
@@ -169,27 +162,35 @@ bool PBRIsoScene::InitRenderer(sf::Vector2u windowSize)
     m_alpha_PBRScreen.addRenderTarget(PBRDepthScreen);
     m_alpha_PBRScreen.addRenderTarget(PBRMaterialScreen);
 
-    if(!m_lighting_PBRScreen[0].create(windowSize.x*m_superSampling, windowSize.y*m_superSampling))
-        r = false;
-    if(!m_lighting_PBRScreen[1].create(windowSize.x*m_superSampling, windowSize.y*m_superSampling))
-        r = false;
-
-    m_lighting_PBRScreen[0].addRenderTarget(0,true);
-    m_lighting_PBRScreen[1].addRenderTarget(0,true);
-
-    if(!m_bloomScreen[0].create(windowSize.x*m_superSampling, windowSize.y*m_superSampling, false, true))
-        r = false;
-    if(!m_bloomScreen[1].create(windowSize.x*m_superSampling, windowSize.y*m_superSampling, false, true))
-        r = false;
-
     m_renderer.setSize(sf::Vector2f(windowSize.x,windowSize.y));
     m_renderer.setTextureRect(sf::IntRect(0,0,windowSize.x*m_superSampling, windowSize.y*m_superSampling));
     //m_renderer.setTexture(m_PBRScreen.getTexture(PBRAlbedoScreen));
 
-    m_lightingShader.setUniform("map_albedo",*m_PBRScreen.getTexture(PBRAlbedoScreen));
-    m_lightingShader.setUniform("map_normal",*m_PBRScreen.getTexture(PBRNormalScreen));
-    m_lightingShader.setUniform("map_depth",*m_PBRScreen.getTexture(PBRDepthScreen));
-    m_lightingShader.setUniform("map_material",*m_PBRScreen.getTexture(PBRMaterialScreen));
+
+    if(!m_lighting_PBRScreen.create(windowSize.x*m_superSampling, windowSize.y*m_superSampling))
+        r = false;
+
+    m_lighting_PBRScreen.addRenderTarget(0,true);
+
+    for(int i = 0 ; i < 2 ; ++i)
+    {
+        if(!m_SSAOScreen[i].create(windowSize.x*m_superSampling, windowSize.y*m_superSampling, true))
+            r = false;
+        m_SSAOScreen[i].setSmooth(true);
+
+        if(!m_bloomScreen[i].create(windowSize.x*m_superSampling, windowSize.y*m_superSampling, false, true))
+            r = false;
+
+        if(!m_environment_PBRScreen[i].create(windowSize.x*m_superSampling, windowSize.y*m_superSampling,false,true))
+            r = false;
+    }
+
+
+    m_lightingShader.setUniform("map_environmental",*AssetHandler<TextureAsset>::Instance()->LoadAssetFromFile("../data/panorama.jpg")->GetTexture());
+
+    m_lightingShader.setUniform("map_SSRenv",m_environment_PBRScreen[0].getTexture());
+    m_environment_PBRScreen[0].setSmooth(true);
+
 
     /*m_PBRGeometryShader.setUniform("map_depthTester",*m_PBRScreen.getTexture(PBRDepthScreen));
 
@@ -205,12 +206,8 @@ bool PBRIsoScene::InitRenderer(sf::Vector2u windowSize)
     //m_HDRBloomShader.setUniform("view_ratio",sf::Vector2f(1.0/(float)m_PBRScreen.getSize().x,
     //                                                        1.0/(float)m_PBRScreen.getSize().y));
 
-    /** NEED TO GENERATE IT**/
     GenerateBrdflut();
     m_lightingShader.setUniform("map_brdflut",m_brdf_lut);
-
-    //TextureAsset *brdf_lut = AssetHandler<TextureAsset>::Instance()->LoadAssetFromFile("../data/ibl_brdf_lut.png");
-    //m_lightingShader.setUniform("map_brdflut",*brdf_lut->GetTexture());
 
     m_rendererStates.shader = &m_lightingShader;
 
@@ -225,6 +222,7 @@ bool PBRIsoScene::InitRenderer(sf::Vector2u windowSize)
 
     m_HDRBloomShader.setUniform("bloom_map",m_bloomScreen[1].getTexture());
 
+    /**Should probably put this in another function**/
     sf::Glsl::Vec3 samplesHemisphere[16];
     samplesHemisphere[0] = sf::Glsl::Vec3(.4,0,.8);
     samplesHemisphere[1] = sf::Glsl::Vec3(0,.2,.4);
@@ -256,7 +254,7 @@ bool PBRIsoScene::InitRenderer(sf::Vector2u windowSize)
         sf::Color c = sf::Color::White;
         c.r = (int)(static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/255)));
         c.g = (int)(static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/255)));
-        c.b = 1.0;
+        c.b = (int)(static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/255)));
         m_SSAONoisePattern.setPixel(x,y,c);
     }
 
@@ -282,6 +280,9 @@ void PBRIsoScene::ProcessRenderQueue()
     m_lightingShader.setUniform("view_zoom",m_currentCamera->GetZoom());
     m_lightingShader.setUniform("view_pos",m_currentCamera->GetParentNode()->GetGlobalPosition());
 
+    Profiler::PushClock("Render environment map");
+        RenderEnvironmentMap();
+    Profiler::PopClock();
 
     Profiler::PushClock("Update lighting");
 
@@ -291,7 +292,7 @@ void PBRIsoScene::ProcessRenderQueue()
         Profiler::PopClock();
 
         Profiler::PushClock("Compute lights");
-        m_lighting_PBRScreen[m_activeLightingPBRScreen].setActive(true);
+        m_lighting_PBRScreen.setActive(true);
         UpdateLighting(lightList);
         Profiler::PopClock();
 
@@ -341,14 +342,10 @@ void PBRIsoScene::RenderScene(sf::RenderTarget* w)
         w->setView(w->getDefaultView());
         ProcessRenderQueue();
 
-        m_renderer.setTexture(m_lighting_PBRScreen[m_activeLightingPBRScreen].getTexture(0));
+        m_renderer.setTexture(m_lighting_PBRScreen.getTexture(0));
         w->draw(m_renderer, &m_HDRBloomShader);
 
-        m_lighting_PBRScreen[m_activeLightingPBRScreen].display(DOFLUSH);
-        m_lightingShader.setUniform("map_environmental",*m_lighting_PBRScreen[m_activeLightingPBRScreen].getTexture(0));
-        m_lighting_PBRScreen[m_activeLightingPBRScreen].getTexture(0)->setSmooth(true);
-        m_lighting_PBRScreen[m_activeLightingPBRScreen].getTexture(0)->generateMipmap();
-        m_activeLightingPBRScreen = !m_activeLightingPBRScreen;
+        m_lighting_PBRScreen.display(DOFLUSH);
 
         w->setView(oldView);
     }
@@ -397,6 +394,21 @@ int PBRIsoScene::UpdateLighting(std::multimap<float, Light*> &lightList)
     m_lightingShader.setUniformArray("shadow_ratio",shadowRatio, MAX_SHADOW_MAPS);
 
     return nbr_lights;
+}
+
+void PBRIsoScene::RenderEnvironmentMap()
+{
+    m_renderer.setTexture(m_lighting_PBRScreen.getTexture(0));
+    m_blurShader.setUniform("offset",sf::Vector2f(0.5*DEFAULT_ENVBLUR/(float)m_lighting_PBRScreen.getSize().x,0));
+    m_environment_PBRScreen[1].draw(m_renderer,&m_blurShader);
+    m_environment_PBRScreen[1].display(DOFLUSH);
+
+    m_renderer.setTexture(&m_environment_PBRScreen[1].getTexture());
+    m_blurShader.setUniform("offset",sf::Vector2f(0,0.5*DEFAULT_ENVBLUR/(float)m_lighting_PBRScreen.getSize().x));
+    m_environment_PBRScreen[0].draw(m_renderer,&m_blurShader);
+    m_environment_PBRScreen[0].display(DOFLUSH);
+
+    m_environment_PBRScreen[0].generateMipmap();
 }
 
 
@@ -798,8 +810,8 @@ void PBRIsoScene::RenderDynamicGeometry(const sf::View &curView)
 
 void PBRIsoScene::RenderLighting()
 {
-    m_lighting_PBRScreen[m_activeLightingPBRScreen].setActive(true);
-    m_lighting_PBRScreen[m_activeLightingPBRScreen].clear();
+    m_lighting_PBRScreen.setActive(true);
+    m_lighting_PBRScreen.clear();
     glDisable(GL_DEPTH_TEST);
     glDepthMask(GL_FALSE);
 
@@ -809,30 +821,37 @@ void PBRIsoScene::RenderLighting()
     m_lightingShader.setUniform("map_normal",*m_PBRScreen.getTexture(PBRNormalScreen));
     m_lightingShader.setUniform("map_depth",*m_PBRScreen.getTexture(PBRDepthScreen));
     m_lightingShader.setUniform("map_material",*m_PBRScreen.getTexture(PBRMaterialScreen));
+    m_lightingShader.setUniform("enable_SSR",m_enableSSR);
 
-    m_lighting_PBRScreen[m_activeLightingPBRScreen].draw(m_renderer,m_rendererStates);
+    m_lighting_PBRScreen.draw(m_renderer,m_rendererStates);
+
+    //m_lighting_PBRScreen.getTexture(1)->copyToImage().saveToFile("uv.png");
 
     m_lightingShader.setUniform("map_albedo",*m_alpha_PBRScreen.getTexture(PBRAlbedoScreen));
     m_lightingShader.setUniform("map_normal",*m_alpha_PBRScreen.getTexture(PBRNormalScreen));
     m_lightingShader.setUniform("map_depth",*m_alpha_PBRScreen.getTexture(PBRDepthScreen));
     m_lightingShader.setUniform("map_material",*m_alpha_PBRScreen.getTexture(PBRMaterialScreen));
+    m_lightingShader.setUniform("enable_SSR",false);
 
-    m_lighting_PBRScreen[m_activeLightingPBRScreen].draw(m_renderer,m_rendererStates);
+    m_lighting_PBRScreen.draw(m_renderer,m_rendererStates);
 
     if(m_enableSSAO)
     {
         //m_SSAOScreen[0].getTexture().copyToImage().saveToFile("SSAO.png");
         m_renderer.setTexture(&m_SSAOScreen[0].getTexture());
-        m_lighting_PBRScreen[m_activeLightingPBRScreen].draw(m_renderer,sf::BlendMultiply);
+        m_lighting_PBRScreen.draw(m_renderer,sf::BlendMultiply);
     }
 
-    m_lighting_PBRScreen[m_activeLightingPBRScreen].display(DOFLUSH);
+    m_lighting_PBRScreen.display(DOFLUSH);
 }
 
 void PBRIsoScene::RenderBloom()
 {
    // m_lighting_PBRScreen[m_activeLightingPBRScreen].getTexture(1)->copyToImage().saveToFile("bloom.png");
-    m_renderer.setTexture(m_lighting_PBRScreen[m_activeLightingPBRScreen].getTexture(1));
+   m_bloomScreen[0].clear();
+   m_bloomScreen[1].clear();
+
+    m_renderer.setTexture(m_lighting_PBRScreen.getTexture(1));
     m_blurShader.setUniform("offset",sf::Vector2f(DEFAULT_BLOOMBLUR/(float)m_PBRScreen.getSize().x,0));
     m_bloomScreen[0].draw(m_renderer,&m_blurShader);
     m_bloomScreen[0].display(DOFLUSH);
@@ -972,15 +991,12 @@ void PBRIsoScene::SetBloom(bool bloom)
 {
     if(bloom && !m_enableBloom)
     {
-        m_lighting_PBRScreen[0].addRenderTarget(1,true);
-        m_lighting_PBRScreen[1].addRenderTarget(1,true);
-        m_lighting_PBRScreen[0].getTexture(1)->setSmooth(true);
-        m_lighting_PBRScreen[1].getTexture(1)->setSmooth(true);
+        m_lighting_PBRScreen.addRenderTarget(1,true);
+        m_lighting_PBRScreen.getTexture(1)->setSmooth(true);
         m_lightingShader.setUniform("enable_bloom", true);
         m_HDRBloomShader.setUniform("enable_bloom", true);
     } else if(!bloom && m_enableBloom) {
-        m_lighting_PBRScreen[0].removeRenderTarget(1);
-        m_lighting_PBRScreen[1].removeRenderTarget(1);
+        m_lighting_PBRScreen.removeRenderTarget(1);
         m_lightingShader.setUniform("enable_bloom", false);
         m_HDRBloomShader.setUniform("enable_bloom", false);
     }
@@ -992,8 +1008,10 @@ void PBRIsoScene::SetSSR(bool SSR)
 {
     if(SSR && !m_enableSSR)
     {
+        m_environment_PBRScreen[0].clear();
         m_lightingShader.setUniform("enable_SSR", true);
     } else if(!SSR && m_enableSSR) {
+        m_environment_PBRScreen[1].clear();
         m_lightingShader.setUniform("enable_SSR", false);
     }
 

@@ -197,8 +197,10 @@ void Light::UpdateShadow()
 
 void Light::RenderShadowMap(const sf::View &view/*,const sf::Vector2u &screen_size*/)
 {
-    if(m_shadowMap.getSize().x != (int)((view.getSize().x + m_shadowMaxShift.width)*m_shadowMap_size)
-    || m_shadowMap.getSize().y != (int)((view.getSize().y + m_shadowMaxShift.height)*m_shadowMap_size))
+    /** Should probably generate this based on something else than view size, so that it does not
+        recreate when zooming **/
+    if((int)m_shadowMap.getSize().x != (int)((view.getSize().x + m_shadowMaxShift.width)*m_shadowMap_size)
+    || (int)m_shadowMap.getSize().y != (int)((view.getSize().y + m_shadowMaxShift.height)*m_shadowMap_size))
         m_shadowMap.create((int)((view.getSize().x + m_shadowMaxShift.width)*m_shadowMap_size),
                             (int)((view.getSize().y + m_shadowMaxShift.height)*m_shadowMap_size), true);
 

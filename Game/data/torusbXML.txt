@@ -5,7 +5,7 @@
 	<texture type="albedo">torusb.png</texture>
 	<texture type="normal">torusb_normal.png</texture>
 	<texture type="depth">torusb_depth.png</texture>
-	<material type="roughness">.1</material>
+	<material type="roughness">.2</material>
 	<material type="metalness">1</material>
 	<material type="translucency">0</material>
 </texture3D>

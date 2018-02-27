@@ -325,6 +325,11 @@ void TestingState::HandleEvents(alag::EventManager *event_manager)
     if(event_manager->KeyReleased(sf::Keyboard::S))
         m_mainScene.SetShadowCasting(AllShadows);
 
+    if(event_manager->KeyPressed(sf::Keyboard::R))
+        m_mainScene.SetSSR(false);
+    if(event_manager->KeyReleased(sf::Keyboard::R))
+        m_mainScene.SetSSR(true);
+
 
     if(event_manager->KeyPressed(sf::Keyboard::G))
         m_mainScene.DisableGammaCorrection();
