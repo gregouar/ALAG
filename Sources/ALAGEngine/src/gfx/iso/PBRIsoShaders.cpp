@@ -372,6 +372,7 @@ void PBRIsoScene::CompileLightingShader()
 	//"               attenuation = saturate(sqrtnom*sqrtnom/(dist*dist+1.0));"
 	"               attenuation = clamp(sqrtnom*sqrtnom/(dist*dist+1.0),0.0,1.0);"
 	"	    }" \
+	"       if(attenuation > 0) {"
     "       if((gl_LightSource[i].position.w == 0.0 && enable_directionalShadows == true)"
     "        ||(gl_LightSource[i].position.w != 0.0 && enable_dynamicShadows == true))"
 	"       if(curShadowMap < "<<MAX_SHADOW_MAPS<<" && shadow_caster[curShadowMap] == i) {"
@@ -414,6 +415,7 @@ void PBRIsoScene::CompileLightingShader()
 	"	    gl_FragData[0].rgb += (kD * albedoPixel.rgb *"<<1.0/PI<<" + specular) * radiance * NdotL;"
 	"       float t = materialPixel.b;"
 	"	    gl_FragData[0].rgb -= (albedoPixel.rgb*"<<1.0/PI<<") * radiance * min(dot(direction, lightDirection), 0.0)*t;"
+	"       }"
 	""
 	"   }"
 	"   float brightness = dot(gl_FragData[0].rgb, vec3(0.2126, 0.7152, 0.0722))*albedoPixel.a;"
