@@ -250,6 +250,7 @@ void IsoSpriteEntity::ComputeShadow(Light* light)
            // shadowTexture->create(shadow_bounds.width,shadow_bounds.height);
             //shadowTexture->update(shadow_map_array,shadow_bounds.width,shadow_bounds.height,0,0);
             TextureModifier::BlurTexture(shadowTexture, blur_radius);
+            //shadowTexture->setSmooth(true);
 
             std::map<Light*, sf::Drawable*>::iterator shadowIt;
             shadowIt = m_shadowDrawable.find(light);

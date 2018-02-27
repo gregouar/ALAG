@@ -103,9 +103,10 @@ void TestingState::Init()
 
    /* Light* sunLight = m_mainScene.CreateLight(DirectionnalLight,sf::Vector3f(-1,.5,-1), sf::Color(255,255,160));
     sunLight->SetConstantAttenuation(2);*/
-    m_sunLight = m_mainScene.CreateLight(DirectionnalLight,sf::Vector3f(-1 ,-.2,-1), sf::Color(255,255,255));
+    m_sunLight = m_mainScene.CreateLight(DirectionnalLight,sf::Vector3f(-1 ,.2,-1), sf::Color(255,255,255));
     m_sunLight->SetIntensity(10);
     m_sunLight->EnableShadowCasting();
+    m_sunLight->SetShadowMapSize(.5);
     m_mainScene.GetRootNode()->AttachObject(m_sunLight);
     m_mainScene.SetAmbientLight(sf::Color(96,127,255,96));
     //m_mainScene.SetAmbientLight(sf::Color(64,64,128,24));
@@ -124,20 +125,20 @@ void TestingState::Init()
     m_chene_node->SetPosition(150,-100,-78);
     m_chene_node->AttachObject(cheneEntity);
 
-   /* for(int i = -20 ; i < 20 ; ++i)
-    for(int j = -20 ; j < 20 ; ++j)
+    /*for(int i = -5 ; i < 5 ; ++i)
+    for(int j = -5 ; j < 5 ; ++j)
     {
         SceneNode *n = m_mainScene.GetRootNode()->CreateChildNode();
         IsoSpriteEntity *e = m_mainScene.CreateIsoSpriteEntity();
-        //e->SetTexture(PBRTextureHandler->LoadAssetFromFile("../data/treeXML.txt"));
-        e->SetTexture(PBRTextureHandler->LoadAssetFromFile("../data/torusbXML.txt"));
-      //  e->SetCenter(256,526);
-        e->SetCenter(128,160);
+        e->SetTexture(PBRTextureHandler->LoadAssetFromFile("../data/treeXML.txt"));
+        //e->SetTexture(PBRTextureHandler->LoadAssetFromFile("../data/torusbXML.txt"));
+        e->SetCenter(256,526);
+        //e->SetCenter(128,160);
         e->SetStatic(true);
-       // e->SetShadowCastingType(DirectionnalShadow);
-        //e->SetShadowVolumeType(TwoSidedShadow);
-        //n->SetPosition(i*100,j*100,-78);
-        n->SetPosition(i*50,j*50,0);
+        e->SetShadowCastingType(DirectionnalShadow);
+        e->SetShadowVolumeType(TwoSidedShadow);
+        n->SetPosition(i*100,j*100,-78);
+        //n->SetPosition(i*50,j*50,0);
         n->AttachObject(e);
     }*/
 
@@ -240,6 +241,7 @@ void TestingState::Init()
     light2->SetIntensity(10);
     light2->SetRadius(300);
     light2->EnableShadowCasting();
+    light2->SetShadowMapSize(.5);
     m_lightNode->AttachObject(light2);
 
    // font.loadFromFile("../data/arial.ttf");

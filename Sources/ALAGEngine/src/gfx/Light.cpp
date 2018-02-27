@@ -17,6 +17,7 @@ Light::Light()
     m_linearAttenuation = 0;
     m_quadraticAttenuation = 1;
     m_castShadow = false;
+    m_shadowMap_size = 1.0;
     m_shadowMaxShift = sf::IntRect(0,0,0,0);
     m_requireShadowComputation = false;
 }
@@ -128,6 +129,14 @@ void Light::SetQuadraticAttenuation(float quadAtt)
         m_quadraticAttenuation = quadAtt;
 }
 
+void Light::SetShadowMapSize(float s)
+{
+    if(s < 0) s = 0;
+    if(s > 1) s = 1;
+
+    m_shadowMap_size = s;
+}
+
 void Light::EnableShadowCasting()
 {
     m_castShadow = true;
@@ -147,6 +156,13 @@ const sf::Texture& Light::GetShadowMap()
 const sf::IntRect& Light::GetShadowMaxShift()
 {
     return m_shadowMaxShift;
+}
+
+sf::Vector2f Light::GetShadowMapRatio()
+{
+    return
+     sf::Vector2f(m_shadowMap_size/(float)GetShadowMap().getSize().x,
+                  m_shadowMap_size/(float)GetShadowMap().getSize().y);
 }
 
 std::list<ShadowCaster*> *Light::GetShadowCasterList()
@@ -181,10 +197,10 @@ void Light::UpdateShadow()
 
 void Light::RenderShadowMap(const sf::View &view/*,const sf::Vector2u &screen_size*/)
 {
-    if(m_shadowMap.getSize().x != (unsigned int)view.getSize().x + m_shadowMaxShift.width
-    || m_shadowMap.getSize().y != (unsigned int)view.getSize().y + m_shadowMaxShift.height)
-        m_shadowMap.create((unsigned int)view.getSize().x + m_shadowMaxShift.width,
-                            (unsigned int)view.getSize().y + m_shadowMaxShift.height, true);
+    if(m_shadowMap.getSize().x != (int)((view.getSize().x + m_shadowMaxShift.width)*m_shadowMap_size)
+    || m_shadowMap.getSize().y != (int)((view.getSize().y + m_shadowMaxShift.height)*m_shadowMap_size))
+        m_shadowMap.create((int)((view.getSize().x + m_shadowMaxShift.width)*m_shadowMap_size),
+                            (int)((view.getSize().y + m_shadowMaxShift.height)*m_shadowMap_size), true);
 
     sf::View shadow_view = view;
     shadow_view.move(m_shadowMaxShift.width*0.5+m_shadowMaxShift.left,
@@ -206,6 +222,8 @@ void Light::RenderShadowMap(const sf::View &view/*,const sf::Vector2u &screen_si
         //m_shadowMap.display();
         m_shadowMap.display(false);
    // m_shadowMap.setActive(false);
+
+   //m_shadowMap.getTexture().copyToImage().saveToFile("shadowmap.png");
 }
 
 

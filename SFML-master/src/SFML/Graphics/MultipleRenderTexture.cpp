@@ -440,6 +440,7 @@ Vector2u MultipleRenderTexture::getSize() const
 
 Texture* MultipleRenderTexture::getTexture(unsigned int renderingLocation)
 {
+    this->setActive(true);
     if(renderingLocation >= getMaxColorAttachments())
     {
         err()<< "Impossible to get texture from multiple render texture (location not available)" <<std::endl;

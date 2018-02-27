@@ -218,6 +218,7 @@ void PBRIsoScene::CompileLightingShader()
     "uniform sampler2D map_depth;" \
     "uniform sampler2D map_material;" \
     "uniform sampler2D map_noise;" \
+    "uniform bool enable_SSR;"
     "uniform sampler2D map_brdflut;" \
     "uniform sampler2D map_environmental;" \
     "uniform float p_zPos;" \
@@ -339,7 +340,9 @@ void PBRIsoScene::CompileLightingShader()
     "   vec3 irradianceAmbient = ambientLighting;"
     "   vec3 reflectionView = reflect(-viewDirection, direction);"
     "   vec3 reflectionColor = ambientLighting;"
-    "   if(reflectionView.z < 0){"
+    "   if(enable_SSR == true) {"
+    "   "
+    "   } else if(reflectionView.z < 0){"
 	"       vec2 groundPos = gl_FragCoord.xy*view_zoom;"
 	"       vec3 v = vec3((heightPixel/reflectionView.z)*reflectionView.xy,0.0);"
 	"       groundPos.xy += (heightPixel*p_isoToCartZFactor)*constantList.yx "
@@ -532,7 +535,7 @@ void PBRIsoScene::CompileSSAOShader()
 	"       vec3 occl_depthPixel = texture2D(map_depth, screenPos*view_ratio).rgb;"
 	"       float occl_height = (occl_depthPixel.b*"<<1.0/255.0<<"+occl_depthPixel.g)*"<<1.0/255.0<<"+occl_depthPixel.r;"
     "       if(occl_height < (heightPixel-rayShift.z) - "<<0.1*PBRTextureAsset::DEPTH_BUFFER_NORMALISER<<"  "
-    "        && occl_height - (heightPixel-rayShift.z) > "<<-15*PBRTextureAsset::DEPTH_BUFFER_NORMALISER<<")"
+    "        && occl_height - (heightPixel-rayShift.z) > "<<-20*PBRTextureAsset::DEPTH_BUFFER_NORMALISER<<")"
     "           --occlusion;"
 	"   } "
     "   gl_FragColor.rgb = constantList.xxx*pow(occlusion*"<<1.0/12.0<<","<<SSAO_STRENGTH<<");" \
@@ -647,6 +650,132 @@ void PBRIsoScene::CompileBlurShader()
     m_blurShader.loadFromMemory(fragShader.str(),sf::Shader::Fragment);
     m_blurShader.setUniform("texture",sf::Shader::CurrentTexture);
 }
+
+
+/** BRDFLUT GENERATING taken from https://learnopengl.com **/
+void PBRIsoScene::GenerateBrdflut()
+{
+    sf::Shader brdflut_shader;
+
+    std::ostringstream fragShader, vertexShader;
+
+    vertexShader<<
+    "varying vec2 VaryingTexCoord0; "\
+    "void main() "\
+    "{ "\
+    "    gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex; "\
+    "    VaryingTexCoord0 = (gl_TextureMatrix[0] * gl_MultiTexCoord0).xy; "\
+    "    gl_FrontColor = gl_Color; "\
+    "}";
+
+    fragShader<<
+    "varying vec2 VaryingTexCoord0; "
+    "float VanDerCorpus(uint n, uint base)"
+    "{"
+    "    float invBase = 1.0 / float(base);"
+    "    float denom   = 1.0;"
+    "    float result  = 0.0;"
+    "    for(uint i = 0u; i < 32u; ++i)"
+    "    {"
+    "        if(n > 0u)"
+    "        {"
+    "            denom   = mod(float(n), 2.0);"
+    "            result += denom * invBase;"
+    "            invBase = invBase / 2.0;"
+    "            n       = uint(float(n) / 2.0);"
+    "        }"
+    "    }"
+    "    return result;"
+    "}"
+    "vec2 Hammersley(uint i, uint N)"
+    "{"
+    "        return vec2(float(i)/float(N), VanDerCorpus(i, 2u));"
+    "}"
+    "vec3 ImportanceSampleGGX(vec2 Xi, vec3 N, float roughness)"
+    "{"
+    "    float a = roughness*roughness;"
+    "    float phi = 2.0 * "<<PI<<" * Xi.x;"
+    "    float cosTheta = sqrt((1.0 - Xi.y) / (1.0 + (a*a - 1.0) * Xi.y));"
+    "    float sinTheta = sqrt(1.0 - cosTheta*cosTheta);"
+    "    vec3 H;"
+    "    H.x = cos(phi) * sinTheta;"
+    "    H.y = sin(phi) * sinTheta;"
+    "    H.z = cosTheta;"
+    "    vec3 up        = abs(N.z) < 0.999 ? vec3(0.0, 0.0, 1.0) : vec3(1.0, 0.0, 0.0);"
+    "    vec3 tangent   = normalize(cross(up, N));"
+    "    vec3 bitangent = cross(N, tangent);"
+    "    vec3 sampleVec = tangent * H.x + bitangent * H.y + N * H.z;"
+    "    return normalize(sampleVec);"
+    "}  "
+    "float GeometrySchlickGGX(float NdotV, float roughness)"
+    "{"
+    "    float a = roughness;"
+    "    float k = (a * a) / 2.0;"
+    "    float nom   = NdotV;"
+    "    float denom = NdotV * (1.0 - k) + k;"
+    "    return nom / denom;"
+    "}"
+    "float GeometrySmith(vec3 N, vec3 V, vec3 L, float roughness)"
+    "{"
+    "    float NdotV = max(dot(N, V), 0.0);"
+    "    float NdotL = max(dot(N, L), 0.0);"
+    "    float ggx2 = GeometrySchlickGGX(NdotV, roughness);"
+    "    float ggx1 = GeometrySchlickGGX(NdotL, roughness);"
+    "    return ggx1 * ggx2;"
+    "}"
+    "vec2 IntegrateBRDF(float NdotV, float roughness)"
+    "{"
+    "    vec3 V;"
+    "    V.x = sqrt(1.0 - NdotV*NdotV);"
+    "    V.y = 0.0;"
+    "    V.z = NdotV;"
+    "    float A = 0.0;"
+    "    float B = 0.0;"
+    "    vec3 N = vec3(0.0, 0.0, 1.0);"
+    "    const uint SAMPLE_COUNT = 1024u;"
+    "    for(uint i = 0u; i < SAMPLE_COUNT; ++i)"
+    "    {"
+    "        vec2 Xi = Hammersley(i, SAMPLE_COUNT);"
+    "        vec3 H  = ImportanceSampleGGX(Xi, N, roughness);"
+    "        vec3 L  = normalize(2.0 * dot(V, H) * H - V);"
+    "        float NdotL = max(L.z, 0.0);"
+    "        float NdotH = max(H.z, 0.0);"
+    "        float VdotH = max(dot(V, H), 0.0);"
+    "        if(NdotL > 0.0)"
+    "        {"
+    "            float G = GeometrySmith(N, V, L, roughness);"
+    "            float G_Vis = (G * VdotH) / (NdotH * NdotV);"
+    "            float Fc = pow(1.0 - VdotH, 5.0);"
+    "            A += (1.0 - Fc) * G_Vis;"
+    "            B += Fc * G_Vis;"
+    "        }"
+    "    }"
+    "    A /= float(SAMPLE_COUNT);"
+    "    B /= float(SAMPLE_COUNT);"
+    "    return vec2(A, B);"
+    "}"
+    "void main()"
+    "{"
+    "    vec2 integratedBRDF = IntegrateBRDF(VaryingTexCoord0.x, VaryingTexCoord0.y);"
+    "    gl_FragColor.rg = integratedBRDF;"
+    "    gl_FragColor.ba = vec2(0.0,1.0);"
+    "}";
+
+    brdflut_shader.loadFromMemory(vertexShader.str(),fragShader.str());
+    m_brdf_lut.create(512,512,true);
+
+    sf::RenderTexture renderer;
+    renderer.create(512,512,false,true);
+    sf::RectangleShape rect;
+    rect.setSize(sf::Vector2f(512,512));
+    rect.setTexture(&m_brdf_lut);
+    renderer.draw(rect, &brdflut_shader);
+    //renderer.display();
+
+    m_brdf_lut.update(renderer.getTexture());
+}
+
+
 }
 
 

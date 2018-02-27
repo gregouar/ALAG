@@ -73,6 +73,7 @@ class PBRIsoScene : public DefaultScene
 
         void SetBloom(bool);
         void SetSSAO(bool);
+        void SetSSR(bool);
 
     protected:
         void ComputeTrigonometry();
@@ -93,6 +94,8 @@ class PBRIsoScene : public DefaultScene
         void CompileSSAOShader();
         void CompileBlurShader();
         void CompileHDRBloomShader();
+
+        void GenerateBrdflut();
 
     private:
         IsoViewAngle m_viewAngle;
@@ -116,6 +119,7 @@ class PBRIsoScene : public DefaultScene
         sf::Shader m_lightingShader;
         sf::Shader m_blurShader;
         sf::Shader m_HDRBloomShader;
+        sf::Texture m_brdf_lut;
 
         std::vector<ScreenTile> m_screenTiles;
         sf::Vector2u m_nbrTiles;
@@ -146,6 +150,7 @@ class PBRIsoScene : public DefaultScene
         sf::Texture m_SSAONoiseTexture;
         sf::Image m_SSAONoisePattern;
 
+        bool m_enableSSR;
 
         static const IsoViewAngle DEFAULT_ISO_VIEW_ANGLE;
         static const int MAX_SHADOW_MAPS;
@@ -154,6 +159,7 @@ class PBRIsoScene : public DefaultScene
 
         static const std::string DEFAULT_ENABLESSAO;
         static const std::string DEFAULT_ENABLEBLOOM;
+        static const std::string DEFAULT_ENABLESSR;
         static const std::string DEFAULT_ENABLESRGB;
         static const std::string DEFAULT_SUPERSAMPLING;
         static const std::string DEFAULT_DIRECTIONALSHADOWSCASTING;

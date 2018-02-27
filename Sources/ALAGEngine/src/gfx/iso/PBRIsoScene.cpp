@@ -24,6 +24,7 @@ const int PBRIsoScene::SCREENTILE_SIZE = 128;
 
 const std::string PBRIsoScene::DEFAULT_ENABLESSAO = "true";
 const std::string PBRIsoScene::DEFAULT_ENABLEBLOOM = "true";
+const std::string PBRIsoScene::DEFAULT_ENABLESSR = "true";
 const std::string PBRIsoScene::DEFAULT_ENABLESRGB = "true";
 const std::string PBRIsoScene::DEFAULT_SUPERSAMPLING = "1";
 const std::string PBRIsoScene::DEFAULT_DIRECTIONALSHADOWSCASTING = "true";
@@ -204,8 +205,12 @@ bool PBRIsoScene::InitRenderer(sf::Vector2u windowSize)
     //m_HDRBloomShader.setUniform("view_ratio",sf::Vector2f(1.0/(float)m_PBRScreen.getSize().x,
     //                                                        1.0/(float)m_PBRScreen.getSize().y));
 
-    TextureAsset *brdf_lut = AssetHandler<TextureAsset>::Instance()->LoadAssetFromFile("../data/ibl_brdf_lut.png");
-    m_lightingShader.setUniform("map_brdflut",*brdf_lut->GetTexture());
+    /** NEED TO GENERATE IT**/
+    GenerateBrdflut();
+    m_lightingShader.setUniform("map_brdflut",m_brdf_lut);
+
+    //TextureAsset *brdf_lut = AssetHandler<TextureAsset>::Instance()->LoadAssetFromFile("../data/ibl_brdf_lut.png");
+    //m_lightingShader.setUniform("map_brdflut",*brdf_lut->GetTexture());
 
     m_rendererStates.shader = &m_lightingShader;
 
@@ -216,6 +221,7 @@ bool PBRIsoScene::InitRenderer(sf::Vector2u windowSize)
 
     SetSSAO(Config::GetBool("graphics","SSAO",DEFAULT_ENABLESSAO));
     SetBloom(Config::GetBool("graphics","Bloom",DEFAULT_ENABLEBLOOM));
+    SetSSR(Config::GetBool("graphics","SSR",DEFAULT_ENABLESSR));
 
     m_HDRBloomShader.setUniform("bloom_map",m_bloomScreen[1].getTexture());
 
@@ -378,8 +384,7 @@ int PBRIsoScene::UpdateLighting(std::multimap<float, Light*> &lightList)
             sf::IntRect cur_shift = curLight->GetShadowMaxShift();
             shadowShift[curNbrShadows] = sf::Vector2f(cur_shift.left,
                                                       -cur_shift.height - cur_shift.top ); /*GLSL Reverse y-coord*/
-            shadowRatio[curNbrShadows] = sf::Vector2f(1.0/(float)curLight->GetShadowMap().getSize().x,
-                                                      1.0/(float)curLight->GetShadowMap().getSize().y);
+            shadowRatio[curNbrShadows] = curLight->GetShadowMapRatio();
             m_lightingShader.setUniform(buffer.str(), curLight->GetShadowMap());
 
             ++curNbrShadows;
@@ -981,6 +986,18 @@ void PBRIsoScene::SetBloom(bool bloom)
     }
 
     m_enableBloom = bloom;
+}
+
+void PBRIsoScene::SetSSR(bool SSR)
+{
+    if(SSR && !m_enableSSR)
+    {
+        m_lightingShader.setUniform("enable_SSR", true);
+    } else if(!SSR && m_enableSSR) {
+        m_lightingShader.setUniform("enable_SSR", false);
+    }
+
+    m_enableSSR = SSR;
 }
 
 void PBRIsoScene::SetShadowCasting(ShadowCastingType type)
