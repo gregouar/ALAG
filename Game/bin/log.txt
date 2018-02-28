@@ -33,5 +33,6 @@ PBR texture loaded from file: ../data/cobbleXML.txt
 Texture loaded from file: ../data/wetsand_albedo.png
 Texture loaded from file: ../data/wetsand_normal.png
 Texture loaded from file: ../data/wetsand_depth.png
+Texture loaded from file: ../data/wetsand_material.png
 PBR texture loaded from file: ../data/wetsandXML.txt
 Stopping application

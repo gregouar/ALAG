@@ -125,9 +125,10 @@ class PBRIsoScene : public DefaultScene
         std::vector<ScreenTile> m_screenTiles;
         sf::Vector2u m_nbrTiles;
         sf::Vector2f m_tilesShift;
-        sf::MultipleRenderTexture m_staticGeometryScreen;
-        sf::MultipleRenderTexture m_alpha_staticGeometryScreen;
-        sf::MultipleRenderTexture m_staticGeometrySwapBuffer;
+        sf::MultipleRenderTexture m_staticGeometryScreen[2];
+        sf::MultipleRenderTexture m_alpha_staticGeometryScreen[2];
+        bool m_swapStaticGeometryBuffers;
+       // sf::MultipleRenderTexture m_staticGeometrySwapBuffer;
         bool m_firstStaticRender;
         sf::View m_lastStaticRenderView;
 

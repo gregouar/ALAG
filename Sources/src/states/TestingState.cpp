@@ -69,7 +69,7 @@ void TestingState::Init()
     torusEntity->SetCenter(128,128);
     torusEntity->SetShadowCastingType(DirectionnalShadow);
     //torusEntity->SetColor(sf::Color(255,64,255,128));
-    torusEntity->SetColor(sf::Color(128,128,128));
+    //torusEntity->SetColor(sf::Color(128,128,128));
     torusEntity->SetStatic(false);
     //sarco3DEntity->DesactivateLighting();
     m_sarco3DNode->AttachObject(torusEntity);
@@ -104,11 +104,11 @@ void TestingState::Init()
    /* Light* sunLight = m_mainScene.CreateLight(DirectionnalLight,sf::Vector3f(-1,.5,-1), sf::Color(255,255,160));
     sunLight->SetConstantAttenuation(2);*/
     m_sunLight = m_mainScene.CreateLight(DirectionnalLight,sf::Vector3f(-1 ,.2,-1), sf::Color(255,255,255));
-    m_sunLight->SetIntensity(10);
+    m_sunLight->SetIntensity(20);
     m_sunLight->EnableShadowCasting();
     m_sunLight->SetShadowMapSize(.5);
     m_mainScene.GetRootNode()->AttachObject(m_sunLight);
-    m_mainScene.SetAmbientLight(sf::Color(96,127,255,96));
+    m_mainScene.SetAmbientLight(sf::Color(96,127,255,64));
     //m_mainScene.SetAmbientLight(sf::Color(64,64,128,24));
     //m_mainScene.SetAmbientLight(sf::Color(96,96,128));
    // m_mainScene.SetAmbientLight(sf::Color(32,48,128));
