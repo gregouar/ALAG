@@ -82,6 +82,9 @@ class DefaultScene
         ObjectTypeID m_curNewId;
 
         bool m_needToUpdateRenderQueue;
+
+
+        static const sf::Vector2u DEFAULT_SHADOWMAP_SIZE;
 };
 
 }

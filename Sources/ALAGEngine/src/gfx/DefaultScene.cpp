@@ -6,6 +6,8 @@
 namespace alag
 {
 
+const sf::Vector2u DefaultScene::DEFAULT_SHADOWMAP_SIZE = sf::Vector2u(1024,1024);
+
 
 DefaultScene::DefaultScene() : m_rootNode(0,nullptr, this)
 {
@@ -237,6 +239,7 @@ Light* DefaultScene::CreateLight(LightType type, sf::Vector3f direction, sf::Col
     light->SetType(type);
     light->SetDirection(direction);
     light->SetDiffuseColor(color);
+    light->SetShadowMapSize(DEFAULT_SHADOWMAP_SIZE);
     AddCreatedObject(GenerateObjectID(), light);
     return light;
 }

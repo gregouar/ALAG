@@ -72,7 +72,7 @@ void PBRIsoScene::CompileDepthCopierShader()
     "       vec4 depthPixel = texture2D(map_depth, VaryingTexCoord0);" \
     "       float depth = 1.0;"
     "       if(depthPixel.a != 0)"
-    "           depth =((depthPixel.b*"<<1.0/255.0<<"+depthPixel.g)*"<<1.0/255.0<<"+depthPixel.r);"
+    "           depth = ((depthPixel.b*"<<1.0/255.0<<"+depthPixel.g)*"<<1.0/255.0<<"+depthPixel.r);"
      "      vec4 depthTestPixel = vec4(0.0);" \
      "      float depthTest = 1.0;"
      "      if(enable_depthTesting == true){"
@@ -364,7 +364,7 @@ void PBRIsoScene::CompileLightingShader()
     "               r.z += 0.2;"
     "           if(abs(GetDepth(curScreenPos+vec2(0,-2)) - curWorldPos.z) < 20)"
     "               r.z += 0.2;"
-    "           return r*min(1.0/(length(curWorldPos-p)*.02), 1.0);"
+    "           return r*min(1.0/(length(curWorldPos-p)*.01), 1.0);"
     "       }"
     "       oldScreenPos = curScreenPos;"
     "       oldWorldPos = curWorldPos;"
@@ -432,6 +432,7 @@ void PBRIsoScene::CompileLightingShader()
   //  "           vec3 reflectionDirection = normalize(2.0*texture2D(map_normal, envPos.xy*view_ratio).rgb-1.0);"
    // "           groundColor *= max(dot(reflectionDirection, reflectionView), 0.0);"
    // "           SSRColor = vec3(1.0) - exp(-SSRColor * 0.5);"
+    "               SSRColor = clamp(SSRColor, 0, .9);"
     "           vec2 dcoord = smoothstep(.2,.6,abs(vec2(.5) - envPos.xy*view_ratio));"
     "           envPos.z *= clamp(1.0 - (dcoord.x + dcoord.y), 0.0, 1.0);"
     "           reflectionColor = mix(reflectionColor,SSRColor, envPos.z);"

@@ -17,7 +17,6 @@ Light::Light()
     m_linearAttenuation = 0;
     m_quadraticAttenuation = 1;
     m_castShadow = false;
-    m_shadowMap_size = 1.0;
     m_shadowMaxShift = sf::IntRect(0,0,0,0);
     m_requireShadowComputation = false;
 }
@@ -129,12 +128,15 @@ void Light::SetQuadraticAttenuation(float quadAtt)
         m_quadraticAttenuation = quadAtt;
 }
 
-void Light::SetShadowMapSize(float s)
+void Light::SetShadowMapSize(sf::Vector2u s)
 {
-    if(s < 0) s = 0;
-    if(s > 1) s = 1;
+    if(m_shadowMap.getSize() != s)
+        m_shadowMap.create(s.x,s.y,true);
+}
 
-    m_shadowMap_size = s;
+void Light::SetShadowMapSize(unsigned x, unsigned y)
+{
+    SetShadowMapSize(sf::Vector2u(x,y));
 }
 
 void Light::EnableShadowCasting()
@@ -158,12 +160,12 @@ const sf::IntRect& Light::GetShadowMaxShift()
     return m_shadowMaxShift;
 }
 
-sf::Vector2f Light::GetShadowMapRatio()
+/*sf::Vector2f Light::GetShadowMapRatio()
 {
     return
      sf::Vector2f(m_shadowMap_size/(float)GetShadowMap().getSize().x,
                   m_shadowMap_size/(float)GetShadowMap().getSize().y);
-}
+}*/
 
 std::list<ShadowCaster*> *Light::GetShadowCasterList()
 {
@@ -199,33 +201,36 @@ void Light::RenderShadowMap(const sf::View &view/*,const sf::Vector2u &screen_si
 {
     /** Should probably generate this based on something else than view size, so that it does not
         recreate when zooming **/
-    if((int)m_shadowMap.getSize().x != (int)((view.getSize().x + m_shadowMaxShift.width)*m_shadowMap_size)
+ /*   if((int)m_shadowMap.getSize().x != (int)((view.getSize().x + m_shadowMaxShift.width)*m_shadowMap_size)
     || (int)m_shadowMap.getSize().y != (int)((view.getSize().y + m_shadowMaxShift.height)*m_shadowMap_size))
         m_shadowMap.create((int)((view.getSize().x + m_shadowMaxShift.width)*m_shadowMap_size),
-                            (int)((view.getSize().y + m_shadowMaxShift.height)*m_shadowMap_size), true);
+                            (int)((view.getSize().y + m_shadowMaxShift.height)*m_shadowMap_size), true);*/
+    if(m_shadowMap.getSize().x != 0)
+    {
+        sf::View shadow_view = view;
+        shadow_view.move(m_shadowMaxShift.width*0.5+m_shadowMaxShift.left,
+                         m_shadowMaxShift.height*0.5+m_shadowMaxShift.top);
+        shadow_view.setSize(view.getSize().x+m_shadowMaxShift.width,
+                            view.getSize().y+m_shadowMaxShift.height);
 
-    sf::View shadow_view = view;
-    shadow_view.move(m_shadowMaxShift.width*0.5+m_shadowMaxShift.left,
-                     m_shadowMaxShift.height*0.5+m_shadowMaxShift.top);
-    shadow_view.setSize(view.getSize().x+m_shadowMaxShift.width,
-                        view.getSize().y+m_shadowMaxShift.height);
+        m_shadowMap.setActive(true);
+            glClear(GL_DEPTH_BUFFER_BIT);
+            glEnable(GL_DEPTH_TEST);
+            glDepthMask(GL_TRUE);
+            m_shadowMap.clear(sf::Color::White);
+            m_shadowMap.setView(shadow_view);
 
-    m_shadowMap.setActive(true);
-        glClear(GL_DEPTH_BUFFER_BIT);
-        glEnable(GL_DEPTH_TEST);
-        glDepthMask(GL_TRUE);
-        m_shadowMap.clear(sf::Color::White);
-        m_shadowMap.setView(shadow_view);
+            std::list<ShadowCaster *>::iterator casterIt;
+            for(casterIt = m_shadowCasterList.begin() ; casterIt != m_shadowCasterList.end() ; ++casterIt)
+                (*casterIt)->RenderShadow(&m_shadowMap,this);
 
-        std::list<ShadowCaster *>::iterator casterIt;
-        for(casterIt = m_shadowCasterList.begin() ; casterIt != m_shadowCasterList.end() ; ++casterIt)
-            (*casterIt)->RenderShadow(&m_shadowMap,this);
+            //m_shadowMap.display();
+            m_shadowMap.display(false);
+       // m_shadowMap.setActive(false);
 
-        //m_shadowMap.display();
-        m_shadowMap.display(false);
-   // m_shadowMap.setActive(false);
+       //m_shadowMap.getTexture().copyToImage().saveToFile("shadowmap.png");
 
-   //m_shadowMap.getTexture().copyToImage().saveToFile("shadowmap.png");
+    }
 }
 
 

@@ -167,6 +167,7 @@ bool PBRIsoScene::InitRenderer(sf::Vector2u windowSize)
             r = false;
     }
 
+    /** Add setEnvironementMap method to replace this **/
     sf::Texture *env_map = AssetHandler<TextureAsset>::Instance()->LoadAssetFromFile("../data/panorama.jpg")->GetTexture();
     env_map->generateMipmap();
     env_map->setSmooth(true);
@@ -359,7 +360,9 @@ int PBRIsoScene::UpdateLighting(std::multimap<float, Light*> &lightList)
             sf::IntRect cur_shift = curLight->GetShadowMaxShift();
             shadowShift[curNbrShadows] = sf::Vector2f(cur_shift.left,
                                                       -cur_shift.height - cur_shift.top ); /*GLSL Reverse y-coord*/
-            shadowRatio[curNbrShadows] = curLight->GetShadowMapRatio();
+            //shadowRatio[curNbrShadows] = curLight->GetShadowMapRatio();
+            shadowRatio[curNbrShadows].x = 1.0/(m_PBRScreen.getSize().x*m_currentCamera->GetZoom() + cur_shift.width);
+            shadowRatio[curNbrShadows].y = 1.0/(m_PBRScreen.getSize().y*m_currentCamera->GetZoom() + cur_shift.height);
             m_lightingShader.setUniform(buffer.str(), curLight->GetShadowMap());
 
             ++curNbrShadows;
@@ -397,8 +400,21 @@ void PBRIsoScene::RenderStaticGeometry(const sf::View &curView)
 
     Profiler::PushClock("Prepare static geometry");
 
+    if(curView.getSize() != m_lastStaticRenderView.getSize())
+    {
+        m_tilesShift = sf::Vector2f(0,0);
+        m_firstStaticRender = true;
+    }
+
+    sf::Vector2f zoom(curView.getSize().x/m_PBRScreen.getSize().x,
+                      curView.getSize().y/m_PBRScreen.getSize().y);
+
     if(!m_firstStaticRender)
-        m_tilesShift += curView.getCenter() - m_lastStaticRenderView.getCenter();
+  //      m_tilesShift += (curView.getCenter() - m_lastStaticRenderView.getCenter());
+    {
+        m_tilesShift.x += (curView.getCenter().x - m_lastStaticRenderView.getCenter().x)/zoom.x;
+        m_tilesShift.y += (curView.getCenter().y - m_lastStaticRenderView.getCenter().y)/zoom.y;
+    }
 
     m_lightingShader.setUniform("SSR_map_shift",
                                 sf::Vector2f(curView.getCenter().x - m_lastStaticRenderView.getCenter().x,
@@ -529,8 +545,8 @@ void PBRIsoScene::RenderStaticGeometry(const sf::View &curView)
     }
 
     sf::Vector2f viewPos;
-    viewPos.x = curView.getCenter().x - curView.getSize().x/2 - m_tilesShift.x;
-    viewPos.y = curView.getCenter().y - curView.getSize().y/2 - m_tilesShift.y;
+    viewPos.x = curView.getCenter().x - curView.getSize().x/2 - m_tilesShift.x*zoom.x;
+    viewPos.y = curView.getCenter().y - curView.getSize().y/2 - m_tilesShift.y*zoom.y;
 
 
     std::list<SceneEntity*>::iterator renderIt;
@@ -541,7 +557,6 @@ void PBRIsoScene::RenderStaticGeometry(const sf::View &curView)
             SceneNode *node = (*renderIt)->GetParentNode();
             if(node != nullptr)
             {
-                /**Need to take zoom into consideration somewhere**/
                 sf::Vector3f globalPos = m_isoToCartMat*node->GetGlobalPosition();
 
                 sf::FloatRect rect  = (*renderIt)->GetScreenBoundingRect(m_isoToCartMat);
@@ -549,11 +564,11 @@ void PBRIsoScene::RenderStaticGeometry(const sf::View &curView)
                 rect.top  += globalPos.y - viewPos.y;
 
 
-                for(int  x = std::max(0, (int)floor(rect.left/SCREENTILE_SIZE)) ;
-                            x < std::min((int)m_nbrTiles.x, (int)ceil((float)(rect.left+rect.width)/SCREENTILE_SIZE)) ;
+                for(int  x = std::max(0, (int)floor(rect.left/(SCREENTILE_SIZE*zoom.x))) ;
+                            x < std::min((int)m_nbrTiles.x, (int)ceil((float)(rect.left+rect.width)/(SCREENTILE_SIZE*zoom.x))) ;
                             ++x)
-                for(int  y = std::max(0, (int)floor(rect.top/SCREENTILE_SIZE)) ;
-                            y < std::min((int)m_nbrTiles.y, (int)ceil((float)(rect.top+rect.height)/SCREENTILE_SIZE));
+                for(int  y = std::max(0, (int)floor(rect.top/(SCREENTILE_SIZE*zoom.y))) ;
+                            y < std::min((int)m_nbrTiles.y, (int)ceil((float)(rect.top+rect.height)/(SCREENTILE_SIZE*zoom.y)));
                             ++y)
                 {
                     int n = x+y*m_nbrTiles.x;
@@ -575,11 +590,11 @@ void PBRIsoScene::RenderStaticGeometry(const sf::View &curView)
     for(size_t y = 0 ; y < m_nbrTiles.y ; ++y)*/
     for(tileIt = m_screenTiles.begin() ; tileIt != m_screenTiles.end() ; ++tileIt)
     {
-        if(!tileIt->askForUpdate)
+        if(!tileIt->askForUpdate && !m_firstStaticRender)
         if(tileIt->newList != tileIt->entities)
             tileIt->askForUpdate = true;
 
-        if(tileIt->askForUpdate)
+        if(tileIt->askForUpdate || m_firstStaticRender)
         {
             tileIt->entities.clear();
             tileIt->entities = tileIt->newList;
@@ -615,8 +630,7 @@ void PBRIsoScene::RenderStaticGeometry(const sf::View &curView)
         std::list<ScreenTile*>::iterator tilesIt;
         for(tilesIt = tilesToRender.begin() ; tilesIt != tilesToRender.end() ; ++tilesIt)
         {
-            //if(!m_firstStaticRender)
-             (*tilesIt)->askForUpdate = false;
+            (*tilesIt)->askForUpdate = false;
 
             renderTarget->setActive(true);
             glScissor((*tilesIt)->position.x,renderTarget->getSize().y-(*tilesIt)->position.y-SCREENTILE_SIZE,
@@ -642,12 +656,12 @@ void PBRIsoScene::RenderStaticGeometry(const sf::View &curView)
         state.shader = &m_PBRGeometryShader;
 
         tileScreenView = curView;
-        tileScreenView.setSize(m_staticGeometryScreen[m_swapStaticGeometryBuffers].getSize().x,
-                               m_staticGeometryScreen[m_swapStaticGeometryBuffers].getSize().y);
-        /*tileScreenView.move(-m_tilesShift.x+SCREENTILE_SIZE/2,
-                            -m_tilesShift.y+SCREENTILE_SIZE/2);*/
-        tileScreenView.setCenter(viewPos.x + tileScreenView.getSize().x/2,
-                                 viewPos.y + tileScreenView.getSize().y/2);
+        tileScreenView.setSize(m_staticGeometryScreen[m_swapStaticGeometryBuffers].getSize().x*zoom.x,
+                               m_staticGeometryScreen[m_swapStaticGeometryBuffers].getSize().y*zoom.y);
+        tileScreenView.move((-m_tilesShift.x*zoom.x+SCREENTILE_SIZE/2*zoom.x),
+                            (-m_tilesShift.y*zoom.y+SCREENTILE_SIZE/2*zoom.y));
+        //tileScreenView.setCenter(viewPos.x + tileScreenView.getSize().x/2,
+          //                       viewPos.y + tileScreenView.getSize().y/2);
 
          if(pass == 0)
         {

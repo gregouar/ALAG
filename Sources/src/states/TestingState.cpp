@@ -69,7 +69,8 @@ void TestingState::Init()
     torusEntity->SetCenter(128,128);
     torusEntity->SetShadowCastingType(DirectionnalShadow);
     //torusEntity->SetColor(sf::Color(255,64,255,128));
-    //torusEntity->SetColor(sf::Color(128,128,128));
+    //torusEntity->SetColor(sf::Color(64,128,255,128));
+    torusEntity->SetColor(sf::Color(224,224,224));
     torusEntity->SetStatic(false);
     //sarco3DEntity->DesactivateLighting();
     m_sarco3DNode->AttachObject(torusEntity);
@@ -104,11 +105,10 @@ void TestingState::Init()
    /* Light* sunLight = m_mainScene.CreateLight(DirectionnalLight,sf::Vector3f(-1,.5,-1), sf::Color(255,255,160));
     sunLight->SetConstantAttenuation(2);*/
     m_sunLight = m_mainScene.CreateLight(DirectionnalLight,sf::Vector3f(-1 ,.2,-1), sf::Color(255,255,255));
-    m_sunLight->SetIntensity(20);
+    m_sunLight->SetIntensity(15);
     m_sunLight->EnableShadowCasting();
-    m_sunLight->SetShadowMapSize(.5);
     m_mainScene.GetRootNode()->AttachObject(m_sunLight);
-    m_mainScene.SetAmbientLight(sf::Color(96,127,255,64));
+    m_mainScene.SetAmbientLight(sf::Color(96,127,255,32));
     //m_mainScene.SetAmbientLight(sf::Color(64,64,128,24));
     //m_mainScene.SetAmbientLight(sf::Color(96,96,128));
    // m_mainScene.SetAmbientLight(sf::Color(32,48,128));
@@ -125,20 +125,20 @@ void TestingState::Init()
     m_chene_node->SetPosition(150,-100,-78);
     m_chene_node->AttachObject(cheneEntity);
 
-    /*for(int i = -5 ; i < 5 ; ++i)
-    for(int j = -5 ; j < 5 ; ++j)
+    /*for(int i = -10 ; i < 30 ; ++i)
+    for(int j = -10 ; j < 30 ; ++j)
     {
         SceneNode *n = m_mainScene.GetRootNode()->CreateChildNode();
         IsoSpriteEntity *e = m_mainScene.CreateIsoSpriteEntity();
-        e->SetTexture(PBRTextureHandler->LoadAssetFromFile("../data/treeXML.txt"));
-        //e->SetTexture(PBRTextureHandler->LoadAssetFromFile("../data/torusbXML.txt"));
-        e->SetCenter(256,526);
-        //e->SetCenter(128,160);
+       // e->SetTexture(PBRTextureHandler->LoadAssetFromFile("../data/treeXML.txt"));
+        e->SetTexture(PBRTextureHandler->LoadAssetFromFile("../data/torusbXML.txt"));
+        //e->SetCenter(256,526);
+        e->SetCenter(128,160);
         e->SetStatic(true);
-        e->SetShadowCastingType(DirectionnalShadow);
-        e->SetShadowVolumeType(TwoSidedShadow);
-        n->SetPosition(i*100,j*100,-78);
-        //n->SetPosition(i*50,j*50,0);
+        //e->SetShadowCastingType(DirectionnalShadow);
+        //e->SetShadowVolumeType(TwoSidedShadow);
+        //n->SetPosition(i*100,j*100,-78);
+        n->SetPosition(i*50,j*50,0);
         n->AttachObject(e);
     }*/
 
@@ -241,7 +241,7 @@ void TestingState::Init()
     light2->SetIntensity(10);
     light2->SetRadius(300);
     light2->EnableShadowCasting();
-    light2->SetShadowMapSize(.5);
+    light2->SetShadowMapSize(256,256);
     m_lightNode->AttachObject(light2);
 
    // font.loadFromFile("../data/arial.ttf");
@@ -391,7 +391,7 @@ void TestingState::Draw(sf::RenderTarget* renderer)
     renderer->resetGLStates();
     renderer->draw(m_fpsText);
 
-    if(m_totalTime.asSeconds() > .5)
+    if(m_totalTime.asSeconds() > 1.0)
     {
         m_nbrFPS = (float)m_fpsCounter/m_totalTime.asSeconds();
         m_totalTime = sf::Time::Zero;

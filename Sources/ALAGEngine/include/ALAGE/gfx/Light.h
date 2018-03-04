@@ -38,15 +38,16 @@ class Light : public SceneObject
         void SetLinearAttunation(float);
         void SetQuadraticAttenuation(float);
 
-        void SetShadowMapSize(float); //Ratio between 0 and 1
+        void SetShadowMapSize(unsigned int x, unsigned int y );
+        void SetShadowMapSize(sf::Vector2u );
         void EnableShadowCasting();
         void DisableShadowCasting();
 
         const sf::Texture& GetShadowMap();
         const sf::IntRect& GetShadowMaxShift();
-        sf::Vector2f GetShadowMapRatio();
+        //sf::Vector2f GetShadowMapRatio();
 
-        void InitShadowMap();
+        //void InitShadowMap();
         void RenderShadowMap(const sf::View &/*,const sf::Vector2u &*/);
         void UpdateShadow();
 
@@ -69,7 +70,6 @@ class Light : public SceneObject
         float m_quadraticAttenuation;
 
         bool m_castShadow;
-        float m_shadowMap_size;
         sf::RenderTexture m_shadowMap;
         sf::IntRect m_shadowMaxShift;
         bool m_requireShadowComputation;
