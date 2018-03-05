@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <texture3D>
 	<name>Stone wall</name>
-	<height>30</height>
+	<height>100</height>
 	<texture type="albedo">wall_color.png</texture>
 	<texture type="normal">wall_normal.png</texture>
 	<texture type="depth">wall_depth.png</texture>
-	<material type="roughness">.01</material>
+	<material type="roughness">.8</material>
 	<material type="metalness">0</material>
 	<material type="translucency">0</material>
 </texture3D>

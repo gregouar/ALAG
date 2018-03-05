@@ -7,5 +7,5 @@
 	<texture type="depth">wetsand_depth.png</texture>
 	<texture type="material">wetsand_material.png</texture>
 	<material type="roughness">.1</material>
-	<material type="metalness">1</material>
+	<material type="metalness">.1</material>
 </texture3D>

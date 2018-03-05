@@ -10,29 +10,22 @@ Texture loaded from file: ../data/sand_depth.png
 Texture loaded from file: ../data/tree_albedo.png
 Texture loaded from file: ../data/sand_normal.png
 Texture loaded from file: ../data/torusb.png
-Texture loaded from file: ../data/tree_normal.png
 Texture loaded from file: ../data/torusb_normal.png
 Texture loaded from file: ../data/torusb_depth.png
+Texture loaded from file: ../data/tree_normal.png
 PBR texture loaded from file: ../data/torusbXML.txt
 Texture loaded from file: ../data/tree_heightmap.png
 Texture loaded from file: ../data/tree_material.png
 PBRTexture readed from file: ../data/treeXML.txt
 PBRTexture readed from file: ../data/abbayeXML.txt
-PBRTexture readed from file: ../data/cobbleXML.txt
+Texture loaded from file: ../data/wall_color.png
 Texture loaded from file: ../data/abbaye_color.png
-PBRTexture readed from file: ../data/wetsandXML.txt
-Font loaded from file: ../data/arial.ttf
-Starting application
+Texture loaded from file: ../data/wall_normal.png
 Texture loaded from file: ../data/abbaye_normal.png
+Texture loaded from file: ../data/wall_depth.png
+PBRTexture readed from file: ../data/wallXML.txt
 Texture loaded from file: ../data/abbaye_heightmap.png
 PBR texture loaded from file: ../data/abbayeXML.txt
-Texture loaded from file: ../data/cobble_color.png
-Texture loaded from file: ../data/cobble_normal.png
-Texture loaded from file: ../data/cobble_depth.png
-PBR texture loaded from file: ../data/cobbleXML.txt
-Texture loaded from file: ../data/wetsand_albedo.png
-Texture loaded from file: ../data/wetsand_normal.png
-Texture loaded from file: ../data/wetsand_depth.png
-Texture loaded from file: ../data/wetsand_material.png
-PBR texture loaded from file: ../data/wetsandXML.txt
+Font loaded from file: ../data/arial.ttf
+Starting application
 Stopping application

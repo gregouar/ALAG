@@ -12,6 +12,7 @@ IsoRectEntity::IsoRectEntity()  : IsoRectEntity(sf::Vector2f (0,0))
 IsoRectEntity::IsoRectEntity(sf::Vector2f s) : RectEntity(s)
 {
     m_scene = nullptr;
+    m_enableParallax = false;
 }
 
 IsoRectEntity::~IsoRectEntity()
@@ -27,10 +28,17 @@ void IsoRectEntity::PrepareShader(sf::Shader *shader)
     && m_texture != nullptr)
     {
         shader->setUniform("p_normalProjMat",sf::Glsl::Mat3(IdMat3X3));
+        shader->setUniform("enable_parallax",m_enableParallax);
+        shader->setUniform("texture_size",sf::Vector2f(m_texture->GetTexture()->getSize()));
        // shader->setUniform("p_isoToCartZFactor",0);
+
     }
 }
 
+void IsoRectEntity::SetParallax(bool p)
+{
+    m_enableParallax = p;
+}
 
 void IsoRectEntity::SetIsoScene(IsometricScene *scene)
 {

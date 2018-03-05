@@ -170,6 +170,7 @@ class PBRIsoScene : public DefaultScene
         static const float DEFAULT_SSAOBLUR;
         static const float DEFAULT_ENVBLUR;
         static const float SSAO_STRENGTH;
+        static const unsigned int NBR_PARALLAX_STEPS;
 };
 
 }

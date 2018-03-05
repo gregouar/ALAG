@@ -19,11 +19,14 @@ class IsoRectEntity : public RectEntity
 
         virtual void PrepareShader(sf::Shader *);
 
+        void SetParallax(bool = true);
+
     protected:
         void SetIsoScene(IsometricScene *scene);
 
     private:
         IsometricScene *m_scene;
+        bool m_enableParallax;
 };
 
 }

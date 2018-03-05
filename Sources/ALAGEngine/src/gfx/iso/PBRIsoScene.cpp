@@ -29,10 +29,12 @@ const std::string PBRIsoScene::DEFAULT_ENABLESRGB = "true";
 const std::string PBRIsoScene::DEFAULT_SUPERSAMPLING = "1";
 const std::string PBRIsoScene::DEFAULT_DIRECTIONALSHADOWSCASTING = "true";
 const std::string PBRIsoScene::DEFAULT_DYNAMICSHADOWSCASTING = "true";
-const float PBRIsoScene::DEFAULT_BLOOMBLUR = 12.0;
+//const float PBRIsoScene::DEFAULT_BLOOMBLUR = 12.0;
+const float PBRIsoScene::DEFAULT_BLOOMBLUR = 50.0;
 const float PBRIsoScene::DEFAULT_SSAOBLUR = 3.0;
 const float PBRIsoScene::DEFAULT_ENVBLUR = 10.0;
 const float PBRIsoScene::SSAO_STRENGTH = 2.0;
+const unsigned int PBRIsoScene::NBR_PARALLAX_STEPS = 5;
 
 PBRIsoScene::PBRIsoScene() : PBRIsoScene(DEFAULT_ISO_VIEW_ANGLE)
 {
@@ -56,6 +58,7 @@ PBRIsoScene::PBRIsoScene(IsoViewAngle viewAngle)
 
     //m_screenTiles = nullptr;
     m_firstStaticRender = true;
+    m_swapStaticGeometryBuffers = 0;
 }
 
 
@@ -86,7 +89,6 @@ bool CreatePBRScreen(sf::MultipleRenderTexture *buffer, float w, float h, bool u
 bool PBRIsoScene::InitRenderer(sf::Vector2u windowSize)
 {
     bool r = true;
-
 
     m_superSampling = Config::GetInt("graphics","SuperSampling",DEFAULT_SUPERSAMPLING);
 
@@ -677,7 +679,8 @@ void PBRIsoScene::RenderStaticGeometry(const sf::View &curView)
         renderTarget->setView(tileScreenView);
 
         for(renderIt = entitiesToRender.begin() ; renderIt != entitiesToRender.end() ; ++renderIt)
-        {
+            RenderEntity(renderTarget,*renderIt);
+        /*{
             sf::Vector3f globalPos(0,0,0);
 
             SceneNode *node = (*renderIt)->GetParentNode();
@@ -694,7 +697,7 @@ void PBRIsoScene::RenderStaticGeometry(const sf::View &curView)
             m_PBRGeometryShader.setUniform("p_normalProjMat",sf::Glsl::Mat3(m_normalProjMat.values));
             (*renderIt)->PrepareShader(&m_PBRGeometryShader);
             (*renderIt)->Render(renderTarget,state);
-        }
+        }*/
         renderTarget->display(DOFLUSH);
         renderTarget->setActive(false);
     }
@@ -916,6 +919,7 @@ void PBRIsoScene::RenderEntity(sf::RenderTarget* renderTarget,SceneEntity *entit
         state.transform.translate(v.x, v.y);
         state.transform *= m_TransformIsoToCart;
 
+        m_PBRGeometryShader.setUniform("enable_parallax",false);
         m_PBRGeometryShader.setUniform("p_zPos",globalPos.z*PBRTextureAsset::DEPTH_BUFFER_NORMALISER);
         m_PBRGeometryShader.setUniform("p_normalProjMat",sf::Glsl::Mat3(m_normalProjMat.values));
         entity->PrepareShader(&m_PBRGeometryShader);
@@ -1088,6 +1092,10 @@ void PBRIsoScene::ComputeTrigonometry()
                                     sinXY * cosZ ,  cosXY*cosZ   , sinZ);
 
 
+    //CompileLightingShader();
+
+    m_PBRGeometryShader.setUniform("view_direction", m_normalProjMat * sf::Vector3f(0,0,1));
+
    // m_lightingShader.setUniform("view_direction",sf::Glsl::Vec3(sf::Vector3f(cosXY*cosZ, sinXY*sinZ,sinZ)));
     m_lightingShader.setUniform("p_cartToIso2DProjMat",sf::Glsl::Mat3(m_cartToIsoMat.values));
     m_lightingShader.setUniform("p_isoToCartMat",sf::Glsl::Mat3(m_isoToCartMat.values));
@@ -1101,6 +1109,7 @@ void PBRIsoScene::ComputeTrigonometry()
     //m_SSAOShader.setUniform("p_cartToIso2DProjMat",sf::Glsl::Mat3(m_cartToIsoMat.values));
     //m_SSAOShader.setUniform("p_isoToCartZFactor",m_isoToCartMat.values[5]);
     m_SSAOShader.setUniform("p_isoToCartMat",sf::Glsl::Mat3(m_isoToCartMat.values));
+
 }
 
 

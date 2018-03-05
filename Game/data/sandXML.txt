@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <texture3D>
 	<name>Sand</name>
-	<height>10</height>
+	<height>30</height>
 	<texture type="albedo">sand_color.png</texture>
 	<texture type="normal">sand_normal.png</texture>
 	<texture type="depth">sand_depth.png</texture>
