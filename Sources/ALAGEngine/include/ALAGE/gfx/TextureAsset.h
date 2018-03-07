@@ -13,18 +13,18 @@ class TextureAsset : public Asset
         TextureAsset();
         TextureAsset(const AssetTypeID&);
         TextureAsset(const sf::Image &img);
+        TextureAsset(sf::Texture *);
         virtual ~TextureAsset();
 
         virtual bool LoadNow();
 
         virtual sf::Texture* GetTexture();
 
-
-
     protected:
-        sf::Texture m_texture;
+        sf::Texture* m_texture;
 
     private:
+        bool m_createdTexture;
 };
 
 }

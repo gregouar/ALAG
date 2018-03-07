@@ -16,7 +16,7 @@ PBRTextureAsset::PBRTextureAsset()
     m_allowLoadFromMemory = false;
     m_allowLoadFromStream = false;
 
-    m_default_height = 0;
+    m_default_height = 1;
     m_roughness = 1;
     m_metalness = 0;
     m_translucency = 0;
@@ -29,7 +29,7 @@ PBRTextureAsset::PBRTextureAsset()
 
 PBRTextureAsset::PBRTextureAsset(const AssetTypeID& id) : TextureAsset(id)
 {
-    m_default_height = 0;
+    m_default_height = 1;
     m_roughness = 1;
     m_metalness = 0;
     m_translucency = 0;
@@ -38,6 +38,17 @@ PBRTextureAsset::PBRTextureAsset(const AssetTypeID& id) : TextureAsset(id)
     m_normalMap = nullptr;
     m_depthMap = nullptr;
     m_materialMap = nullptr;
+}
+
+PBRTextureAsset::PBRTextureAsset(TextureAsset *albedo, TextureAsset* normal,
+                                 TextureAsset *depth, TextureAsset* material) : PBRTextureAsset()
+{
+    m_albedoMap = albedo;
+    m_normalMap = normal;
+    m_depthMap = depth;
+    m_materialMap = material;
+
+    m_loaded = true;
 }
 
 PBRTextureAsset::~PBRTextureAsset()

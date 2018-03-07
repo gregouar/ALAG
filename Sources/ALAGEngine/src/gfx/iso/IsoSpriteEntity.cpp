@@ -244,7 +244,6 @@ void IsoSpriteEntity::ComputeShadow(Light* light)
             shadowImgShrinked.create(shrinked_shadow_bounds.width, shrinked_shadow_bounds.height);
             shadowImgShrinked.copy(shadowImg, 0, 0, shrinked_shadow_bounds);
 
-
             sf::Texture* shadowTexture = &m_shadowMap[light];
             shadowTexture->loadFromImage(shadowImgShrinked);
            // shadowTexture->create(shadow_bounds.width,shadow_bounds.height);

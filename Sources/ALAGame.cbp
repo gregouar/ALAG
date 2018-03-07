@@ -85,6 +85,7 @@
 		<Unit filename="ALAGEngine/include/ALAGE/gfx/iso/IsoGeometricShadowCaster.h" />
 		<Unit filename="ALAGEngine/include/ALAGE/gfx/iso/IsoRectEntity.h" />
 		<Unit filename="ALAGEngine/include/ALAGE/gfx/iso/IsoSpriteEntity.h" />
+		<Unit filename="ALAGEngine/include/ALAGE/gfx/iso/IsoWaterEntity.h" />
 		<Unit filename="ALAGEngine/include/ALAGE/gfx/iso/PBRIsoScene.h" />
 		<Unit filename="ALAGEngine/include/ALAGE/utils/ListIterator.h" />
 		<Unit filename="ALAGEngine/include/ALAGE/utils/Logger.h" />
@@ -132,6 +133,7 @@
 		<Unit filename="ALAGEngine/src/gfx/iso/IsoGeometricShadowCaster.cpp" />
 		<Unit filename="ALAGEngine/src/gfx/iso/IsoRectEntity.cpp" />
 		<Unit filename="ALAGEngine/src/gfx/iso/IsoSpriteEntity.cpp" />
+		<Unit filename="ALAGEngine/src/gfx/iso/IsoWaterEntity.cpp" />
 		<Unit filename="ALAGEngine/src/gfx/iso/PBRIsoScene.cpp" />
 		<Unit filename="ALAGEngine/src/gfx/iso/PBRIsoShaders.cpp" />
 		<Unit filename="ALAGEngine/src/utils/Logger.cpp" />

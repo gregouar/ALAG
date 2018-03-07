@@ -20,6 +20,11 @@ float ComputeSquareDistance(sf::Vector2f v, sf::Vector2f w)
     return ComputeDotProduct(v-w,v-w);
 }
 
+int RandomNumber(int maxNbr)
+{
+    return (int)(static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/maxNbr)));
+}
+
 
 sf::Vector2f Normalize(sf::Vector2f v)
 {

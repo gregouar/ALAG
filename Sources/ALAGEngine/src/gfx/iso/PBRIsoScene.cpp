@@ -30,7 +30,7 @@ const std::string PBRIsoScene::DEFAULT_SUPERSAMPLING = "1";
 const std::string PBRIsoScene::DEFAULT_DIRECTIONALSHADOWSCASTING = "true";
 const std::string PBRIsoScene::DEFAULT_DYNAMICSHADOWSCASTING = "true";
 //const float PBRIsoScene::DEFAULT_BLOOMBLUR = 12.0;
-const float PBRIsoScene::DEFAULT_BLOOMBLUR = 50.0;
+const float PBRIsoScene::DEFAULT_BLOOMBLUR = 15.0;
 const float PBRIsoScene::DEFAULT_SSAOBLUR = 3.0;
 const float PBRIsoScene::DEFAULT_ENVBLUR = 10.0;
 const float PBRIsoScene::SSAO_STRENGTH = 2.0;
@@ -53,6 +53,8 @@ PBRIsoScene::PBRIsoScene(IsoViewAngle viewAngle)
 
     CompileDepthShader();
     CompileDepthCopierShader();
+
+    CompileWaterGeometryShader();
 
     SetAmbientLight(m_ambientLight);
 
@@ -826,6 +828,8 @@ void PBRIsoScene::RenderLighting()
     glDepthMask(GL_FALSE);
 
     m_renderer.setTexture(m_PBRScreen.getTexture(PBRAlbedoScreen));
+    //m_PBRScreen.getTexture(PBRAlbedoScreen)->copyToImage().saveToFile("PBR0.png");
+    //m_PBRScreen.getTexture(PBRNormalScreen)->copyToImage().saveToFile("PBR1.png");
 
     m_lightingShader.setUniform("map_albedo",*m_PBRScreen.getTexture(PBRAlbedoScreen));
     m_lightingShader.setUniform("map_normal",*m_PBRScreen.getTexture(PBRNormalScreen));
@@ -837,20 +841,23 @@ void PBRIsoScene::RenderLighting()
 
     //m_lighting_PBRScreen.getTexture(1)->copyToImage().saveToFile("uv.png");
 
-    m_lightingShader.setUniform("map_albedo",*m_alpha_PBRScreen.getTexture(PBRAlbedoScreen));
-    m_lightingShader.setUniform("map_normal",*m_alpha_PBRScreen.getTexture(PBRNormalScreen));
-    m_lightingShader.setUniform("map_depth",*m_alpha_PBRScreen.getTexture(PBRDepthScreen));
-    m_lightingShader.setUniform("map_material",*m_alpha_PBRScreen.getTexture(PBRMaterialScreen));
-    m_lightingShader.setUniform("enable_SSR",false);
-
-    m_lighting_PBRScreen.draw(m_renderer,m_rendererStates);
-
     if(m_enableSSAO)
     {
         //m_SSAOScreen[0].getTexture().copyToImage().saveToFile("SSAO.png");
         m_renderer.setTexture(&m_SSAOScreen[0].getTexture());
         m_lighting_PBRScreen.draw(m_renderer,sf::BlendMultiply);
     }
+
+
+    m_lightingShader.setUniform("map_albedo",*m_alpha_PBRScreen.getTexture(PBRAlbedoScreen));
+    m_lightingShader.setUniform("map_normal",*m_alpha_PBRScreen.getTexture(PBRNormalScreen));
+    m_lightingShader.setUniform("map_depth",*m_alpha_PBRScreen.getTexture(PBRDepthScreen));
+    m_lightingShader.setUniform("map_material",*m_alpha_PBRScreen.getTexture(PBRMaterialScreen));
+    //m_lightingShader.setUniform("enable_SSR",false);
+    m_lightingShader.setUniform("enable_SSR",m_enableSSR);
+
+    m_lighting_PBRScreen.draw(m_renderer,m_rendererStates);
+
 
     m_lighting_PBRScreen.display(DOFLUSH);
 }
@@ -870,15 +877,16 @@ void PBRIsoScene::RenderBloom()
     m_bloomScreen[1].draw(m_renderer,&m_blurShader);
     m_bloomScreen[1].display(DOFLUSH);
 
-    m_renderer.setTexture(&m_bloomScreen[1].getTexture());
-    m_blurShader.setUniform("offset",sf::Vector2f(0.5*DEFAULT_BLOOMBLUR/(float)m_PBRScreen.getSize().x,0));
-    m_bloomScreen[0].draw(m_renderer,&m_blurShader);
-    m_bloomScreen[0].display(DOFLUSH);
-    m_renderer.setTexture(&m_bloomScreen[0].getTexture());
-    m_blurShader.setUniform("offset",sf::Vector2f(0,0.5*DEFAULT_BLOOMBLUR/(float)m_PBRScreen.getSize().y));
-    m_bloomScreen[1].draw(m_renderer,&m_blurShader);
-    m_bloomScreen[1].display(DOFLUSH);
-
+    for(int i = 0 ; i < 1 ; ++i) {
+        m_renderer.setTexture(&m_bloomScreen[1].getTexture());
+        m_blurShader.setUniform("offset",sf::Vector2f(DEFAULT_BLOOMBLUR/(float)m_PBRScreen.getSize().x/(i+2),0));
+        m_bloomScreen[0].draw(m_renderer,&m_blurShader);
+        m_bloomScreen[0].display(DOFLUSH);
+        m_renderer.setTexture(&m_bloomScreen[0].getTexture());
+        m_blurShader.setUniform("offset",sf::Vector2f(0,DEFAULT_BLOOMBLUR/(float)m_PBRScreen.getSize().y/(i+2)));
+        m_bloomScreen[1].draw(m_renderer,&m_blurShader);
+        m_bloomScreen[1].display(DOFLUSH);
+    }
    // m_bloomScreen[1].getTexture().copyToImage().saveToFile("Bloom.png");
 }
 
@@ -931,9 +939,17 @@ IsoRectEntity* PBRIsoScene::CreateIsoRectEntity(sf::Vector2f rectSize)
 {
     IsoRectEntity *e = new IsoRectEntity(rectSize);
     AddCreatedObject(GenerateObjectID(), e);
+    e->SetIsoScene(this);
     return e;
 }
 
+IsoWaterEntity* PBRIsoScene::CreateIsoWaterEntity(sf::Vector2f rectSize)
+{
+    IsoWaterEntity *e = new IsoWaterEntity(rectSize);
+    AddCreatedObject(GenerateObjectID(), e);
+    e->SetIsoScene(this);
+    return e;
+}
 
 IsoSpriteEntity* PBRIsoScene::CreateIsoSpriteEntity(sf::Vector2i spriteSize)
 {
@@ -1185,6 +1201,11 @@ sf::View PBRIsoScene::GenerateView(Camera* cam)
 sf::Shader* PBRIsoScene::GetDepthShader()
 {
     return &m_depthShader;
+}
+
+sf::Shader* PBRIsoScene::GetWaterGeometryShader()
+{
+    return &m_waterGeometryShader;
 }
 
 void PBRIsoScene::CopyPBRScreen(sf::MultipleRenderTexture *source, sf::FloatRect sourceRect,

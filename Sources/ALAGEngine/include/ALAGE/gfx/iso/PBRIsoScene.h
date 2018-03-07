@@ -4,6 +4,7 @@
 #include "ALAGE/utils/Mathematics.h"
 #include "ALAGE/gfx/DefaultScene.h"
 #include "ALAGE/gfx/iso/IsoGeometricShadowCaster.h"
+#include "ALAGE/gfx/iso/IsoWaterEntity.h"
 #include "ALAGE/gfx/iso/IsoSpriteEntity.h"
 #include "ALAGE/gfx/iso/IsoRectEntity.h"
 #include <SFML/OpenGL.hpp>
@@ -29,6 +30,8 @@ class PBRIsoScene : public DefaultScene
 {
     friend void IsoSpriteEntity::RenderShadow(sf::RenderTarget*, Light*);
     friend void IsoGeometricShadowCaster::RenderShadow(sf::RenderTarget*, Light*);
+   // friend void IsoWaterEntity::Render(sf::RenderTarget*, const sf::RenderStates&);
+    friend void IsoWaterEntity::RenderWaterTexture();
 
     public:
         PBRIsoScene();
@@ -49,6 +52,7 @@ class PBRIsoScene : public DefaultScene
         void RenderSSAO();
 
         IsoRectEntity*   CreateIsoRectEntity(sf::Vector2f = sf::Vector2f(0,0));
+        IsoWaterEntity*  CreateIsoWaterEntity(sf::Vector2f = sf::Vector2f(0,0));
         IsoSpriteEntity* CreateIsoSpriteEntity(sf::Vector2i);
         IsoSpriteEntity* CreateIsoSpriteEntity(sf::IntRect = sf::IntRect(0,0,0,0));
 
@@ -87,6 +91,7 @@ class PBRIsoScene : public DefaultScene
                            sf::MultipleRenderTexture *target, sf::Texture *depthTester = nullptr);
 
         sf::Shader *GetDepthShader();
+        sf::Shader *GetWaterGeometryShader();
 
         void CompileDepthShader();
         void CompileDepthCopierShader();
@@ -95,6 +100,7 @@ class PBRIsoScene : public DefaultScene
         void CompileSSAOShader();
         void CompileBlurShader();
         void CompileHDRBloomShader();
+        void CompileWaterGeometryShader();
 
         void GenerateBrdflut();
 
@@ -120,6 +126,7 @@ class PBRIsoScene : public DefaultScene
         sf::Shader m_lightingShader;
         sf::Shader m_blurShader;
         sf::Shader m_HDRBloomShader;
+        sf::Shader m_waterGeometryShader;
         sf::Texture m_brdf_lut;
 
         std::vector<ScreenTile> m_screenTiles;

@@ -161,12 +161,8 @@ void PBRIsoScene::CompilePBRGeometryShader()
     ""
     "   float delta = oldHeight - curHeight;"
     "   float weight = 1.0 - "<<NBR_PARALLAX_STEPS<<"*(oldHeight - layerHeight + "<<1.0/NBR_PARALLAX_STEPS<<")/(1.0+delta*"<<NBR_PARALLAX_STEPS<<");"
-    //"   float weight = 1.0 - ("<<NBR_PARALLAX_STEPS<<"*delta)/(1+delta*"<<NBR_PARALLAX_STEPS<<");"
     "   p += view_direction.xy *  "<<1.0/NBR_PARALLAX_STEPS<<" * total_height * weight;"
     ""
-    /*"   vec3 depthPixel = texture2D(map_depth, VaryingTexCoord0).rgb;" \
-    "   float h = dot(All33, depthPixel) *p_height*"<<PBRTextureAsset::DEPTH_BUFFER_NORMALISER_INV<<";"
-    "   vec2 p = view_direction.xy * h;"*/
     "   return coord - p / texture_size;"
     "}"
     ""
@@ -178,7 +174,7 @@ void PBRIsoScene::CompilePBRGeometryShader()
     "       texCoord = Parallax(texCoord);}"
     //"   if(texCoord.x > 2.0 || texCoord.x < 0.0 || texCoord.y > 2.0 || texCoord.y < 0.0) discard;"
     "   vec4 albedoPixel = gl_Color*texture2D(map_albedo, texCoord);" \
-    "   if((p_alpha_pass == true && albedoPixel.a > .2 && albedoPixel.a < .9) "
+    "   if((p_alpha_pass == true && albedoPixel.a > .1 && albedoPixel.a < .9) "
     "   || (p_alpha_pass == false && albedoPixel.a >= .9))"
     "   {"
     "       float heightPixel = 0.0; "
@@ -367,7 +363,7 @@ void PBRIsoScene::CompileLightingShader()
     "   }"
     "   return cur.xy;"
     "}"
-    "vec3 RayTrace(vec3 p, vec3 v)"
+    "vec3 RayTrace(vec3 p, vec3 v, float jitter)"
     "{"
     "   const vec3 constantList = vec3(1.0, 0.0, -1.0);"
     "   vec2 oldScreenPos = gl_FragCoord.xy;"
@@ -384,17 +380,17 @@ void PBRIsoScene::CompileLightingShader()
     "       float heightPixel = GetDepth(curScreenPos);"
     "       if(heightPixel - curWorldPos.z > 0) under = 1;"
     "       else under = 0;"
-    "       if(under != oldUnder && abs(heightPixel - curWorldPos.z) < 50){"
+    "       if(under != oldUnder && abs(heightPixel - curWorldPos.z) < 30){"
     "           curScreenPos = RaySearch(vec3(oldScreenPos, oldWorldPos.z), vec3(curScreenPos, curWorldPos.z),oldUnder);"
     "           r.xy = curScreenPos;"
     "           r.z = .2;"
-    "           if(abs(GetDepth(curScreenPos+vec2(2,0)) - curWorldPos.z) < 20)"
+    "           if(abs(GetDepth(curScreenPos+vec2(jitter*i,0)) - curWorldPos.z) < 20)"
     "               r.z += 0.2;"
-    "           if(abs(GetDepth(curScreenPos+vec2(-2,0)) - curWorldPos.z) < 20)"
+    "           if(abs(GetDepth(curScreenPos+vec2(-jitter*i,0)) - curWorldPos.z) < 20)"
     "               r.z += 0.2;"
-    "           if(abs(GetDepth(curScreenPos+vec2(0,2)) - curWorldPos.z) < 20)"
+    "           if(abs(GetDepth(curScreenPos+vec2(0,jitter*i)) - curWorldPos.z) < 20)"
     "               r.z += 0.2;"
-    "           if(abs(GetDepth(curScreenPos+vec2(0,-2)) - curWorldPos.z) < 20)"
+    "           if(abs(GetDepth(curScreenPos+vec2(0,-jitter*i)) - curWorldPos.z) < 20)"
     "               r.z += 0.2;"
     "           r.z *= min(1.0/(length(curWorldPos-p)*.01), 1.0);"
     "           return r;"
@@ -459,7 +455,7 @@ void PBRIsoScene::CompileLightingShader()
     //"   gl_FragData[1] = vec4(0.5+normalize(reflectionView)*0.5,1.0);"
    // "   reflectionColor = ambientLighting;"
     "   if(enable_SSR == true) {"
-    "       vec3 envPos = RayTrace(fragPos,reflectionView) + vec3(SSR_map_shift,0);"
+    "       vec3 envPos = RayTrace(fragPos,reflectionView,materialPixel.r*0.1) + vec3(SSR_map_shift,0);"
     "       if(envPos.z != -1.0){"
     "           vec3 SSRColor = texture2DLod(map_SSRenv, envPos.xy*view_ratio,materialPixel.r*8.0).rgb;"
   //  "           vec3 reflectionDirection = normalize(2.0*texture2D(map_normal, envPos.xy*view_ratio).rgb-1.0);"
@@ -481,6 +477,7 @@ void PBRIsoScene::CompileLightingShader()
     "   vec2 envBRDF  = texture2D(map_brdflut, vec2(max(dot(direction, viewDirection), 0.0), 1.0-materialPixel.r)).rg;"
     "   vec3 specularAmbient = reflectionColor* (FAmbient * envBRDF.x + envBRDF.y);"
     "   gl_FragData[0].rgb = (albedoPixel.rgb * irradianceAmbient + specularAmbient); "
+    "   gl_FragData[0].a += clamp(FAmbient.x * envBRDF.x + envBRDF.y,0.0,.5);"
     ""
     ""
     "   int curShadowMap = 0;"
@@ -580,7 +577,7 @@ void PBRIsoScene::CompileHDRBloomShader()
     "   gl_FragColor = texture2D(texture, gl_TexCoord[0].xy);" \
     ""
     "   if(enable_bloom == true){"
-    "       gl_FragColor.rgb += texture2D(bloom_map, gl_TexCoord[0].xy).rgb*0.2;"
+    "       gl_FragColor.rgb += texture2D(bloom_map, gl_TexCoord[0].xy).rgb*0.1;"
     "   }"
     ""
     "   gl_FragColor.rgb = vec3(1.0) - exp(-gl_FragColor.rgb * p_exposure);"
@@ -637,6 +634,7 @@ void PBRIsoScene::CompileSSAOShader()
     fragShader<<
     "uniform sampler2D map_normal;" \
     "uniform sampler2D map_depth;" \
+   // "uniform sampler2D map_material;"
     "uniform sampler2D map_noise;" \
     "uniform mat3 p_isoToCartMat;" \
     "uniform vec2 view_ratio;" \
@@ -659,11 +657,14 @@ void PBRIsoScene::CompileSSAOShader()
 	"       rayShift.z *= "<<15.0*PBRTextureAsset::DEPTH_BUFFER_NORMALISER<<";"
 	//"       screenShift.y *= -1;"
 	"       vec2 screenPos = gl_FragCoord.xy  + screenShift * constantList.xz;"
+/*	"       float translucency = texture2D(map_depth, screenPos*view_ratio).b;"
+	"       if(translucency != 1.0){"*/
 	"       vec3 occl_depthPixel = texture2D(map_depth, screenPos*view_ratio).rgb;"
 	"       float occl_height = (occl_depthPixel.b*"<<1.0/255.0<<"+occl_depthPixel.g)*"<<1.0/255.0<<"+occl_depthPixel.r;"
     "       if(occl_height < (heightPixel-rayShift.z) - "<<0.1*PBRTextureAsset::DEPTH_BUFFER_NORMALISER<<"  "
     "        && occl_height - (heightPixel-rayShift.z) > "<<-20*PBRTextureAsset::DEPTH_BUFFER_NORMALISER<<")"
     "           --occlusion;"
+  //  "       }"
 	"   } "
     "   gl_FragColor.rgb = constantList.xxx*pow(occlusion*"<<1.0/12.0<<","<<SSAO_STRENGTH<<");" \
     "   gl_FragColor.a = 1;" \
@@ -693,7 +694,7 @@ void PBRIsoScene::CompileBlurShader()
     "       gl_FragColor += texture2D(texture, gl_TexCoord[0].xy - offset * offset_shift[i]) * weight[i];"
     "   }"*/
     ""
-  /*  "    gl_FragColor =  gl_Color * "
+    "    gl_FragColor =  gl_Color * "
     "                   (texture2D(texture, gl_TexCoord[0].xy + offset * 1.0)	* 0.06 + "
     "                    texture2D(texture, gl_TexCoord[0].xy + offset * 0.75)	* 0.09 + "
     "                    texture2D(texture, gl_TexCoord[0].xy + offset * 0.5)	* 0.12 + "
@@ -702,8 +703,8 @@ void PBRIsoScene::CompileBlurShader()
     "                    texture2D(texture, gl_TexCoord[0].xy - offset * 1.0) 	* 0.06 + "
     "                    texture2D(texture, gl_TexCoord[0].xy - offset * 0.75)	* 0.09 + "
     "                    texture2D(texture, gl_TexCoord[0].xy - offset * 0.5)	* 0.12 + "
-    "                    texture2D(texture, gl_TexCoord[0].xy - offset * 0.25)	* 0.15 ); "*/
-   "    gl_FragColor =  gl_Color * "
+    "                    texture2D(texture, gl_TexCoord[0].xy - offset * 0.25)	* 0.15 ); "
+  /* "    gl_FragColor =  gl_Color * "
 	"			   (texture2D(texture, gl_TexCoord[0].xy + offset * 1.0)	* 0.000003 + "
 	"				texture2D(texture, gl_TexCoord[0].xy + offset * 0.8)	* 0.000229 + "
 	"				texture2D(texture, gl_TexCoord[0].xy + offset * 0.6)	* 0.005977 + "
@@ -714,7 +715,7 @@ void PBRIsoScene::CompileBlurShader()
 	"				texture2D(texture, gl_TexCoord[0].xy - offset * 0.8)	* 0.000229 + "
 	"				texture2D(texture, gl_TexCoord[0].xy - offset * 0.6)	* 0.005977 + "
 	"				texture2D(texture, gl_TexCoord[0].xy - offset * 0.4)	* 0.060598 + "
-	"    			texture2D(texture, gl_TexCoord[0].xy - offset * 0.2)	* 0.24173); "
+	"    			texture2D(texture, gl_TexCoord[0].xy - offset * 0.2)	* 0.24173); "*/
    /* "    gl_FragColor =  gl_Color * "
 	"			   (texture2D(texture, gl_TexCoord[0].xy + offset * 1.0)	* 0.0093 + "
 	"				texture2D(texture, gl_TexCoord[0].xy + offset * 0.8)	* 0.028002 + "
@@ -902,6 +903,131 @@ void PBRIsoScene::GenerateBrdflut()
     m_brdf_lut.update(renderer.getTexture());
 }
 
+
+void PBRIsoScene::CompileWaterGeometryShader()
+{
+    std::ostringstream fragShader, vertexShader;
+
+    vertexShader<<
+   // "uniform vec2 texture_size;"
+    "varying vec2 Coord0; "\
+    "void main() "\
+    "{ "\
+    "    gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex; "\
+    //"    VaryingTexCoord0 = (gl_TextureMatrix[0] * gl_MultiTexCoord0).xy/texture_size; "
+    "    Coord0 = 0.5+0.5*(gl_ModelViewProjectionMatrix * gl_Vertex); "\
+    "    gl_FrontColor = gl_Color; "\
+    "}";
+
+    fragShader<<
+    "uniform float p_height;" \
+    "uniform mat3 p_rotation;"
+    "uniform vec2 random_gradients["<<16*16<<"];"
+    ""
+    "varying vec2 Coord0; "\
+    "const vec3 constantList = vec3(1.0, 0.0, -1.0);"
+    ""
+    "int GridPos(int x, int y)"
+    "{"
+    "   x = mod(x,16);"
+    "   y = mod(y,16);"
+    "   return x + y * 16;"
+    "}"
+    ""
+    /*"vec3 PerlinNoise(vec2 pos)"
+    "{"
+    "   pos = pos * 16;"
+    "   vec4 r=(0.0);"
+    "   vec2 ULcorner = floor(pos);"
+    "   pos = pos - ULcorner;"
+    "   vec2 hermitePos = smoothstep(0.0,1.0,pos);"
+    ""
+    "   vec2 rg00 = random_gradients[GridPos(ULcorner.x,ULcorner.y)];"
+    "   vec2 rg10 = random_gradients[GridPos(ULcorner.x+1,ULcorner.y)];"
+    "   vec2 rg11 = random_gradients[GridPos(ULcorner.x+1,ULcorner.y+1)];"
+    "   vec2 rg01 = random_gradients[GridPos(ULcorner.x,ULcorner.y+1)];"
+    ""
+    "   float dot00 = dot(rg00,pos);"
+    "   float dot10 = dot(rg10,pos-(constantList.xy));"
+    "   float dot11 = dot(rg11,pos-(constantList.xx));"
+    "   float dot01 = dot(rg01,pos-(constantList.yx));"
+    "   "
+    ""
+    "   float m0010 = mix(dot00,dot10,hermitePos.x);"
+    "   float m0111 = mix(dot01,dot11,hermitePos.x);"
+    "   r.z = mix(m0010, m0111,hermitePos.y);"
+    ""
+    "   r.x = (1.0-hermitePos.y)*(hermitePos.x*(rg10.x-rg00.x)+(6*pos.x-6*pos.x*pos.x)*(dot10-dot00)+rg00.x*pos.x)"
+    "             + hermitePos.y*(hermitePos.x*(rg11.x-rg01.x)+(6*pos.x-6*pos.x*pos.x)*(dot11-dot01)+rg01.x*pos.x);"
+    "   r.y = (1.0-hermitePos.y)*(hermitePos.x*(rg10.y-rg00.y)+rg00.y)"
+    "           +  hermitePos.y *(hermitePos.x*(rg11.y-rg01.y)+rg01.y)"
+    "           + (m0111 - m0010)*(6*pos.y-6*pos.y*pos.y);"
+    ""
+    "   return r;"
+    "}"*/
+    ""
+    "float Quintic(float t)"
+    "{"
+    "   return t*t*t*(t*(6.0*t-15.0)+10.0);"
+    //"   return 3*t*t-2*t*t*t;"
+    "}"
+    ""
+    "float DQuintic(float t)"
+    "{"
+    "   return 30.0*t*t*(t*(t-2.0)+1.0);"
+    "}"
+    ""
+    "vec3 PerlinNoise(vec2 pos)"
+    "{"
+    "   pos = pos * 16;"
+    "   vec4 r=(0.0);"
+    "   vec2 ULcorner = floor(pos);"
+    "   pos = pos - ULcorner;"
+    "   vec2 hermitePos = vec2(Quintic(pos.x),Quintic(pos.y));"
+    ""
+    "   vec2 rg00 = (vec3(random_gradients[GridPos(ULcorner.x,ULcorner.y)],0)*p_rotation).xy;"
+    "   vec2 rg10 = (vec3(random_gradients[GridPos(ULcorner.x+1,ULcorner.y)],0)*p_rotation).xy;"
+    "   vec2 rg11 = (vec3(random_gradients[GridPos(ULcorner.x+1,ULcorner.y+1)],0)*p_rotation).xy;"
+    "   vec2 rg01 = (vec3(random_gradients[GridPos(ULcorner.x,ULcorner.y+1)],0)*p_rotation).xy;"
+    ""
+    "   float dot00 = dot(rg00,pos);"
+    "   float dot10 = dot(rg10,pos-(constantList.xy));"
+    "   float dot11 = dot(rg11,pos-(constantList.xx));"
+    "   float dot01 = dot(rg01,pos-(constantList.yx));"
+    "   "
+    ""
+    "   float m0010 = mix(dot00,dot10,hermitePos.x);"
+    "   float m0111 = mix(dot01,dot11,hermitePos.x);"
+    "   r.z = mix(m0010, m0111,hermitePos.y);"
+    ""
+    "   r.x = (1.0-hermitePos.y)*(hermitePos.x*(rg10.x-rg00.x)+DQuintic(pos.x)*(dot10-dot00)+rg00.x)"
+    "             + hermitePos.y*(hermitePos.x*(rg11.x-rg01.x)+DQuintic(pos.x)*(dot11-dot01)+rg01.x);"
+    "   r.y = (1.0-hermitePos.y)*(hermitePos.x*(rg10.y-rg00.y)+rg00.y)"
+    "           +  hermitePos.y *(hermitePos.x*(rg11.y-rg01.y)+rg01.y)"
+    "           + (m0111 - m0010)*DQuintic(pos.y);"
+    ""
+    "   return r;"
+    "}"
+    ""
+    "void main()" \
+    "{" \
+    "   vec2 normalizedCoord = Coord0 - floor(Coord0);"
+    "   vec3 noise = PerlinNoise(normalizedCoord);"
+    "   vec3 n = normalize(cross(vec3(1.0,0.0,noise.x * 0.25), "
+    "                            vec3(0.0,1.0,noise.y * 0.25)));"
+    "   n = 0.5+n*0.5;"
+    //"   gl_FragData["<<PBRAlbedoScreen<<"] = vec4(n.x,n.y,0.5+noise.z*0.5,.8); "
+    //"   gl_FragData["<<PBRAlbedoScreen<<"] = vec4(.2,.3,.3,.8); "
+    "   gl_FragData["<<PBRAlbedoScreen<<"] = vec4(.2,.3,.3,.8); "
+    "   gl_FragData["<<PBRNormalScreen<<"] = vec4(n,1.0);"
+    "   gl_FragData["<<PBRDepthScreen<<"] = vec4(vec3(0.5+noise.z*0.5),1.0);"
+    "   gl_FragData["<<PBRMaterialScreen<<"] = vec4(.1, 0.0, .5, 1.0); "
+   // "   gl_FragData["<<PBRMaterialScreen<<"] = vec4(1, 0, .5, 1.0); "
+//    "       gl_FragData["<<PBRAlbedoScreen<<"].rgb = mix(vec3(.2,.3,.3), vec3(.8,.8,.8),smoothstep(0,1.0,noise.z));"
+    "}";
+
+    m_waterGeometryShader.loadFromMemory(vertexShader.str(), fragShader.str());
+}
 
 }
 

@@ -26,6 +26,7 @@ class RectEntity : public SceneEntity, protected sf::RectangleShape
         void SetTextureRect(const sf::IntRect &);
         void SetCenter(sf::Vector2f);
         void SetColor(sf::Color);
+        void SetHeightFactor(float);
 
 
         sf::Vector2f GetCenter();
@@ -35,6 +36,7 @@ class RectEntity : public SceneEntity, protected sf::RectangleShape
 
     protected:
         TextureAsset *m_texture;
+        float         m_heightFactor;
 
     private:
         bool m_customTextureRect;

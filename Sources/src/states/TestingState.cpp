@@ -71,7 +71,7 @@ void TestingState::Init()
     torusEntity->SetShadowCastingType(DirectionnalShadow);
     //torusEntity->SetColor(sf::Color(255,64,255,128));
     //torusEntity->SetColor(sf::Color(64,128,255,128));
-    torusEntity->SetColor(sf::Color(224,224,224));
+    torusEntity->SetColor(sf::Color(128,128,128));
     torusEntity->SetStatic(false);
     //sarco3DEntity->DesactivateLighting();
     m_sarco3DNode->AttachObject(torusEntity);
@@ -170,20 +170,30 @@ void TestingState::Init()
     IsoRectEntity *rectEntity = m_mainScene.CreateIsoRectEntity(sf::Vector2f(2048,2048));
     rectEntity->SetCenter(sf::Vector2f(512,  512));
    // rectEntity->SetTexture(TextureHandler->LoadAssetFromFile("../data/cobble_color.png",LoadType_InThread));
-    rectEntity->SetTexture(PBRTextureHandler->LoadAssetFromFile("../data/wallXML.txt"));
+   // rectEntity->SetTexture(PBRTextureHandler->LoadAssetFromFile("../data/waterXML.txt"));
+   // rectEntity->SetColor(sf::Color(255,255,255,196));
     //rectEntity->SetTexture(PBRTextureHandler->LoadAssetFromFile("../data/cobble2XML.txt",LoadType_InThread));
     //rectEntity->SetTexture(PBRTextureHandler->LoadAssetFromFile("../data/sandXML.txt",LoadType_InThread));
-  //  rectEntity->SetTexture(PBRTextureHandler->LoadAssetFromFile("../data/wetsandXML.txt",LoadType_InThread));
+    rectEntity->SetTexture(PBRTextureHandler->LoadAssetFromFile("../data/wallXML.txt",LoadType_InThread));
+    //rectEntity->SetTexture(PBRTextureHandler->LoadAssetFromFile("../data/wallXML.txt",LoadType_InThread));
    // rectEntity->SetTexture(PBRTextureHandler->LoadAssetFromFile("../data/waterXML.txt",LoadType_InThread));
     //rectEntity->SetTexture(TextureHandler->LoadAssetFromFile("../data/cobble_color.png",LoadType_InThread));
     //rectEntity->SetTexture(TextureHandler->LoadAssetFromFile("../data/sand_color.png",LoadType_InThread));
     //rectEntity->SetTexture(TextureHandler->LoadAssetFromFile("../data/sand.png",LoadType_InThread));
-    rectEntity->SetTextureRect(sf::IntRect(0,0,2048,2048));
-
+    rectEntity->SetTextureRect(sf::IntRect(0,0,1024,1024));
     rectEntity->SetParallax(true);
-    rectEntity->SetStatic(true);
-    //rectEntity->SetColor(sf::Color(255,0,0));
-    rectNode->AttachObject(rectEntity);
+    //rectEntity->SetStatic(true);
+    rectEntity->SetColor(sf::Color(255,255,255,196));
+    //rectNode->AttachObject(rectEntity);
+
+
+    IsoWaterEntity *waterEntity = m_mainScene.CreateIsoWaterEntity(sf::Vector2f(2048,2048));
+    //waterEntity->SetTextureRect(sf::IntRect(0,0,1024,1024));
+   // waterEntity->SetWaterResolution(sf::Vector2u(1024,1024));
+    waterEntity->SetCenter(sf::Vector2f(512,  512));
+    waterEntity->SetHeightFactor(30.0);
+    //waterEntity->SetTexture(TextureHandler->LoadAssetFromFile("../data/water_normal.png"));
+    rectNode->AttachObject(waterEntity);
 
     /*sf::FloatRect f = rectEntity->GetScreenBoundingRect(m_mainScene.GetIsoToCartMat());
     rectNode = m_mainScene.GetRootNode()->CreateChildNode();

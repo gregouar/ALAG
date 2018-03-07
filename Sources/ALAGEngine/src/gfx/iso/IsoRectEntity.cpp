@@ -40,9 +40,15 @@ void IsoRectEntity::SetParallax(bool p)
     m_enableParallax = p;
 }
 
-void IsoRectEntity::SetIsoScene(IsometricScene *scene)
+void IsoRectEntity::SetIsoScene(PBRIsoScene *scene)
 {
     m_scene = scene;
+}
+
+
+PBRIsoScene* IsoRectEntity::GetIsoScene()
+{
+    return m_scene;
 }
 
 

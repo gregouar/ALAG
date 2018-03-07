@@ -15,6 +15,7 @@ RectEntity::RectEntity()  : RectEntity(sf::Vector2f (0,0))
 RectEntity::RectEntity(sf::Vector2f s) : sf::RectangleShape(s)
 {
     m_texture = nullptr;
+    m_heightFactor = 1.0;
 
     m_canBeLighted = true;
     m_usePBR = false;
@@ -35,8 +36,10 @@ void RectEntity::Render(sf::RenderTarget *w)
 void RectEntity::Render(sf::RenderTarget *w, const sf::RenderStates &state)
 {
     if(m_texture != nullptr)
+    {
         w->draw((*this), state);
-    AskForRenderUpdate(false);
+        AskForRenderUpdate(false);
+    }
 }
 
 
@@ -51,6 +54,8 @@ void RectEntity::PrepareShader(sf::Shader *shader)
         {
             PBRTextureAsset *myPBRTexture = (PBRTextureAsset*) m_texture;
             myPBRTexture->PrepareShader(shader);
+            shader->setUniform("p_height",myPBRTexture->GetHeight()*m_heightFactor
+                                            *PBRTextureAsset::DEPTH_BUFFER_NORMALISER);
 
         } else {
             shader->setUniform("map_albedo",*m_texture->GetTexture());
@@ -110,13 +115,15 @@ void RectEntity::SetColor(sf::Color c)
     sf::RectangleShape::setFillColor(c);
 }
 
+void RectEntity::SetHeightFactor(float h)
+{
+    if(h >= 0)
+        m_heightFactor = h;
+}
+
 sf::FloatRect RectEntity::GetScreenBoundingRect(const Mat3x3& transMat)
 {
     sf::FloatRect b(0,0,sf::RectangleShape::getSize().x,sf::RectangleShape::getSize().y);
-   /* b.position = -GetCenter();
-    b.size = -sf::RectangleShape::getSize();*/
-
-    /** NEED TO COMPUTE RECT IN SCREEN POS **/
 
     sf::Vector2f upper_left(0,0), lower_right(0,0);
 

@@ -13,6 +13,8 @@ class PBRTextureAsset : public TextureAsset, public NotificationListener
     public:
         PBRTextureAsset();
         PBRTextureAsset(const AssetTypeID&);
+        PBRTextureAsset(TextureAsset *albedo, TextureAsset* normal,
+                        TextureAsset *depth, TextureAsset* material);
         virtual ~PBRTextureAsset();
 
         virtual bool LoadNow();

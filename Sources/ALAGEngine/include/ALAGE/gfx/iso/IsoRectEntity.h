@@ -6,11 +6,11 @@
 namespace alag
 {
 
-class IsometricScene;
+class PBRIsoScene;
 
 class IsoRectEntity : public RectEntity
 {
-    friend class IsometricScene;
+    friend class PBRIsoScene;
 
     public:
         IsoRectEntity();
@@ -22,10 +22,11 @@ class IsoRectEntity : public RectEntity
         void SetParallax(bool = true);
 
     protected:
-        void SetIsoScene(IsometricScene *scene);
+        void SetIsoScene(PBRIsoScene *scene);
+        PBRIsoScene* GetIsoScene();
 
     private:
-        IsometricScene *m_scene;
+        PBRIsoScene *m_scene;
         bool m_enableParallax;
 };
 

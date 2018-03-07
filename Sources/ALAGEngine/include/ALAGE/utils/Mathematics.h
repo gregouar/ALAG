@@ -14,6 +14,8 @@ float ComputeDotProduct(sf::Vector2f v, sf::Vector2f w);
 float ComputeSquareDistance(sf::Vector3f v, sf::Vector3f w);
 float ComputeSquareDistance(sf::Vector2f v, sf::Vector2f w);
 
+int RandomNumber(int maxNbr);
+
 sf::Vector2f Normalize(sf::Vector2f v);
 sf::Vector3f Normalize(sf::Vector3f v);
 
