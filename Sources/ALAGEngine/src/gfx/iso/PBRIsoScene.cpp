@@ -824,8 +824,10 @@ void PBRIsoScene::RenderLighting()
 {
     m_lighting_PBRScreen.setActive(true);
     m_lighting_PBRScreen.clear();
-    glDisable(GL_DEPTH_TEST);
-    glDepthMask(GL_FALSE);
+   // glDisable(GL_DEPTH_TEST);
+    //glDepthMask(GL_FALSE);
+
+    m_rendererStates.blendMode = sf::BlendNone;
 
     m_renderer.setTexture(m_PBRScreen.getTexture(PBRAlbedoScreen));
     //m_PBRScreen.getTexture(PBRAlbedoScreen)->copyToImage().saveToFile("PBR0.png");
@@ -848,6 +850,7 @@ void PBRIsoScene::RenderLighting()
         m_lighting_PBRScreen.draw(m_renderer,sf::BlendMultiply);
     }
 
+    m_rendererStates.blendMode = sf::BlendAlpha;
 
     m_lightingShader.setUniform("map_albedo",*m_alpha_PBRScreen.getTexture(PBRAlbedoScreen));
     m_lightingShader.setUniform("map_normal",*m_alpha_PBRScreen.getTexture(PBRNormalScreen));
@@ -877,7 +880,7 @@ void PBRIsoScene::RenderBloom()
     m_bloomScreen[1].draw(m_renderer,&m_blurShader);
     m_bloomScreen[1].display(DOFLUSH);
 
-    for(int i = 0 ; i < 1 ; ++i) {
+    for(int i = 0 ; i < 2 ; ++i) {
         m_renderer.setTexture(&m_bloomScreen[1].getTexture());
         m_blurShader.setUniform("offset",sf::Vector2f(DEFAULT_BLOOMBLUR/(float)m_PBRScreen.getSize().x/(i+2),0));
         m_bloomScreen[0].draw(m_renderer,&m_blurShader);

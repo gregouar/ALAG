@@ -54,15 +54,30 @@ bool MultipleRenderTexture::create(unsigned int width, unsigned int height)
 {
     m_size = Vector2u(width, height);
 
+    if(m_context != NULL)
+    {
+        m_context->setActive(true);
+        removeDepthBuffer();
+        //removeStencilBuffer();
+
+        if (m_frameBuffer)
+        {
+            GLuint frameBuffer = static_cast<GLuint>(m_frameBuffer);
+            glCheck(GLEXT_glDeleteFramebuffers(1, &frameBuffer));
+        }
+        delete m_context;
+    }
+
+    m_context = new Context();
+
+    m_context->setActive(true);
+
     if(m_textures != NULL)
         delete m_textures;
 
+    m_activeTextures.clear();
+
     m_textures = new Texture[getMaxColorAttachments()];
-
-    if(m_context != NULL)
-        delete m_context;
-
-    m_context = new Context();
 
     if(!createFBO(width,height))
         return false;
