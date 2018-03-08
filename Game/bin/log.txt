@@ -10,8 +10,8 @@ Texture loaded from file: ../data/sand_depth.png
 Texture loaded from file: ../data/tree_albedo.png
 Texture loaded from file: ../data/sand_normal.png
 Texture loaded from file: ../data/torusb.png
-Texture loaded from file: ../data/torusb_normal.png
 Texture loaded from file: ../data/tree_normal.png
+Texture loaded from file: ../data/torusb_normal.png
 Texture loaded from file: ../data/torusb_depth.png
 PBR texture loaded from file: ../data/torusbXML.txt
 Texture loaded from file: ../data/tree_heightmap.png

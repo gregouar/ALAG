@@ -78,7 +78,7 @@ class PBRIsoScene : public DefaultScene
 
         void SetBloom(bool);
         void SetSSAO(bool);
-        void SetSSR(bool);
+        void SetSSR(bool, float = DEFAULT_SSR_THRESOLD);
 
     protected:
         void ComputeTrigonometry();
@@ -154,6 +154,7 @@ class PBRIsoScene : public DefaultScene
 
         bool m_enableSSAO;
         sf::Shader m_SSAOShader;
+        //sf::Shader m_SSAODrawingShader;
         sf::RenderTexture m_SSAOScreen[2];
         sf::RectangleShape m_SSAOrenderer;
         sf::Texture m_SSAONoiseTexture;
@@ -177,6 +178,7 @@ class PBRIsoScene : public DefaultScene
         static const float DEFAULT_SSAOBLUR;
         static const float DEFAULT_ENVBLUR;
         static const float SSAO_STRENGTH;
+        static const float DEFAULT_SSR_THRESOLD;
         static const unsigned int NBR_PARALLAX_STEPS;
 };
 

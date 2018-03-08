@@ -68,7 +68,7 @@ void TestingState::Init()
     //sarco3DEntity->SetTexture(PBRTextureHandler->LoadAssetFromFile("../data/bedrockXML.txt",LoadType_InThread));
     //torusEntity->SetCenter(128,166);
     torusEntity->SetCenter(128,128);
-    torusEntity->SetShadowCastingType(DirectionnalShadow);
+    //torusEntity->SetShadowCastingType(DirectionnalShadow);
     //torusEntity->SetColor(sf::Color(255,64,255,128));
     //torusEntity->SetColor(sf::Color(64,128,255,128));
     torusEntity->SetColor(sf::Color(128,128,128));
@@ -153,7 +153,7 @@ void TestingState::Init()
     abbayeEntity->SetTexture(PBRTextureHandler->LoadAssetFromFile("../data/abbayeXML.txt",LoadType_InThread));
     abbayeEntity->SetCenter(960,540);
     abbayeEntity->SetShadowCastingType(DirectionnalShadow);
-    abbayeEntity->SetStatic(true);
+     abbayeEntity->SetStatic(true);
     m_mainScene.GetRootNode()->AttachObject(abbayeEntity);
     //m_mainScene.GetRootNode()->CreateChildNode(sf::Vector2f(0,0))->AttachObject(abbayeEntity);
 
@@ -180,7 +180,7 @@ void TestingState::Init()
     //rectEntity->SetTexture(TextureHandler->LoadAssetFromFile("../data/cobble_color.png",LoadType_InThread));
     //rectEntity->SetTexture(TextureHandler->LoadAssetFromFile("../data/sand_color.png",LoadType_InThread));
     //rectEntity->SetTexture(TextureHandler->LoadAssetFromFile("../data/sand.png",LoadType_InThread));
-    rectEntity->SetTextureRect(sf::IntRect(0,0,1024,1024));
+    rectEntity->SetTextureRect(sf::IntRect(0,0,2048,2048));
     rectEntity->SetParallax(true);
     rectEntity->SetStatic(true);
     rectNode->AttachObject(rectEntity);

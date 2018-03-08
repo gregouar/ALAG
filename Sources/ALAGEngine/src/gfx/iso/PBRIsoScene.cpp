@@ -34,6 +34,7 @@ const float PBRIsoScene::DEFAULT_BLOOMBLUR = 15.0;
 const float PBRIsoScene::DEFAULT_SSAOBLUR = 3.0;
 const float PBRIsoScene::DEFAULT_ENVBLUR = 10.0;
 const float PBRIsoScene::SSAO_STRENGTH = 2.0;
+const float PBRIsoScene::DEFAULT_SSR_THRESOLD = 0.8;
 const unsigned int PBRIsoScene::NBR_PARALLAX_STEPS = 5;
 
 PBRIsoScene::PBRIsoScene() : PBRIsoScene(DEFAULT_ISO_VIEW_ANGLE)
@@ -707,8 +708,8 @@ void PBRIsoScene::RenderStaticGeometry(const sf::View &curView)
     m_lastStaticRenderView = curView;
     m_firstStaticRender = false;
 
-    /*m_staticGeometryScreen[m_swapStaticGeometryBuffers].setActive(true);
-    m_staticGeometryScreen[m_swapStaticGeometryBuffers].getTexture(0)->copyToImage().saveToFile("static0.png");
+  /*  m_staticGeometryScreen[m_swapStaticGeometryBuffers].setActive(true);
+    m_alpha_staticGeometryScreen[m_swapStaticGeometryBuffers].getTexture(PBRDepthScreen)->copyToImage().saveToFile("static0.png");
     //m_alpha_staticGeometryScreen.getTexture(1)->copyToImage().saveToFile("static1.png");
     //m_alpha_staticGeometryScreen.getTexture(2)->copyToImage().saveToFile("static2.png");
     //m_alpha_staticGeometryScreen.getTexture(3)->copyToImage().saveToFile("static3.png");
@@ -837,18 +838,18 @@ void PBRIsoScene::RenderLighting()
     m_lightingShader.setUniform("map_normal",*m_PBRScreen.getTexture(PBRNormalScreen));
     m_lightingShader.setUniform("map_depth",*m_PBRScreen.getTexture(PBRDepthScreen));
     m_lightingShader.setUniform("map_material",*m_PBRScreen.getTexture(PBRMaterialScreen));
-    m_lightingShader.setUniform("enable_SSR",m_enableSSR);
+   // m_lightingShader.setUniform("enable_SSR",m_enableSSR);
 
     m_lighting_PBRScreen.draw(m_renderer,m_rendererStates);
 
     //m_lighting_PBRScreen.getTexture(1)->copyToImage().saveToFile("uv.png");
-
-    if(m_enableSSAO)
+    /*if(m_enableSSAO)
     {
         //m_SSAOScreen[0].getTexture().copyToImage().saveToFile("SSAO.png");
         m_renderer.setTexture(&m_SSAOScreen[0].getTexture());
         m_lighting_PBRScreen.draw(m_renderer,sf::BlendMultiply);
-    }
+    }*/
+
 
     m_rendererStates.blendMode = sf::BlendAlpha;
 
@@ -857,9 +858,11 @@ void PBRIsoScene::RenderLighting()
     m_lightingShader.setUniform("map_depth",*m_alpha_PBRScreen.getTexture(PBRDepthScreen));
     m_lightingShader.setUniform("map_material",*m_alpha_PBRScreen.getTexture(PBRMaterialScreen));
     //m_lightingShader.setUniform("enable_SSR",false);
-    m_lightingShader.setUniform("enable_SSR",m_enableSSR);
+    //m_lightingShader.setUniform("enable_SSR",m_enableSSR);
 
     m_lighting_PBRScreen.draw(m_renderer,m_rendererStates);
+
+
 
 
     m_lighting_PBRScreen.display(DOFLUSH);
@@ -998,9 +1001,9 @@ void PBRIsoScene::SetSSAO(bool ssao)
 
     if(m_enableSSAO)
     {
-        //m_lightingShader.setUniform("enable_SSAO", true);
+        m_lightingShader.setUniform("enable_SSAO", true);
         //m_HDRBloomShader.setUniform("enable_SSAO", true);
-       // m_lightingShader.setUniform("map_SSAO", m_SSAOScreen.getTexture());
+        m_lightingShader.setUniform("map_SSAO", m_SSAOScreen[0].getTexture());
        // m_HDRBloomShader.setUniform("map_SSAO", m_SSAOScreen[0].getTexture());
         m_SSAOShader.setUniform("map_normal", *m_PBRScreen.getTexture(PBRNormalScreen));
         m_SSAOShader.setUniform("map_depth", *m_PBRScreen.getTexture(PBRDepthScreen));
@@ -1012,7 +1015,7 @@ void PBRIsoScene::SetSSAO(bool ssao)
 
         m_SSAOrenderer.setTexture(m_PBRScreen.getTexture(PBRAlbedoScreen));
     } else {
-        //m_lightingShader.setUniform("enable_SSAO", false);
+        m_lightingShader.setUniform("enable_SSAO", false);
         //m_HDRBloomShader.setUniform("enable_SSAO", false);
     }
 }
@@ -1034,12 +1037,13 @@ void PBRIsoScene::SetBloom(bool bloom)
     m_enableBloom = bloom;
 }
 
-void PBRIsoScene::SetSSR(bool SSR)
+void PBRIsoScene::SetSSR(bool SSR, float thresold)
 {
     if(SSR && !m_enableSSR)
     {
         m_environment_PBRScreen[0].clear();
         m_lightingShader.setUniform("enable_SSR", true);
+        m_lightingShader.setUniform("p_SSRThresold", thresold);
     } else if(!SSR && m_enableSSR) {
         m_environment_PBRScreen[1].clear();
         m_lightingShader.setUniform("enable_SSR", false);
