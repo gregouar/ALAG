@@ -35,7 +35,7 @@
 	<vector>
 	"GState.h"
 
-1520544246 source:c:\c++\alag\sources\src\states\testingstate.cpp
+1520595008 source:c:\c++\alag\sources\src\states\testingstate.cpp
 	"states/TestingState.h"
 	"ALAGE/core/GApp.h"
 	"ALAGE/core/EventManager.h"
@@ -758,12 +758,12 @@
 1519161689 source:c:\c++\alag\sources\alagengine\src\gfx\sceneobject.cpp
 	"ALAGE/gfx/SceneObject.h"
 
-1520381046 c:\c++\alag\sources\alagengine\include\alage\utils\mathematics.h
+1520546715 c:\c++\alag\sources\alagengine\include\alage\utils\mathematics.h
 	<SFML/Graphics.hpp>
 	<SFML/OpenGL.hpp>
 	"ALAGE/Types.h"
 
-1520381079 source:c:\c++\alag\sources\alagengine\src\utils\mathematics.cpp
+1520595058 source:c:\c++\alag\sources\alagengine\src\utils\mathematics.cpp
 	"ALAGE/utils/Mathematics.h"
 
 1517140944 c:\c++\alag\sources\alagengine\src\gfx\isometricshaders.cpp
@@ -919,7 +919,7 @@
 	<sstream>
 	<iostream>
 
-1520544863 source:c:\c++\alag\sources\alagengine\src\gfx\iso\pbrisoshaders.cpp
+1520595667 source:c:\c++\alag\sources\alagengine\src\gfx\iso\pbrisoshaders.cpp
 	"ALAGE/gfx/iso/PBRIsoScene.h"
 	<sstream>
 	<iostream>
@@ -949,11 +949,11 @@
 	<SFML/System.hpp>
 	"ALAGE/utils/Singleton.h"
 
-1520544807 source:c:\c++\alag\sources\alagengine\src\gfx\iso\isowaterentity.cpp
+1520595764 source:c:\c++\alag\sources\alagengine\src\gfx\iso\isowaterentity.cpp
 	"ALAGE/gfx/iso/PBRIsoScene.h"
 	"ALAGE/gfx/iso/IsoWaterEntity.h"
 	"ALAGE/utils/Mathematics.h"
 
-1520423602 c:\c++\alag\sources\alagengine\include\alage\gfx\iso\isowaterentity.h
+1520547604 c:\c++\alag\sources\alagengine\include\alage\gfx\iso\isowaterentity.h
 	<ALAGE/gfx/iso/IsoRectEntity.h>
 

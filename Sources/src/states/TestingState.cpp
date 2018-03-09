@@ -68,7 +68,7 @@ void TestingState::Init()
     //sarco3DEntity->SetTexture(PBRTextureHandler->LoadAssetFromFile("../data/bedrockXML.txt",LoadType_InThread));
     //torusEntity->SetCenter(128,166);
     torusEntity->SetCenter(128,128);
-    //torusEntity->SetShadowCastingType(DirectionnalShadow);
+    torusEntity->SetShadowCastingType(DirectionnalShadow);
     //torusEntity->SetColor(sf::Color(255,64,255,128));
     //torusEntity->SetColor(sf::Color(64,128,255,128));
     torusEntity->SetColor(sf::Color(128,128,128));

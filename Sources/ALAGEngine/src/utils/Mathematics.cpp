@@ -25,6 +25,17 @@ int RandomNumber(int maxNbr)
     return (int)(static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/maxNbr)));
 }
 
+void GenerateGerstnerWave(sf::Vector2f *tab, size_t tab_size, float steepness, float wave_length)
+{
+    float step = (1.0f/(tab_size-1));
+    float angle = 0;
+    for(size_t i = 0 ; i < tab_size ; ++i)
+    {
+        tab[i] = sf::Vector2f(i*step + sin(angle) * wave_length * steepness * step, -cos(angle));
+        angle += step * 2 * PI;
+    }
+}
+
 
 sf::Vector2f Normalize(sf::Vector2f v)
 {
