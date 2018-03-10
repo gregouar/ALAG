@@ -189,9 +189,10 @@ void TestingState::Init()
     rectNode = m_mainScene.GetRootNode()->CreateChildNode(0,0,10);
     IsoWaterEntity *waterEntity = m_mainScene.CreateIsoWaterEntity(sf::Vector2f(2048,2048));
     //waterEntity->SetTextureRect(sf::IntRect(0,0,1024,1024));
-    waterEntity->SetWaterResolution(sf::Vector2u(1024,1024));
+    //waterEntity->SetWaterResolution(sf::Vector2u(1024,1024));
     waterEntity->SetCenter(sf::Vector2f(512,  512));
-    waterEntity->SetHeightFactor(150.0);
+    waterEntity->SetHeightFactor(80.0);
+    waterEntity->SetVisible(false);
     //waterEntity->SetTexture(TextureHandler->LoadAssetFromFile("../data/water_normal.png"));
     rectNode->SetPosition(0,0,0);
     rectNode->AttachObject(waterEntity);

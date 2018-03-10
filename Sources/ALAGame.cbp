@@ -5,7 +5,6 @@
 		<Option title="ALAGame" />
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
-		<Option virtualFolders="ALAGEngine\src\gfx\iso\;" />
 		<Build>
 			<Target title="Debug">
 				<Option output="../Game/bin/ALAGame_debug" prefix_auto="1" extension_auto="1" />
@@ -125,9 +124,7 @@
 		<Unit filename="ALAGEngine/src/gfx/SceneEntity.cpp" />
 		<Unit filename="ALAGEngine/src/gfx/SceneNode.cpp" />
 		<Unit filename="ALAGEngine/src/gfx/SceneObject.cpp" />
-		<Unit filename="ALAGEngine/src/gfx/ShadowCaster.cpp">
-			<Option virtualFolder="ALAGEngine/src/gfx/iso/" />
-		</Unit>
+		<Unit filename="ALAGEngine/src/gfx/ShadowCaster.cpp" />
 		<Unit filename="ALAGEngine/src/gfx/SpriteEntity.cpp" />
 		<Unit filename="ALAGEngine/src/gfx/TextureAsset.cpp" />
 		<Unit filename="ALAGEngine/src/gfx/iso/IsoGeometricShadowCaster.cpp" />

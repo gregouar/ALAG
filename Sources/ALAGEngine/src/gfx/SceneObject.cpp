@@ -6,9 +6,10 @@ namespace alag
 SceneObject::SceneObject()
 {
     m_parentNode = nullptr;
-    m_isALight = false;
-    m_isAnEntity = false;
-    m_isAShadowCaster = false;
+    m_isALight          = false;
+    m_isAnEntity        = false;
+    m_isAShadowCaster   = false;
+    m_isVisible = true;
 }
 
 SceneObject::~SceneObject()
@@ -43,6 +44,16 @@ bool SceneObject::IsAnEntity()
 bool SceneObject::IsAShadowCaster()
 {
     return m_isAShadowCaster;
+}
+
+bool SceneObject::IsVisible()
+{
+    return m_isVisible;
+}
+
+void SceneObject::SetVisible(bool visible)
+{
+    m_isVisible = visible;
 }
 
 void SceneObject::Update(const sf::Time &elapsed_time)

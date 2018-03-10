@@ -33,6 +33,9 @@ class SceneObject : public NotificationListener
 
         virtual void Notify(NotificationSender*, NotificationType);
 
+        bool IsVisible();
+        void SetVisible(bool = true);
+
     protected:
         SceneNode *SetParentNode(SceneNode*);
         SceneNode *m_parentNode;
@@ -41,6 +44,7 @@ class SceneObject : public NotificationListener
         bool m_isALight;
         bool m_isAnEntity;
         bool m_isAShadowCaster;
+        bool m_isVisible;
 };
 
 }

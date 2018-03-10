@@ -433,6 +433,7 @@ void SceneNode::SearchInsideForEntities(std::list<SceneEntity*>  *renderQueue)
         while(!entityIt.IsAtTheEnd())
         {
            // if(entityIt.GetElement()->IsRenderable())
+            if(entityIt.GetElement()->IsVisible())
                 renderQueue->push_back(entityIt.GetElement());
             ++entityIt;
         }
@@ -459,12 +460,16 @@ void SceneNode::SearchInsideForLights(std::multimap<float,Light*> *foundedLights
         LightIterator lightIt = GetLightIterator();
         while(!lightIt.IsAtTheEnd())
         {
-            float distance = -1; //To put directional lights at the front of the list
+            if(lightIt.GetElement()->IsVisible())
+            {
+                float distance = -1; //To put directional lights at the front of the list
 
-            if(lightIt.GetElement()->GetType() != DirectionnalLight)
-                distance = ComputeSquareDistance(pos,GetGlobalPosition());
+                if(lightIt.GetElement()->GetType() != DirectionnalLight)
+                    distance = ComputeSquareDistance(pos,GetGlobalPosition());
 
-            foundedLights->insert(std::pair<float, Light*>(distance,lightIt.GetElement()));
+                foundedLights->insert(std::pair<float, Light*>(distance,lightIt.GetElement()));
+            }
+
             ++lightIt;
         }
 
@@ -490,12 +495,13 @@ void SceneNode::SearchInsideForShadowCaster(std::list<ShadowCaster*> *foundedCas
         ShadowCasterIterator casterIt = GetShadowCasterIterator();
         while(!casterIt.IsAtTheEnd())
         {
-            if(casterIt.GetElement()->GetShadowCastingType() == AllShadows
-            || (lightType == DirectionnalLight
-                && casterIt.GetElement()->GetShadowCastingType() == DirectionnalShadow)
-            || (lightType == OmniLight
-                && casterIt.GetElement()->GetShadowCastingType() == DynamicShadow))
-                foundedCaster->push_back(casterIt.GetElement());
+            if(casterIt.GetElement()->IsVisible())
+                if(casterIt.GetElement()->GetShadowCastingType() == AllShadows
+                || (lightType == DirectionnalLight
+                    && casterIt.GetElement()->GetShadowCastingType() == DirectionnalShadow)
+                || (lightType == OmniLight
+                    && casterIt.GetElement()->GetShadowCastingType() == DynamicShadow))
+                    foundedCaster->push_back(casterIt.GetElement());
             ++casterIt;
         }
 
