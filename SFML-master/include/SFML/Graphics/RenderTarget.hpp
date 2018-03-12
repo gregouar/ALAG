@@ -462,6 +462,7 @@ private:
         bool      viewChanged;    ///< Has the current view changed since last draw?
         BlendMode lastBlendMode;  ///< Cached blending mode
         Uint64    lastTextureId;  ///< Cached texture
+        Uint64    lastShaderId;  ///< Cached texture
         bool      texCoordsArrayEnabled; ///< Is GL_TEXTURE_COORD_ARRAY client state enabled?
         bool      useVertexCache; ///< Did we previously use the vertex cache?
         Vertex    vertexCache[VertexCacheSize]; ///< Pre-transformed vertices cache

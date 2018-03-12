@@ -72,6 +72,7 @@ class PBRIsoScene : public DefaultScene
 
         void SetViewAngle(IsoViewAngle);
         void SetAmbientLight(sf::Color);
+        void SetEnvironmentMap(TextureAsset*);
         virtual void SetShadowCasting(ShadowCastingType);
         virtual void EnableGammaCorrection();
         virtual void DisableGammaCorrection();

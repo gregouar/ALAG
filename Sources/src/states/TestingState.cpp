@@ -109,7 +109,9 @@ void TestingState::Init()
     m_sunLight->SetIntensity(15);
     m_sunLight->EnableShadowCasting();
     m_mainScene.GetRootNode()->AttachObject(m_sunLight);
-    m_mainScene.SetAmbientLight(sf::Color(96,127,255,160));
+    m_mainScene.SetAmbientLight(sf::Color(96,127,255,96));
+    m_mainScene.SetEnvironmentMap(TextureHandler->LoadAssetFromFile("../data/panorama.jpg"));
+
     //m_mainScene.SetAmbientLight(sf::Color(64,64,128,24));
     //m_mainScene.SetAmbientLight(sf::Color(96,96,128));
    // m_mainScene.SetAmbientLight(sf::Color(32,48,128));
@@ -181,7 +183,8 @@ void TestingState::Init()
     //rectEntity->SetTexture(TextureHandler->LoadAssetFromFile("../data/sand_color.png",LoadType_InThread));
     //rectEntity->SetTexture(TextureHandler->LoadAssetFromFile("../data/sand.png",LoadType_InThread));
     rectEntity->SetTextureRect(sf::IntRect(0,0,2048,2048));
-    rectEntity->SetParallax(true);
+    //rectEntity->SetParallax(true);
+  //  rectEntity->SetVisible(false);
     rectEntity->SetStatic(true);
     rectNode->AttachObject(rectEntity);
 
@@ -192,10 +195,9 @@ void TestingState::Init()
     //waterEntity->SetWaterResolution(sf::Vector2u(1024,1024));
     waterEntity->SetCenter(sf::Vector2f(512,  512));
     waterEntity->SetHeightFactor(80.0);
-    waterEntity->SetVisible(false);
-    //waterEntity->SetTexture(TextureHandler->LoadAssetFromFile("../data/water_normal.png"));
-    rectNode->SetPosition(0,0,0);
-    rectNode->AttachObject(waterEntity);
+    //waterEntity->SetVisible(false);
+    rectNode->SetPosition(0,0,40);
+   // rectNode->AttachObject(waterEntity);
 
     /*sf::FloatRect f = rectEntity->GetScreenBoundingRect(m_mainScene.GetIsoToCartMat());
     rectNode = m_mainScene.GetRootNode()->CreateChildNode();
@@ -384,8 +386,8 @@ void TestingState::Update(sf::Time time)
 
     //m_chene_node->Move(m_mainScene.ConvertCartesianToIso(m_camMove.x,m_camMove.y)*(500*time.asSeconds()));
     m_cameraNode->Move(m_mainScene.ConvertCartesianToIso(m_camMove.x,m_camMove.y)*(500*time.asSeconds()));
-    //m_cameraNode->Move(sf::Vector3f(0,0,m_camMove.z)*(100*time.asSeconds()));
-    m_camera->Zoom((1-m_camMove.z*time.asSeconds()));
+    m_cameraNode->Move(sf::Vector3f(0,0,m_camMove.z)*(100*time.asSeconds()));
+    //m_camera->Zoom((1-m_camMove.z*time.asSeconds()));
 
   //  m_cameraNode->Move(0,0,m_camMove.z *(500*time.asSeconds()));
 

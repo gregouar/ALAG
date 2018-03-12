@@ -59,6 +59,21 @@ namespace
     sf::Mutex maxTextureUnitsMutex;
     sf::Mutex isAvailableMutex;
 
+
+    sf::Mutex idMutex;
+
+    // Thread-safe unique identifier generator,
+    // is used for states cache (see RenderTarget)
+    sf::Uint64 getUniqueId()
+    {
+        sf::Lock lock(idMutex);
+
+        static sf::Uint64 id = 1; // start at 1, zero is "no texture"
+
+        return id++;
+    }
+
+
     GLint checkMaxTextureUnits()
     {
         GLint maxUnits = 0;
@@ -223,7 +238,8 @@ Shader::Shader() :
 m_shaderProgram (0),
 m_currentTexture(-1),
 m_textures      (),
-m_uniforms      ()
+m_uniforms      (),
+m_cacheId      (getUniqueId())
 {
 }
 
@@ -854,6 +870,7 @@ bool Shader::compile(const char* vertexShaderCode, const char* geometryShaderCod
     m_currentTexture = -1;
     m_textures.clear();
     m_uniforms.clear();
+    m_cacheId = getUniqueId();
 
     // Create the program
     GLEXT_GLhandle shaderProgram;
@@ -959,6 +976,7 @@ bool Shader::compile(const char* vertexShaderCode, const char* geometryShaderCod
     }
 
     m_shaderProgram = castFromGlHandle(shaderProgram);
+
 
     // Force an OpenGL flush, so that the shader will appear updated
     // in all contexts immediately (solves problems in multi-threaded apps)

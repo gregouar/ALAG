@@ -18,7 +18,7 @@ class GeometricShadowCaster : public ShadowCaster
         bool DoRequireShadowCasting();
         virtual void ComputeShadow(Light*);
 
-        virtual void RenderShadow(sf::RenderTarget*, Light*);
+        //virtual void RenderShadow(sf::RenderTarget*, Light*);
 
         void ConstructCube(float x, float y, float z);
         void ConstructCylinder(float r, float z, unsigned int q = 16);

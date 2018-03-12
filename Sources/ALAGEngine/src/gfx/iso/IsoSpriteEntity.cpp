@@ -138,7 +138,7 @@ void IsoSpriteEntity::ComputeShadow(Light* light)
 
             sf::Vector2i shrinked_shadow_UL(shadow_bounds.width,shadow_bounds.height),
                          shrinked_shadow_LR(0,0);
-            int blur_radius = 5;
+            int blur_radius = 10;
 
             float height_pixel = 0;
             sf::Vector2f proj_pos(0,0);
@@ -246,10 +246,8 @@ void IsoSpriteEntity::ComputeShadow(Light* light)
 
             sf::Texture* shadowTexture = &m_shadowMap[light];
             shadowTexture->loadFromImage(shadowImgShrinked);
-           // shadowTexture->create(shadow_bounds.width,shadow_bounds.height);
-            //shadowTexture->update(shadow_map_array,shadow_bounds.width,shadow_bounds.height,0,0);
+
             TextureModifier::BlurTexture(shadowTexture, blur_radius);
-            //shadowTexture->setSmooth(true);
 
             std::map<Light*, sf::Drawable*>::iterator shadowIt;
             shadowIt = m_shadowDrawable.find(light);

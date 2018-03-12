@@ -18,6 +18,9 @@ class TextureAsset : public Asset
 
         virtual bool LoadNow();
 
+        void GenerateMipmap();
+        void SetSmooth(bool = true);
+
         virtual sf::Texture* GetTexture();
 
     protected:

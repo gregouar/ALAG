@@ -18,9 +18,9 @@ GeometricShadowCaster::~GeometricShadowCaster()
 }
 
 
-void GeometricShadowCaster::RenderShadow(sf::RenderTarget *w/*, const sf::RenderStates &state*/, Light* light)
+/*void GeometricShadowCaster::RenderShadow(sf::RenderTarget *w, Light* light)
 {
-    /*SceneNode* node = GetParentNode();
+    SceneNode* node = GetParentNode();
 
     if(node != nullptr && m_scene != nullptr)
     {
@@ -38,8 +38,8 @@ void GeometricShadowCaster::RenderShadow(sf::RenderTarget *w/*, const sf::Render
         state.transform.translate(t.x, t.y);
         state.shader = depthShader;
         w->draw(*m_shadowDrawable[light], state);
-    }*/
-}
+    }
+}*/
 
 void GeometricShadowCaster::ComputeShadow(Light* light)
 {

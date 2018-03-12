@@ -33,7 +33,7 @@ const std::string PBRIsoScene::DEFAULT_DYNAMICSHADOWSCASTING = "true";
 //const float PBRIsoScene::DEFAULT_BLOOMBLUR = 12.0;
 const float PBRIsoScene::BLOOM_BLUR = 15.0;
 const float PBRIsoScene::BLOOM_SCREEN_RATIO = 0.5;
-const float PBRIsoScene::SSAO_BLUR = 5.0;
+const float PBRIsoScene::SSAO_BLUR = 3.0;
 const float PBRIsoScene::SSAO_SCREEN_RATIO = 0.5;
 const float PBRIsoScene::ENVIRONMENT_BLUR = 10.0;
 const float PBRIsoScene::SSAO_STRENGTH = 2.0;
@@ -60,6 +60,7 @@ PBRIsoScene::PBRIsoScene(IsoViewAngle viewAngle)
     CompileWaterGeometryShader();
 
     SetAmbientLight(m_ambientLight);
+    SetEnvironmentMap(nullptr);
 
     //m_screenTiles = nullptr;
     m_firstStaticRender = true;
@@ -147,8 +148,6 @@ bool PBRIsoScene::InitRenderer(sf::Vector2u windowSize)
     m_SSAORect.setTextureRect(sf::IntRect(0,0,windowSize.x*m_superSampling*SSAO_SCREEN_RATIO,
                                                windowSize.y*m_superSampling*SSAO_SCREEN_RATIO));
 
-
-
     if(!m_lighting_PBRScreen.create(windowSize.x*m_superSampling, windowSize.y*m_superSampling))
         r = false;
 
@@ -192,14 +191,17 @@ bool PBRIsoScene::InitRenderer(sf::Vector2u windowSize)
     }
 
     /** Add setEnvironementMap method to replace this **/
-    sf::Texture *env_map = AssetHandler<TextureAsset>::Instance()->LoadAssetFromFile("../data/panorama.jpg")->GetTexture();
+    /*sf::Texture *env_map = AssetHandler<TextureAsset>::Instance()->LoadAssetFromFile("../data/panorama.jpg")->GetTexture();
     env_map->generateMipmap();
     env_map->setSmooth(true);
-    m_lightingShader.setUniform("map_environmental",*env_map);
+    m_lightingShader.setUniform("map_environmental",*env_map);*/
+
+    m_PBRGeometryShader.setUniform("map_opaqueGeometry", *m_PBRScreen.getTexture(PBRDepthScreen));
+    m_PBRGeometryShader.setUniform("view_ratio",sf::Vector2f(1.0/(float)m_PBRScreen.getSize().x,
+                                                            1.0/(float)m_PBRScreen.getSize().y));
 
     m_lightingShader.setUniform("map_SSRenv",m_environment_PBRScreen[0].getTexture());
     m_environment_PBRScreen[0].setSmooth(true);
-
 
 
     m_depthCopierShader.setUniform("view_ratio",sf::Vector2f(1.0/(float)m_PBRScreen.getSize().x,
@@ -830,7 +832,7 @@ void PBRIsoScene::RenderDynamicGeometry(const sf::View &curView)
         renderTarget->setView(curView);
 
         for(renderIt = m_renderQueue.begin() ; renderIt != m_renderQueue.end(); ++renderIt)
-        if(!(*renderIt)->IsStatic())
+    //    if(!(*renderIt)->IsStatic())
             RenderEntity(renderTarget,*renderIt);
 
         renderTarget->display(DOFLUSH);
@@ -958,6 +960,7 @@ void PBRIsoScene::RenderEntity(sf::RenderTarget* renderTarget,SceneEntity *entit
         state.transform *= m_TransformIsoToCart;
 
         m_PBRGeometryShader.setUniform("enable_parallax",false);
+        m_PBRGeometryShader.setUniform("enable_volumetricOpacity",false);
         m_PBRGeometryShader.setUniform("p_zPos",globalPos.z*PBRTextureAsset::DEPTH_BUFFER_NORMALISER);
         m_PBRGeometryShader.setUniform("p_normalProjMat",sf::Glsl::Mat3(m_normalProjMat.values));
         entity->PrepareShader(&m_PBRGeometryShader);
@@ -1017,6 +1020,20 @@ void PBRIsoScene::SetAmbientLight(sf::Color light)
     m_lightingShader.setUniform("light_ambient",sf::Glsl::Vec4(m_ambientLight));
     //m_lightingShader.setUniform("p_exposure",.8f);
     m_HDRBloomShader.setUniform("p_exposure",.8f);
+}
+
+void PBRIsoScene::SetEnvironmentMap(TextureAsset* env_map)
+{
+    /** Should generate filtering **/
+    if(env_map != nullptr)
+    {
+        env_map->GenerateMipmap();
+        env_map->SetSmooth(true);
+        m_lightingShader.setUniform("map_environmental",*env_map->GetTexture());
+        m_lightingShader.setUniform("enable_map_environmental",true);
+    } else
+        m_lightingShader.setUniform("enable_map_environmental",false);
+
 }
 
 void PBRIsoScene::SetSSAO(bool ssao)

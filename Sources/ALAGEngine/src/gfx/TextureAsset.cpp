@@ -90,6 +90,18 @@ bool TextureAsset::LoadNow()
     return Asset::LoadNow();
 }
 
+void TextureAsset::GenerateMipmap()
+{
+    if(m_texture != nullptr)
+        m_texture->generateMipmap();
+}
+
+void TextureAsset::SetSmooth(bool smooth)
+{
+    if(m_texture != nullptr)
+        m_texture->setSmooth(smooth);
+}
+
 sf::Texture *TextureAsset::GetTexture()
 {
     if(m_loaded)

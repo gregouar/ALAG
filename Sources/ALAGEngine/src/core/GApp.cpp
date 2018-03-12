@@ -18,8 +18,9 @@ const char *GApp::DEFAULT_SCREENSHOTPATH = "../screenshots/";
 const char *GApp::DEFAULT_WINDOW_WIDTH = "1024";
 const char *GApp::DEFAULT_WINDOW_HEIGHT = "768";
 const char *GApp::DEFAULT_SRGB = "false";
+const char *GApp::DEFAULT_VSYNC = "false";
 
-const bool GApp::ENABLE_PROFILER = false;
+const bool GApp::ENABLE_PROFILER = true;
 
 GApp::GApp() : GApp(DEFAULT_APP_NAME)
 {
@@ -65,9 +66,9 @@ bool GApp::Init()
     sf::ContextSettings contextSettings;
     contextSettings.depthBits = 24;
     contextSettings.antialiasingLevel = 0;
-    //contextSettings.sRgbCapable = Config::GetBool("window","srgb",DEFAULT_SRGB);
 
     m_window.create(videoMode, m_name, sf::Style::Close, contextSettings);
+    m_window.setVerticalSyncEnabled(Config::GetBool("window","width",DEFAULT_VSYNC));
 
     return (true);
 }

@@ -693,6 +693,8 @@ public:
 
 private:
 
+    friend class RenderTarget;
+
     ////////////////////////////////////////////////////////////
     /// \brief Compile the shader(s) and create the program
     ///
@@ -749,6 +751,7 @@ private:
     int          m_currentTexture; ///< Location of the current texture in the shader
     TextureTable m_textures;       ///< Texture variables in the shader, mapped to their location
     UniformTable m_uniforms;       ///< Parameters location cache
+    Uint64       m_cacheId;       ///< Unique number that identifies the shader to the render target's cache
 };
 
 } // namespace sf

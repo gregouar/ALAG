@@ -566,6 +566,8 @@ void RenderTarget::applyTexture(const Texture* texture)
 void RenderTarget::applyShader(const Shader* shader)
 {
     Shader::bind(shader);
+
+    m_cache.lastShaderId = shader ? shader->m_cacheId : 0;
 }
 
 
@@ -601,7 +603,8 @@ void RenderTarget::setupDraw(bool useVertexCache, const RenderStates& states)
         applyTexture(states.texture);
 
     // Apply the shader
-    if (states.shader)
+    Uint64 shaderId = states.shader ? states.shader->m_cacheId : 0;
+    if (shaderId != m_cache.lastShaderId)
         applyShader(states.shader);
 }
 

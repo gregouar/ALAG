@@ -7,6 +7,10 @@ class KillableSingleton
 {
     friend class SingletonsCleaner;
 
+    protected:
+        KillableSingleton(){}
+        virtual ~KillableSingleton(){}
+
     private:
         virtual void Kill() = 0;
 };

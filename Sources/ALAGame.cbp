@@ -13,6 +13,11 @@
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Compiler>
+					<Add option="-Wnon-virtual-dtor" />
+					<Add option="-Winit-self" />
+					<Add option="-pedantic" />
+					<Add option="-Wextra" />
+					<Add option="-Wall" />
 					<Add option="-std=c++11" />
 					<Add option="-g" />
 				</Compiler>
@@ -32,6 +37,7 @@
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Compiler>
+					<Add option="-fexpensive-optimizations" />
 					<Add option="-O3" />
 					<Add option="-std=c++11" />
 				</Compiler>

@@ -137,13 +137,16 @@ void PBRIsoScene::CompilePBRGeometryShader()
     "uniform float p_roughness;" \
     "uniform float p_metalness;" \
     "uniform float p_translucency;" \
+    "uniform bool enable_volumetricOpacity;"
+    "uniform float p_density;"
+    "uniform sampler2D map_opaqueGeometry;"
     "uniform mat3 p_normalProjMat;" \
     "uniform float p_height;" \
     "uniform float p_zPos;" \
     ""
     "uniform vec3 view_direction;"
     "uniform vec2 texture_size;"
-  //  "uniform vec2 view_ratio;"
+    "uniform vec2 view_ratio;"
     ""
     "varying vec2 VaryingTexCoord0; "\
     ""
@@ -178,7 +181,6 @@ void PBRIsoScene::CompilePBRGeometryShader()
     "   vec2 texCoord = VaryingTexCoord0;"
     "   if(enable_parallax == true && enable_depthMap == true){"
     "       texCoord = Parallax(texCoord);}"
-    //"   if(texCoord.x > 2.0 || texCoord.x < 0.0 || texCoord.y > 2.0 || texCoord.y < 0.0) discard;"
     "   vec4 albedoPixel = gl_Color*texture2D(map_albedo, texCoord);" \
     "   if((p_alpha_pass == true && albedoPixel.a > .1 && albedoPixel.a < .99) "
     "   || (p_alpha_pass == false && albedoPixel.a >= .99))"
@@ -192,6 +194,19 @@ void PBRIsoScene::CompilePBRGeometryShader()
     "       if(gl_Color.a < 1.0)"
     "           depthPixel.a = 1.0;"
     "       float zPixel = heightPixel*p_height - p_zPos +0.5;" \
+    ""
+    "       if(enable_volumetricOpacity == true)"
+    "       {"
+    "           vec3 depthTestPixel = texture2D(map_opaqueGeometry, gl_FragCoord.xy*view_ratio).rgb;" \
+    "           float depthTest = ((depthTestPixel.b*"<<1.0/255.0<<"+depthTestPixel.g)*"<<1.0/255.0<<"+depthTestPixel.r);"
+    "           float depth = (depthTest-zPixel)*"<<PBRTextureAsset::DEPTH_BUFFER_NORMALISER_INV<<"*p_density;"
+    "           albedoPixel.a = mix(albedoPixel.a*0.5, albedoPixel.a*2.0, clamp(depth,0.0,1.0));"
+    "           albedoPixel.a = clamp(albedoPixel.a, 0.0,0.99);"
+    //"           albedoPixel.a = .99;"
+    //"           albedoPixel.rgb = depthTestPixel;"
+    //"           albedoPixel.a = 1.0;"
+    "       }"
+    ""
      /*"       float depthTest = 1.0;"
      "       if(enable_depthTesting == true){"
      "           vec3 depthTestPixel = texture2D(map_depthTester, gl_FragCoord.xy*view_ratio).rgb;" \
@@ -262,6 +277,7 @@ void PBRIsoScene::CompileLightingShader()
     "uniform sampler2D map_brdflut;" \
     "uniform vec2 SSR_map_shift;" \
     "uniform sampler2D map_SSRenv;" \
+    "uniform bool enable_map_environmental;"
     "uniform sampler2D map_environmental;" \
     "uniform float p_zPos;" \
     "uniform float view_zoom;"
@@ -290,6 +306,8 @@ void PBRIsoScene::CompileLightingShader()
     ""
     "varying vec3 v_vertex; "\
     "varying vec2 VaryingTexCoord0; "\
+    ""
+    "   const vec3 constantList = vec3(1.0, 0.0, -1.0);"
     ""
     "const vec2 invAtan = vec2("<<1.0/(2*PI)<<", "<<1.0/PI<<");"
     "vec2 SampleSphericalMap(vec3 v)"
@@ -377,34 +395,34 @@ void PBRIsoScene::CompileLightingShader()
     "}"
     "vec3 RayTrace(vec3 p, vec3 v, float jitter)"
     "{"
-    "   const vec3 constantList = vec3(1.0, 0.0, -1.0);"
     "   vec2 oldScreenPos = gl_FragCoord.xy;"
     "   vec2 curScreenPos;"
     "   vec3 oldWorldPos = p;"
     "   vec3 curWorldPos;"
     "   vec3 r = vec3(-1.0);"
+    "   vec2 screen_v = (v*p_isoToCartMat).xy * constantList.xz;"
     "   int oldUnder = 0;"
     "   int under;"
     //"   return oldScreenPos + 300*(v*p_isoToCartMat).xy * constantList.xz; "
     "   for(int i = 0 ; i < 24 ; ++i) {"
-    "       curScreenPos = oldScreenPos + 15*(v*p_isoToCartMat).xy * constantList.xz;"
+    "       curScreenPos = oldScreenPos + 15*screen_v;"
     "       curWorldPos  = oldWorldPos + 15*v;"
     "       float heightPixel = GetDepth(curScreenPos);"
     "       if(heightPixel - curWorldPos.z > 0) under = 1;"
     "       else under = 0;"
-    "       if(under != oldUnder && abs(heightPixel - curWorldPos.z) < 30){"
+    "       if(under != oldUnder && abs(heightPixel - curWorldPos.z) < 30.0){"
     "           curScreenPos = RaySearch(vec3(oldScreenPos, oldWorldPos.z), vec3(curScreenPos, curWorldPos.z),oldUnder);"
     "           r.xy = curScreenPos;"
     "           r.z = .2;"
-    "           if(abs(GetDepth(curScreenPos+vec2(jitter*i,0)) - curWorldPos.z) < 20)"
+    "           if(abs(GetDepth(curScreenPos+vec2(jitter*i,0)) - curWorldPos.z) < 20.0)"
     "               r.z += 0.2;"
-    "           if(abs(GetDepth(curScreenPos+vec2(-jitter*i,0)) - curWorldPos.z) < 20)"
+    "           if(abs(GetDepth(curScreenPos+vec2(-jitter*i,0)) - curWorldPos.z) < 20.0)"
     "               r.z += 0.2;"
-    "           if(abs(GetDepth(curScreenPos+vec2(0,jitter*i)) - curWorldPos.z) < 20)"
+    "           if(abs(GetDepth(curScreenPos+vec2(0,jitter*i)) - curWorldPos.z) < 20.0)"
     "               r.z += 0.2;"
-    "           if(abs(GetDepth(curScreenPos+vec2(0,-jitter*i)) - curWorldPos.z) < 20)"
+    "           if(abs(GetDepth(curScreenPos+vec2(0,-jitter*i)) - curWorldPos.z) < 20.0)"
     "               r.z += 0.2;"
-    "           r.z *= min(1.0/(length(curWorldPos-p)*.01), 1.0);"
+    "           r.z *= min(1.0/(length(curWorldPos-p)*.0005), 1.0);"
     "           return r;"
     "       }"
     "       oldScreenPos = curScreenPos;"
@@ -416,7 +434,6 @@ void PBRIsoScene::CompileLightingShader()
     ""
     "void main()" \
     "{" \
-    "   const vec3 constantList = vec3(1.0, 0.0, -1.0);"
     "   vec4 albedoPixel    = texture2D(map_albedo, VaryingTexCoord0);"
     //"   vec4 albedoPixel    = texelFetch(map_albedo, ivec2(gl_FragCoord.xy),0);"
     "   if(albedoPixel.a > .1) {"
@@ -448,9 +465,9 @@ void PBRIsoScene::CompileLightingShader()
     //"   rVec = normalize(rVec);"
     "   vec3 viewDirection = normalize(view_pos - fragPos);"
  //   "   vec3 viewDirection = view_direction;"
-  //  "   vec3 viewDirection = vec3("<<cos(m_viewAngle.xyAngle*PI/180)*cos(m_viewAngle.zAngle*PI/180)<<","
-    //                                <<sin(m_viewAngle.xyAngle*PI/180)*cos(m_viewAngle.zAngle*PI/180)<<","
-      //                              <<sin(m_viewAngle.zAngle*PI/180)<<");"
+    "   vec3 ortho_viewDirection = vec3("<<cos(45*PI/180)*cos(30*PI/180)<<","
+                                    <<sin(45*PI/180)*cos(30*PI/180)<<","
+                                    <<sin(30*PI/180)<<");"
     "   vec3 surfaceReflection0 = vec3(0.04);"
     "   surfaceReflection0 = mix(surfaceReflection0, albedoPixel.rgb, materialPixel.g);"
     "   vec3 FAmbient = fresnelSchlickRoughness(max(dot(direction, viewDirection), 0.0), surfaceReflection0, materialPixel.r);"
@@ -461,10 +478,12 @@ void PBRIsoScene::CompileLightingShader()
    /* "   vec3 orthoViewDirection = vec3("<<cos(m_viewAngle.xyAngle*PI/180)*cos(m_viewAngle.zAngle*PI/180)<<","
                                     <<sin(m_viewAngle.xyAngle*PI/180)*cos(m_viewAngle.zAngle*PI/180)<<","
                                     <<sin(m_viewAngle.zAngle*PI/180)<<");"*/
-    "   vec3 reflectionView = reflect(-viewDirection, direction);"
+    "   vec3 reflectionView = reflect(-ortho_viewDirection, direction);"
     "   reflectionView += mix(vec3(0.0),rVec,materialPixel.r*.25);"
     "   vec2 uv = SampleSphericalMap(normalize(reflectionView));"
-    "   vec3 reflectionColor = texture2DLod(map_environmental, uv, materialPixel.r*8.0).rgb;"
+    "   vec3 reflectionColor = ambientLighting;"
+    "   if(enable_map_environmental == true)"
+    "       reflectionColor = texture2DLod(map_environmental, uv, materialPixel.r*8.0).rgb;"
     "   vec2 envBRDF  = texture2D(map_brdflut, vec2(max(dot(direction, viewDirection), 0.0), 1.0-materialPixel.r)).rg;"
     //"   gl_FragData[1] = vec4(0.5+normalize(reflectionView)*0.5,1.0);"
    // "   reflectionColor = ambientLighting;"
@@ -526,10 +545,10 @@ void PBRIsoScene::CompileLightingShader()
 	"               shadowPos.y += heightPixel*p_isoToCartZFactor;"
 	"           }"
 	"               float shadowing = (GetShadowCastValue(curShadowMap,depth,shadowPos)*2.0"
-    "                            +GetShadowCastValue(curShadowMap,depth,shadowPos+vec2(2.0,-2.0)*rVec2.xy)"
-    "                            +GetShadowCastValue(curShadowMap,depth,shadowPos+vec2(-2.0,2.0)*rVec2.xy)"
-    "                            +GetShadowCastValue(curShadowMap,depth,shadowPos+vec2(2.0,2.0)*rVec2.xy)"
-    "                            +GetShadowCastValue(curShadowMap,depth,shadowPos+vec2(-2.0,-2.0)*rVec2.xy))*"<<1.0/6.0<<";"
+    "                            +GetShadowCastValue(curShadowMap,depth,shadowPos+vec2(4.0,-4.0)*rVec2.xy)"
+    "                            +GetShadowCastValue(curShadowMap,depth,shadowPos+vec2(-4.0,4.0)*rVec2.xy)"
+    "                            +GetShadowCastValue(curShadowMap,depth,shadowPos+vec2(4.0,4.0)*rVec2.xy)"
+    "                            +GetShadowCastValue(curShadowMap,depth,shadowPos+vec2(-4.0,-4.0)*rVec2.xy))*"<<1.0/6.0<<";"
     "               if(shadowing > .2 && shadowing < .8) {"
     "                   shadowing =  shadowing * 0.5"
     "                            +(GetShadowCastValue(curShadowMap,depth,shadowPos+vec2(4.0,0.0)*rVec2.xy)"
@@ -1014,7 +1033,7 @@ void PBRIsoScene::CompileWaterGeometryShader()
     ""
     "vec3 FractalNoise(vec2 pos)"
     "{"
-    "   float frequency = .25;"
+    "   float frequency = .5;"
     "   float amplitude = 1.0;"
     "   float frequencyMult = 4;"
     "   float amplitudeMult = 0.5;"
@@ -1114,7 +1133,7 @@ void PBRIsoScene::CompileWaterGeometryShader()
    "     float foam =  smoothstep(.5,1.0,water.z);" //NEED TO USE A TEXTURE HERE
    /** Need to use noise for foam (like noise texture ?) and also use second derivative**/
    //"     foam = clamp(foam+smoothstep(.95,1.0,water.w),0.0,.8);"
-    "    gl_FragData["<<PBRAlbedoScreen<<"] = mix(vec4(.1,.15,.15,.95), vec4(.8,.8,.8,.99),foam);"
+    "    gl_FragData["<<PBRAlbedoScreen<<"] = mix(vec4(.2,.3,.3,.495), vec4(.8,.8,.8,.8),foam);"
     "    gl_FragData["<<PBRMaterialScreen<<"] = mix(vec4(.2, 0.0,.9,1.0), vec4(.5, 0.0,.1,1.0),foam);"
     "}";
 
