@@ -78,7 +78,7 @@ class PBRIsoScene : public DefaultScene
 
         void SetBloom(bool);
         void SetSSAO(bool);
-        void SetSSR(bool, float = DEFAULT_SSR_THRESOLD);
+        void SetSSR(bool, float = -1);
 
     protected:
         void ComputeTrigonometry();
@@ -151,9 +151,12 @@ class PBRIsoScene : public DefaultScene
 
         bool m_enableBloom;
         sf::RenderTexture m_bloomScreen[2];
+        sf::RectangleShape m_bloomRect;
 
         bool m_enableSSAO;
         sf::Shader m_SSAOShader;
+        sf::RectangleShape m_SSAORect;
+
         //sf::Shader m_SSAODrawingShader;
         sf::RenderTexture m_SSAOScreen[2];
         sf::RectangleShape m_SSAOrenderer;
@@ -170,15 +173,17 @@ class PBRIsoScene : public DefaultScene
         static const std::string DEFAULT_ENABLESSAO;
         static const std::string DEFAULT_ENABLEBLOOM;
         static const std::string DEFAULT_ENABLESSR;
+        static const std::string DEFAULT_SSR_THRESOLD;
         static const std::string DEFAULT_ENABLESRGB;
         static const std::string DEFAULT_SUPERSAMPLING;
         static const std::string DEFAULT_DIRECTIONALSHADOWSCASTING;
         static const std::string DEFAULT_DYNAMICSHADOWSCASTING;
-        static const float DEFAULT_BLOOMBLUR;
-        static const float DEFAULT_SSAOBLUR;
-        static const float DEFAULT_ENVBLUR;
+        static const float BLOOM_BLUR;
+        static const float BLOOM_SCREEN_RATIO;
+        static const float SSAO_BLUR;
+        static const float SSAO_SCREEN_RATIO;
+        static const float ENVIRONMENT_BLUR;
         static const float SSAO_STRENGTH;
-        static const float DEFAULT_SSR_THRESOLD;
         static const unsigned int NBR_PARALLAX_STEPS;
 };
 

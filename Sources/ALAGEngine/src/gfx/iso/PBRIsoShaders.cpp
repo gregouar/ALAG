@@ -417,7 +417,8 @@ void PBRIsoScene::CompileLightingShader()
     "void main()" \
     "{" \
     "   const vec3 constantList = vec3(1.0, 0.0, -1.0);"
-    "   vec4 albedoPixel    = texture2D(map_albedo, VaryingTexCoord0);" \
+    "   vec4 albedoPixel    = texture2D(map_albedo, VaryingTexCoord0);"
+    //"   vec4 albedoPixel    = texelFetch(map_albedo, ivec2(gl_FragCoord.xy),0);"
     "   if(albedoPixel.a > .1) {"
     "   vec4 depthPixel     = texture2D(map_depth, VaryingTexCoord0);" \
     "   float depth = ((depthPixel.b*"<<1.0/255.0<<"+depthPixel.g)*"<<1.0/255.0<<"+depthPixel.r);"
@@ -662,7 +663,7 @@ void PBRIsoScene::CompileSSAOShader()
     "   vec3 direction = 2.0*normalPixel.rgb-1.0;"
     "   float heightPixel = (depthPixel.b*"<<1.0/255.0<<"+depthPixel.g)*"<<1.0/255.0<<"+depthPixel.r;"
     "   float occlusion = 12.0;"
-    "   vec3 rVec = vec3(2.0*texture2D(map_noise, gl_TexCoord[0].xy/view_ratio/4.0).rg-1.0, 1.0);"
+    "   vec3 rVec = vec3(2.0*texture2D(map_noise, gl_FragCoord.xy * "<<1.0/SSAO_SCREEN_RATIO<<"*0.25).rg-1.0, 1.0);"
 	"   vec3 t = normalize(rVec - direction * dot(rVec, direction));"
 	"   mat3 rot = mat3(t,cross(direction,t),direction);"
 	"   for(int i =0 ; i < 16 ; ++i){"
@@ -670,7 +671,7 @@ void PBRIsoScene::CompileSSAOShader()
 	"       vec2 screenShift = (view_zoom* 15.0)*(rayShift*p_isoToCartMat).xy;"
 	"       rayShift.z *= "<<15.0*PBRTextureAsset::DEPTH_BUFFER_NORMALISER<<";"
 	//"       screenShift.y *= -1;"
-	"       vec2 screenPos = gl_FragCoord.xy  + screenShift * constantList.xz;"
+	"       vec2 screenPos = gl_FragCoord.xy * "<<1.0/SSAO_SCREEN_RATIO<<"  + screenShift * constantList.xz;"
 /*	"       float translucency = texture2D(map_depth, screenPos*view_ratio).b;"
 	"       if(translucency != 1.0){"*/
 	"       vec3 occl_depthPixel = texture2D(map_depth, screenPos*view_ratio).rgb;"
