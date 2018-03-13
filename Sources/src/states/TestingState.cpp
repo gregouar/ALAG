@@ -57,24 +57,28 @@ void TestingState::Init()
     TextureHandler->LoadAssetFromFile("../data/sand_normal.png",LoadType_InThread);
 
 
-    m_sarco3DNode = m_mainScene.GetRootNode()->CreateChildNode();
-    m_sarco3DNode->SetPosition(100,250,0);
-    //Sprite3DEntity *sarco3DEntity = m_mainScene.CreateSprite3DEntity(sf::Vector2i(256,256));
+    m_torusNode = m_mainScene.GetRootNode()->CreateChildNode();
+    m_torusNode->SetPosition(100,250,0);
     SpriteEntity *torusEntity = m_mainScene.CreateIsoSpriteEntity();
-    //sarco3DEntity->SetTexture(TextureHandler->LoadAssetFromFile("../data/sarco-color.png"));
     torusEntity->SetTexture(PBRTextureHandler->LoadAssetFromFile("../data/torusbXML.txt",LoadType_InThread));
-    //torusEntity->SetTexture(PBRTextureHandler->LoadAssetFromFile("../data/sarcoXML.txt",LoadType_InThread));
-    //sarco3DEntity->SetTexture(PBRTextureHandler->LoadAssetFromFile("../data/treeXML.txt",LoadType_InThread));
-    //sarco3DEntity->SetTexture(PBRTextureHandler->LoadAssetFromFile("../data/bedrockXML.txt",LoadType_InThread));
-    //torusEntity->SetCenter(128,166);
     torusEntity->SetCenter(128,128);
     torusEntity->SetShadowCastingType(DirectionnalShadow);
     //torusEntity->SetColor(sf::Color(255,64,255,128));
     //torusEntity->SetColor(sf::Color(64,128,255,128));
-    torusEntity->SetColor(sf::Color(128,128,128));
+    torusEntity->SetColor(sf::Color(224,32,32));
     torusEntity->SetStatic(false);
-    //sarco3DEntity->DesactivateLighting();
-    m_sarco3DNode->AttachObject(torusEntity);
+    m_torusNode->AttachObject(torusEntity);
+    torusEntity->SetRotation(30);
+
+    m_sarco3DNode = m_mainScene.GetRootNode()->CreateChildNode();
+    m_sarco3DNode->SetPosition(100,250,0);
+    SpriteEntity *sarco3DEntity = m_mainScene.CreateIsoSpriteEntity();
+    sarco3DEntity->SetTexture(PBRTextureHandler->LoadAssetFromFile("../data/sarcoXML.txt",LoadType_InThread));
+    sarco3DEntity->SetCenter(128,166);
+    sarco3DEntity->SetShadowCastingType(DirectionnalShadow);
+   // sarco3DEntity->SetStatic(true);
+    m_sarco3DNode->AttachObject(sarco3DEntity);
+
 
     m_sarcoNode = m_mainScene.GetRootNode()->CreateChildNode();
     m_sarcoNode->SetPosition(-100,-30);
@@ -155,7 +159,7 @@ void TestingState::Init()
     abbayeEntity->SetTexture(PBRTextureHandler->LoadAssetFromFile("../data/abbayeXML.txt",LoadType_InThread));
     abbayeEntity->SetCenter(960,540);
     abbayeEntity->SetShadowCastingType(DirectionnalShadow);
-     abbayeEntity->SetStatic(true);
+    // abbayeEntity->SetStatic(true);
     m_mainScene.GetRootNode()->AttachObject(abbayeEntity);
     //m_mainScene.GetRootNode()->CreateChildNode(sf::Vector2f(0,0))->AttachObject(abbayeEntity);
 
@@ -185,7 +189,7 @@ void TestingState::Init()
     rectEntity->SetTextureRect(sf::IntRect(0,0,2048,2048));
     //rectEntity->SetParallax(true);
   //  rectEntity->SetVisible(false);
-    rectEntity->SetStatic(true);
+  //  rectEntity->SetStatic(true);
     rectNode->AttachObject(rectEntity);
 
 
@@ -324,6 +328,11 @@ void TestingState::HandleEvents(alag::EventManager *event_manager)
     if(event_manager->KeyPressed(sf::Keyboard::Q))
         m_sarco3DNode->Move(0,0,-10);
 
+
+    if(event_manager->KeyPressed(sf::Keyboard::E))
+        m_mainScene.SetEdgeSmoothing(false);
+    if(event_manager->KeyReleased(sf::Keyboard::E))
+        m_mainScene.SetEdgeSmoothing(true);
 
     if(event_manager->KeyPressed(sf::Keyboard::O))
         m_mainScene.SetSSAO(false);

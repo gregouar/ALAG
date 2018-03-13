@@ -30,6 +30,7 @@ class SpriteEntity : public SceneEntity, protected sf::Sprite
         void SetCenter(sf::Vector2f);
         void SetScale(float x, float y);
         void SetScale(sf::Vector2f);
+        void SetRotation(float r);
         void SetColor(sf::Color);
 
         void SetShadowCastingType(ShadowCastingType);

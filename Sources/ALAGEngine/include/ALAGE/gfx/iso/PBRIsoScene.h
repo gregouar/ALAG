@@ -77,9 +77,10 @@ class PBRIsoScene : public DefaultScene
         virtual void EnableGammaCorrection();
         virtual void DisableGammaCorrection();
 
-        void SetBloom(bool);
-        void SetSSAO(bool);
-        void SetSSR(bool, float = -1);
+        void SetEdgeSmoothing(bool = true);
+        void SetBloom(bool = true);
+        void SetSSAO(bool = true);
+        void SetSSR(bool = true, float = -1);
 
     protected:
         void ComputeTrigonometry();
@@ -171,6 +172,7 @@ class PBRIsoScene : public DefaultScene
 
         static const int SCREENTILE_SIZE;
 
+        static const std::string DEFAULT_ENABLEEDGESMOOTHING;
         static const std::string DEFAULT_ENABLESSAO;
         static const std::string DEFAULT_ENABLEBLOOM;
         static const std::string DEFAULT_ENABLESSR;

@@ -44,6 +44,8 @@ class TestingState : public alag::GState, public Singleton<TestingState>
         alag::SceneNode *m_sarco3DNode;
         alag::SceneNode *m_chene_node;
         alag::SceneNode *m_lightNode;
+        alag::SceneNode *m_torusNode;
+        alag::IsoWaterEntity *m_waterEntity;
 
         alag::Light *m_sunLight;
 

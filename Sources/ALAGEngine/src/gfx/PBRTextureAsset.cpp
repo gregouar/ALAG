@@ -7,8 +7,8 @@
 namespace alag
 {
 
-const float PBRTextureAsset::DEPTH_BUFFER_NORMALISER = 0.00001;
-const float PBRTextureAsset::DEPTH_BUFFER_NORMALISER_INV = 100000;
+const float PBRTextureAsset::DEPTH_BUFFER_NORMALISER = 0.0001;
+const float PBRTextureAsset::DEPTH_BUFFER_NORMALISER_INV = 10000;
 
 PBRTextureAsset::PBRTextureAsset()
 {

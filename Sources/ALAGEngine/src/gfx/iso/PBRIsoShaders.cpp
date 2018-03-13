@@ -96,7 +96,7 @@ void PBRIsoScene::CompileDepthCopierShader()
     "         gl_FragDepth = depthTest;"
     "         gl_FragData["<<PBRAlbedoScreen<<"] = vec4(0,0,0,0);"
     "         gl_FragData["<<PBRNormalScreen<<"] = vec4(0,0,0,0);"
-    "         gl_FragData["<<PBRDepthScreen<<"] = depthTestPixel;"
+    "         gl_FragData["<<PBRDepthScreen<<"] = vec4(0,0,0,0);"
     "         gl_FragData["<<PBRMaterialScreen<<"] = vec4(0,0,0,0);"
     "       }"
     "}";
@@ -137,6 +137,7 @@ void PBRIsoScene::CompilePBRGeometryShader()
     "uniform float p_roughness;" \
     "uniform float p_metalness;" \
     "uniform float p_translucency;" \
+    "uniform bool enable_edgeSmoothing;"
     "uniform bool enable_volumetricOpacity;"
     "uniform float p_density;"
     "uniform sampler2D map_opaqueGeometry;"
@@ -177,7 +178,7 @@ void PBRIsoScene::CompilePBRGeometryShader()
     ""
     "void main()" \
     "{" \
-    "   const vec2 All255 = vec2(0.00392156862,1.0);"
+    "   const vec2 All255 = vec2("<<1.0/255.0<<",1.0);"
     "   vec2 texCoord = VaryingTexCoord0;"
     "   if(enable_parallax == true && enable_depthMap == true){"
     "       texCoord = Parallax(texCoord);}"
@@ -199,20 +200,11 @@ void PBRIsoScene::CompilePBRGeometryShader()
     "       {"
     "           vec3 depthTestPixel = texture2D(map_opaqueGeometry, gl_FragCoord.xy*view_ratio).rgb;" \
     "           float depthTest = ((depthTestPixel.b*"<<1.0/255.0<<"+depthTestPixel.g)*"<<1.0/255.0<<"+depthTestPixel.r);"
-    "           float depth = (depthTest-zPixel)*"<<PBRTextureAsset::DEPTH_BUFFER_NORMALISER_INV<<"*p_density;"
+    "           float depth = (depthTest-zPixel)*p_density;"
     "           albedoPixel.a = mix(albedoPixel.a*0.5, albedoPixel.a*2.0, clamp(depth,0.0,1.0));"
     "           albedoPixel.a = clamp(albedoPixel.a, 0.0,0.99);"
-    //"           albedoPixel.a = .99;"
-    //"           albedoPixel.rgb = depthTestPixel;"
-    //"           albedoPixel.a = 1.0;"
     "       }"
     ""
-     /*"       float depthTest = 1.0;"
-     "       if(enable_depthTesting == true){"
-     "           vec3 depthTestPixel = texture2D(map_depthTester, gl_FragCoord.xy*view_ratio).rgb;" \
-     "           depthTest = ((depthTestPixel.b*"<<1.0/255.0<<"+depthTestPixel.g)*"<<1.0/255.0<<"+depthTestPixel.r);"
-     "       }"
-     "      if(enable_depthTesting == false || zPixel <= depthTest){"*/
 	"	        vec4 direction = vec4(0,0,1.0,1.0);"
 	"           if(enable_normalMap == true){"
 	"               direction.xyz = 2.0*texture2D(map_normal, texCoord).rgb-1.0;"
@@ -230,15 +222,48 @@ void PBRIsoScene::CompilePBRGeometryShader()
     "           gl_FragData["<<PBRNormalScreen<<"] = (direction*0.5+0.5);" \
     "           gl_FragData["<<PBRDepthScreen<<"] = vec4(r,g,b,depthPixel.a)*All255.xxxy;"
     "           gl_FragData["<<PBRMaterialScreen<<"] = materialPixel; "
-   /* "       }else {"
-    "         gl_FragDepth = zPixel;"
-    "         gl_FragData["<<PBRAlbedoScreen<<"] = vec4(0,0,0,0);"
-    "         gl_FragData["<<PBRNormalScreen<<"] = vec4(0,0,0,0);"
-    "         gl_FragData["<<PBRDepthScreen<<"] = vec4(0,0,0,0);"
-    "       gl_FragData["<<PBRMaterialScreen<<"] = vec4(0,0,0,0);"
-    "       }"*/
     "   } else {"
-    "       discard;"
+    "       if(enable_edgeSmoothing == true && p_alpha_pass == true && albedoPixel.a >= .99)"
+    "       {"
+    "           float heightPixel = 0.0; "
+    "           vec4 depthPixel = vec4(0.0);"
+    "           if(enable_depthMap == true){"
+    "               depthPixel = texture2D(map_depth, texCoord);" \
+    "               heightPixel = dot(All33, depthPixel.rgb);"
+    "           }"
+    "           float zPixel = heightPixel*p_height - p_zPos +0.5;" \
+    ""
+    "           float r = floor(zPixel * 255.0);"
+    "           float g = floor((zPixel*255.0 -  r)*255.0);"
+    "           float b = floor((zPixel*65025.0 -  g - r*255.0)*255.0);"
+    "           zPixel = ((b*"<<1.0/255.0<<"+g)*"<<1.0/255.0<<"+r)*"<<1.0/255.0<<";"
+    ""
+  //  "           vec3 depthTestPixel = texture2D(map_opaqueGeometry, gl_FragCoord.xy*view_ratio).rgb;"
+    "           vec3 depthTestPixel = texelFetch(map_opaqueGeometry, ivec2(gl_FragCoord.xy), 0).rgb;"
+    "           float depthTest = ((depthTestPixel.b*"<<1.0/255.0<<"+depthTestPixel.g)*"<<1.0/255.0<<"+depthTestPixel.r);"
+    "           float depth = (zPixel-depthTest)*"<<.5*PBRTextureAsset::DEPTH_BUFFER_NORMALISER_INV<<";"
+    ""
+    "           if(depth >= 1.0 || depth <= 0.001) discard;"
+    ""
+    "           albedoPixel.a = mix(.5,0.0,depth);"
+    ""
+	"	        vec4 direction = vec4(0,0,1.0,1.0);"
+	"           if(enable_normalMap == true){"
+	"               direction.xyz = 2.0*texture2D(map_normal, texCoord).rgb-1.0;"
+	"           }"
+	"           direction.xyz = direction.xyz * p_normalProjMat;"
+    "           gl_FragDepth = depthTest-.0000001;"
+    "           vec4 materialPixel = vec4(p_roughness,p_metalness,p_translucency,1.0);"
+    "           if(enable_materialMap == true){"
+    "               materialPixel.rgb = texture2D(map_material, texCoord).rgb;"
+    "           }"
+    "           gl_FragData["<<PBRAlbedoScreen<<"] = albedoPixel; " \
+    "           gl_FragData["<<PBRNormalScreen<<"] = (direction*0.5+0.5);" \
+    "           gl_FragData["<<PBRDepthScreen<<"] = vec4(depthTestPixel, albedoPixel.a);"
+    "           gl_FragData["<<PBRMaterialScreen<<"] = materialPixel; "
+  //  "           gl_FragData["<<PBRAlbedoScreen<<"] = vec4(depth,0.0,0.0,1.0-depth);"
+    "       } else "
+    "           discard;"
     "   }"
     "}";
 
@@ -326,7 +351,7 @@ void PBRIsoScene::CompileLightingShader()
         <<"shadowPixel = texture2D(shadow_map_"<<i<<", mapPos).rgb;}";
     fragShader<<
 	"   float shadowDepth = ((shadowPixel.b*"<<1.0/255.0<<"+shadowPixel.g)*"<<1.0/255.0<<"+shadowPixel.r);"
-    "   return 1.0 - min(1.0,max(0.0, (depth-shadowDepth)*5000.0));"
+    "   return 1.0 - min(1.0,max(0.0, (depth-shadowDepth)*"<<0.05*PBRTextureAsset::DEPTH_BUFFER_NORMALISER_INV<<"));"
     "}"
     ""
     "vec3 fresnelSchlickRoughness(float cosTheta, vec3 F0, float roughness)"
@@ -445,7 +470,6 @@ void PBRIsoScene::CompileLightingShader()
     "       depthTest = ((depthTestPixel.b*"<<1.0/255.0<<"+depthTestPixel.g)*"<<1.0/255.0<<"+depthTestPixel.r);"
     "   }"*/
   //  "   if(enable_depthTesting == false || depth <= depthTest){"
-   // "   vec3 rVec = normalize(2*texture2D(map_noise, VaryingTexCoord0/view_ratio/4.0).rgb-1.0);"
     "   gl_FragData[0].a = albedoPixel.a; "
     "   float heightPixel = "<<0.5*PBRTextureAsset::DEPTH_BUFFER_NORMALISER_INV<<
     "           -depth*"<< PBRTextureAsset::DEPTH_BUFFER_NORMALISER_INV <<";"
@@ -461,6 +485,7 @@ void PBRIsoScene::CompileLightingShader()
 	"   fragPos = vec3(fragPos.xy,0.0)*p_cartToIso2DProjMat + vec3(0.0,0.0,heightPixel);"
 	""
     "   vec3 rVec = Hash(fragPos);"
+    //"   vec3 rVec = 2*texture2D(map_noise, VaryingTexCoord0/view_ratio*0.25).rgb-1.0;"
     "   vec2 rVec2 = rVec.xy;"
     //"   rVec = normalize(rVec);"
     "   vec3 viewDirection = normalize(view_pos - fragPos);"
@@ -1033,7 +1058,7 @@ void PBRIsoScene::CompileWaterGeometryShader()
     ""
     "vec3 FractalNoise(vec2 pos)"
     "{"
-    "   float frequency = .5;"
+    "   float frequency = .25;"
     "   float amplitude = 1.0;"
     "   float frequencyMult = 4;"
     "   float amplitudeMult = 0.5;"

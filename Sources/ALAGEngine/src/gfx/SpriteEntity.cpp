@@ -123,6 +123,11 @@ void SpriteEntity::SetScale(sf::Vector2f c)
     sf::Sprite::setScale(c);
 }
 
+void SpriteEntity::SetRotation(float r)
+{
+    sf::Sprite::setRotation(r);
+}
+
 void SpriteEntity::SetColor(sf::Color c)
 {
     sf::Sprite::setColor(c);

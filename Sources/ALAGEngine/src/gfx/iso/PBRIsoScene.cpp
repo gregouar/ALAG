@@ -22,6 +22,7 @@ const IsoViewAngle PBRIsoScene::DEFAULT_ISO_VIEW_ANGLE = {.xyAngle = 0,
 const int PBRIsoScene::MAX_SHADOW_MAPS = 8;
 const int PBRIsoScene::SCREENTILE_SIZE = 128;
 
+const std::string PBRIsoScene::DEFAULT_ENABLEEDGESMOOTHING = "true";
 const std::string PBRIsoScene::DEFAULT_ENABLESSAO = "true";
 const std::string PBRIsoScene::DEFAULT_ENABLEBLOOM = "true";
 const std::string PBRIsoScene::DEFAULT_ENABLESSR = "true";
@@ -160,6 +161,7 @@ bool PBRIsoScene::InitRenderer(sf::Vector2u windowSize)
 
         m_staticGeometryScreen[i].setActive(true);
         glEnable(GL_DEPTH_TEST);
+        glDepthFunc(GL_LEQUAL);
         glDepthMask(GL_TRUE);
         glEnable(GL_STENCIL_TEST);
         //glStencilFunc(GL_EQUAL, 1, 1);
@@ -170,6 +172,7 @@ bool PBRIsoScene::InitRenderer(sf::Vector2u windowSize)
 
         m_alpha_staticGeometryScreen[i].setActive(true);
         glEnable(GL_DEPTH_TEST);
+        glDepthFunc(GL_LEQUAL);
         glDepthMask(GL_TRUE);
         glEnable(GL_STENCIL_TEST);
         glStencilFunc(GL_EQUAL, 1, 1);
@@ -196,10 +199,6 @@ bool PBRIsoScene::InitRenderer(sf::Vector2u windowSize)
     env_map->setSmooth(true);
     m_lightingShader.setUniform("map_environmental",*env_map);*/
 
-    m_PBRGeometryShader.setUniform("map_opaqueGeometry", *m_PBRScreen.getTexture(PBRDepthScreen));
-    m_PBRGeometryShader.setUniform("view_ratio",sf::Vector2f(1.0/(float)m_PBRScreen.getSize().x,
-                                                            1.0/(float)m_PBRScreen.getSize().y));
-
     m_lightingShader.setUniform("map_SSRenv",m_environment_PBRScreen[0].getTexture());
     m_environment_PBRScreen[0].setSmooth(true);
 
@@ -221,6 +220,7 @@ bool PBRIsoScene::InitRenderer(sf::Vector2u windowSize)
     else
         DisableGammaCorrection();
 
+    SetEdgeSmoothing(Config::GetBool("graphics","EdgeSmoothing",DEFAULT_ENABLEEDGESMOOTHING));
     SetSSAO(Config::GetBool("graphics","SSAO",DEFAULT_ENABLESSAO));
     SetBloom(Config::GetBool("graphics","Bloom",DEFAULT_ENABLEBLOOM));
     SetSSR(Config::GetBool("graphics","SSR",DEFAULT_ENABLESSR),
@@ -257,10 +257,15 @@ bool PBRIsoScene::InitRenderer(sf::Vector2u windowSize)
     for(int x = 0 ; x < 4 ; ++x)
     for(int y = 0 ; y < 4 ; ++y)
     {
+        float theta = (float)RandomNumber(1000)/1000.0;
+
         sf::Color c = sf::Color::White;
-        c.r = (int)(static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/255)));
+        /*c.r = (int)(static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/255)));
         c.g = (int)(static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/255)));
-        c.b = (int)(static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/255)));
+        c.b = (int)(static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/255)));*/
+        c.r = 127+cos(theta*2*PI)*256;
+        c.g = 127+sin(theta*2*PI)*256;
+        c.b = 255;
         m_SSAONoisePattern.setPixel(x,y,c);
     }
 
@@ -697,6 +702,10 @@ void PBRIsoScene::RenderStaticGeometry(const sf::View &curView)
             state.blendMode = sf::BlendNone;
         } else if(pass == 1) {
             m_PBRGeometryShader.setUniform("p_alpha_pass",true);
+            m_PBRGeometryShader.setUniform("map_opaqueGeometry",
+                                           *m_staticGeometryScreen[m_swapStaticGeometryBuffers].getTexture(PBRDepthScreen));
+            m_PBRGeometryShader.setUniform("view_ratio",sf::Vector2f(1.0/(float)m_staticGeometryScreen[m_swapStaticGeometryBuffers].getSize().x,
+                                                            1.0/(float)m_staticGeometryScreen[m_swapStaticGeometryBuffers].getSize().y));
             //m_PBRGeometryShader.setUniform("enable_depthTesting",false);
             state.blendMode = sf::BlendNone;
         }
@@ -783,6 +792,9 @@ void PBRIsoScene::RenderDynamicGeometry(const sf::View &curView)
         } else if(pass == 1) {
             Profiler::PushClock("Render alpha geometry");
             m_PBRGeometryShader.setUniform("p_alpha_pass",true);
+            m_PBRGeometryShader.setUniform("map_opaqueGeometry", *m_PBRScreen.getTexture(PBRDepthScreen));
+            m_PBRGeometryShader.setUniform("view_ratio",sf::Vector2f(1.0/(float)m_PBRScreen.getSize().x,
+                                                            1.0/(float)m_PBRScreen.getSize().y));
             //m_PBRGeometryShader.setUniform("enable_depthTesting",true);
             renderTarget = &m_alpha_PBRScreen;
            // state.blendMode = sf::BlendNone;
@@ -871,6 +883,9 @@ void PBRIsoScene::RenderLighting()
         m_renderer.setTexture(&m_SSAOScreen[0].getTexture());
         m_lighting_PBRScreen.draw(m_renderer,sf::BlendMultiply);
     }*/
+
+   // m_alpha_PBRScreen.getTexture(PBRAlbedoScreen)->copyToImage().saveToFile("aPBR0.png");
+   // m_alpha_PBRScreen.getTexture(PBRDepthScreen)->copyToImage().saveToFile("aPBR1.png");
 
 
     m_rendererStates.blendMode = sf::BlendAlpha;
@@ -1034,6 +1049,11 @@ void PBRIsoScene::SetEnvironmentMap(TextureAsset* env_map)
     } else
         m_lightingShader.setUniform("enable_map_environmental",false);
 
+}
+
+void PBRIsoScene::SetEdgeSmoothing(bool es)
+{
+    m_PBRGeometryShader.setUniform("enable_edgeSmoothing",es);
 }
 
 void PBRIsoScene::SetSSAO(bool ssao)
@@ -1304,7 +1324,7 @@ void PBRIsoScene::CopyPBRScreen(sf::MultipleRenderTexture *source, sf::FloatRect
 
         target->display(DOFLUSH);
 
-        glDepthFunc(GL_LESS);
+        glDepthFunc(GL_LEQUAL);
     }
 }
 
