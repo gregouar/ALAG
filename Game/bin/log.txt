@@ -18,16 +18,16 @@ Texture loaded from file: ../data/tree_heightmap.png
 Texture loaded from file: ../data/tree_material.png
 PBRTexture readed from file: ../data/treeXML.txt
 PBRTexture readed from file: ../data/abbayeXML.txt
-PBRTexture readed from file: ../data/wetsandXML.txt
+PBRTexture readed from file: ../data/cliffXML.txt
 Texture loaded from file: ../data/abbaye_color.png
 Font loaded from file: ../data/arial.ttf
 Starting application
 Texture loaded from file: ../data/abbaye_normal.png
 Texture loaded from file: ../data/abbaye_heightmap.png
 PBR texture loaded from file: ../data/abbayeXML.txt
-Texture loaded from file: ../data/wetsand_albedo.png
-Texture loaded from file: ../data/wetsand_normal.png
-Texture loaded from file: ../data/wetsand_depth.png
-Texture loaded from file: ../data/wetsand_material.png
-PBR texture loaded from file: ../data/wetsandXML.txt
+Texture loaded from file: ../data/cliff_albedo.png
+Texture loaded from file: ../data/cliff_normal.png
+Texture loaded from file: ../data/cliff_heightmap.png
+Texture loaded from file: ../data/cliff_material.png
+PBR texture loaded from file: ../data/cliffXML.txt
 Stopping application

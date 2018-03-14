@@ -660,6 +660,9 @@ public:
     ////////////////////////////////////////////////////////////
     static void bind(const Shader* shader);
 
+
+    static void updateTextures(const Shader* shader, std::map<int, const Texture*> *oldTextures);
+
     ////////////////////////////////////////////////////////////
     /// \brief Tell whether or not the system supports shaders
     ///
@@ -718,6 +721,8 @@ private:
     ///
     ////////////////////////////////////////////////////////////
     void bindTextures() const;
+
+    void updateTextures(std::map<int, const Texture*> *oldTextures) const;
 
     ////////////////////////////////////////////////////////////
     /// \brief Get the location ID of a shader uniform

@@ -38,6 +38,7 @@
 #include <SFML/Graphics/PrimitiveType.hpp>
 #include <SFML/Graphics/Vertex.hpp>
 #include <SFML/System/NonCopyable.hpp>
+#include <map>
 
 
 namespace sf
@@ -423,6 +424,9 @@ private:
     ////////////////////////////////////////////////////////////
     void applyShader(const Shader* shader);
 
+
+    void updateShader(const Shader* shader);
+
     ////////////////////////////////////////////////////////////
     /// \brief Setup environment for drawing
     ///
@@ -462,7 +466,8 @@ private:
         bool      viewChanged;    ///< Has the current view changed since last draw?
         BlendMode lastBlendMode;  ///< Cached blending mode
         Uint64    lastTextureId;  ///< Cached texture
-        Uint64    lastShaderId;  ///< Cached texture
+        Uint64    lastShaderId;
+        std::map<int, const Texture*> bindedTextures;
         bool      texCoordsArrayEnabled; ///< Is GL_TEXTURE_COORD_ARRAY client state enabled?
         bool      useVertexCache; ///< Did we previously use the vertex cache?
         Vertex    vertexCache[VertexCacheSize]; ///< Pre-transformed vertices cache

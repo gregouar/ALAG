@@ -115,10 +115,6 @@ bool PBRIsoScene::InitRenderer(sf::Vector2u windowSize)
     m_nbrTiles.x = ceil(windowSize.x/SCREENTILE_SIZE) + 1;
     m_nbrTiles.y = ceil(windowSize.y/SCREENTILE_SIZE) + 1;
 
-    //if(m_screenTiles != nullptr)
-      //  delete m_screenTiles;
-
-   // m_screenTiles = new ScreenTile[m_nbrTiles.x*m_nbrTiles.y];
     m_screenTiles.resize(m_nbrTiles.x*m_nbrTiles.y);
 
     std::vector<ScreenTile>::iterator tileIt = m_screenTiles.begin();
@@ -133,8 +129,11 @@ bool PBRIsoScene::InitRenderer(sf::Vector2u windowSize)
     }
     m_tilesShift = sf::Vector2f(0,0);
 
-    CreatePBRScreen(&m_PBRScreen, windowSize.x*m_superSampling, windowSize.y*m_superSampling);
-    CreatePBRScreen(&m_alpha_PBRScreen, windowSize.x*m_superSampling, windowSize.y*m_superSampling);
+    if(!CreatePBRScreen(&m_PBRScreen, windowSize.x*m_superSampling, windowSize.y*m_superSampling))
+        r = false;
+
+    if(!CreatePBRScreen(&m_alpha_PBRScreen, windowSize.x*m_superSampling, windowSize.y*m_superSampling))
+        r = false;
 
     m_renderer.setSize(sf::Vector2f(windowSize.x,windowSize.y));
     m_renderer.setTextureRect(sf::IntRect(0,0,windowSize.x*m_superSampling, windowSize.y*m_superSampling));
@@ -193,12 +192,6 @@ bool PBRIsoScene::InitRenderer(sf::Vector2u windowSize)
             r = false;
     }
 
-    /** Add setEnvironementMap method to replace this **/
-    /*sf::Texture *env_map = AssetHandler<TextureAsset>::Instance()->LoadAssetFromFile("../data/panorama.jpg")->GetTexture();
-    env_map->generateMipmap();
-    env_map->setSmooth(true);
-    m_lightingShader.setUniform("map_environmental",*env_map);*/
-
     m_lightingShader.setUniform("map_SSRenv",m_environment_PBRScreen[0].getTexture());
     m_environment_PBRScreen[0].setSmooth(true);
 
@@ -228,7 +221,6 @@ bool PBRIsoScene::InitRenderer(sf::Vector2u windowSize)
 
     m_HDRBloomShader.setUniform("bloom_map",m_bloomScreen[1].getTexture());
 
-    /**Should probably put this in another function**/
     sf::Glsl::Vec3 samplesHemisphere[16];
     samplesHemisphere[0] = sf::Glsl::Vec3(.4,0,.8);
     samplesHemisphere[1] = sf::Glsl::Vec3(0,.2,.4);
@@ -260,9 +252,6 @@ bool PBRIsoScene::InitRenderer(sf::Vector2u windowSize)
         float theta = (float)RandomNumber(1000)/1000.0;
 
         sf::Color c = sf::Color::White;
-        /*c.r = (int)(static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/255)));
-        c.g = (int)(static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/255)));
-        c.b = (int)(static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/255)));*/
         c.r = 127+cos(theta*2*PI)*256;
         c.g = 127+sin(theta*2*PI)*256;
         c.b = 255;
@@ -974,8 +963,10 @@ void PBRIsoScene::RenderEntity(sf::RenderTarget* renderTarget,SceneEntity *entit
         state.transform.translate(v.x, v.y);
         state.transform *= m_TransformIsoToCart;
 
+        /** I should probably add resetShader something**/
         m_PBRGeometryShader.setUniform("enable_parallax",false);
         m_PBRGeometryShader.setUniform("enable_volumetricOpacity",false);
+        m_PBRGeometryShader.setUniform("enable_foamCollision",false);
         m_PBRGeometryShader.setUniform("p_zPos",globalPos.z*PBRTextureAsset::DEPTH_BUFFER_NORMALISER);
         m_PBRGeometryShader.setUniform("p_normalProjMat",sf::Glsl::Mat3(m_normalProjMat.values));
         entity->PrepareShader(&m_PBRGeometryShader);
@@ -1182,6 +1173,7 @@ void PBRIsoScene::ComputeTrigonometry()
     //CompileLightingShader();
 
     m_PBRGeometryShader.setUniform("view_direction", m_normalProjMat * sf::Vector3f(0,0,1));
+    m_PBRGeometryShader.setUniform("p_isoToCartMat",sf::Glsl::Mat3(m_isoToCartMat.values));
 
    // m_lightingShader.setUniform("view_direction",sf::Glsl::Vec3(sf::Vector3f(cosXY*cosZ, sinXY*sinZ,sinZ)));
     m_lightingShader.setUniform("p_cartToIso2DProjMat",sf::Glsl::Mat3(m_cartToIsoMat.values));

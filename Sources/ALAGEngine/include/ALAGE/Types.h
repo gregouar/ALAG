@@ -69,6 +69,7 @@ enum PBRScreenType
     PBRNormalScreen,
     PBRDepthScreen,
     PBRMaterialScreen,
+    PBRExtraScreen0,
 };
 
 

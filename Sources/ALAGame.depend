@@ -35,7 +35,7 @@
 	<vector>
 	"GState.h"
 
-1520946741 source:c:\c++\alag\sources\src\states\testingstate.cpp
+1521044895 source:c:\c++\alag\sources\src\states\testingstate.cpp
 	"states/TestingState.h"
 	"ALAGE/core/GApp.h"
 	"ALAGE/core/EventManager.h"
@@ -391,7 +391,7 @@
 	<SFML/Graphics/Export.hpp>
 	<SFML/Graphics/Shape.hpp>
 
-1520859418 c:\c++\alag\sources\sfml\include\sfml\graphics\rendertarget.hpp
+1521042384 c:\c++\alag\sources\sfml\include\sfml\graphics\rendertarget.hpp
 	<SFML/Graphics/Export.hpp>
 	<SFML/Graphics/Color.hpp>
 	<SFML/Graphics/Rect.hpp>
@@ -402,6 +402,7 @@
 	<SFML/Graphics/PrimitiveType.hpp>
 	<SFML/Graphics/Vertex.hpp>
 	<SFML/System/NonCopyable.hpp>
+	<map>
 
 1517212518 c:\c++\alag\sources\sfml\include\sfml\graphics\view.hpp
 	<SFML/Graphics/Export.hpp>
@@ -421,7 +422,7 @@
 	<SFML/Window/Window.hpp>
 	<string>
 
-1520859575 c:\c++\alag\sources\sfml\include\sfml\graphics\shader.hpp
+1521038851 c:\c++\alag\sources\sfml\include\sfml\graphics\shader.hpp
 	<SFML/Graphics/Export.hpp>
 	<SFML/Graphics/Glsl.hpp>
 	<SFML/Window/GlResource.hpp>
@@ -540,7 +541,7 @@
 	"ALAGE/gfx/TextureAsset.h"
 	"extlibs/tinyxml.h"
 
-1519161214 c:\c++\alag\sources\alagengine\include\alage\types.h
+1521045274 c:\c++\alag\sources\alagengine\include\alage\types.h
 	<iostream>
 	<SFML/Graphics.hpp>
 	<SFML/OpenGL.hpp>
@@ -676,7 +677,7 @@
 	"ALAGE/gfx/SceneNode.h"
 	"ALAGE/utils/Mathematics.h"
 
-1519161763 source:c:\c++\alag\sources\alagengine\src\gfx\sceneentity.cpp
+1520951320 source:c:\c++\alag\sources\alagengine\src\gfx\sceneentity.cpp
 	"ALAGE/gfx/SceneEntity.h"
 	"ALAGE/gfx/SceneNode.h"
 	"ALAGE/utils/Logger.h"
@@ -758,12 +759,12 @@
 1520675876 source:c:\c++\alag\sources\alagengine\src\gfx\sceneobject.cpp
 	"ALAGE/gfx/SceneObject.h"
 
-1520546715 c:\c++\alag\sources\alagengine\include\alage\utils\mathematics.h
+1521047088 c:\c++\alag\sources\alagengine\include\alage\utils\mathematics.h
 	<SFML/Graphics.hpp>
 	<SFML/OpenGL.hpp>
 	"ALAGE/Types.h"
 
-1520595058 source:c:\c++\alag\sources\alagengine\src\utils\mathematics.cpp
+1521061715 source:c:\c++\alag\sources\alagengine\src\utils\mathematics.cpp
 	"ALAGE/utils/Mathematics.h"
 
 1517140944 c:\c++\alag\sources\alagengine\src\gfx\isometricshaders.cpp
@@ -905,7 +906,7 @@
 	"ALAGE/gfx/iso/IsoRectEntity.h"
 	<SFML/OpenGL.hpp>
 
-1520946336 source:c:\c++\alag\sources\alagengine\src\gfx\iso\pbrisoscene.cpp
+1521050755 source:c:\c++\alag\sources\alagengine\src\gfx\iso\pbrisoscene.cpp
 	"ALAGE/gfx/iso/PBRIsoScene.h"
 	"ALAGE/utils/Profiler.h"
 	"ALAGE/utils/Logger.h"
@@ -919,7 +920,7 @@
 	<sstream>
 	<iostream>
 
-1520947964 source:c:\c++\alag\sources\alagengine\src\gfx\iso\pbrisoshaders.cpp
+1521062114 source:c:\c++\alag\sources\alagengine\src\gfx\iso\pbrisoshaders.cpp
 	"ALAGE/gfx/iso/PBRIsoScene.h"
 	<sstream>
 	<iostream>
@@ -949,11 +950,11 @@
 	<SFML/System.hpp>
 	"ALAGE/utils/Singleton.h"
 
-1520943571 source:c:\c++\alag\sources\alagengine\src\gfx\iso\isowaterentity.cpp
+1521062136 source:c:\c++\alag\sources\alagengine\src\gfx\iso\isowaterentity.cpp
 	"ALAGE/gfx/iso/PBRIsoScene.h"
 	"ALAGE/gfx/iso/IsoWaterEntity.h"
 	"ALAGE/utils/Mathematics.h"
 
-1520854804 c:\c++\alag\sources\alagengine\include\alage\gfx\iso\isowaterentity.h
+1521047129 c:\c++\alag\sources\alagengine\include\alage\gfx\iso\isowaterentity.h
 	<ALAGE/gfx/iso/IsoRectEntity.h>
 

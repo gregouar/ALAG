@@ -787,6 +787,42 @@ void Shader::bind(const Shader* shader)
 
 
 ////////////////////////////////////////////////////////////
+void Shader::updateTextures(const Shader* shader, std::map<int, const Texture*> *oldTextures)
+{
+    TransientContextLock lock;
+
+    // Make sure that we can use shaders
+    if (!isAvailable())
+    {
+        err() << "Failed to bind or unbind shader: your system doesn't support shaders "
+              << "(you should test Shader::isAvailable() before trying to use the Shader class)" << std::endl;
+        return;
+    }
+
+    if (shader && shader->m_shaderProgram)
+    {
+      /*  // Enable the program
+        glCheck(GLEXT_glUseProgramObject(castToGlHandle(shader->m_shaderProgram)));
+
+        // Bind the textures
+        shader->bindTextures();
+
+        // Bind the current texture
+        if (shader->m_currentTexture != -1)
+            glCheck(GLEXT_glUniform1i(shader->m_currentTexture, 0));*/
+
+
+        shader->updateTextures(oldTextures);
+    }
+    else
+    {
+        // Bind no shader
+        glCheck(GLEXT_glUseProgramObject(0));
+    }
+}
+
+
+////////////////////////////////////////////////////////////
 bool Shader::isAvailable()
 {
     Lock lock(isAvailableMutex);
@@ -1002,6 +1038,27 @@ void Shader::bindTextures() const
     // Make sure that the texture unit which is left active is the number 0
     glCheck(GLEXT_glActiveTexture(GLEXT_GL_TEXTURE0));
 }
+////////////////////////////////////////////////////////////
+void Shader::updateTextures(std::map<int, const Texture*> *oldTextures) const
+{
+    TextureTable::const_iterator it = m_textures.begin();
+    for (std::size_t i = 0; i < m_textures.size(); ++i)
+    {
+        if((*oldTextures)[it->first] != it->second)
+        {
+            GLint index = static_cast<GLsizei>(i + 1);
+            glCheck(GLEXT_glUniform1i(it->first, index));
+            glCheck(GLEXT_glActiveTexture(GLEXT_GL_TEXTURE0 + index));
+            Texture::bind(it->second);
+        }
+
+        ++it;
+    }
+
+    // Make sure that the texture unit which is left active is the number 0
+    glCheck(GLEXT_glActiveTexture(GLEXT_GL_TEXTURE0));
+}
+
 
 
 ////////////////////////////////////////////////////////////

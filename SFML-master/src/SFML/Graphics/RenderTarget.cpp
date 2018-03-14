@@ -568,6 +568,22 @@ void RenderTarget::applyShader(const Shader* shader)
     Shader::bind(shader);
 
     m_cache.lastShaderId = shader ? shader->m_cacheId : 0;
+    if(shader)
+        m_cache.bindedTextures = shader->m_textures;
+    else
+        m_cache.bindedTextures.clear();
+}
+
+
+
+////////////////////////////////////////////////////////////
+void RenderTarget::updateShader(const Shader* shader)
+{
+    if(shader)
+    {
+        Shader::updateTextures(shader,&m_cache.bindedTextures);
+        m_cache.bindedTextures = shader->m_textures;
+    }
 }
 
 
@@ -606,6 +622,8 @@ void RenderTarget::setupDraw(bool useVertexCache, const RenderStates& states)
     Uint64 shaderId = states.shader ? states.shader->m_cacheId : 0;
     if (shaderId != m_cache.lastShaderId)
         applyShader(states.shader);
+    else if(shaderId != 0)
+        updateShader(states.shader);
 }
 
 
@@ -626,8 +644,8 @@ void RenderTarget::drawPrimitives(PrimitiveType type, std::size_t firstVertex, s
 void RenderTarget::cleanupDraw(const RenderStates& states)
 {
     // Unbind the shader, if any
-    if (states.shader)
-        applyShader(NULL);
+    //if (states.shader)
+      //  applyShader(NULL);
 
     // If the texture we used to draw belonged to a RenderTexture, then forcibly unbind that texture.
     // This prevents a bug where some drivers do not clear RenderTextures properly.
