@@ -163,10 +163,11 @@ void TestingState::Init()
     rectNode = m_mainScene.GetRootNode()->CreateChildNode(0,0,10);
     IsoWaterEntity *waterEntity = m_mainScene.CreateIsoWaterEntity(sf::Vector2f(2048,2048));
     //waterEntity->SetTextureRect(sf::IntRect(0,0,1024,1024));
-    //waterEntity->SetWaterResolution(sf::Vector2u(1024,1024));
+   // waterEntity->SetWaterResolution(sf::Vector2u(1024,1024));
     waterEntity->SetCenter(sf::Vector2f(512,  512));
     waterEntity->SetHeightFactor(80.0);
-    waterEntity->SetWaveOptions(1.2,1.0);
+    waterEntity->SetWaveOptions(2.0,1.0);
+    //waterEntity->SetColor(sf::Color(16,24,32,127));
     //waterEntity->SetVisible(false);
     rectNode->SetPosition(0,0,40);
     rectNode->AttachObject(waterEntity);
