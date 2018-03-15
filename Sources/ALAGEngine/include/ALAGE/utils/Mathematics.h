@@ -57,6 +57,7 @@ class Mat3x3
         Mat3x3( float, float, float,
                 float, float, float,
                 float, float, float);
+        Mat3x3(const float v[9]);
 
         ~Mat3x3();
 

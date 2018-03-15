@@ -61,15 +61,15 @@ void TestingState::Init()
 
     m_torusNode = m_mainScene.GetRootNode()->CreateChildNode();
     m_torusNode->SetPosition(100,250,0);
-    SpriteEntity *torusEntity = m_mainScene.CreateIsoSpriteEntity();
-    torusEntity->SetTexture(PBRTextureHandler->LoadAssetFromFile("../data/torusbXML.txt",LoadType_InThread));
-    torusEntity->SetCenter(128,128);
-    torusEntity->SetShadowCastingType(DirectionnalShadow);
+    m_torusEntity = m_mainScene.CreateIsoSpriteEntity();
+    m_torusEntity->SetTexture(PBRTextureHandler->LoadAssetFromFile("../data/torusbXML.txt",LoadType_InThread));
+    m_torusEntity->SetCenter(128,128);
+    //m_torusEntity->SetShadowCastingType(DirectionnalShadow);
     //torusEntity->SetColor(sf::Color(255,64,255,128));
     //torusEntity->SetColor(sf::Color(64,128,255,128));
-    torusEntity->SetColor(sf::Color(224,32,32));
-    torusEntity->SetStatic(false);
-    m_torusNode->AttachObject(torusEntity);
+    m_torusEntity->SetColor(sf::Color(224,32,32));
+    m_torusEntity->SetStatic(false);
+    m_torusNode->AttachObject(m_torusEntity);
     //torusEntity->SetRotation(30);
 
     m_sarco3DNode = m_mainScene.GetRootNode()->CreateChildNode();
@@ -166,8 +166,10 @@ void TestingState::Init()
    // waterEntity->SetWaterResolution(sf::Vector2u(1024,1024));
     m_waterEntity->SetCenter(sf::Vector2f(512,  512));
     m_waterEntity->SetHeightFactor(80.0);
-    m_waterEntity->SetWaveSteepness(1.5);
+    m_waterEntity->SetWaveSteepness(2.0);
     m_waterEntity->SetWaveLength(1.0);
+    m_waterEntity->SetWaveAmplitude(.6);
+    //m_waterEntity->SetWaveSpeed(.1);
    // m_waterEntity->SetWaterColor(sf::Color(86,255,194,160));
    // m_waterEntity->SetWaterColor(sf::Color(20,80,60,224));
     //waterEntity->SetWaterColor(sf::Color(0,224,0,224));
@@ -355,6 +357,7 @@ void TestingState::HandleEvents(alag::EventManager *event_manager)
     {
         sf::Vector2i p(event_manager->MousePosition());
         m_sarco3DNode->SetPosition(m_mainScene.ConvertMouseToScene(p));
+
       //  std::cout<<m_mainScene.ConvertMouseToScene(p).x<<" "
                // <<m_mainScene.ConvertMouseToScene(p).y<<std::endl;
     }
@@ -362,7 +365,10 @@ void TestingState::HandleEvents(alag::EventManager *event_manager)
     if(event_manager->MouseButtonIsPressed(sf::Mouse::Right))
     {
         sf::Vector2i p(event_manager->MousePosition());
-        m_chene_node->SetPosition(m_mainScene.ConvertMouseToScene(p));
+        //m_chene_node->SetPosition(m_mainScene.ConvertMouseToScene(p));
+
+        m_torusPos = sf::Vector2f(m_mainScene.ConvertMouseToScene(p)) + sf::Vector2f(512,512);
+
         //m_cameraNode->SetPosition(m_mainScene.ConvertMouseToScene(p)+sf::Vector2f(3000,3000));
     }
 
@@ -391,7 +397,19 @@ void TestingState::Update(sf::Time time)
 
     m_sarcoNode->Move(20*time.asSeconds(),0,0);
 
+
     m_mainScene.Update(time);
+
+
+    //sf::Vector3f p0 = m_waterEntity->TrackParticleMovement(sf::Vector2f(1500,900));
+    //sf::Vector3f p1 = m_waterEntity->TrackParticleMovement(sf::Vector2f(1024-45,1024+45));
+    sf::Vector3f p1 = m_waterEntity->TrackParticleMovement(m_torusPos+sf::Vector2f(96,-96));
+    sf::Vector3f p2 = m_waterEntity->TrackParticleMovement(m_torusPos);
+    sf::Vector3f p((p1.x+p2.x)/2, (p1.y+p2.y)/2, (p1.z+p2.z)/2);
+    m_torusEntity->SetRotation(atan((p2.z-p1.z)/128.0)*180/PI);
+    //m_torusEntity->Rotate(time.asMilliseconds()*0.05);
+    m_torusNode->SetPosition(p);
+  //  m_torusNode->Move(0,0,40);
 }
 
 void TestingState::Draw(sf::RenderTarget* renderer)

@@ -66,6 +66,7 @@ class PBRIsoScene : public DefaultScene
 
         Mat3x3 GetIsoToCartMat();
         Mat3x3 GetCartToIsoMat();
+        Mat3x3 GetNormalProjMat();
         const sf::Transform& GetIsoToCartTransform();
 
         virtual sf::Vector2f ConvertMouseToScene(sf::Vector2i);

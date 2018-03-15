@@ -110,10 +110,12 @@ void PBRIsoScene::CompilePBRGeometryShader()
 
     vertexShader<<
     "varying vec2 VaryingTexCoord0; "\
+    "varying vec2 VaryingWorldScreenCoord; "\
     "void main() "\
     "{ "\
     "    gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex; "\
     "    VaryingTexCoord0 = (gl_TextureMatrix[0] * gl_MultiTexCoord0).xy; "\
+    "    VaryingWorldScreenCoord = (gl_ModelViewMatrix*gl_Vertex).xy; "\
     "    gl_FrontColor = gl_Color; "\
     "}";
 
@@ -142,6 +144,8 @@ void PBRIsoScene::CompilePBRGeometryShader()
     "uniform float p_density;"
     "uniform sampler2D map_opaqueGeometry;"
     "uniform mat3 p_normalProjMat;" \
+    "uniform mat3 p_rotationMat;" \
+    "uniform vec2 p_rotationCenter;" \
     "uniform float p_height;" \
     "uniform float p_zPos;" \
     ""
@@ -153,10 +157,12 @@ void PBRIsoScene::CompilePBRGeometryShader()
     ""
     "uniform vec3 view_direction;"
     "uniform mat3 p_isoToCartMat;"
+    "uniform float p_isoToCartZFactor;"
     "uniform vec2 texture_size;"
     "uniform vec2 view_ratio;"
     ""
     "varying vec2 VaryingTexCoord0; "\
+    "varying vec2 VaryingWorldScreenCoord; "\
     ""
     "const vec3 All33 = vec3(-.33);"
     ""
@@ -241,6 +247,11 @@ void PBRIsoScene::CompilePBRGeometryShader()
     "   vec2 texCoord = VaryingTexCoord0;"
     "   if(enable_parallax == true && enable_depthMap == true){"
     "       texCoord = Parallax(texCoord);}"
+    ""
+    "   vec3 d = vec3(VaryingWorldScreenCoord - p_rotationCenter,0);"
+    "   vec3 rd = d * p_rotationMat;"
+    "   float zRotationShift = (rd-d).y*p_isoToCartZFactor*"<<PBRTextureAsset::DEPTH_BUFFER_NORMALISER<<"; "
+    ""
     "   vec4 albedoPixel = gl_Color*texture2D(map_albedo, texCoord);" \
     "   if((p_alpha_pass == true && albedoPixel.a > .1 && albedoPixel.a < .99) "
     "   || (p_alpha_pass == false && albedoPixel.a >= .99))"
@@ -254,12 +265,13 @@ void PBRIsoScene::CompilePBRGeometryShader()
     /* It is a transparent object and not AA */
     "       if(gl_Color.a < 1.0)"
     "           depthPixel.a = 1.0;"
-    "       float zPixel = heightPixel*p_height - p_zPos +0.5;" \
+    "       float zPixel = heightPixel*p_height - p_zPos +0.5 + zRotationShift;" \
     ""
-    "           vec4 materialPixel = vec4(p_roughness,p_metalness,p_translucency,1.0);"
-    "           if(enable_materialMap == true){"
-    "               materialPixel.rgb = texture2D(map_material, texCoord).rgb;"
-    "           }"
+    ""
+    "       vec4 materialPixel = vec4(p_roughness,p_metalness,p_translucency,1.0);"
+    "       if(enable_materialMap == true){"
+    "           materialPixel.rgb = texture2D(map_material, texCoord).rgb;"
+    "       }"
     ""
     "       float density = p_density;"
     ""
@@ -344,7 +356,7 @@ void PBRIsoScene::CompilePBRGeometryShader()
     "               depthPixel = texture2D(map_depth, texCoord);" \
     "               heightPixel = dot(All33, depthPixel.rgb);"
     "           }"
-    "           float zPixel = heightPixel*p_height - p_zPos +0.5;" \
+    "           float zPixel = heightPixel*p_height - p_zPos +0.5 + zRotationShift;" \
     ""
     "           float r = floor(zPixel * 255.0);"
     "           float g = floor((zPixel*255.0 -  r)*255.0);"
@@ -1173,12 +1185,12 @@ void PBRIsoScene::CompileWaterGeometryShader()
     ""
     "vec3 FractalNoise(vec2 pos)"
     "{"
-    "   float frequency = .5;"
+    "   float frequency = .25;"
     "   float amplitude = 1.0;"
     "   float frequencyMult = 4;"
     "   float amplitudeMult = 0.5;"
     "   vec3 r = vec3(0.0);"
-    "   for(int i = 0 ; i < 4 ; ++i)"
+    "   for(int i = 0 ; i < 5 ; ++i)"
     "   {"
     "       r += PerlinNoise(pos*frequency) * amplitude;"
     "       amplitude *= amplitudeMult;"
@@ -1245,7 +1257,7 @@ void PBRIsoScene::CompileWaterGeometryShader()
     "                            vec3(0.0,1.0,water.y)));"
     "   gl_FragData["<<PBRNormalScreen<<"] = vec4(0.5 + n * 0.5,1.0);"
     "   gl_FragData["<<PBRDepthScreen<<"] = vec4(vec3(water.z),1.0);"
-   "     float foam =  smoothstep(.8,1.0,water.z);" //NEED TO USE A TEXTURE HERE
+   "     float foam =  0.0;/*smoothstep(.8,1.0,water.z);*/" //NEED TO USE A TEXTURE HERE
    /** Need to use noise for foam (like noise texture ?) and also use second derivative**/
    //"     foam = clamp(foam+smoothstep(.95,1.0,water.w),0.0,.8);"
     "    gl_FragData["<<PBRAlbedoScreen<<"] = mix(p_waterColor, p_foamColor,foam);"

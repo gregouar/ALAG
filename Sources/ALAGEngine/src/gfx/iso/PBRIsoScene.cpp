@@ -971,6 +971,8 @@ void PBRIsoScene::RenderEntity(sf::RenderTarget* renderTarget,SceneEntity *entit
         m_PBRGeometryShader.setUniform("p_useFoam",false);
         m_PBRGeometryShader.setUniform("p_zPos",globalPos.z*PBRTextureAsset::DEPTH_BUFFER_NORMALISER);
         m_PBRGeometryShader.setUniform("p_normalProjMat",sf::Glsl::Mat3(m_normalProjMat.values));
+        m_PBRGeometryShader.setUniform("p_rotationMat",sf::Glsl::Mat3(IdMat3X3));
+        m_PBRGeometryShader.setUniform("p_rotationCenter",state.transform.transformPoint(0,0));
         entity->PrepareShader(&m_PBRGeometryShader);
         entity->Render(renderTarget,state);
     }
@@ -1158,7 +1160,7 @@ void PBRIsoScene::ComputeTrigonometry()
                                             0, 0, 1);
 
      m_isoToCartMat = Mat3x3(cosXY        , -sinXY       , 0    ,
-                             sinXY * sinZ , cosXY * sinZ , -cosZ,
+                             sinXY * sinZ , cosXY  * sinZ , -cosZ,
                              0            , 0            , 0);
 
      m_isoToCartMat2X2 = Mat2x2(cosXY        , -sinXY       ,
@@ -1168,7 +1170,7 @@ void PBRIsoScene::ComputeTrigonometry()
                              -sinXY , cosXY/sinZ, 0,
                               0     , 0         , 0);
 
-    m_normalProjMat = Mat3x3 ( cosXY ,  sinZ * sinXY , cosZ * sinXY,
+     m_normalProjMat = Mat3x3 (cosXY ,  sinZ * sinXY , cosZ * sinXY,
                               -sinXY ,  sinZ * cosXY , cosZ * cosXY,
                                0     , -cosZ         , sinZ);
 
@@ -1181,6 +1183,7 @@ void PBRIsoScene::ComputeTrigonometry()
 
     m_PBRGeometryShader.setUniform("view_direction", m_normalProjMat * sf::Vector3f(0,0,1));
     m_PBRGeometryShader.setUniform("p_isoToCartMat",sf::Glsl::Mat3(m_isoToCartMat.values));
+    m_PBRGeometryShader.setUniform("p_isoToCartZFactor",m_isoToCartMat.values[5]);
 
    // m_lightingShader.setUniform("view_direction",sf::Glsl::Vec3(sf::Vector3f(cosXY*cosZ, sinXY*sinZ,sinZ)));
     m_lightingShader.setUniform("p_cartToIso2DProjMat",sf::Glsl::Mat3(m_cartToIsoMat.values));
@@ -1207,6 +1210,11 @@ Mat3x3 PBRIsoScene::GetIsoToCartMat()
 Mat3x3 PBRIsoScene::GetCartToIsoMat()
 {
     return m_cartToIsoMat;
+}
+
+Mat3x3 PBRIsoScene::GetNormalProjMat()
+{
+    return m_normalProjMat;
 }
 
 const sf::Transform &PBRIsoScene::GetIsoToCartTransform()

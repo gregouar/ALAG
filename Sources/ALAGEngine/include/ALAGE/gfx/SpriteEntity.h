@@ -24,6 +24,8 @@ class SpriteEntity : public SceneEntity, protected sf::Sprite
 
         virtual void ComputeShadow(Light*){}
 
+        void Rotate(float r);
+
         virtual void SetTexture(TextureAsset *t);
         virtual void SetTexture(PBRTextureAsset *t);
         void SetCenter(float x, float y);
@@ -32,6 +34,8 @@ class SpriteEntity : public SceneEntity, protected sf::Sprite
         void SetScale(sf::Vector2f);
         void SetRotation(float r);
         void SetColor(sf::Color);
+
+
 
         void SetShadowCastingType(ShadowCastingType);
 

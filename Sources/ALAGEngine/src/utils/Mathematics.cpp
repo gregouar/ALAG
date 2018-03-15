@@ -167,6 +167,13 @@ Mat3x3::Mat3x3( float a, float b, float c,
     values[8] = i;
 }
 
+
+Mat3x3::Mat3x3(const float v[9])
+{
+    for(int i = 0 ; i < 9 ; ++i)
+        values[i] = v[i];
+}
+
 Mat3x3::~Mat3x3()
 {
 

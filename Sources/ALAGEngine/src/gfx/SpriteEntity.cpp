@@ -73,6 +73,10 @@ void SpriteEntity::PrepareShader(sf::Shader *shader)
     }
 }
 
+void SpriteEntity::Rotate(float r)
+{
+    sf::Sprite::rotate(r);
+}
 
 
 void SpriteEntity::SetTexture(TextureAsset *texture)

@@ -33,6 +33,23 @@ void IsoSpriteEntity::PrepareShader(sf::Shader* shader)
 {
     SpriteEntity::PrepareShader(shader);
 
+
+    float r = sf::Sprite::getRotation() * PI / 180.0;
+    Mat3x3 normalProjMat(cos(r), sin(r), 0,
+                         -sin(r), cos(r), 0,
+                          0, 0, 1);
+
+    shader->setUniform("p_rotationMat",sf::Glsl::Mat3(normalProjMat.values));
+
+    normalProjMat = Mat3x3(cos(r), -sin(r), 0,
+                         sin(r), cos(r), 0,
+                          0, 0, 1);
+
+    if(m_scene != nullptr)
+        normalProjMat =  m_scene->GetNormalProjMat()*normalProjMat;
+
+    shader->setUniform("p_normalProjMat",sf::Glsl::Mat3(normalProjMat.values));
+
     if(!UsePBR())
     if(m_scene != nullptr)
     {
