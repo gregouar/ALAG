@@ -418,6 +418,7 @@ void PBRIsoScene::CompileLightingShader()
     "uniform sampler2D map_albedo;" \
     "uniform sampler2D map_normal;" \
     "uniform sampler2D map_depth;" \
+    "uniform sampler2D map_opaqueGeometry_depth;" \
     "uniform sampler2D map_material;" \
     "uniform sampler2D map_noise;" \
     "uniform bool enable_SSAO;"
@@ -529,6 +530,13 @@ void PBRIsoScene::CompileLightingShader()
     "       return "<<0.5*PBRTextureAsset::DEPTH_BUFFER_NORMALISER_INV<<
     "                          -depth*"<< PBRTextureAsset::DEPTH_BUFFER_NORMALISER_INV <<";"
     "}"
+    "float GetDepthOpaque(vec2 p)"
+    "{"
+    "       vec3 depthPixel   = texture2D(map_opaqueGeometry_depth, p*view_ratio).rgb;" \
+    "       float depth       = ((depthPixel.b*"<<1.0/255.0<<"+depthPixel.g)*"<<1.0/255.0<<"+depthPixel.r);"
+    "       return "<<0.5*PBRTextureAsset::DEPTH_BUFFER_NORMALISER_INV<<
+    "                          -depth*"<< PBRTextureAsset::DEPTH_BUFFER_NORMALISER_INV <<";"
+    "}"
     "vec2 RaySearch(vec3 start, vec3 end, int under)"
     "{"
     "   vec3 cur = start;"
@@ -536,7 +544,7 @@ void PBRIsoScene::CompileLightingShader()
     "   float step = 0.5;"
     "   for(int i = 0 ; i < 5 ; ++i){"
     "       vec3 test = cur + diff*step;"
-    "       if((1-2*under)*GetDepth(test.xy) < (1-2*under)*test.z) {"
+    "       if((1-2*under)*GetDepthOpaque(test.xy) < (1-2*under)*test.z) {"
     "           cur = test;" //Collision in second segment
     "       }"
     "       step = step*0.5;"
@@ -557,20 +565,20 @@ void PBRIsoScene::CompileLightingShader()
     "   for(int i = 0 ; i < 24 ; ++i) {"
     "       curScreenPos = oldScreenPos + 15*screen_v;"
     "       curWorldPos  = oldWorldPos + 15*v;"
-    "       float heightPixel = GetDepth(curScreenPos);"
+    "       float heightPixel = GetDepthOpaque(curScreenPos);"
     "       if(heightPixel - curWorldPos.z > 0) under = 1;"
     "       else under = 0;"
     "       if(under != oldUnder && abs(heightPixel - curWorldPos.z) < 30.0){"
     "           curScreenPos = RaySearch(vec3(oldScreenPos, oldWorldPos.z), vec3(curScreenPos, curWorldPos.z),oldUnder);"
     "           r.xy = curScreenPos;"
     "           r.z = .2;"
-    "           if(abs(GetDepth(curScreenPos+vec2(jitter*i,0)) - curWorldPos.z) < 20.0)"
+    "           if(abs(GetDepthOpaque(curScreenPos+vec2(jitter*i,0)) - curWorldPos.z) < 20.0)"
     "               r.z += 0.2;"
-    "           if(abs(GetDepth(curScreenPos+vec2(-jitter*i,0)) - curWorldPos.z) < 20.0)"
+    "           if(abs(GetDepthOpaque(curScreenPos+vec2(-jitter*i,0)) - curWorldPos.z) < 20.0)"
     "               r.z += 0.2;"
-    "           if(abs(GetDepth(curScreenPos+vec2(0,jitter*i)) - curWorldPos.z) < 20.0)"
+    "           if(abs(GetDepthOpaque(curScreenPos+vec2(0,jitter*i)) - curWorldPos.z) < 20.0)"
     "               r.z += 0.2;"
-    "           if(abs(GetDepth(curScreenPos+vec2(0,-jitter*i)) - curWorldPos.z) < 20.0)"
+    "           if(abs(GetDepthOpaque(curScreenPos+vec2(0,-jitter*i)) - curWorldPos.z) < 20.0)"
     "               r.z += 0.2;"
     "           r.z *= min(1.0/(length(curWorldPos-p)*.0005), 1.0);"
     "           return r;"
@@ -1123,6 +1131,7 @@ void PBRIsoScene::CompileWaterGeometryShader()
     fragShader<<
     "uniform float p_height;" \
     "uniform vec4 p_waterColor;"
+    "uniform vec4 p_waterMaterial;"
     "uniform vec4 p_foamColor;"
     "uniform float p_wave_pos;" \
     "uniform float p_wave_amplitude;" \
@@ -1261,7 +1270,7 @@ void PBRIsoScene::CompileWaterGeometryShader()
    /** Need to use noise for foam (like noise texture ?) and also use second derivative**/
    //"     foam = clamp(foam+smoothstep(.95,1.0,water.w),0.0,.8);"
     "    gl_FragData["<<PBRAlbedoScreen<<"] = mix(p_waterColor, p_foamColor,foam);"
-    "    gl_FragData["<<PBRMaterialScreen<<"] = mix(vec4(.2, 0.0,.9,1.0), vec4(.5, 0.0,.1,1.0),foam);"
+    "    gl_FragData["<<PBRMaterialScreen<<"] = mix(p_waterMaterial, vec4(.5, 0.0,.1,1.0),foam);"
     /* Should take rotation into account to have xyz velocity and not just xz*/
     //"   vec3 velocity = normalize(vec3(wave.z,noise.y*.25, wave.w)) * (.75+noise.z*.25) * vec3(vec2(1.0),p_wave_amplitude);"
     //"   vec3 velocity = normalize(vec3(wave.z,noise.y*.25, wave.w)) * (.75+noise.z*.25) * vec3(vec2(1.0),p_wave_amplitude);"

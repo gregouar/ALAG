@@ -193,6 +193,7 @@ bool PBRIsoScene::InitRenderer(sf::Vector2u windowSize)
             r = false;
     }
 
+    m_lightingShader.setUniform("map_opaqueGeometry_depth",*m_PBRScreen.getTexture(PBRDepthScreen));
     m_lightingShader.setUniform("map_SSRenv",m_environment_PBRScreen[0].getTexture());
     m_environment_PBRScreen[0].setSmooth(true);
 

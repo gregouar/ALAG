@@ -166,17 +166,26 @@ void TestingState::Init()
    // waterEntity->SetWaterResolution(sf::Vector2u(1024,1024));
     m_waterEntity->SetCenter(sf::Vector2f(512,  512));
     m_waterEntity->SetHeightFactor(80.0);
+
     m_waterEntity->SetWaveSteepness(2.0);
     m_waterEntity->SetWaveLength(1.0);
     m_waterEntity->SetWaveAmplitude(.6);
     //m_waterEntity->SetWaveSpeed(.1);
    // m_waterEntity->SetWaterColor(sf::Color(86,255,194,160));
-   // m_waterEntity->SetWaterColor(sf::Color(20,80,60,224));
     //waterEntity->SetWaterColor(sf::Color(0,224,0,224));
-    //m_waterEntity->SetWaterDensity(100.0f);
+    //
+
+    /*m_waterEntity->SetWaterColor(sf::Color(20,80,60,196));
+    m_waterEntity->SetWaterDensity(200.0f);*/
+
+    /*m_waterEntity->SetWaterColor(sf::Color(127,127,127,250));
+    m_waterEntity->SetWaterMaterial(sf::Color(8,255,0,255));
+    m_waterEntity->SetFoamActive(false);
+    m_waterEntity->SetWaterDensity(100000.0f);*/
+
+
     m_waterEntity->SetFoamColor(sf::Color(224,224,224,224));
-   // waterEntity->SetFoamColor(sf::Color(224,0,0,224));
-    //waterEntity->SetColor(sf::Color(16,24,32,127));
+
     //waterEntity->SetVisible(false);
     rectNode->SetPosition(0,0,40);
     rectNode->AttachObject(m_waterEntity);
