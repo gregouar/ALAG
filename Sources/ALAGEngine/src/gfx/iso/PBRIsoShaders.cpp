@@ -295,7 +295,7 @@ void PBRIsoScene::CompilePBRGeometryShader()
     "           }"
     "           albedoPixel = mix(albedoPixel,p_foamColor,foamLevel);"
     "           materialPixel = mix(materialPixel,vec4(.5, 0.0,.1,1.0),foamLevel);"
-    "           density = mix(density,500.0,foamLevel);"
+    "           density = mix(density,1000.0,smoothstep(.5,1.0,foamLevel));"
    // "           }"
    //"            albedoPixel = vec4(velocityPixel,.9);"
     "       }"
