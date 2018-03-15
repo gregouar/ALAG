@@ -22,6 +22,7 @@ const IsoViewAngle PBRIsoScene::DEFAULT_ISO_VIEW_ANGLE = {.xyAngle = 0,
 const int PBRIsoScene::MAX_SHADOW_MAPS = 8;
 const int PBRIsoScene::SCREENTILE_SIZE = 128;
 
+const std::string PBRIsoScene::DEFAULT_ENABLEFOAMSIMULATION = "true";
 const std::string PBRIsoScene::DEFAULT_ENABLEEDGESMOOTHING = "true";
 const std::string PBRIsoScene::DEFAULT_ENABLESSAO = "true";
 const std::string PBRIsoScene::DEFAULT_ENABLEBLOOM = "true";
@@ -213,6 +214,7 @@ bool PBRIsoScene::InitRenderer(sf::Vector2u windowSize)
     else
         DisableGammaCorrection();
 
+    SetFoamSimulation(Config::GetBool("graphics","FoamSimulation",DEFAULT_ENABLEFOAMSIMULATION));
     SetEdgeSmoothing(Config::GetBool("graphics","EdgeSmoothing",DEFAULT_ENABLEEDGESMOOTHING));
     SetSSAO(Config::GetBool("graphics","SSAO",DEFAULT_ENABLESSAO));
     SetBloom(Config::GetBool("graphics","Bloom",DEFAULT_ENABLEBLOOM));
@@ -966,7 +968,7 @@ void PBRIsoScene::RenderEntity(sf::RenderTarget* renderTarget,SceneEntity *entit
         /** I should probably add resetShader something**/
         m_PBRGeometryShader.setUniform("enable_parallax",false);
         m_PBRGeometryShader.setUniform("enable_volumetricOpacity",false);
-        m_PBRGeometryShader.setUniform("enable_foamCollision",false);
+        m_PBRGeometryShader.setUniform("p_useFoam",false);
         m_PBRGeometryShader.setUniform("p_zPos",globalPos.z*PBRTextureAsset::DEPTH_BUFFER_NORMALISER);
         m_PBRGeometryShader.setUniform("p_normalProjMat",sf::Glsl::Mat3(m_normalProjMat.values));
         entity->PrepareShader(&m_PBRGeometryShader);
@@ -1040,6 +1042,11 @@ void PBRIsoScene::SetEnvironmentMap(TextureAsset* env_map)
     } else
         m_lightingShader.setUniform("enable_map_environmental",false);
 
+}
+
+void PBRIsoScene::SetFoamSimulation(bool b)
+{
+    m_PBRGeometryShader.setUniform("enable_foamSimulation",b);
 }
 
 void PBRIsoScene::SetEdgeSmoothing(bool es)

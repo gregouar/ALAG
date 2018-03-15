@@ -146,7 +146,8 @@ void PBRIsoScene::CompilePBRGeometryShader()
     "uniform float p_zPos;" \
     ""
     /*For water*/
-    "uniform bool enable_foamCollision;" \
+    "uniform bool enable_foamSimulation;" \
+    "uniform bool p_useFoam;" \
     "uniform vec4 p_foamColor;"
     "uniform sampler2D map_velocity;" \
     ""
@@ -262,7 +263,7 @@ void PBRIsoScene::CompilePBRGeometryShader()
     ""
     "       float density = p_density;"
     ""
-    "       if(enable_foamCollision == true)"
+    "       if(enable_foamSimulation == true && p_useFoam == true)"
     "       {"
     "           vec3 velocityPixel = texture2D(map_velocity, texCoord).rgb;"
     /* Change factor to some speed parameter*/

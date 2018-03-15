@@ -299,6 +299,11 @@ void TestingState::HandleEvents(alag::EventManager *event_manager)
     if(event_manager->KeyReleased(sf::Keyboard::E))
         m_mainScene.SetEdgeSmoothing(true);
 
+    if(event_manager->KeyPressed(sf::Keyboard::F))
+        m_mainScene.SetFoamSimulation(false);
+    if(event_manager->KeyReleased(sf::Keyboard::F))
+        m_mainScene.SetFoamSimulation(true);
+
     if(event_manager->KeyPressed(sf::Keyboard::O))
         m_mainScene.SetSSAO(false);
     if(event_manager->KeyReleased(sf::Keyboard::O))
