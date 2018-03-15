@@ -20,9 +20,9 @@ PBRTexture readed from file: ../data/treeXML.txt
 PBRTexture readed from file: ../data/abbayeXML.txt
 PBRTexture readed from file: ../data/cliffXML.txt
 Texture loaded from file: ../data/abbaye_color.png
-Texture loaded from file: ../data/abbaye_normal.png
 Font loaded from file: ../data/arial.ttf
 Starting application
+Texture loaded from file: ../data/abbaye_normal.png
 Texture loaded from file: ../data/abbaye_heightmap.png
 PBR texture loaded from file: ../data/abbayeXML.txt
 Texture loaded from file: ../data/cliff_albedo.png

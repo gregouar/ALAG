@@ -161,21 +161,23 @@ void TestingState::Init()
 
 
     rectNode = m_mainScene.GetRootNode()->CreateChildNode(0,0,10);
-    IsoWaterEntity *waterEntity = m_mainScene.CreateIsoWaterEntity(sf::Vector2f(2048,2048));
-    //waterEntity->SetTextureRect(sf::IntRect(0,0,1024,1024));
+    m_waterEntity = m_mainScene.CreateIsoWaterEntity(sf::Vector2f(2048,2048));
+    m_waterEntity->SetTextureRect(sf::IntRect(0,0,1024,1024));
    // waterEntity->SetWaterResolution(sf::Vector2u(1024,1024));
-    waterEntity->SetCenter(sf::Vector2f(512,  512));
-    waterEntity->SetHeightFactor(80.0);
-    waterEntity->SetWaveOptions(2.0,1.0);
-    waterEntity->SetWaterColor(sf::Color(86,255,194,160));
+    m_waterEntity->SetCenter(sf::Vector2f(512,  512));
+    m_waterEntity->SetHeightFactor(80.0);
+    m_waterEntity->SetWaveSteepness(1.5);
+    m_waterEntity->SetWaveLength(1.0);
+   // m_waterEntity->SetWaterColor(sf::Color(86,255,194,160));
+   // m_waterEntity->SetWaterColor(sf::Color(20,80,60,224));
     //waterEntity->SetWaterColor(sf::Color(0,224,0,224));
-    waterEntity->SetWaterDensity(100.0f);
-    waterEntity->SetFoamColor(sf::Color(224,224,224,224));
+    //m_waterEntity->SetWaterDensity(100.0f);
+    m_waterEntity->SetFoamColor(sf::Color(224,224,224,224));
    // waterEntity->SetFoamColor(sf::Color(224,0,0,224));
     //waterEntity->SetColor(sf::Color(16,24,32,127));
     //waterEntity->SetVisible(false);
     rectNode->SetPosition(0,0,40);
-    rectNode->AttachObject(waterEntity);
+    rectNode->AttachObject(m_waterEntity);
 
 
     SceneNode* nodeGeoShaCas = m_mainScene.GetRootNode()->CreateChildNode(-86,-7);
@@ -286,6 +288,23 @@ void TestingState::HandleEvents(alag::EventManager *event_manager)
         m_camMove.z = -1;
     else
         m_camMove.z = 0;
+
+
+    if(event_manager->KeyIsPressed(sf::Keyboard::Num1))
+        m_waterEntity->SetWaveAmplitude(m_waterEntity->GetWaveAmplitude()+0.01);
+    if(event_manager->KeyIsPressed(sf::Keyboard::Num2))
+        m_waterEntity->SetWaveAmplitude(m_waterEntity->GetWaveAmplitude()-0.01);
+
+    if(event_manager->KeyIsPressed(sf::Keyboard::Num3))
+        m_waterEntity->SetWaveSteepness(m_waterEntity->GetWaveSteepness()+0.01);
+    if(event_manager->KeyIsPressed(sf::Keyboard::Num4))
+        m_waterEntity->SetWaveSteepness(m_waterEntity->GetWaveSteepness()-0.01);
+
+    if(event_manager->KeyIsPressed(sf::Keyboard::Num5))
+        m_waterEntity->SetTurbulenceAmplitude(m_waterEntity->GetTurbulenceAmplitude()+0.01);
+    if(event_manager->KeyIsPressed(sf::Keyboard::Num6))
+        m_waterEntity->SetTurbulenceAmplitude(m_waterEntity->GetTurbulenceAmplitude()-0.01);
+
 
 
     if(event_manager->KeyPressed(sf::Keyboard::A))
