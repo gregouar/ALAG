@@ -36,9 +36,14 @@ void GenerateGerstnerWave(sf::Glsl::Vec4 *tab, size_t tab_size, float steepness,
                              0,0);*/
         tab[i].x = i*step + sin(angle) * wave_length * steepness * step;
         tab[i].y = -cos(angle);
-        tab[i].z = cos(angle) * wave_length * steepness;
-        tab[i].w = sin(angle);
+        /*tab[i].z = cos(angle) * wave_length * steepness;
+        tab[i].w = -sin(angle);*/
+        tab[i].z = - sin(angle*0.5);
+        tab[i].w = -cos(angle*0.5) * sin(angle*0.5);
+        if(tab[i].w > 0) tab[i].w = -tab[i].w;
         angle += step * 2 * PI;
+
+        std::cout<<tab[i].x<<" "<<tab[i].y<<" "<<tab[i].z<<" "<<tab[i].w<<std::endl;
     }
 }
 

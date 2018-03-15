@@ -167,6 +167,11 @@ void TestingState::Init()
     waterEntity->SetCenter(sf::Vector2f(512,  512));
     waterEntity->SetHeightFactor(80.0);
     waterEntity->SetWaveOptions(2.0,1.0);
+    waterEntity->SetWaterColor(sf::Color(86,255,194,160));
+    //waterEntity->SetWaterColor(sf::Color(0,224,0,224));
+    waterEntity->SetWaterDensity(100.0f);
+    waterEntity->SetFoamColor(sf::Color(224,224,224,196));
+   // waterEntity->SetFoamColor(sf::Color(224,0,0,224));
     //waterEntity->SetColor(sf::Color(16,24,32,127));
     //waterEntity->SetVisible(false);
     rectNode->SetPosition(0,0,40);

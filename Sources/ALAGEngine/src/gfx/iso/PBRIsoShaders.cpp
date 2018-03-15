@@ -147,6 +147,7 @@ void PBRIsoScene::CompilePBRGeometryShader()
     ""
     /*For water*/
     "uniform bool enable_foamCollision;" \
+    "uniform vec4 p_foamColor;"
     "uniform sampler2D map_velocity;" \
     ""
     "uniform vec3 view_direction;"
@@ -177,6 +178,8 @@ void PBRIsoScene::CompilePBRGeometryShader()
     "vec3 RaySearch(vec3 start, vec3 end)"
     "{"
     "   vec3 cur = start;"
+    "   vec3 lastOver = start;"
+    "   vec3 lastUnder = end;"
     "   vec3 diff = end-start;"
     "   float step = 0.5;"
     "   float depthTest = 0;"
@@ -185,13 +188,22 @@ void PBRIsoScene::CompilePBRGeometryShader()
     "       depthTest = GetDepth(test.xy);"
     "       if(depthTest > test.z) {"
     "           cur = test;" //Collision in second segment
+    "           lastOver = test;"
+    "       } else {"
+    "           lastUnder = test;"
     "       }"
     "       step = step*0.5;"
     "   }"
     ""
-    "    vec3 test = cur + diff*step;"
+ //   "   float delta = last.z - cur.z;"
+    ""
+   /* "    vec3 test = cur + diff*step;"
     "    depthTest = GetDepth(test.xy);"
-    "   float delta = cur.z - depthTest;"
+    "   if(depthTest > test.z) {"
+    "       float delta = test.z - depthTest;"
+    "   } else {"
+    "       float delta = depthTest - test.z;"
+    "   }"*/
     //"   float weight =  "<<NBR_PARALLAX_STEPS<<"*(curHeight - layerHeight)/(1.0+delta*"<<NBR_PARALLAX_STEPS<<");"
    // "   p -= view_direction.xy / view_direction.z *  "<<1.0/NBR_PARALLAX_STEPS<<" * total_height * weight;"
     ""
@@ -254,32 +266,38 @@ void PBRIsoScene::CompilePBRGeometryShader()
     "       {"
     "           vec3 velocityPixel = texture2D(map_velocity, texCoord).rgb;"
     /* Change factor to some speed parameter*/
-    "           float delta  =  50 /* + abs(Hash(gl_FragCoord).z) * 10.0*/;"
-    "           vec3 velocity = ( velocityPixel * 2.0 - 1.0)*delta;"
-    "           velocity.x = clamp(velocity.x,-delta,0.0);"
+    "           float delta  =  30 /* + abs(Hash(gl_FragCoord).z) * 10.0*/;"
+    "           vec3 velocity = ( velocityPixel * 2.0 - 1.0);"
+    "           velocity.x = clamp(velocity.x,-1.0,0.0) * delta;"
+   // "           velocity.x = - delta;"
+   // "           velocity.x *= -delta;"
+    "           velocity.y *= delta;"
+    "           velocity.z *= p_height * 0.5;"
    // "           if(velocity.x <= 0) {"
-    "           vec2 collisionTest = gl_FragCoord.xy - (velocity * p_isoToCartMat).xy * vec2(1.0,-1.0) /*+ Hash(gl_FragCoord*view_ratio.xyy).xy*2.0*/ ;"
+    "           vec2 collisionTest = gl_FragCoord.xy + (velocity * p_isoToCartMat).xy * vec2(1.0,-1.0) /*+ Hash(gl_FragCoord*view_ratio.xyy).xy*2.0*/ ;"
     "           float depthTest = GetDepth(collisionTest);"
-    "           float zDifference = zPixel -velocity.z*"<<PBRTextureAsset::DEPTH_BUFFER_NORMALISER<<" - depthTest;"
+    "           float zDifference = zPixel -velocity.z - depthTest;"
     "           float foamLevel = 0.0;"
     "           if(zDifference > 0"
     "            && zDifference < "<<0.01<<" ){"
-    "               vec3 p = RaySearch(vec3(gl_FragCoord.xy, zPixel), vec3(collisionTest, zPixel -velocity.z*"<<PBRTextureAsset::DEPTH_BUFFER_NORMALISER<<"));"
+    "               vec3 p = RaySearch(vec3(gl_FragCoord.xy, zPixel), vec3(collisionTest, zPixel -velocity.z));"
     "               p.z = abs(p.z);"
     "               if(p.z < 0.001){"
     //"                  albedoPixel.r = smoothstep(1.0,0.0,length(p.xy - gl_FragCoord.xy)*"<<1.0/30.0<<");"
     //"                   foamLevel = 1.0-smoothstep(0.0,1.0,length(p.xy - gl_FragCoord.xy)/delta);"
-    "                   foamLevel = 3.0/length(p.xy - gl_FragCoord.xy);"
+    "                   foamLevel =  length(velocity)/ max(1.0, (length(p.xy - gl_FragCoord.xy)*3.0))  ;"
+    //"                   foamLevel = 1.0 - smoothstep(0.0,20.0, length(p.xy - gl_FragCoord.xy))/20.0;"
     "                   foamLevel = clamp(foamLevel, 0.0,1.0);"
     //"                   if(p.z > 0.0005)"
     //"                   foamLevel *= 1.0-smoothstep(0.0005, 0.001,p.z-0.0005);"
     //"                   float foamLevel = length(p.xy - gl_FragCoord.xy)*"<<1.0/30.0<<";"
     "               }"
     "           }"
-    "           albedoPixel = mix(albedoPixel,vec4(.8,.8,.8,.4),foamLevel);"
+    "           albedoPixel = mix(albedoPixel,p_foamColor,foamLevel);"
     "           materialPixel = mix(materialPixel,vec4(.5, 0.0,.1,1.0),foamLevel);"
-    "           density = mix(density,1000.0,foamLevel);"
+    "           density = mix(density,500.0,foamLevel);"
    // "           }"
+   //"            albedoPixel = vec4(velocityPixel,.9);"
     "       }"
     ""
     "       if(enable_volumetricOpacity == true)"
@@ -287,7 +305,8 @@ void PBRIsoScene::CompilePBRGeometryShader()
     "           vec3 depthTestPixel = texture2D(map_opaqueGeometry, gl_FragCoord.xy*view_ratio).rgb;" \
     "           float depthTest = ((depthTestPixel.b*"<<1.0/255.0<<"+depthTestPixel.g)*"<<1.0/255.0<<"+depthTestPixel.r);"
     "           float depth = (depthTest-zPixel)*density;"
-    "           albedoPixel.a = mix(albedoPixel.a*0.0, albedoPixel.a*2.0, clamp(depth,0.0,1.0));"
+    //"           albedoPixel.a = mix(0.0, albedoPixel.a, smoothstep(0.0,1.0,clamp(depth,0.0,1.0)));"
+    "           albedoPixel.a = mix(0.0, albedoPixel.a, clamp(depth,0.0,1.0));"
     "           albedoPixel.a = clamp(albedoPixel.a, 0.0,0.99);"
     "       }"
     ""
@@ -543,7 +562,7 @@ void PBRIsoScene::CompileLightingShader()
     "{" \
     "   vec4 albedoPixel    = texture2D(map_albedo, VaryingTexCoord0);"
     //"   vec4 albedoPixel    = texelFetch(map_albedo, ivec2(gl_FragCoord.xy),0);"
-    "   if(albedoPixel.a > .1) {"
+    "   if(albedoPixel.a > .01) {"
     "   vec4 depthPixel     = texture2D(map_depth, VaryingTexCoord0);" \
     "   float depth = ((depthPixel.b*"<<1.0/255.0<<"+depthPixel.g)*"<<1.0/255.0<<"+depthPixel.r);"
    /* "   float depthTest = 1.0;"
@@ -1079,6 +1098,8 @@ void PBRIsoScene::CompileWaterGeometryShader()
 
     fragShader<<
     "uniform float p_height;" \
+    "uniform vec4 p_waterColor;"
+    "uniform vec4 p_foamColor;"
     "uniform float p_wave_pos;" \
     "uniform float p_wave_amplitude;" \
     "uniform float p_wave_frequency;" \
@@ -1212,13 +1233,17 @@ void PBRIsoScene::CompileWaterGeometryShader()
     "                            vec3(0.0,1.0,water.y)));"
     "   gl_FragData["<<PBRNormalScreen<<"] = vec4(0.5 + n * 0.5,1.0);"
     "   gl_FragData["<<PBRDepthScreen<<"] = vec4(vec3(water.z),1.0);"
-   "     float foam =  smoothstep(.5,1.0,water.z);" //NEED TO USE A TEXTURE HERE
+   "     float foam =  smoothstep(.8,1.0,water.z);" //NEED TO USE A TEXTURE HERE
    /** Need to use noise for foam (like noise texture ?) and also use second derivative**/
    //"     foam = clamp(foam+smoothstep(.95,1.0,water.w),0.0,.8);"
-    "    gl_FragData["<<PBRAlbedoScreen<<"] = mix(vec4(.2,.4,.4,.4), vec4(.8,.8,.8,.8),foam);"
+    "    gl_FragData["<<PBRAlbedoScreen<<"] = mix(p_waterColor, p_foamColor,foam);"
     "    gl_FragData["<<PBRMaterialScreen<<"] = mix(vec4(.2, 0.0,.9,1.0), vec4(.5, 0.0,.1,1.0),foam);"
     /* Should take rotation into account to have xyz velocity and not just xz*/
-    "   vec3 velocity = normalize(vec3(wave.z,noise.z*.25, wave.w)) * (.75+noise.z*.25);"
+    //"   vec3 velocity = normalize(vec3(wave.z,noise.y*.25, wave.w)) * (.75+noise.z*.25) * vec3(vec2(1.0),p_wave_amplitude);"
+    //"   vec3 velocity = normalize(vec3(wave.z,noise.y*.25, wave.w)) * (.75+noise.z*.25) * vec3(vec2(1.0),p_wave_amplitude);"
+    "   vec3 velocity = vec3(wave.z,noise.z*.5, wave.w) * (.75+noise.z*.25) * vec3(vec2(1.0),p_wave_amplitude);"
+    //"   velocity.x = -1.0+abs(noise.x)*0.25;"
+   // "   vec3 velocity = normalize(vec3(wave.z,0.0, wave.w));"
     "    gl_FragData["<<PBRExtraScreen0<<"] = vec4(0.5+velocity*0.5,1.0);"
     "}";
 
