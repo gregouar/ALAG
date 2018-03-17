@@ -109,7 +109,8 @@ void TestingState::Init()
     sarco3DEntityThird->SetStatic(true);
     m_mainScene.GetRootNode()->CreateChildNode(sf::Vector2f(100,100))->AttachObject(sarco3DEntityThird);
 
-    m_sunLight = m_mainScene.CreateLight(DirectionnalLight,sf::Vector3f(-1 ,.2,-1), sf::Color(255,255,255));
+    m_sunLight = m_mainScene.CreateLight(DirectionnalLight,sf::Vector3f(.2 ,-1,-1), sf::Color(255,255,255));
+   // m_sunLight = m_mainScene.CreateLight(DirectionnalLight,sf::Vector3f(.2 ,1,-1), sf::Color(255,255,255));
     m_sunLight->SetIntensity(15);
     m_sunLight->EnableShadowCasting();
     m_mainScene.GetRootNode()->AttachObject(m_sunLight);
@@ -169,11 +170,13 @@ void TestingState::Init()
 
     m_waterEntity->SetWaveSteepness(2.0);
     m_waterEntity->SetWaveLength(1.0);
-    m_waterEntity->SetWaveAmplitude(.6);
+    m_waterEntity->SetWaveAmplitude(.7);
     //m_waterEntity->SetWaveSpeed(.1);
    // m_waterEntity->SetWaterColor(sf::Color(86,255,194,160));
     //waterEntity->SetWaterColor(sf::Color(0,224,0,224));
     //
+    m_waterEntity->SetWaveTurbulence(0.01f);
+    m_waterEntity->SetTurbulenceAmplitude(.3);
 
     /*m_waterEntity->SetWaterColor(sf::Color(20,80,60,196));
     m_waterEntity->SetWaterDensity(200.0f);*/

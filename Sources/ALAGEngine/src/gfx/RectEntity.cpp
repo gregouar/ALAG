@@ -56,6 +56,9 @@ void RectEntity::PrepareShader(sf::Shader *shader)
             myPBRTexture->PrepareShader(shader);
             shader->setUniform("p_height",myPBRTexture->GetHeight()*m_heightFactor
                                             *PBRTextureAsset::DEPTH_BUFFER_NORMALISER);
+           /* shader->setUniform("p_worldDimensions", sf::Vector3f(sf::RectangleShape::getGlobalBounds().width,
+                                                                 sf::RectangleShape::getGlobalBounds().height,
+                                                                 myPBRTexture->GetHeight()*m_heightFactor));*/
 
         } else {
             shader->setUniform("map_albedo",*m_texture->GetTexture());

@@ -147,6 +147,7 @@ void PBRIsoScene::CompilePBRGeometryShader()
     "uniform mat3 p_rotationMat;" \
     "uniform vec2 p_rotationCenter;" \
     "uniform float p_height;" \
+  //  "uniform vec3 p_worldDimensions;"
     "uniform float p_zPos;" \
     ""
     /*For water*/
@@ -337,6 +338,8 @@ void PBRIsoScene::CompilePBRGeometryShader()
 	"	        vec4 direction = vec4(0,0,1.0,1.0);"
 	"           if(enable_normalMap == true){"
 	"               direction.xyz = 2.0*texture2D(map_normal, texCoord).rgb-1.0;"
+	/*"               direction.xyz *= p_worldDimensions;"
+	"               direction.xyz = normalize(direction.xyz);"*/
 	"           }"
 	"           direction.xyz = direction.xyz * p_normalProjMat;"
     "           gl_FragDepth = zPixel;"
@@ -477,7 +480,7 @@ void PBRIsoScene::CompileLightingShader()
         <<"shadowPixel = texture2D(shadow_map_"<<i<<", mapPos).rgb;}";
     fragShader<<
 	"   float shadowDepth = ((shadowPixel.b*"<<1.0/255.0<<"+shadowPixel.g)*"<<1.0/255.0<<"+shadowPixel.r);"
-    "   return 1.0 - min(1.0,max(0.0, (depth-shadowDepth)*"<<0.05*PBRTextureAsset::DEPTH_BUFFER_NORMALISER_INV<<"));"
+    "   return 1.0 - min(1.0,max(0.0, (depth-shadowDepth)*"<<0.1*PBRTextureAsset::DEPTH_BUFFER_NORMALISER_INV<<"));"
     "}"
     ""
     "vec3 fresnelSchlickRoughness(float cosTheta, vec3 F0, float roughness)"
@@ -562,7 +565,7 @@ void PBRIsoScene::CompileLightingShader()
     "   int oldUnder = 0;"
     "   int under;"
     //"   return oldScreenPos + 300*(v*p_isoToCartMat).xy * constantList.xz; "
-    "   for(int i = 0 ; i < 24 ; ++i) {"
+    "   for(int i = 0 ; i < 12 ; ++i) {"
     "       curScreenPos = oldScreenPos + 15*screen_v;"
     "       curWorldPos  = oldWorldPos + 15*v;"
     "       float heightPixel = GetDepthOpaque(curScreenPos);"
@@ -1231,7 +1234,7 @@ void PBRIsoScene::CompileWaterGeometryShader()
     "   vec3 a = (yr - yl - (P.yzw - yl)/P.x);"
     "   vec3 b = (P.yzw-yl)/P.x;"
     "   r.yzw = a*x*x + b*x + yl;"
-    "   r.x = 2*a*x + b;"
+    "   r.x = 2*a.x*x + b.x;"
     "   return r;"
     "}"
     ""
@@ -1248,9 +1251,11 @@ void PBRIsoScene::CompileWaterGeometryShader()
     "   float wr = (right_point.x - middle_point.x)*0.5;"
     "   float wl = (middle_point.x - left_point.x)*0.5;"
     "   float t = (x - left_point.x - wl)/(wl+wr);"
-    "   return Quadratic(t,(middle_point.yzw+left_point.yzw)*0.5,"
+    "   vec4 r= Quadratic(t,(middle_point.yzw+left_point.yzw)*0.5,"
     "                    vec4(wl/(wl+wr), middle_point.yzw),"
     "                   (right_point.yzw+middle_point.yzw)*0.5);"
+    "   r.x /= wl+wr;"
+    "   return r;"
     "}"
     ""
     "void main()" \
@@ -1260,7 +1265,7 @@ void PBRIsoScene::CompileWaterGeometryShader()
     "   vec4 wave = ComputeWave((Coord0.x+p_wave_pos+noise.x*p_wave_turbulence)*p_wave_frequency);"
    // "   wave *= p_wave_amplitude;"
     "   "
-    "   vec3 water = vec3(wave.x,0.0,wave.y) * p_wave_amplitude + noise * p_turbulences_amplitude;"
+    "   vec3 water = vec3(wave.x/(20.0*p_wave_frequency),0.0,wave.y) * p_wave_amplitude + noise * p_turbulences_amplitude;"
     "   water.z = 0.5 + water.z * 0.5;"
     "   vec3 n = normalize(cross(vec3(1.0,0.0,water.x ), "
     "                            vec3(0.0,1.0,water.y)));"

@@ -20,7 +20,7 @@ const char *GApp::DEFAULT_WINDOW_HEIGHT = "768";
 const char *GApp::DEFAULT_SRGB = "false";
 const char *GApp::DEFAULT_VSYNC = "false";
 
-const bool GApp::ENABLE_PROFILER = false;
+const bool GApp::ENABLE_PROFILER = true;
 
 GApp::GApp() : GApp(DEFAULT_APP_NAME)
 {

@@ -29,7 +29,7 @@ const std::string PBRIsoScene::DEFAULT_ENABLEBLOOM = "true";
 const std::string PBRIsoScene::DEFAULT_ENABLESSR = "true";
 const std::string PBRIsoScene::DEFAULT_ENABLESRGB = "true";
 const std::string PBRIsoScene::DEFAULT_SUPERSAMPLING = "1";
-const std::string PBRIsoScene::DEFAULT_SSR_THRESOLD = "0.8";
+const std::string PBRIsoScene::DEFAULT_SSR_THRESOLD = ".8";
 const std::string PBRIsoScene::DEFAULT_DIRECTIONALSHADOWSCASTING = "true";
 const std::string PBRIsoScene::DEFAULT_DYNAMICSHADOWSCASTING = "true";
 //const float PBRIsoScene::DEFAULT_BLOOMBLUR = 12.0;
@@ -971,6 +971,7 @@ void PBRIsoScene::RenderEntity(sf::RenderTarget* renderTarget,SceneEntity *entit
         m_PBRGeometryShader.setUniform("enable_volumetricOpacity",false);
         m_PBRGeometryShader.setUniform("p_useFoam",false);
         m_PBRGeometryShader.setUniform("p_zPos",globalPos.z*PBRTextureAsset::DEPTH_BUFFER_NORMALISER);
+       // m_PBRGeometryShader.setUniform("p_worldDimensions",sf::Vector3f(1.0,1.0,1.0));
         m_PBRGeometryShader.setUniform("p_normalProjMat",sf::Glsl::Mat3(m_normalProjMat.values));
         m_PBRGeometryShader.setUniform("p_rotationMat",sf::Glsl::Mat3(IdMat3X3));
         m_PBRGeometryShader.setUniform("p_rotationCenter",state.transform.transformPoint(0,0));
