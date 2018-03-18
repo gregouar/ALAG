@@ -222,13 +222,13 @@ void PBRIsoScene::CompilePBRGeometryShader()
     "vec2 Parallax(vec2 coord)"
     "{"
     "   float total_height = p_height*"<<PBRTextureAsset::DEPTH_BUFFER_NORMALISER_INV<<";"
-    "   vec2 p = -view_direction.xy / view_direction.z  * total_height;"
+    "   vec2 p = -view_direction.xy /* / view_direction.z  */ * total_height;"
     "   vec3 depthPixel = texture2D(map_depth, coord - p/texture_size).rgb;"
     "   vec3 oldHeight = 0.0;"
     "   float layerHeight = "<<NBR_PARALLAX_STEPS<<";"
     "   float curHeight = -dot(All33, depthPixel);"
     "   while(curHeight < layerHeight) {"
-    "       p += view_direction.xy  / view_direction.z*  "<<1.0/NBR_PARALLAX_STEPS<<" * total_height;"
+    "       p += view_direction.xy  /* / view_direction.z */ *  "<<1.0/NBR_PARALLAX_STEPS<<" * total_height;"
     "       depthPixel = texture2D(map_depth, coord - p/texture_size).rgb;"
     "       oldHeight = curHeight;"
     "       curHeight = -dot(All33, depthPixel);"
@@ -237,7 +237,7 @@ void PBRIsoScene::CompilePBRGeometryShader()
     ""
     "   float delta = curHeight - oldHeight;"
     "   float weight =  "<<NBR_PARALLAX_STEPS<<"*(curHeight - layerHeight)/(1.0+delta*"<<NBR_PARALLAX_STEPS<<");"
-    "   p -= view_direction.xy / view_direction.z *  "<<1.0/NBR_PARALLAX_STEPS<<" * total_height * weight;"
+    "   p -= view_direction.xy  /* / view_direction.z */ *  "<<1.0/NBR_PARALLAX_STEPS<<" * total_height * weight;"
     ""
     "   return coord - p / texture_size;"
     "}"
@@ -1262,7 +1262,8 @@ void PBRIsoScene::CompileWaterGeometryShader()
     "{" \
     "   vec2 normalizedCoord = Coord0 - floor(Coord0);"
     "   vec3 noise = FractalNoise(normalizedCoord);"
-    "   vec4 wave = ComputeWave((Coord0.x+p_wave_pos+noise.x*p_wave_turbulence)*p_wave_frequency);"
+    "   vec4 wave = ComputeWave((-sin(normalizedCoord.y*"<<PI<<")*0.1 + Coord0.x+p_wave_pos+noise.x*p_wave_turbulence)*p_wave_frequency);"
+    "   wave.xyzw *= clamp(sin(normalizedCoord.y*"<<PI<<"),0,1.0);"
    // "   wave *= p_wave_amplitude;"
     "   "
     "   vec3 water = vec3(wave.x/(20.0*p_wave_frequency),0.0,wave.y) * p_wave_amplitude + noise * p_turbulences_amplitude;"
@@ -1271,7 +1272,7 @@ void PBRIsoScene::CompileWaterGeometryShader()
     "                            vec3(0.0,1.0,water.y)));"
     "   gl_FragData["<<PBRNormalScreen<<"] = vec4(0.5 + n * 0.5,1.0);"
     "   gl_FragData["<<PBRDepthScreen<<"] = vec4(vec3(water.z),1.0);"
-   "     float foam =  0.0;/*smoothstep(.8,1.0,water.z);*/" //NEED TO USE A TEXTURE HERE
+   "     float foam = 0;/*smoothstep(.05,.15,water.z*wave.x/(20.0*p_wave_frequency));*/" //NEED TO USE A TEXTURE HERE
    /** Need to use noise for foam (like noise texture ?) and also use second derivative**/
    //"     foam = clamp(foam+smoothstep(.95,1.0,water.w),0.0,.8);"
     "    gl_FragData["<<PBRAlbedoScreen<<"] = mix(p_waterColor, p_foamColor,foam);"

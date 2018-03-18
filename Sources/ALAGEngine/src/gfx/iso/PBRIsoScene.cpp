@@ -39,7 +39,7 @@ const float PBRIsoScene::SSAO_BLUR = 3.0;
 const float PBRIsoScene::SSAO_SCREEN_RATIO = 0.5;
 const float PBRIsoScene::ENVIRONMENT_BLUR = 10.0;
 const float PBRIsoScene::SSAO_STRENGTH = 2.0;
-const unsigned int PBRIsoScene::NBR_PARALLAX_STEPS = 5;
+const unsigned int PBRIsoScene::NBR_PARALLAX_STEPS = 10;
 
 PBRIsoScene::PBRIsoScene() : PBRIsoScene(DEFAULT_ISO_VIEW_ANGLE)
 {

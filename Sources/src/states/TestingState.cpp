@@ -169,14 +169,14 @@ void TestingState::Init()
     m_waterEntity->SetHeightFactor(80.0);
 
     m_waterEntity->SetWaveSteepness(2.0);
-    m_waterEntity->SetWaveLength(1.0);
-    m_waterEntity->SetWaveAmplitude(.7);
+    m_waterEntity->SetWaveLength(0.5);
+    m_waterEntity->SetWaveAmplitude(.8);
     //m_waterEntity->SetWaveSpeed(.1);
    // m_waterEntity->SetWaterColor(sf::Color(86,255,194,160));
     //waterEntity->SetWaterColor(sf::Color(0,224,0,224));
     //
     m_waterEntity->SetWaveTurbulence(0.01f);
-    m_waterEntity->SetTurbulenceAmplitude(.3);
+    m_waterEntity->SetTurbulenceAmplitude(.2);
 
     /*m_waterEntity->SetWaterColor(sf::Color(20,80,60,196));
     m_waterEntity->SetWaterDensity(200.0f);*/
@@ -310,9 +310,9 @@ void TestingState::HandleEvents(alag::EventManager *event_manager)
         m_waterEntity->SetWaveAmplitude(m_waterEntity->GetWaveAmplitude()-0.01);
 
     if(event_manager->KeyIsPressed(sf::Keyboard::Num3))
-        m_waterEntity->SetWaveSteepness(m_waterEntity->GetWaveSteepness()+0.01);
+        m_waterEntity->SetWaveSteepness(m_waterEntity->GetWaveSteepness()+0.1);
     if(event_manager->KeyIsPressed(sf::Keyboard::Num4))
-        m_waterEntity->SetWaveSteepness(m_waterEntity->GetWaveSteepness()-0.01);
+        m_waterEntity->SetWaveSteepness(m_waterEntity->GetWaveSteepness()-0.1);
 
     if(event_manager->KeyIsPressed(sf::Keyboard::Num5))
         m_waterEntity->SetTurbulenceAmplitude(m_waterEntity->GetTurbulenceAmplitude()+0.01);
