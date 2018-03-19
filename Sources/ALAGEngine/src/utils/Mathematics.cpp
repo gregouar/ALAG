@@ -20,12 +20,128 @@ float ComputeSquareDistance(sf::Vector2f v, sf::Vector2f w)
     return ComputeDotProduct(v-w,v-w);
 }
 
-int RandomNumber(int maxNbr)
+int RandomNumber(int maxNbr, int seed)
 {
-    return (int)(static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/maxNbr)));
+    return (int)(static_cast <float> (rand()+seed) /( static_cast <float> (RAND_MAX/maxNbr)));
 }
 
-void GenerateGerstnerWave(sf::Glsl::Vec4 *tab, size_t tab_size, float steepness, float wave_length)
+void GenerateGerstnerWave(sf::Glsl::Vec4 *tab, float *xDistribution, size_t tab_size, float steepness, float wave_length)
+{
+    float step = (1.0f/(tab_size-1));
+    float angle = 0;
+
+    float curMax = 0;
+
+    std::map<float, sf::Glsl::Vec4> newTab;
+
+    for(size_t i = 0 ; i < tab_size ; ++i)
+    {
+        sf::Vector2f position( i*step + sin(angle) * wave_length * steepness * step,
+                              -cos(angle));
+        sf::Vector2f velocity(-sin(angle*0.5),
+                               cos(angle*0.5) * sin(angle*0.5));
+
+        float foam = 0;
+
+        if(velocity.y > 0) velocity.y  = -velocity.y ;
+
+        if(position.x < curMax)
+        {
+            float xLeft = 0;
+            sf::Glsl::Vec4 left(0,0,0,0);
+
+            std::map<float, sf::Glsl::Vec4>::iterator it = newTab.begin();
+
+           while(it != newTab.end())
+            {
+                if(it->first > position.x)
+                {
+                    float xRight = it->first;
+                    sf::Glsl::Vec4 right = it->second;
+
+                    float factor=(right.x - left.x)/(xRight - xLeft);
+
+                    float newPosY = left.x + (position.x-xLeft)*factor;
+
+                    foam = position.y - newPosY;
+
+                    position.y = newPosY;
+                    velocity.x = (velocity.x-left.y)*factor;
+                    velocity.y = (velocity.y-left.z)*factor;
+
+                    newTab[xLeft].w = foam;
+                    newTab[xRight].w = foam;
+
+                    it = newTab.end();
+                } else {
+                    xLeft =it->first;
+                    left = it->second;
+                    ++it;
+                }
+            }
+
+        }
+
+        newTab[position.x] = sf::Glsl::Vec4(position.y, velocity.x, velocity.y, foam*255);
+
+        angle += step * 2 * PI;
+        if(position.x > curMax)
+            curMax = position.x;
+    }
+
+
+    /*{
+    sf::RenderTexture r;
+    r.create(512,512);
+    r.clear();
+
+    size_t i = 0;
+    std::map<float, sf::Glsl::Vec4>::iterator it;
+    for(it = newTab.begin() ; (it+1) != newTab.end() ; ++it, ++i)
+    {
+        tab[i] = it->second;
+        sf::Vertex line[] =
+        {
+            sf::Vertex(sf::Vector2f( it->second.x*512.0, 256+it->second.y*256.0)),
+            sf::Vertex(sf::Vector2f( (it+1)->second.x*512.0f, 256+(it+1)->second.y*256.0))
+        };
+
+        r.draw(line, 2, sf::Lines);
+    }
+
+    //r.display();
+    r.getTexture().copyToImage().saveToFile("wave0.png");
+    }*/
+
+
+    size_t i = 0;
+    std::map<float, sf::Glsl::Vec4>::iterator it;
+    for(it = newTab.begin() ; it != newTab.end() ; ++it, ++i)
+    {
+        xDistribution[i] = it->first;
+        tab[i] = it->second;
+    }
+
+
+    sf::RenderTexture r;
+    r.create(512,512);
+    r.clear(sf::Color::White);
+
+    for(size_t i = 0 ; i < tab_size -1 ; ++i)
+    {
+        sf::Vertex line[] =
+        {
+            sf::Vertex(sf::Vector2f( xDistribution[i] *512.0, 256+tab[i].x*256.0),sf::Color(tab[i].w,0,0)),
+            sf::Vertex(sf::Vector2f( xDistribution[i+1] *512.0f, 256+tab[i+1].x*256.0),sf::Color(tab[i+1].w,0,0))
+        };
+
+        r.draw(line, 2, sf::Lines);
+    }
+    //r.display();
+    r.getTexture().copyToImage().saveToFile("wave1.png");
+}
+
+/**void GenerateGerstnerWave(sf::Glsl::Vec4 *tab, size_t tab_size, float steepness, float wave_length)
 {
     float step = (1.0f/(tab_size-1));
     float angle = 0;
@@ -34,26 +150,16 @@ void GenerateGerstnerWave(sf::Glsl::Vec4 *tab, size_t tab_size, float steepness,
 
     for(size_t i = 0 ; i < tab_size ; ++i)
     {
-        float posX = i*step + sin(angle) * wave_length * steepness * step;
-
-        sf::Vector2f velocity(-sin(angle*0.5), cos(angle*0.5) * sin(angle*0.5));
+        sf::Vector2f position( i*step + sin(angle) * wave_length * steepness * step,
+                              -cos(angle));
+        sf::Vector2f velocity(-sin(angle*0.5),
+                               cos(angle*0.5) * sin(angle*0.5));
 
         if(velocity.y > 0) velocity.y  = -velocity.y ;
 
-        newTab[posX] =
-            sf::Glsl::Vec4(posX, -cos(angle),
+        newTab[position.x] =
+            sf::Glsl::Vec4(position.x, position.y,
                             velocity.x, velocity.y);
-
-
-        /*tab[i].z = cos(angle) * wave_length * steepness;
-        tab[i].w = -sin(angle);*/
-
-        /*tab[i].x = i*step + sin(angle) * wave_length * steepness * step;
-        tab[i].y = -cos(angle);
-
-        tab[i].z = -sin(angle*0.5);
-        tab[i].w = -cos(angle*0.5) * sin(angle*0.5);
-        if(tab[i].w > 0) tab[i].w = -tab[i].w;*/
 
         angle += step * 2 * PI;
     }
@@ -64,8 +170,6 @@ void GenerateGerstnerWave(sf::Glsl::Vec4 *tab, size_t tab_size, float steepness,
     {
         tab[i] = it->second;
     }
-
-
 
 
     sf::RenderTexture r;
@@ -83,8 +187,8 @@ void GenerateGerstnerWave(sf::Glsl::Vec4 *tab, size_t tab_size, float steepness,
         r.draw(line, 2, sf::Lines);
     }
     //r.display();
-    r.getTexture().copyToImage().saveToFile("wave.png");
-}
+    r.getTexture().copyToImage().saveToFile("wave1.png");
+}**/
 
 
 sf::Vector2f Normalize(sf::Vector2f v)

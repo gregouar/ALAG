@@ -14,8 +14,16 @@ float ComputeDotProduct(sf::Vector2f v, sf::Vector2f w);
 float ComputeSquareDistance(sf::Vector3f v, sf::Vector3f w);
 float ComputeSquareDistance(sf::Vector2f v, sf::Vector2f w);
 
-int RandomNumber(int maxNbr);
-void GenerateGerstnerWave(sf::Glsl::Vec4 *tab, size_t tab_size, float steepness, float wave_length);
+int RandomNumber(int maxNbr, int seed = 0);
+
+/*struct WaveParticle
+{
+    float height;
+    sf::Vector2f velocity;
+    float foam;
+};*/
+void GenerateGerstnerWave(sf::Glsl::Vec4 *particles, float *xDistribution, size_t tab_size, float steepness, float wave_length);
+//void GenerateGerstnerWave(WaveParticle *tab, size_t tab_size, float steepness, float wave_length);
 
 sf::Vector2f Normalize(sf::Vector2f v);
 sf::Vector3f Normalize(sf::Vector3f v);

@@ -164,11 +164,11 @@ void TestingState::Init()
     rectNode = m_mainScene.GetRootNode()->CreateChildNode(0,0,10);
     m_waterEntity = m_mainScene.CreateIsoWaterEntity(sf::Vector2f(2048,2048));
     m_waterEntity->SetTextureRect(sf::IntRect(0,0,1024,1024));
-   // waterEntity->SetWaterResolution(sf::Vector2u(1024,1024));
+    //m_waterEntity->SetWaterResolution(sf::Vector2u(1024,1024));
     m_waterEntity->SetCenter(sf::Vector2f(512,  512));
     m_waterEntity->SetHeightFactor(80.0);
 
-    m_waterEntity->SetWaveSteepness(2.0);
+    m_waterEntity->SetWaveSteepness(5.0);
     m_waterEntity->SetWaveLength(0.5);
     m_waterEntity->SetWaveAmplitude(.8);
     //m_waterEntity->SetWaveSpeed(.1);
@@ -305,9 +305,9 @@ void TestingState::HandleEvents(alag::EventManager *event_manager)
 
 
     if(event_manager->KeyIsPressed(sf::Keyboard::Num1))
-        m_waterEntity->SetWaveAmplitude(m_waterEntity->GetWaveAmplitude()+0.01);
+        m_waterEntity->SetWaveAmplitude(m_waterEntity->GetWaveAmplitude()+0.1);
     if(event_manager->KeyIsPressed(sf::Keyboard::Num2))
-        m_waterEntity->SetWaveAmplitude(m_waterEntity->GetWaveAmplitude()-0.01);
+        m_waterEntity->SetWaveAmplitude(m_waterEntity->GetWaveAmplitude()-0.1);
 
     if(event_manager->KeyIsPressed(sf::Keyboard::Num3))
         m_waterEntity->SetWaveSteepness(m_waterEntity->GetWaveSteepness()+0.1);
@@ -315,9 +315,9 @@ void TestingState::HandleEvents(alag::EventManager *event_manager)
         m_waterEntity->SetWaveSteepness(m_waterEntity->GetWaveSteepness()-0.1);
 
     if(event_manager->KeyIsPressed(sf::Keyboard::Num5))
-        m_waterEntity->SetTurbulenceAmplitude(m_waterEntity->GetTurbulenceAmplitude()+0.01);
+        m_waterEntity->SetTurbulenceAmplitude(m_waterEntity->GetTurbulenceAmplitude()+0.1);
     if(event_manager->KeyIsPressed(sf::Keyboard::Num6))
-        m_waterEntity->SetTurbulenceAmplitude(m_waterEntity->GetTurbulenceAmplitude()-0.01);
+        m_waterEntity->SetTurbulenceAmplitude(m_waterEntity->GetTurbulenceAmplitude()-0.1);
 
 
 
@@ -402,8 +402,8 @@ void TestingState::Update(sf::Time time)
 
     //m_chene_node->Move(m_mainScene.ConvertCartesianToIso(m_camMove.x,m_camMove.y)*(500*time.asSeconds()));
     m_cameraNode->Move(m_mainScene.ConvertCartesianToIso(m_camMove.x,m_camMove.y)*(500*time.asSeconds()));
-    m_cameraNode->Move(sf::Vector3f(0,0,m_camMove.z)*(100*time.asSeconds()));
-    //m_camera->Zoom((1-m_camMove.z*time.asSeconds()));
+    //m_cameraNode->Move(sf::Vector3f(0,0,m_camMove.z)*(100*time.asSeconds()));
+    m_camera->Zoom((1-m_camMove.z*time.asSeconds()));
 
   //  m_cameraNode->Move(0,0,m_camMove.z *(500*time.asSeconds()));
 

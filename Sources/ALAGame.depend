@@ -5,7 +5,7 @@
 	"ALAGE/utils/Logger.h"
 	"include/states/TestingState.h"
 
-1521192030 source:c:\c++\alag\sources\alagengine\src\core\gapp.cpp
+1521368118 source:c:\c++\alag\sources\alagengine\src\core\gapp.cpp
 	<SFML/System.hpp>
 	<sstream>
 	"ALAGE/core/GApp.h"
@@ -35,7 +35,7 @@
 	<vector>
 	"GState.h"
 
-1521365160 source:c:\c++\alag\sources\src\states\testingstate.cpp
+1521371366 source:c:\c++\alag\sources\src\states\testingstate.cpp
 	"states/TestingState.h"
 	"ALAGE/core/GApp.h"
 	"ALAGE/core/EventManager.h"
@@ -759,12 +759,12 @@
 1520675876 source:c:\c++\alag\sources\alagengine\src\gfx\sceneobject.cpp
 	"ALAGE/gfx/SceneObject.h"
 
-1521134747 c:\c++\alag\sources\alagengine\include\alage\utils\mathematics.h
+1521373858 c:\c++\alag\sources\alagengine\include\alage\utils\mathematics.h
 	<SFML/Graphics.hpp>
 	<SFML/OpenGL.hpp>
 	"ALAGE/Types.h"
 
-1521364700 source:c:\c++\alag\sources\alagengine\src\utils\mathematics.cpp
+1521400609 source:c:\c++\alag\sources\alagengine\src\utils\mathematics.cpp
 	"ALAGE/utils/Mathematics.h"
 
 1517140944 c:\c++\alag\sources\alagengine\src\gfx\isometricshaders.cpp
@@ -838,11 +838,12 @@
 1519161214 source:c:\c++\alag\sources\alagengine\src\gfx\shadowcaster.cpp
 	"ALAGE/gfx/GeometricShadowCaster.h"
 
-1517476911 source:c:\c++\alag\sources\alagengine\src\utils\texturemodifier.cpp
+1521369711 source:c:\c++\alag\sources\alagengine\src\utils\texturemodifier.cpp
 	"ALAGE/utils/TextureModifier.h"
 	<SFML/Graphics.hpp>
+	<sstream>
 
-1517434830 c:\c++\alag\sources\alagengine\include\alage\utils\texturemodifier.h
+1521367710 c:\c++\alag\sources\alagengine\include\alage\utils\texturemodifier.h
 	<SFML/Graphics.hpp>
 	"ALAGE/utils/Singleton.h"
 
@@ -920,7 +921,7 @@
 	<sstream>
 	<iostream>
 
-1521365215 source:c:\c++\alag\sources\alagengine\src\gfx\iso\pbrisoshaders.cpp
+1521410570 source:c:\c++\alag\sources\alagengine\src\gfx\iso\pbrisoshaders.cpp
 	"ALAGE/gfx/iso/PBRIsoScene.h"
 	<sstream>
 	<iostream>
@@ -950,11 +951,12 @@
 	<SFML/System.hpp>
 	"ALAGE/utils/Singleton.h"
 
-1521328202 source:c:\c++\alag\sources\alagengine\src\gfx\iso\isowaterentity.cpp
+1521409842 source:c:\c++\alag\sources\alagengine\src\gfx\iso\isowaterentity.cpp
 	"ALAGE/gfx/iso/PBRIsoScene.h"
 	"ALAGE/gfx/iso/IsoWaterEntity.h"
 	"ALAGE/utils/Mathematics.h"
+	"ALAGE/utils/TextureModifier.h"
 
-1521154733 c:\c++\alag\sources\alagengine\include\alage\gfx\iso\isowaterentity.h
+1521373882 c:\c++\alag\sources\alagengine\include\alage\gfx\iso\isowaterentity.h
 	<ALAGE/gfx/iso/IsoRectEntity.h>
 
