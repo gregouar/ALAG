@@ -113,6 +113,11 @@ void RectEntity::SetCenter(sf::Vector2f c)
     sf::RectangleShape::setOrigin(c);
 }
 
+void RectEntity::SetRotation(float r)
+{
+    sf::RectangleShape::setRotation(r);
+}
+
 void RectEntity::SetColor(sf::Color c)
 {
     sf::RectangleShape::setFillColor(c);

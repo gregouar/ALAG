@@ -29,7 +29,8 @@ void IsoRectEntity::PrepareShader(sf::Shader *shader)
     {
         shader->setUniform("p_normalProjMat",sf::Glsl::Mat3(IdMat3X3));
         shader->setUniform("enable_parallax",m_enableParallax);
-        shader->setUniform("texture_size",sf::Vector2f(m_texture->GetTexture()->getSize()));
+       // shader->setUniform("texture_size",sf::Vector2f(m_texture->GetTexture()->getSize()));
+        shader->setUniform("texture_size",sf::Vector2f(getSize()));
        // shader->setUniform("p_isoToCartZFactor",0);
 
     }

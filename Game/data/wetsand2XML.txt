@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<texture3D>
+	<name>Wet sand 2</name>
+	<height>100</height>
+	<texture type="albedo">wetsand2_albedo.png</texture>
+	<texture type="normal">wetsand2_normal.png</texture>
+	<texture type="depth">wetsand2_heightmap.png</texture>
+	<material type="roughness">.3</material>
+	<material type="metalness">0</material>
+</texture3D>

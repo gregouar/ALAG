@@ -150,33 +150,63 @@ void TestingState::Init()
 
 
     SceneNode* rectNode = m_mainScene.GetRootNode()->CreateChildNode();
-    IsoRectEntity *rectEntity = m_mainScene.CreateIsoRectEntity(sf::Vector2f(2048,2048));
+    IsoRectEntity *rectEntity = m_mainScene.CreateIsoRectEntity(sf::Vector2f(4096,4096));
     rectEntity->SetCenter(sf::Vector2f(512,  512));
    // rectEntity->SetTexture(PBRTextureHandler->LoadAssetFromFile("../data/wetsandXML.txt",LoadType_InThread));
     rectEntity->SetTexture(PBRTextureHandler->LoadAssetFromFile("../data/cliffXML.txt",LoadType_InThread));
-    rectEntity->SetTextureRect(sf::IntRect(0,0,2048,2048));
+    //rectEntity->SetTexture(PBRTextureHandler->LoadAssetFromFile("../data/wallXML.txt",LoadType_InThread));
+    rectEntity->SetTextureRect(sf::IntRect(0,0,4096,4096));
     rectEntity->SetParallax(true);
-  //  rectEntity->SetVisible(false);
+    //rectEntity->SetVisible(false);
     rectEntity->SetStatic(true);
     rectNode->AttachObject(rectEntity);
 
+    rectNode = rectNode->CreateChildNode(256, 1024, 20);
+    rectEntity = m_mainScene.CreateIsoRectEntity(sf::Vector2f(2048,1024));
+    rectEntity->SetCenter(sf::Vector2f(1024,  512));
+    rectEntity->SetTexture(PBRTextureHandler->LoadAssetFromFile("../data/wetsand2XML.txt",LoadType_InThread));
+    rectEntity->SetTextureRect(sf::IntRect(0,0,2048,1024));
+    rectEntity->SetRotation(-90);
+    //rectEntity->SetParallax(true);
+    rectEntity->SetStatic(true);
+    //rectEntity->SetVisible(false);
+    rectNode->AttachObject(rectEntity);
 
-    rectNode = m_mainScene.GetRootNode()->CreateChildNode(0,0,10);
-    m_waterEntity = m_mainScene.CreateIsoWaterEntity(sf::Vector2f(2048,2048));
-    m_waterEntity->SetTextureRect(sf::IntRect(0,0,1024,1024));
-    //m_waterEntity->SetWaterResolution(sf::Vector2u(1024,1024));
-    m_waterEntity->SetCenter(sf::Vector2f(512,  512));
+
+   /* rectNode = m_mainScene.GetRootNode()->CreateChildNode(-384+1024,-768+1024+256,40);
+    m_waterEntity = m_mainScene.CreateIso*Entity(sf::Vector2f(1024,1024));
+    m_waterEntity->SetTextureRect(sf::IntRect(0,0,512,512));
     m_waterEntity->SetHeightFactor(80.0);
-
-    m_waterEntity->SetWaveSteepness(5.0);
-    m_waterEntity->SetWaveLength(0.5);
+    m_waterEntity->SetWaveSteepness(0.0);
+    m_waterEntity->SetWaveLength(1.0);
     m_waterEntity->SetWaveAmplitude(.8);
-    //m_waterEntity->SetWaveSpeed(.1);
+    m_waterEntity->SetWaterDensity(500.0f);
+    m_waterEntity->SetWaveSpeed(.1);
+    m_waterEntity->SetWaveTurbulence(0.0f);
+    m_waterEntity->SetTurbulenceAmplitude(.0f);
+    m_waterEntity->SetFoamColor(sf::Color(224,224,224,224));
+    rectNode->AttachObject(m_waterEntity);*/
+
+
+
+    rectNode = m_mainScene.GetRootNode()->CreateChildNode(-384+256,-768+1024+256,60);
+    m_waterEntity = m_mainScene.CreateIsoWaterEntity(sf::Vector2f(1024,1024));
+    m_waterEntity->SetTextureRect(sf::IntRect(0,0,512,512));
+    //m_waterEntity->SetWaterResolution(sf::Vector2u(1024,1024));
+    m_waterEntity->SetHeightFactor(50.0);
+
+   // m_waterEntity->SetWaveSteepness(10.0);
+    m_waterEntity->SetWaveSteepness(10.0);
+    m_waterEntity->SetWaveLength(.5);
+    m_waterEntity->SetWaveAmplitude(.8);
+    m_waterEntity->SetWaterDensity(500.0f);
+    m_waterEntity->SetWaveSpeed(.15);
    // m_waterEntity->SetWaterColor(sf::Color(86,255,194,160));
     //waterEntity->SetWaterColor(sf::Color(0,224,0,224));
     //
-    m_waterEntity->SetWaveTurbulence(0.01f);
-    m_waterEntity->SetTurbulenceAmplitude(.2);
+    //m_waterEntity->SetWaveTurbulence(0.02f);
+    m_waterEntity->SetWaveTurbulence(0.015f);
+    m_waterEntity->SetTurbulenceAmplitude(.2f);
 
     /*m_waterEntity->SetWaterColor(sf::Color(20,80,60,196));
     m_waterEntity->SetWaterDensity(200.0f);*/
@@ -190,7 +220,6 @@ void TestingState::Init()
     m_waterEntity->SetFoamColor(sf::Color(224,224,224,224));
 
     //waterEntity->SetVisible(false);
-    rectNode->SetPosition(0,0,40);
     rectNode->AttachObject(m_waterEntity);
 
 
@@ -261,6 +290,8 @@ void TestingState::Entered()
 
     if(m_firstEntering)
         Init();
+
+    m_waveTiming = sf::seconds(7);
 }
 
 void TestingState::Leaving()
@@ -396,6 +427,7 @@ void TestingState::Update(sf::Time time)
 {
     ++m_fpsCounter;
     m_totalTime += time;
+    m_waveTiming += time;
 
     if(time.asMicroseconds() > m_worstTime.asMicroseconds())
         m_worstTime = time;
@@ -408,6 +440,14 @@ void TestingState::Update(sf::Time time)
   //  m_cameraNode->Move(0,0,m_camMove.z *(500*time.asSeconds()));
 
     m_sarcoNode->Move(20*time.asSeconds(),0,0);
+
+  /*  if(m_waveTiming.asSeconds() > 10)
+    {
+        m_waveTiming = m_waveTiming -sf::seconds(10);
+        m_waterEntity->SetWaveSteepness(1.0);
+    }
+
+    m_waterEntity->SetWaveSteepness(1.0+m_waveTiming.asSeconds()*5.0/20.0);*/
 
 
     m_mainScene.Update(time);
@@ -441,5 +481,19 @@ void TestingState::Draw(sf::RenderTarget* renderer)
         m_totalTime = sf::Time::Zero;
         m_fpsCounter = 0;
         m_worstTime = sf::Time::Zero;
+    }
+
+
+
+    {
+        sf::Glsl::Vec4 tab[96];
+        float xDistrib[96];
+        GenerateGerstnerWave(tab, xDistrib, 96, 8, 0, 2, m_waveTiming.asSeconds()*PI/5);
+
+        sf::Vertex lines[96];
+        for(size_t i = 0 ; i < 96 ; ++i)
+            lines[i] = sf::Vertex(sf::Vector2f( 128+xDistrib[i] *512.0, 600-tab[i].x*64.0),sf::Color(tab[i].w*255,255,255,255 ));
+
+        renderer->draw(lines, 96, sf::LineStrip);
     }
 }

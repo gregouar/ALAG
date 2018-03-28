@@ -696,6 +696,8 @@ void PBRIsoScene::RenderStaticGeometry(const sf::View &curView)
             m_PBRGeometryShader.setUniform("p_alpha_pass",true);
             m_PBRGeometryShader.setUniform("map_opaqueGeometry",
                                            *m_staticGeometryScreen[m_swapStaticGeometryBuffers].getTexture(PBRDepthScreen));
+            //m_PBRGeometryShader.setUniform("map_opaqueNormal",
+              //                             *m_staticGeometryScreen[m_swapStaticGeometryBuffers].getTexture(PBRNormalScreen));
             m_PBRGeometryShader.setUniform("view_ratio",sf::Vector2f(1.0/(float)m_staticGeometryScreen[m_swapStaticGeometryBuffers].getSize().x,
                                                             1.0/(float)m_staticGeometryScreen[m_swapStaticGeometryBuffers].getSize().y));
             //m_PBRGeometryShader.setUniform("enable_depthTesting",false);
@@ -785,6 +787,7 @@ void PBRIsoScene::RenderDynamicGeometry(const sf::View &curView)
             Profiler::PushClock("Render alpha geometry");
             m_PBRGeometryShader.setUniform("p_alpha_pass",true);
             m_PBRGeometryShader.setUniform("map_opaqueGeometry", *m_PBRScreen.getTexture(PBRDepthScreen));
+            //m_PBRGeometryShader.setUniform("map_opaqueNormal", *m_PBRScreen.getTexture(PBRNormalScreen));
             m_PBRGeometryShader.setUniform("view_ratio",sf::Vector2f(1.0/(float)m_PBRScreen.getSize().x,
                                                             1.0/(float)m_PBRScreen.getSize().y));
             //m_PBRGeometryShader.setUniform("enable_depthTesting",true);
@@ -1186,6 +1189,7 @@ void PBRIsoScene::ComputeTrigonometry()
     m_PBRGeometryShader.setUniform("view_direction", m_normalProjMat * sf::Vector3f(0,0,1));
     m_PBRGeometryShader.setUniform("p_isoToCartMat",sf::Glsl::Mat3(m_isoToCartMat.values));
     m_PBRGeometryShader.setUniform("p_isoToCartZFactor",m_isoToCartMat.values[5]);
+    m_PBRGeometryShader.setUniform("p_cartToIso2DProjMat",sf::Glsl::Mat3(m_cartToIsoMat.values));
 
    // m_lightingShader.setUniform("view_direction",sf::Glsl::Vec3(sf::Vector3f(cosXY*cosZ, sinXY*sinZ,sinZ)));
     m_lightingShader.setUniform("p_cartToIso2DProjMat",sf::Glsl::Mat3(m_cartToIsoMat.values));

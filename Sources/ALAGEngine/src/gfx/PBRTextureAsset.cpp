@@ -171,7 +171,10 @@ bool PBRTextureAsset::LoadFromXML(TiXmlHandle *hdl)
 void PBRTextureAsset::PrepareShader(sf::Shader *shader)
 {
     if(GetAlbedoMap() != nullptr)
+    {
         shader->setUniform("map_albedo",*GetAlbedoMap());
+        shader->setUniform("p_isRepeated",GetAlbedoMap()->isRepeated());
+    }
 
     if(GetDepthMap() != nullptr)
     {
