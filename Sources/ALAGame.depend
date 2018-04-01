@@ -1,11 +1,11 @@
 # depslib dependency file v1.0
-1520197496 source:c:\c++\alag\sources\main.cpp
+1520201096 source:c:\c++\alag\sources\main.cpp
 	<iostream>
 	"ALAGE/core/GApp.h"
 	"ALAGE/utils/Logger.h"
 	"include/states/TestingState.h"
 
-1521368118 source:c:\c++\alag\sources\alagengine\src\core\gapp.cpp
+1521371718 source:c:\c++\alag\sources\alagengine\src\core\gapp.cpp
 	<SFML/System.hpp>
 	<sstream>
 	"ALAGE/core/GApp.h"
@@ -13,29 +13,29 @@
 	"ALAGE/utils/Logger.h"
 	"ALAGE/utils/Parser.h"
 
-1520844346 c:\c++\alag\sources\alagengine\include\alage\core\gapp.h
+1520847946 c:\c++\alag\sources\alagengine\include\alage\core\gapp.h
 	<SFML/Graphics.hpp>
 	"ALAGE/core/Config.h"
 	"ALAGE/core/EventManager.h"
 	"ALAGE/core/StateManager.h"
 
-1518021942 source:c:\c++\alag\sources\alagengine\src\core\gstate.cpp
+1518025542 source:c:\c++\alag\sources\alagengine\src\core\gstate.cpp
 	"ALAGE/core/GState.h"
 
-1518021942 c:\c++\alag\sources\alagengine\include\alage\core\gstate.h
+1518025542 c:\c++\alag\sources\alagengine\include\alage\core\gstate.h
 	<SFML/Graphics.hpp>
 	"ALAGE/utils/singleton.h"
 
-1517175983 source:c:\c++\alag\sources\alagengine\src\core\statemanager.cpp
+1517179583 source:c:\c++\alag\sources\alagengine\src\core\statemanager.cpp
 	<stdexcept>
 	"ALAGE/core/StateManager.h"
 
-1517175928 c:\c++\alag\sources\alagengine\include\alage\core\statemanager.h
+1517179528 c:\c++\alag\sources\alagengine\include\alage\core\statemanager.h
 	<SFML/System.hpp>
 	<vector>
 	"GState.h"
 
-1521371366 source:c:\c++\alag\sources\src\states\testingstate.cpp
+1522264581 source:c:\c++\alag\sources\src\states\testingstate.cpp
 	"states/TestingState.h"
 	"ALAGE/core/GApp.h"
 	"ALAGE/core/EventManager.h"
@@ -47,12 +47,12 @@
 	"ALAGE/gfx/iso/IsoSpriteEntity.h"
 	"ALAGE/core/Config.h"
 
-1521145683 c:\c++\alag\sources\include\states\testingstate.h
+1521679944 c:\c++\alag\sources\include\states\testingstate.h
 	"ALAGE/core/GState.h"
 	"ALAGE/utils/singleton.h"
 	"ALAGE/gfx/iso/PBRIsoScene.h"
 
-1517212518 c:\c++\alag\sources\sfml\include\sfml\system.hpp
+1517216118 c:\c++\alag\sources\sfml\include\sfml\system.hpp
 	<SFML/Config.hpp>
 	<SFML/System/Clock.hpp>
 	<SFML/System/Err.hpp>
@@ -72,24 +72,24 @@
 	<SFML/System/Vector2.hpp>
 	<SFML/System/Vector3.hpp>
 
-1517212518 c:\c++\alag\sources\sfml\include\sfml\config.hpp
+1517216118 c:\c++\alag\sources\sfml\include\sfml\config.hpp
 	"TargetConditionals.h"
 
-1517212518 c:\c++\alag\sources\sfml\include\sfml\system\clock.hpp
+1517216118 c:\c++\alag\sources\sfml\include\sfml\system\clock.hpp
 	<SFML/System/Export.hpp>
 	<SFML/System/Time.hpp>
 
-1517212518 c:\c++\alag\sources\sfml\include\sfml\system\export.hpp
+1517216118 c:\c++\alag\sources\sfml\include\sfml\system\export.hpp
 	<SFML/Config.hpp>
 
-1517212518 c:\c++\alag\sources\sfml\include\sfml\system\time.hpp
+1517216118 c:\c++\alag\sources\sfml\include\sfml\system\time.hpp
 	<SFML/System/Export.hpp>
 
-1517212518 c:\c++\alag\sources\sfml\include\sfml\system\err.hpp
+1517216118 c:\c++\alag\sources\sfml\include\sfml\system\err.hpp
 	<SFML/System/Export.hpp>
 	<ostream>
 
-1517212518 c:\c++\alag\sources\sfml\include\sfml\system\fileinputstream.hpp
+1517216118 c:\c++\alag\sources\sfml\include\sfml\system\fileinputstream.hpp
 	<SFML/Config.hpp>
 	<SFML/System/Export.hpp>
 	<SFML/System/InputStream.hpp>
@@ -97,32 +97,32 @@
 	<cstdio>
 	<string>
 
-1517212518 c:\c++\alag\sources\sfml\include\sfml\system\inputstream.hpp
+1517216118 c:\c++\alag\sources\sfml\include\sfml\system\inputstream.hpp
 	<SFML/Config.hpp>
 	<SFML/System/Export.hpp>
 
-1517212518 c:\c++\alag\sources\sfml\include\sfml\system\noncopyable.hpp
+1517216118 c:\c++\alag\sources\sfml\include\sfml\system\noncopyable.hpp
 	<SFML/System/Export.hpp>
 
-1517212518 c:\c++\alag\sources\sfml\include\sfml\system\lock.hpp
+1517216118 c:\c++\alag\sources\sfml\include\sfml\system\lock.hpp
 	<SFML/System/Export.hpp>
 	<SFML/System/NonCopyable.hpp>
 
-1517212518 c:\c++\alag\sources\sfml\include\sfml\system\memoryinputstream.hpp
+1517216118 c:\c++\alag\sources\sfml\include\sfml\system\memoryinputstream.hpp
 	<SFML/Config.hpp>
 	<SFML/System/InputStream.hpp>
 	<SFML/System/Export.hpp>
 	<cstdlib>
 
-1517212518 c:\c++\alag\sources\sfml\include\sfml\system\mutex.hpp
+1517216118 c:\c++\alag\sources\sfml\include\sfml\system\mutex.hpp
 	<SFML/System/Export.hpp>
 	<SFML/System/NonCopyable.hpp>
 
-1517212518 c:\c++\alag\sources\sfml\include\sfml\system\sleep.hpp
+1517216118 c:\c++\alag\sources\sfml\include\sfml\system\sleep.hpp
 	<SFML/System/Export.hpp>
 	<SFML/System/Time.hpp>
 
-1517212518 c:\c++\alag\sources\sfml\include\sfml\system\string.hpp
+1517216118 c:\c++\alag\sources\sfml\include\sfml\system\string.hpp
 	<SFML/System/Export.hpp>
 	<SFML/System/Utf.hpp>
 	<iterator>
@@ -130,7 +130,7 @@
 	<string>
 	<SFML/System/String.inl>
 
-1517212518 c:\c++\alag\sources\sfml\include\sfml\system\utf.hpp
+1517216118 c:\c++\alag\sources\sfml\include\sfml\system\utf.hpp
 	<SFML/Config.hpp>
 	<algorithm>
 	<locale>
@@ -138,52 +138,52 @@
 	<cstdlib>
 	<SFML/System/Utf.inl>
 
-1517212518 c:\c++\alag\sources\sfml\include\sfml\system\utf.inl
+1517216118 c:\c++\alag\sources\sfml\include\sfml\system\utf.inl
 
-1517212518 c:\c++\alag\sources\sfml\include\sfml\system\string.inl
+1517216118 c:\c++\alag\sources\sfml\include\sfml\system\string.inl
 
-1517212518 c:\c++\alag\sources\sfml\include\sfml\system\thread.hpp
+1517216118 c:\c++\alag\sources\sfml\include\sfml\system\thread.hpp
 	<SFML/System/Export.hpp>
 	<SFML/System/NonCopyable.hpp>
 	<cstdlib>
 	<SFML/System/Thread.inl>
 
-1517212518 c:\c++\alag\sources\sfml\include\sfml\system\thread.inl
+1517216118 c:\c++\alag\sources\sfml\include\sfml\system\thread.inl
 
-1517212518 c:\c++\alag\sources\sfml\include\sfml\system\threadlocal.hpp
+1517216118 c:\c++\alag\sources\sfml\include\sfml\system\threadlocal.hpp
 	<SFML/System/Export.hpp>
 	<SFML/System/NonCopyable.hpp>
 	<cstdlib>
 
-1517212518 c:\c++\alag\sources\sfml\include\sfml\system\threadlocalptr.hpp
+1517216118 c:\c++\alag\sources\sfml\include\sfml\system\threadlocalptr.hpp
 	<SFML/System/ThreadLocal.hpp>
 	<SFML/System/ThreadLocalPtr.inl>
 
-1517212518 c:\c++\alag\sources\sfml\include\sfml\system\threadlocalptr.inl
+1517216118 c:\c++\alag\sources\sfml\include\sfml\system\threadlocalptr.inl
 
-1517212518 c:\c++\alag\sources\sfml\include\sfml\system\vector2.hpp
+1517216118 c:\c++\alag\sources\sfml\include\sfml\system\vector2.hpp
 	<SFML/System/Vector2.inl>
 
-1517212518 c:\c++\alag\sources\sfml\include\sfml\system\vector2.inl
+1517216118 c:\c++\alag\sources\sfml\include\sfml\system\vector2.inl
 
-1517212518 c:\c++\alag\sources\sfml\include\sfml\system\vector3.hpp
+1517216118 c:\c++\alag\sources\sfml\include\sfml\system\vector3.hpp
 	<SFML/System/Vector3.inl>
 
-1517212518 c:\c++\alag\sources\sfml\include\sfml\system\vector3.inl
+1517216118 c:\c++\alag\sources\sfml\include\sfml\system\vector3.inl
 
-1516723036 c:\c++\alag\sources\alagengine\include\alage\utils\singleton.h
+1516726636 c:\c++\alag\sources\alagengine\include\alage\utils\singleton.h
 	<iostream>
 	<mutex>
 	<atomic>
 	"ALAGE/utils/SingletonsCleaner.h"
 
-1516740449 source:c:\c++\alag\sources\alagengine\src\core\eventmanager.cpp
+1516744049 source:c:\c++\alag\sources\alagengine\src\core\eventmanager.cpp
 	"ALAGE/core/EventManager.h"
 
-1516740449 c:\c++\alag\sources\alagengine\include\alage\core\eventmanager.h
+1516744049 c:\c++\alag\sources\alagengine\include\alage\core\eventmanager.h
 	<SFML/Window.hpp>
 
-1517576544 c:\c++\alag\sources\sfml\include\sfml\graphics.hpp
+1517580144 c:\c++\alag\sources\sfml\include\sfml\graphics.hpp
 	<SFML/Window.hpp>
 	<SFML/Graphics/BlendMode.hpp>
 	<SFML/Graphics/CircleShape.hpp>
@@ -213,7 +213,7 @@
 	<SFML/Graphics/VertexBuffer.hpp>
 	<SFML/Graphics/View.hpp>
 
-1517212518 c:\c++\alag\sources\sfml\include\sfml\window.hpp
+1517216118 c:\c++\alag\sources\sfml\include\sfml\window.hpp
 	<SFML/System.hpp>
 	<SFML/Window/Clipboard.hpp>
 	<SFML/Window/Context.hpp>
@@ -230,54 +230,54 @@
 	<SFML/Window/WindowHandle.hpp>
 	<SFML/Window/WindowStyle.hpp>
 
-1517212518 c:\c++\alag\sources\sfml\include\sfml\window\context.hpp
+1517216118 c:\c++\alag\sources\sfml\include\sfml\window\context.hpp
 	<SFML/Window/Export.hpp>
 	<SFML/Window/GlResource.hpp>
 	<SFML/Window/ContextSettings.hpp>
 	<SFML/System/NonCopyable.hpp>
 
-1517212518 c:\c++\alag\sources\sfml\include\sfml\window\export.hpp
+1517216118 c:\c++\alag\sources\sfml\include\sfml\window\export.hpp
 	<SFML/Config.hpp>
 
-1517212518 c:\c++\alag\sources\sfml\include\sfml\window\glresource.hpp
+1517216118 c:\c++\alag\sources\sfml\include\sfml\window\glresource.hpp
 	<SFML/Window/Export.hpp>
 	<SFML/System/NonCopyable.hpp>
 
-1517212518 c:\c++\alag\sources\sfml\include\sfml\window\contextsettings.hpp
+1517216118 c:\c++\alag\sources\sfml\include\sfml\window\contextsettings.hpp
 	<SFML/Config.hpp>
 
-1517212518 c:\c++\alag\sources\sfml\include\sfml\window\event.hpp
+1517216118 c:\c++\alag\sources\sfml\include\sfml\window\event.hpp
 	<SFML/Config.hpp>
 	<SFML/Window/Joystick.hpp>
 	<SFML/Window/Keyboard.hpp>
 	<SFML/Window/Mouse.hpp>
 	<SFML/Window/Sensor.hpp>
 
-1517212518 c:\c++\alag\sources\sfml\include\sfml\window\joystick.hpp
+1517216118 c:\c++\alag\sources\sfml\include\sfml\window\joystick.hpp
 	<SFML/Window/Export.hpp>
 	<SFML/System/String.hpp>
 
-1517212518 c:\c++\alag\sources\sfml\include\sfml\window\keyboard.hpp
+1517216118 c:\c++\alag\sources\sfml\include\sfml\window\keyboard.hpp
 	<SFML/Window/Export.hpp>
 
-1517212518 c:\c++\alag\sources\sfml\include\sfml\window\mouse.hpp
+1517216118 c:\c++\alag\sources\sfml\include\sfml\window\mouse.hpp
 	<SFML/Window/Export.hpp>
 	<SFML/System/Vector2.hpp>
 
-1517212518 c:\c++\alag\sources\sfml\include\sfml\window\sensor.hpp
+1517216118 c:\c++\alag\sources\sfml\include\sfml\window\sensor.hpp
 	<SFML/Window/Export.hpp>
 	<SFML/System/Vector3.hpp>
 	<SFML/System/Time.hpp>
 
-1517212518 c:\c++\alag\sources\sfml\include\sfml\window\touch.hpp
+1517216118 c:\c++\alag\sources\sfml\include\sfml\window\touch.hpp
 	<SFML/Window/Export.hpp>
 	<SFML/System/Vector2.hpp>
 
-1517212518 c:\c++\alag\sources\sfml\include\sfml\window\videomode.hpp
+1517216118 c:\c++\alag\sources\sfml\include\sfml\window\videomode.hpp
 	<SFML/Window/Export.hpp>
 	<vector>
 
-1517212518 c:\c++\alag\sources\sfml\include\sfml\window\window.hpp
+1517216118 c:\c++\alag\sources\sfml\include\sfml\window\window.hpp
 	<SFML/Window/ContextSettings.hpp>
 	<SFML/Window/Cursor.hpp>
 	<SFML/Window/Export.hpp>
@@ -290,54 +290,54 @@
 	<SFML/System/String.hpp>
 	<SFML/System/Vector2.hpp>
 
-1517212518 c:\c++\alag\sources\sfml\include\sfml\window\windowhandle.hpp
+1517216118 c:\c++\alag\sources\sfml\include\sfml\window\windowhandle.hpp
 	<SFML/Config.hpp>
 
-1517212518 c:\c++\alag\sources\sfml\include\sfml\window\windowstyle.hpp
+1517216118 c:\c++\alag\sources\sfml\include\sfml\window\windowstyle.hpp
 
-1517212518 c:\c++\alag\sources\sfml\include\sfml\graphics\blendmode.hpp
+1517216118 c:\c++\alag\sources\sfml\include\sfml\graphics\blendmode.hpp
 	<SFML/Graphics/Export.hpp>
 
-1517212518 c:\c++\alag\sources\sfml\include\sfml\graphics\export.hpp
+1517216118 c:\c++\alag\sources\sfml\include\sfml\graphics\export.hpp
 	<SFML/Config.hpp>
 
-1517212518 c:\c++\alag\sources\sfml\include\sfml\graphics\circleshape.hpp
+1517216118 c:\c++\alag\sources\sfml\include\sfml\graphics\circleshape.hpp
 	<SFML/Graphics/Export.hpp>
 	<SFML/Graphics/Shape.hpp>
 
-1517212518 c:\c++\alag\sources\sfml\include\sfml\graphics\shape.hpp
+1517216118 c:\c++\alag\sources\sfml\include\sfml\graphics\shape.hpp
 	<SFML/Graphics/Export.hpp>
 	<SFML/Graphics/Drawable.hpp>
 	<SFML/Graphics/Transformable.hpp>
 	<SFML/Graphics/VertexArray.hpp>
 	<SFML/System/Vector2.hpp>
 
-1517212518 c:\c++\alag\sources\sfml\include\sfml\graphics\drawable.hpp
+1517216118 c:\c++\alag\sources\sfml\include\sfml\graphics\drawable.hpp
 	<SFML/Graphics/Export.hpp>
 	<SFML/Graphics/RenderStates.hpp>
 
-1517212518 c:\c++\alag\sources\sfml\include\sfml\graphics\renderstates.hpp
+1517216118 c:\c++\alag\sources\sfml\include\sfml\graphics\renderstates.hpp
 	<SFML/Graphics/Export.hpp>
 	<SFML/Graphics/BlendMode.hpp>
 	<SFML/Graphics/Transform.hpp>
 
-1517212518 c:\c++\alag\sources\sfml\include\sfml\graphics\transform.hpp
+1517216118 c:\c++\alag\sources\sfml\include\sfml\graphics\transform.hpp
 	<SFML/Graphics/Export.hpp>
 	<SFML/Graphics/Rect.hpp>
 	<SFML/System/Vector2.hpp>
 
-1517212518 c:\c++\alag\sources\sfml\include\sfml\graphics\rect.hpp
+1517216118 c:\c++\alag\sources\sfml\include\sfml\graphics\rect.hpp
 	<SFML/System/Vector2.hpp>
 	<algorithm>
 	<SFML/Graphics/Rect.inl>
 
-1517212518 c:\c++\alag\sources\sfml\include\sfml\graphics\rect.inl
+1517216118 c:\c++\alag\sources\sfml\include\sfml\graphics\rect.inl
 
-1517212518 c:\c++\alag\sources\sfml\include\sfml\graphics\transformable.hpp
+1517216118 c:\c++\alag\sources\sfml\include\sfml\graphics\transformable.hpp
 	<SFML/Graphics/Export.hpp>
 	<SFML/Graphics/Transform.hpp>
 
-1517212518 c:\c++\alag\sources\sfml\include\sfml\graphics\vertexarray.hpp
+1517216118 c:\c++\alag\sources\sfml\include\sfml\graphics\vertexarray.hpp
 	<SFML/Graphics/Export.hpp>
 	<SFML/Graphics/Vertex.hpp>
 	<SFML/Graphics/PrimitiveType.hpp>
@@ -345,22 +345,22 @@
 	<SFML/Graphics/Drawable.hpp>
 	<vector>
 
-1517212518 c:\c++\alag\sources\sfml\include\sfml\graphics\vertex.hpp
+1517216118 c:\c++\alag\sources\sfml\include\sfml\graphics\vertex.hpp
 	<SFML/Graphics/Export.hpp>
 	<SFML/Graphics/Color.hpp>
 	<SFML/System/Vector2.hpp>
 
-1517212518 c:\c++\alag\sources\sfml\include\sfml\graphics\color.hpp
+1517216118 c:\c++\alag\sources\sfml\include\sfml\graphics\color.hpp
 	<SFML/Graphics/Export.hpp>
 
-1517212518 c:\c++\alag\sources\sfml\include\sfml\graphics\primitivetype.hpp
+1517216118 c:\c++\alag\sources\sfml\include\sfml\graphics\primitivetype.hpp
 
-1517212518 c:\c++\alag\sources\sfml\include\sfml\graphics\convexshape.hpp
+1517216118 c:\c++\alag\sources\sfml\include\sfml\graphics\convexshape.hpp
 	<SFML/Graphics/Export.hpp>
 	<SFML/Graphics/Shape.hpp>
 	<vector>
 
-1517212518 c:\c++\alag\sources\sfml\include\sfml\graphics\font.hpp
+1517216118 c:\c++\alag\sources\sfml\include\sfml\graphics\font.hpp
 	<SFML/Graphics/Export.hpp>
 	<SFML/Graphics/Glyph.hpp>
 	<SFML/Graphics/Texture.hpp>
@@ -371,27 +371,27 @@
 	<string>
 	<vector>
 
-1517212518 c:\c++\alag\sources\sfml\include\sfml\graphics\glyph.hpp
+1517216118 c:\c++\alag\sources\sfml\include\sfml\graphics\glyph.hpp
 	<SFML/Graphics/Export.hpp>
 	<SFML/Graphics/Rect.hpp>
 
-1518131425 c:\c++\alag\sources\sfml\include\sfml\graphics\texture.hpp
+1518135025 c:\c++\alag\sources\sfml\include\sfml\graphics\texture.hpp
 	<SFML/Graphics/Export.hpp>
 	<SFML/Graphics/Image.hpp>
 	<SFML/Window/GlResource.hpp>
 
-1517212518 c:\c++\alag\sources\sfml\include\sfml\graphics\image.hpp
+1517216118 c:\c++\alag\sources\sfml\include\sfml\graphics\image.hpp
 	<SFML/Graphics/Export.hpp>
 	<SFML/Graphics/Color.hpp>
 	<SFML/Graphics/Rect.hpp>
 	<string>
 	<vector>
 
-1517212518 c:\c++\alag\sources\sfml\include\sfml\graphics\rectangleshape.hpp
+1517216118 c:\c++\alag\sources\sfml\include\sfml\graphics\rectangleshape.hpp
 	<SFML/Graphics/Export.hpp>
 	<SFML/Graphics/Shape.hpp>
 
-1521042384 c:\c++\alag\sources\sfml\include\sfml\graphics\rendertarget.hpp
+1521045984 c:\c++\alag\sources\sfml\include\sfml\graphics\rendertarget.hpp
 	<SFML/Graphics/Export.hpp>
 	<SFML/Graphics/Color.hpp>
 	<SFML/Graphics/Rect.hpp>
@@ -404,25 +404,25 @@
 	<SFML/System/NonCopyable.hpp>
 	<map>
 
-1517212518 c:\c++\alag\sources\sfml\include\sfml\graphics\view.hpp
+1517216118 c:\c++\alag\sources\sfml\include\sfml\graphics\view.hpp
 	<SFML/Graphics/Export.hpp>
 	<SFML/Graphics/Rect.hpp>
 	<SFML/Graphics/Transform.hpp>
 	<SFML/System/Vector2.hpp>
 
-1518172574 c:\c++\alag\sources\sfml\include\sfml\graphics\rendertexture.hpp
+1518176174 c:\c++\alag\sources\sfml\include\sfml\graphics\rendertexture.hpp
 	<SFML/Graphics/Export.hpp>
 	<SFML/Graphics/Texture.hpp>
 	<SFML/Graphics/RenderTarget.hpp>
 
-1517212518 c:\c++\alag\sources\sfml\include\sfml\graphics\renderwindow.hpp
+1517216118 c:\c++\alag\sources\sfml\include\sfml\graphics\renderwindow.hpp
 	<SFML/Graphics/Export.hpp>
 	<SFML/Graphics/RenderTarget.hpp>
 	<SFML/Graphics/Image.hpp>
 	<SFML/Window/Window.hpp>
 	<string>
 
-1521038851 c:\c++\alag\sources\sfml\include\sfml\graphics\shader.hpp
+1521042451 c:\c++\alag\sources\sfml\include\sfml\graphics\shader.hpp
 	<SFML/Graphics/Export.hpp>
 	<SFML/Graphics/Glsl.hpp>
 	<SFML/Window/GlResource.hpp>
@@ -432,23 +432,23 @@
 	<map>
 	<string>
 
-1517212518 c:\c++\alag\sources\sfml\include\sfml\graphics\glsl.hpp
+1517216118 c:\c++\alag\sources\sfml\include\sfml\graphics\glsl.hpp
 	<SFML/Graphics/Transform.hpp>
 	<SFML/Graphics/Color.hpp>
 	<SFML/System/Vector2.hpp>
 	<SFML/System/Vector3.hpp>
 	<SFML/Graphics/Glsl.inl>
 
-1517212518 c:\c++\alag\sources\sfml\include\sfml\graphics\glsl.inl
+1517216118 c:\c++\alag\sources\sfml\include\sfml\graphics\glsl.inl
 
-1517212518 c:\c++\alag\sources\sfml\include\sfml\graphics\sprite.hpp
+1517216118 c:\c++\alag\sources\sfml\include\sfml\graphics\sprite.hpp
 	<SFML/Graphics/Export.hpp>
 	<SFML/Graphics/Drawable.hpp>
 	<SFML/Graphics/Transformable.hpp>
 	<SFML/Graphics/Vertex.hpp>
 	<SFML/Graphics/Rect.hpp>
 
-1517212518 c:\c++\alag\sources\sfml\include\sfml\graphics\text.hpp
+1517216118 c:\c++\alag\sources\sfml\include\sfml\graphics\text.hpp
 	<SFML/Graphics/Export.hpp>
 	<SFML/Graphics/Drawable.hpp>
 	<SFML/Graphics/Transformable.hpp>
@@ -459,30 +459,30 @@
 	<string>
 	<vector>
 
-1516461817 source:c:\c++\alag\sources\alagengine\src\core\config.cpp
+1516465417 source:c:\c++\alag\sources\alagengine\src\core\config.cpp
 	"ALAGE/core/Config.h"
 	<iostream>
 	<fstream>
 	"ALAGE/utils/Logger.h"
 	"ALAGE/utils/Parser.h"
 
-1516461803 c:\c++\alag\sources\alagengine\include\alage\core\config.h
+1516465403 c:\c++\alag\sources\alagengine\include\alage\core\config.h
 	<iostream>
 	<map>
 	"ALAGE/utils/singleton.h"
 
-1516308272 c:\c++\alag\sources\alagengine\include\alage\utils\parser.h
+1516311872 c:\c++\alag\sources\alagengine\include\alage\utils\parser.h
 	"ALAGE/utils/singleton.h"
 
-1517176708 source:c:\c++\alag\sources\alagengine\src\utils\parser.cpp
+1517180308 source:c:\c++\alag\sources\alagengine\src\utils\parser.cpp
 	"ALAGE/utils/Parser.h"
 	"ALAGE/utils/Logger.h"
 	<sstream>
 
-1517097398 source:c:\c++\alag\sources\alagengine\src\utils\logger.cpp
+1517100998 source:c:\c++\alag\sources\alagengine\src\utils\logger.cpp
 	"ALAGE/utils/Logger.h"
 
-1516720194 c:\c++\alag\sources\alagengine\include\alage\utils\logger.h
+1516723794 c:\c++\alag\sources\alagengine\include\alage\utils\logger.h
 	<fstream>
 	<sstream>
 	<SFML/System.hpp>
@@ -499,7 +499,7 @@
 1516179549 source:c:\c++\alag\sources\alagengine\include\alage\core\assethandler.cpp
 	"AssetHandler.h"
 
-1519152794 c:\c++\alag\sources\alagengine\include\alage\core\assethandler.h
+1519156394 c:\c++\alag\sources\alagengine\include\alage\core\assethandler.h
 	"ALAGE/Types.h"
 	"ALAGE/core/Asset.h"
 	"ALAGE/utils/Singleton.h"
@@ -508,24 +508,24 @@
 	<SFML/System.hpp>
 	"../src/core/AssetHandler.inc"
 
-1519152794 c:\c++\alag\sources\alagengine\include\alage\core\asset.h
+1519156394 c:\c++\alag\sources\alagengine\include\alage\core\asset.h
 	"ALAGE/core/NotificationSender.h"
 	"ALAGE/Types.h"
 	<iostream>
 	<SFML/System.hpp>
 
-1519152892 source:c:\c++\alag\sources\alagengine\src\core\asset.cpp
+1519156492 source:c:\c++\alag\sources\alagengine\src\core\asset.cpp
 	"ALAGE/core/Asset.h"
 	"ALAGE/utils/Parser.h"
 	"ALAGE/utils/Logger.h"
 	"ALAGE/gfx/SceneEntity.h"
 
-1520849109 source:c:\c++\alag\sources\alagengine\src\gfx\textureasset.cpp
+1520852709 source:c:\c++\alag\sources\alagengine\src\gfx\textureasset.cpp
 	"ALAGE/core/AssetHandler.h"
 	"ALAGE/gfx/TextureAsset.h"
 	"ALAGE/utils/Logger.h"
 
-1520849109 c:\c++\alag\sources\alagengine\include\alage\gfx\textureasset.h
+1520852709 c:\c++\alag\sources\alagengine\include\alage\gfx\textureasset.h
 	"ALAGE/core/Asset.h"
 	<SFML/Graphics.hpp>
 
@@ -541,7 +541,7 @@
 	"ALAGE/gfx/TextureAsset.h"
 	"extlibs/tinyxml.h"
 
-1521045274 c:\c++\alag\sources\alagengine\include\alage\types.h
+1521048874 c:\c++\alag\sources\alagengine\include\alage\types.h
 	<iostream>
 	<SFML/Graphics.hpp>
 	<SFML/OpenGL.hpp>
@@ -552,10 +552,10 @@
 	"ALAGE/core/AssetHandler.h"
 	"ALAGE/utils/Logger.h"
 
-1516304425 source:c:\c++\alag\sources\alagengine\src\gfx\animatedsprite.cpp
+1516308025 source:c:\c++\alag\sources\alagengine\src\gfx\animatedsprite.cpp
 	"ALAGE/gfx/AnimatedSprite.h"
 
-1516203760 c:\c++\alag\sources\alagengine\include\alage\gfx\animatedsprite.h
+1516207360 c:\c++\alag\sources\alagengine\include\alage\gfx\animatedsprite.h
 	"ALAGE/gfx/TextureAsset.h"
 	"ALAGE/Types.h"
 	<vector>
@@ -564,7 +564,7 @@
 	"ALAGE/core/AssetHandler.h"
 	"ALAGE/utils/Logger.h"
 
-1517575147 c:\c++\alag\sources\sfml\include\sfml\opengl.hpp
+1517578747 c:\c++\alag\sources\sfml\include\sfml\opengl.hpp
 	<SFML/Config.hpp>
 	<windows.h>
 	<GL/gl.h>
@@ -578,7 +578,7 @@
 	<GLES/glext.h>
 	<GLES2/gl2ext.h>
 
-1269288996 c:\c++\alag\sources\alagengine\include\extlibs\tinyxml.h
+1269292596 c:\c++\alag\sources\alagengine\include\extlibs\tinyxml.h
 	<ctype.h>
 	<stdio.h>
 	<stdlib.h>
@@ -589,30 +589,30 @@
 	<sstream>
 	"tinystr.h"
 
-1269288996 c:\c++\alag\sources\alagengine\include\extlibs\tinystr.h
+1269292596 c:\c++\alag\sources\alagengine\include\extlibs\tinystr.h
 	<assert.h>
 	<string.h>
 
-1516304208 source:c:\c++\alag\sources\alagengine\src\extlibs\tinystr.cpp
+1516307808 source:c:\c++\alag\sources\alagengine\src\extlibs\tinystr.cpp
 	"extlibs/tinystr.h"
 
-1516304212 source:c:\c++\alag\sources\alagengine\src\extlibs\tinyxml.cpp
+1516307812 source:c:\c++\alag\sources\alagengine\src\extlibs\tinyxml.cpp
 	<ctype.h>
 	<sstream>
 	<iostream>
 	<iostream>
 	"extlibs/tinyxml.h"
 
-1516304217 source:c:\c++\alag\sources\alagengine\src\extlibs\tinyxmlerror.cpp
+1516307817 source:c:\c++\alag\sources\alagengine\src\extlibs\tinyxmlerror.cpp
 	"extlibs/tinyxml.h"
 
-1516304221 source:c:\c++\alag\sources\alagengine\src\extlibs\tinyxmlparser.cpp
+1516307821 source:c:\c++\alag\sources\alagengine\src\extlibs\tinyxmlparser.cpp
 	<ctype.h>
 	<stddef.h>
 	"extlibs/tinyxml.h"
 	<windows.h>
 
-1519152920 c:\c++\alag\sources\alagengine\src\core\assethandler.inc
+1519156520 c:\c++\alag\sources\alagengine\src\core\assethandler.inc
 	"ALAGE/utils/Logger.h"
 
 1517140738 source:c:\c++\alag\sources\alagengine\src\gfx\isometricscene.cpp
@@ -640,24 +640,24 @@
 	"ALAGE/utils/Logger.h"
 	"ALAGE/utils/Mathematics.h"
 
-1519152364 c:\c++\alag\sources\alagengine\include\alage\gfx\scenenode.h
+1519155964 c:\c++\alag\sources\alagengine\include\alage\gfx\scenenode.h
 	<list>
 	<SFML/Graphics.hpp>
 	"ALAGE/Types.h"
 	"ALAGE/gfx/SceneEntity.h"
 
-1520675865 source:c:\c++\alag\sources\alagengine\src\gfx\scenenode.cpp
+1520679465 source:c:\c++\alag\sources\alagengine\src\gfx\scenenode.cpp
 	"ALAGE/gfx/SceneNode.h"
 	"ALAGE/gfx/DefaultScene.h"
 	"ALAGE/utils/Logger.h"
 	"ALAGE/utils/Mathematics.h"
 
-1516525730 source:c:\c++\alag\sources\alagengine\src\gfx\quadtreenode.cpp
+1516529330 source:c:\c++\alag\sources\alagengine\src\gfx\quadtreenode.cpp
 	"ALAGE/gfx/QuadtreeNode.h"
 
-1516525754 c:\c++\alag\sources\alagengine\include\alage\gfx\quadtreenode.h
+1516529354 c:\c++\alag\sources\alagengine\include\alage\gfx\quadtreenode.h
 
-1519159598 c:\c++\alag\sources\alagengine\include\alage\gfx\sceneentity.h
+1519163198 c:\c++\alag\sources\alagengine\include\alage\gfx\sceneentity.h
 	<SFML/Graphics.hpp>
 	"ALAGE/core/NotificationListener.h"
 	"ALAGE/core/Asset.h"
@@ -666,44 +666,44 @@
 	"ALAGE/gfx/Light.h"
 	"ALAGE/utils/Mathematics.h"
 
-1520357926 c:\c++\alag\sources\alagengine\include\alage\gfx\rectentity.h
+1521734793 c:\c++\alag\sources\alagengine\include\alage\gfx\rectentity.h
 	<SFML/Graphics.hpp>
 	"ALAGE/gfx/PBRTextureAsset.h"
 	"ALAGE/gfx/SceneEntity.h"
 
-1521298778 source:c:\c++\alag\sources\alagengine\src\gfx\rectentity.cpp
+1521734793 source:c:\c++\alag\sources\alagengine\src\gfx\rectentity.cpp
 	"ALAGE/gfx/RectEntity.h"
 	"ALAGE/core/AssetHandler.h"
 	"ALAGE/gfx/SceneNode.h"
 	"ALAGE/utils/Mathematics.h"
 
-1520951320 source:c:\c++\alag\sources\alagengine\src\gfx\sceneentity.cpp
+1520954920 source:c:\c++\alag\sources\alagengine\src\gfx\sceneentity.cpp
 	"ALAGE/gfx/SceneEntity.h"
 	"ALAGE/gfx/SceneNode.h"
 	"ALAGE/utils/Logger.h"
 
-1516702536 c:\c++\alag\sources\alagengine\include\alage\utils\listiterator.h
+1516706136 c:\c++\alag\sources\alagengine\include\alage\utils\listiterator.h
 	<list>
 
-1516702536 c:\c++\alag\sources\alagengine\include\alage\utils\mapiterator.h
+1516706136 c:\c++\alag\sources\alagengine\include\alage\utils\mapiterator.h
 	<map>
 
-1521137668 source:c:\c++\alag\sources\alagengine\src\gfx\spriteentity.cpp
+1521141268 source:c:\c++\alag\sources\alagengine\src\gfx\spriteentity.cpp
 	"ALAGE/gfx/SpriteEntity.h"
 	"ALAGE/gfx/iso/PBRIsoScene.h"
 	"ALAGE/core/AssetHandler.h"
 	"ALAGE/gfx/SceneNode.h"
 	<SFML/Graphics.hpp>
 
-1521137668 c:\c++\alag\sources\alagengine\include\alage\gfx\spriteentity.h
+1521141268 c:\c++\alag\sources\alagengine\include\alage\gfx\spriteentity.h
 	<SFML/Graphics.hpp>
 	"ALAGE/gfx/PBRTextureAsset.h"
 	"ALAGE/gfx/SceneEntity.h"
 
-1520853756 c:\c++\alag\sources\alagengine\include\alage\utils\singletonscleaner.h
+1520857356 c:\c++\alag\sources\alagengine\include\alage\utils\singletonscleaner.h
 	<list>
 
-1516703125 source:c:\c++\alag\sources\alagengine\src\utils\singletonscleaner.cpp
+1516706725 source:c:\c++\alag\sources\alagengine\src\utils\singletonscleaner.cpp
 	"ALAGE/utils/SingletonsCleaner.h"
 
 1517140728 source:c:\c++\alag\sources\alagengine\src\gfx\sprite3dentity.cpp
@@ -715,17 +715,17 @@
 1517140728 c:\c++\alag\sources\alagengine\include\alage\gfx\sprite3dentity.h
 	"ALAGE/gfx/SpriteEntity.h"
 
-1516813010 c:\c++\alag\sources\alagengine\include\alage\core\notificationsender.h
+1516816610 c:\c++\alag\sources\alagengine\include\alage\core\notificationsender.h
 	"ALAGE/Types.h"
 
-1516951113 c:\c++\alag\sources\alagengine\include\alage\core\notificationlistener.h
+1516954713 c:\c++\alag\sources\alagengine\include\alage\core\notificationlistener.h
 	"ALAGE/Types.h"
 
-1516976289 source:c:\c++\alag\sources\alagengine\src\core\notificationlistener.cpp
+1516979889 source:c:\c++\alag\sources\alagengine\src\core\notificationlistener.cpp
 	"ALAGE/Core/NotificationListener.h"
 	"ALAGE/core/NotificationSender.h"
 
-1519152906 source:c:\c++\alag\sources\alagengine\src\core\notificationsender.cpp
+1519156506 source:c:\c++\alag\sources\alagengine\src\core\notificationsender.cpp
 	"ALAGE/core/NotificationSender.h"
 	"ALAGE/Core/NotificationListener.h"
 
@@ -735,36 +735,36 @@
 1516828772 c:\c++\alag\sources\alagengine\include\alage\gfx\lightentity.h
 	"ALAGE/gfx/SceneEntity.h"
 
-1520675842 c:\c++\alag\sources\alagengine\include\alage\gfx\sceneobject.h
+1520679442 c:\c++\alag\sources\alagengine\include\alage\gfx\sceneobject.h
 	<SFML/Graphics.hpp>
 	"ALAGE/core/NotificationListener.h"
 	"ALAGE/Types.h"
 
-1516836991 source:c:\c++\alag\sources\alagengine\src\gfx\camera.cpp
+1516840591 source:c:\c++\alag\sources\alagengine\src\gfx\camera.cpp
 	"ALAGE/gfx/Camera.h"
 
-1516836991 c:\c++\alag\sources\alagengine\include\alage\gfx\camera.h
+1516840591 c:\c++\alag\sources\alagengine\include\alage\gfx\camera.h
 	<SFML/Graphics.hpp>
 	"ALAGE/gfx/SceneObject.h"
 
-1520200817 source:c:\c++\alag\sources\alagengine\src\gfx\light.cpp
+1520204417 source:c:\c++\alag\sources\alagengine\src\gfx\light.cpp
 	"ALAGE/gfx/Light.h"
 	"ALAGE/gfx/ShadowCaster.h"
 	"ALAGE/utils/TextureModifier.h"
 
-1520200780 c:\c++\alag\sources\alagengine\include\alage\gfx\light.h
+1520204380 c:\c++\alag\sources\alagengine\include\alage\gfx\light.h
 	"ALAGE/Types.h"
 	"ALAGE/gfx/SceneObject.h"
 
-1520675876 source:c:\c++\alag\sources\alagengine\src\gfx\sceneobject.cpp
+1520679476 source:c:\c++\alag\sources\alagengine\src\gfx\sceneobject.cpp
 	"ALAGE/gfx/SceneObject.h"
 
-1521373858 c:\c++\alag\sources\alagengine\include\alage\utils\mathematics.h
+1521929413 c:\c++\alag\sources\alagengine\include\alage\utils\mathematics.h
 	<SFML/Graphics.hpp>
 	<SFML/OpenGL.hpp>
 	"ALAGE/Types.h"
 
-1521400609 source:c:\c++\alag\sources\alagengine\src\utils\mathematics.cpp
+1522265559 source:c:\c++\alag\sources\alagengine\src\utils\mathematics.cpp
 	"ALAGE/utils/Mathematics.h"
 
 1517140944 c:\c++\alag\sources\alagengine\src\gfx\isometricshaders.cpp
@@ -780,7 +780,7 @@
 	"ALAGE/gfx/iso/IsoRectEntity.h"
 	<SFML/OpenGL.hpp>
 
-1518084018 c:\c++\alag\sources\alagengine\include\alage\gfx\iso\isospriteentity.h
+1518087618 c:\c++\alag\sources\alagengine\include\alage\gfx\iso\isospriteentity.h
 	<ALAGE/gfx/SpriteEntity.h>
 
 1517613333 source:c:\c++\alag\sources\alagengine\src\gfx\iso\isometricscene.cpp
@@ -797,14 +797,14 @@
 1517611276 source:c:\c++\alag\sources\alagengine\src\gfx\iso\isometricshaders.cpp
 	<iostream>
 
-1520354711 source:c:\c++\alag\sources\alagengine\src\gfx\iso\isorectentity.cpp
+1522163148 source:c:\c++\alag\sources\alagengine\src\gfx\iso\isorectentity.cpp
 	"ALAGE/gfx/iso/IsoRectEntity.h"
 	"ALAGE/utils/Mathematics.h"
 
-1520354704 c:\c++\alag\sources\alagengine\include\alage\gfx\iso\isorectentity.h
+1520358304 c:\c++\alag\sources\alagengine\include\alage\gfx\iso\isorectentity.h
 	<ALAGE/gfx/RectEntity.h>
 
-1521138037 source:c:\c++\alag\sources\alagengine\src\gfx\iso\isospriteentity.cpp
+1521141637 source:c:\c++\alag\sources\alagengine\src\gfx\iso\isospriteentity.cpp
 	"ALAGE/gfx/SceneNode.h"
 	"ALAGE/gfx/iso/PBRIsoScene.h"
 	"ALAGE/gfx/iso/IsoSpriteEntity.h"
@@ -812,57 +812,57 @@
 	"ALAGE/utils/Mathematics.h"
 	"ALAGE/utils/TextureModifier.h"
 
-1519152851 source:c:\c++\alag\sources\alagengine\src\gfx\fontasset.cpp
+1519156451 source:c:\c++\alag\sources\alagengine\src\gfx\fontasset.cpp
 	"ALAGE/gfx/FontAsset.h"
 	"ALAGE/core/AssetHandler.h"
 	"ALAGE/utils/Logger.h"
 
-1517309324 c:\c++\alag\sources\alagengine\include\alage\gfx\fontasset.h
+1517312924 c:\c++\alag\sources\alagengine\include\alage\gfx\fontasset.h
 	"ALAGE/core/Asset.h"
 	<SFML/Graphics.hpp>
 
-1520853905 source:c:\c++\alag\sources\alagengine\src\gfx\geometricshadowcaster.cpp
+1520857505 source:c:\c++\alag\sources\alagengine\src\gfx\geometricshadowcaster.cpp
 	"ALAGE/gfx/GeometricShadowCaster.h"
 	"ALAGE/gfx/SceneNode.h"
 	"ALAGE/utils/Mathematics.h"
 
-1520853905 c:\c++\alag\sources\alagengine\include\alage\gfx\geometricshadowcaster.h
+1520857505 c:\c++\alag\sources\alagengine\include\alage\gfx\geometricshadowcaster.h
 	<SFML/Graphics.hpp>
 	"ALAGE/gfx/ShadowCaster.h"
 	"ALAGE/gfx/SceneObject.h"
 
-1519160249 c:\c++\alag\sources\alagengine\include\alage\gfx\shadowcaster.h
+1519163849 c:\c++\alag\sources\alagengine\include\alage\gfx\shadowcaster.h
 	<SFML/Graphics.hpp>
 	"ALAGE/gfx/Light.h"
 
-1519161214 source:c:\c++\alag\sources\alagengine\src\gfx\shadowcaster.cpp
+1519164814 source:c:\c++\alag\sources\alagengine\src\gfx\shadowcaster.cpp
 	"ALAGE/gfx/GeometricShadowCaster.h"
 
-1521369711 source:c:\c++\alag\sources\alagengine\src\utils\texturemodifier.cpp
+1521373311 source:c:\c++\alag\sources\alagengine\src\utils\texturemodifier.cpp
 	"ALAGE/utils/TextureModifier.h"
 	<SFML/Graphics.hpp>
 	<sstream>
 
-1521367710 c:\c++\alag\sources\alagengine\include\alage\utils\texturemodifier.h
+1521371310 c:\c++\alag\sources\alagengine\include\alage\utils\texturemodifier.h
 	<SFML/Graphics.hpp>
 	"ALAGE/utils/Singleton.h"
 
-1517212518 c:\c++\alag\sources\sfml\include\sfml\window\clipboard.hpp
+1517216118 c:\c++\alag\sources\sfml\include\sfml\window\clipboard.hpp
 	<SFML/Window/Export.hpp>
 	<SFML/System/String.hpp>
 
-1517212518 c:\c++\alag\sources\sfml\include\sfml\window\cursor.hpp
+1517216118 c:\c++\alag\sources\sfml\include\sfml\window\cursor.hpp
 	<SFML/Window/Export.hpp>
 	<SFML/System/NonCopyable.hpp>
 	<SFML/System/Vector2.hpp>
 
-1517212518 c:\c++\alag\sources\sfml\include\sfml\graphics\vertexbuffer.hpp
+1517216118 c:\c++\alag\sources\sfml\include\sfml\graphics\vertexbuffer.hpp
 	<SFML/Graphics/Export.hpp>
 	<SFML/Graphics/PrimitiveType.hpp>
 	<SFML/Graphics/Drawable.hpp>
 	<SFML/Window/GlResource.hpp>
 
-1519340124 c:\c++\alag\sources\sfml\include\sfml\graphics\multiplerendertexture.hpp
+1519343724 c:\c++\alag\sources\sfml\include\sfml\graphics\multiplerendertexture.hpp
 	<SFML/Graphics/Export.hpp>
 	<SFML/Graphics/Texture.hpp>
 	<SFML/Graphics/RenderTarget.hpp>
@@ -879,17 +879,17 @@
 	<stdint.h>
 	<inttypes.h>
 
-1520358005 c:\c++\alag\sources\alagengine\include\alage\gfx\pbrtextureasset.h
+1520361605 c:\c++\alag\sources\alagengine\include\alage\gfx\pbrtextureasset.h
 	"ALAGE/core/NotificationListener.h"
 	"ALAGE/gfx/TextureAsset.h"
 	"extlibs/tinyxml.h"
 
-1520357926 source:c:\c++\alag\sources\alagengine\src\gfx\defaultscene.cpp
+1520361526 source:c:\c++\alag\sources\alagengine\src\gfx\defaultscene.cpp
 	"ALAGE/gfx/DefaultScene.h"
 	"ALAGE/utils/Logger.h"
 	"ALAGE/utils/Mathematics.h"
 
-1520200677 c:\c++\alag\sources\alagengine\include\alage\gfx\defaultscene.h
+1520204277 c:\c++\alag\sources\alagengine\include\alage\gfx\defaultscene.h
 	<SFML/OpenGL.hpp>
 	<SFML/Graphics.hpp>
 	"ALAGE/gfx/SceneNode.h"
@@ -898,7 +898,7 @@
 	"ALAGE/gfx/Camera.h"
 	"ALAGE/gfx/Light.h"
 
-1521134647 c:\c++\alag\sources\alagengine\include\alage\gfx\iso\pbrisoscene.h
+1521138247 c:\c++\alag\sources\alagengine\include\alage\gfx\iso\pbrisoscene.h
 	"ALAGE/utils/Mathematics.h"
 	"ALAGE/gfx/DefaultScene.h"
 	"ALAGE/gfx/iso/IsoGeometricShadowCaster.h"
@@ -907,7 +907,7 @@
 	"ALAGE/gfx/iso/IsoRectEntity.h"
 	<SFML/OpenGL.hpp>
 
-1521329306 source:c:\c++\alag\sources\alagengine\src\gfx\iso\pbrisoscene.cpp
+1522160746 source:c:\c++\alag\sources\alagengine\src\gfx\iso\pbrisoscene.cpp
 	"ALAGE/gfx/iso/PBRIsoScene.h"
 	"ALAGE/utils/Profiler.h"
 	"ALAGE/utils/Logger.h"
@@ -921,42 +921,42 @@
 	<sstream>
 	<iostream>
 
-1521410570 source:c:\c++\alag\sources\alagengine\src\gfx\iso\pbrisoshaders.cpp
+1522266124 source:c:\c++\alag\sources\alagengine\src\gfx\iso\pbrisoshaders.cpp
 	"ALAGE/gfx/iso/PBRIsoScene.h"
 	<sstream>
 	<iostream>
 
-1520947754 source:c:\c++\alag\sources\alagengine\src\gfx\pbrtextureasset.cpp
+1521918225 source:c:\c++\alag\sources\alagengine\src\gfx\pbrtextureasset.cpp
 	"ALAGE/core/AssetHandler.h"
 	"ALAGE/gfx/PBRTextureAsset.h"
 	"ALAGE/utils/Parser.h"
 	"ALAGE/utils/Logger.h"
 	<istream>
 
-1518354269 c:\c++\alag\sources\alagengine\include\alage\gfx\iso\isogeometricshadowcaster.h
+1518357869 c:\c++\alag\sources\alagengine\include\alage\gfx\iso\isogeometricshadowcaster.h
 	"ALAGE/gfx/GeometricShadowCaster.h"
 
-1518375740 source:c:\c++\alag\sources\alagengine\src\gfx\iso\isogeometricshadowcaster.cpp
+1518379340 source:c:\c++\alag\sources\alagengine\src\gfx\iso\isogeometricshadowcaster.cpp
 	"ALAGE/gfx/SceneNode.h"
 	"ALAGE/gfx/iso/PBRIsoScene.h"
 	"ALAGE/gfx/iso/IsoGeometricShadowCaster.h"
 	"ALAGE/utils/Mathematics.h"
 
-1518964677 source:c:\c++\alag\sources\alagengine\src\utils\profiler.cpp
+1518968277 source:c:\c++\alag\sources\alagengine\src\utils\profiler.cpp
 	"ALAGE/utils/Profiler.h"
 
-1518963878 c:\c++\alag\sources\alagengine\include\alage\utils\profiler.h
+1518967478 c:\c++\alag\sources\alagengine\include\alage\utils\profiler.h
 	<stack>
 	<sstream>
 	<SFML/System.hpp>
 	"ALAGE/utils/Singleton.h"
 
-1521409842 source:c:\c++\alag\sources\alagengine\src\gfx\iso\isowaterentity.cpp
+1522264558 source:c:\c++\alag\sources\alagengine\src\gfx\iso\isowaterentity.cpp
 	"ALAGE/gfx/iso/PBRIsoScene.h"
 	"ALAGE/gfx/iso/IsoWaterEntity.h"
 	"ALAGE/utils/Mathematics.h"
 	"ALAGE/utils/TextureModifier.h"
 
-1521373882 c:\c++\alag\sources\alagengine\include\alage\gfx\iso\isowaterentity.h
+1522238564 c:\c++\alag\sources\alagengine\include\alage\gfx\iso\isowaterentity.h
 	<ALAGE/gfx/iso/IsoRectEntity.h>
 

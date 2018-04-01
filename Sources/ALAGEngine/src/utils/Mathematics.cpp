@@ -139,7 +139,7 @@ void GenerateGerstnerWave(sf::Glsl::Vec4 *tab, float *xDistribution, size_t tab_
     /*std::map<float, sf::Glsl::Vec4> newTab2;
     newTab2[0] = newTab.begin()->second;
     size_t i = 1;*/
-    /**for(it = newTab.begin() ; it != newTab.end() ; ++i)
+    /*for(it = newTab.begin() ; it != newTab.end() ; ++i)
     {
         float xL = it->first;
         sf::Glsl::Vec4 pL = it->second;
@@ -161,7 +161,7 @@ void GenerateGerstnerWave(sf::Glsl::Vec4 *tab, float *xDistribution, size_t tab_
 
             newTab2[newPos.x] = sf::Glsl::Vec4(newPos.y, pR.y, pR.z, pR.w);
         }
-    }**/
+    }*/
     //newTab2[newTab.end()->first] = newTab.end()->second;
 
     {
@@ -391,84 +391,71 @@ void GenerateGerstnerWave(sf::Glsl::Vec4 *tab, float *xDistribution, size_t tab_
 {
     float size_factor = 1.25;
     float step_size = size_factor/tab_size;
-    nbr_waves = size_factor*nbr_waves;
+ //   nbr_waves = size_factor*nbr_waves;
 
     float tp = floor((t+PI)/(2*PI))*2*PI;
-    float height_factor= 1.0;
 
     t = t - floor((t)/(2*PI))*2*PI;
 
+    int steepness_thresold = tab_size/3;
 
     for(size_t i = 0 ; i < tab_size ; ++i)
     {
+        float height_factor= 1.0;
        // float r =  (float)i/(float)tab_size;
         float r =  (float)i/(float)tab_size;
         r=1;
-        float local_steepness = (left_steepness * (float)i*size_factor + right_steepness * (tab_size-((float)i*size_factor)))/(float)tab_size/nbr_waves;
-        if((float)i*size_factor > (float)tab_size )
-            local_steepness = left_steepness/nbr_waves;
+        float local_steepness = right_steepness;
+        if(i >= steepness_thresold)
+            local_steepness = (left_steepness * (float)(i-steepness_thresold)
+                               + right_steepness * (tab_size-((float)(i-steepness_thresold))))
+                               /(float)(tab_size-steepness_thresold);
+        if((float)i > (float)tab_size )
+            local_steepness = left_steepness;
 
-        if(local_steepness > 8./nbr_waves)
+        float true_steepness = local_steepness;
+        if(local_steepness > 6)
         {
-            height_factor *= 1./(local_steepness*nbr_waves - 7);
-            local_steepness = 8./nbr_waves;
+            height_factor *= 1./(local_steepness - 5);
+            //local_steepness = 6;
         }
 
-        float rolling = -nbr_waves*2*PI*(float)i/(float)tab_size;
-
-       // if(i == tab_size-1)
-         //   rolling =  -nbr_waves*2*PI + PI - t;
-
-//        sf::Vector2f ellipse(r*sin(t+rolling)*local_steepness,
-  //                         r*cos(t+rolling) /* *local_steepness/5.0 */);
-       // float collapse_angle = local_steepness*2;
-
-       float collapsing_factor = (local_steepness-1.0)*2;
-       if(collapsing_factor< 0) collapsing_factor = 0;
+        float rolling = -nbr_waves*2*PI*(float)i*step_size;
 
         sf::Vector2f shift(r*sin(t+rolling)*(local_steepness),
                            r*cos(t+rolling));
 
-        //shift.x -= 10*collapsing_factor*(0.5-shift.y*0.5);
-        //shift.y -= collapsing_factor*(0.5+shift.y*0.5);
 
-       // shift.x = ellipse.x * sin(collapse_angle) - ellipse.y * cos(collapse_angle);
-       // shift.y = ellipse.x * cos(collapse_angle) + ellipse.y * sin(collapse_angle);
-
-       sf::Vector2f pos(-rolling/(2*PI*nbr_waves)  + shift.x * step_size,
+       sf::Vector2f pos(-rolling/(2*PI*nbr_waves) + shift.x * step_size,
                         shift.y);
 
         /*sf::Vector2f velocity(-sin(t+rolling*0.5),
-                               cos(t+rolling*0.5) * sin(t+rolling*0.5));
+                               cos(t+rolling*0.5) * sin(t+rolling*0.5));*/
+
+        sf::Vector2f velocity(-sin((t+rolling)),
+                               cos((t+rolling)*0.5) * sin((t+rolling)*0.5));
 
         if(velocity.y > 0) velocity.y  = -velocity.y ;
-        if(velocity.x > 0) velocity.x  = -velocity.x ;*/
+        if(velocity.x > 0) velocity.x  = 0 ;
+
+        /*velocity.x = -1;
+        velocity.y -= .5;*/
 
 
-        sf::Vector2f velocity(-1,-1);
+       // sf::Vector2f velocity(-1,-1);
 
        // sf::Vector2f velocity(-cos(t+rolling),-1);
 
+
+       float collapsing_factor = (true_steepness + (pos.y+1) -4.0);
+       if(collapsing_factor< 0) collapsing_factor = 0;
+      // collapsing_factor = collapsing_factor*collapsing_factor;
+
        if(collapsing_factor > 0)
        {
-            /*sf::Vector2f c_center(1,-1);
-            float dist = Abs(c_center.x - pos.x);
-            float t = (0.5+pos.y*0.5)/dist*0.5;
-            pos = c_center + dist*sf::Vector2f(-cos(t), sin(t));
-            pos.y = pos.y*2-1;*/
-
-            /*double dX = 0.5 - xDistribution[i];
-            double y = (tab[i].x+1)/2;
-            double t = y*collapsingFactor;
-            sf::Vector2f n = sf::Vector2f(-dX*cos(t),-dX*sin(t));
-            xDistribution[i] = 0.5+1.0/collapsingFactor*(0.5*cos(t)-.5) + n.x;
-            tab[i].x = (1.0/collapsingFactor*sin(t) + n.y)*2-1;*/
-
             collapsing_factor = - collapsing_factor;
 
-           // float startpoint = (t)/(2*PI*nbr_waves);
             float startpoint = (t)/(2*PI*nbr_waves);
-            //float r = (-rolling)/(2*PI*nbr_waves) - startpoint + shift.x/nbr_waves;
             float r = pos.x - startpoint;
             float relpos = r*nbr_waves - 0.5 - floor(r * nbr_waves -0.5);
             float dX = relpos-0.5;
@@ -476,30 +463,25 @@ void GenerateGerstnerWave(sf::Glsl::Vec4 *tab, float *xDistribution, size_t tab_
             double y = (pos.y+1)/2.0;
             double T = y * collapsing_factor;
             sf::Vector2f n(dX*cos(T), dX*sin(T));
-            pos.x = startpoint + (floor(r * nbr_waves - 0.5) + 1.0 + 1.0/collapsing_factor*(0.5*cos(T)-.5) + n.x)/nbr_waves;
+            pos.x = startpoint + (floor(r * nbr_waves - 0.5) + 1.0 + 1.0/collapsing_factor  *(0.5*cos(T)-.5)  + n.x)/nbr_waves;
             pos.y = (1.0/collapsing_factor*sin(T) + n.y)*2-1;
-
-           // pos.x = startpoint + (relpos+.5+floor(r * nbr_waves -0.5))/nbr_waves;
-
-           //std::cout<<dX<<std::endl;
-            //tab[i].w = Abs(dX)*2;
+            velocity.y -= Abs(n.y)*2;
        }
 
 
-        //xDistribution[i] = step_size*i + shift.x * step_size  /*- 0.125*/;
-       // xDistribution[i] = -rolling/(2*PI*nbr_waves)  + shift.x * step_size  /*- 0.125*/;
-        //tab[i].x = shift.y;
-
-        xDistribution[i] = pos.x;
+        xDistribution[i] = pos.x ;
         pos.y = 0.5+pos.y*0.5;
-        pos.y *= height_factor;
         pos.y *= height_factor;
         pos.y = pos.y*2-1;
         tab[i].x = pos.y;
 
         tab[i].y = velocity.x;
         tab[i].z = velocity.y;
-        tab[i].w = 0;
+        tab[i].w = 0.0;
+        /*if(collapsing_factor < 1)
+            tab[i].w = collapsing_factor;
+        else
+            tab[i].w =1.0;*/
     }
 
 
@@ -508,6 +490,7 @@ void GenerateGerstnerWave(sf::Glsl::Vec4 *tab, float *xDistribution, size_t tab_
     bool under = false;
     float maxX = -1, minX= 0;
 
+   // if(false)
     for(size_t i = 0 ; i < tab_size ; ++i)
     {
         if(xDistribution[i] >= maxX)
@@ -534,25 +517,14 @@ void GenerateGerstnerWave(sf::Glsl::Vec4 *tab, float *xDistribution, size_t tab_
                     tab[t].x = LinInterp(leftP,xDistribution[t],rightP);
 
                     float d = (float)j/(float)(nbr_under-1);
-                   /* if(d > .75)
-                        tab[t].w = 1.0 - (d-.75)*4;
-                    else  if(d > 0.5 )
-                        tab[t].w = 1.0;
-                    else
-                        tab[t].w = 2*d;*/
-
-                    if(d < .25)
-                        tab[t].w = 4*d;
+                    if(d < .1)
+                        tab[t].w = 10*d;
                     else if(d < .75)
                         tab[t].w = 1.0;
                     else
                         tab[t].w = 1.0 - (d-.75)*4;
-
-
-                   // tab[t].w  = 1.0- Abs(0.5-(float)j/(float)nbr_under)*2.0;
-                    //tab[t].w  =  1.0;
                 }
-                tab[i].w = 0.0;
+               // tab[i].w = 0.0;
             }
 
             maxX = xDistribution[i];
@@ -606,7 +578,7 @@ void GenerateGerstnerWave(sf::Glsl::Vec4 *tab, float *xDistribution, size_t tab_
                     tab[t].w = 1.0 - (d-.75)*4;
 
         }
-        tab[i].w = 0.0;
+        //tab[i].w = 0.0;
     }
 
 }

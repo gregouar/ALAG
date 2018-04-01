@@ -150,12 +150,12 @@ void TestingState::Init()
 
 
     SceneNode* rectNode = m_mainScene.GetRootNode()->CreateChildNode();
-    IsoRectEntity *rectEntity = m_mainScene.CreateIsoRectEntity(sf::Vector2f(4096,4096));
+    IsoRectEntity *rectEntity = m_mainScene.CreateIsoRectEntity(sf::Vector2f(1155,4096));
     rectEntity->SetCenter(sf::Vector2f(512,  512));
    // rectEntity->SetTexture(PBRTextureHandler->LoadAssetFromFile("../data/wetsandXML.txt",LoadType_InThread));
     rectEntity->SetTexture(PBRTextureHandler->LoadAssetFromFile("../data/cliffXML.txt",LoadType_InThread));
     //rectEntity->SetTexture(PBRTextureHandler->LoadAssetFromFile("../data/wallXML.txt",LoadType_InThread));
-    rectEntity->SetTextureRect(sf::IntRect(0,0,4096,4096));
+    rectEntity->SetTextureRect(sf::IntRect(-128,0,1155,4096));
     rectEntity->SetParallax(true);
     //rectEntity->SetVisible(false);
     rectEntity->SetStatic(true);
@@ -169,35 +169,30 @@ void TestingState::Init()
     rectEntity->SetRotation(-90);
     //rectEntity->SetParallax(true);
     rectEntity->SetStatic(true);
-    //rectEntity->SetVisible(false);
+    rectNode->AttachObject(rectEntity);
+
+    rectNode = rectNode->CreateChildNode(1024,-1024, 0);
+    rectEntity = m_mainScene.CreateIsoRectEntity(sf::Vector2f(2048,4096));
+    rectEntity->SetCenter(sf::Vector2f(1024,  512));
+    rectEntity->SetTexture(PBRTextureHandler->LoadAssetFromFile("../data/wetsandXML.txt",LoadType_InThread));
+    rectEntity->SetTextureRect(sf::IntRect(0,0,2048,4096));
+    //rectEntity->SetParallax(true);
+    rectEntity->SetStatic(true);
     rectNode->AttachObject(rectEntity);
 
 
-   /* rectNode = m_mainScene.GetRootNode()->CreateChildNode(-384+1024,-768+1024+256,40);
-    m_waterEntity = m_mainScene.CreateIso*Entity(sf::Vector2f(1024,1024));
-    m_waterEntity->SetTextureRect(sf::IntRect(0,0,512,512));
-    m_waterEntity->SetHeightFactor(80.0);
-    m_waterEntity->SetWaveSteepness(0.0);
-    m_waterEntity->SetWaveLength(1.0);
-    m_waterEntity->SetWaveAmplitude(.8);
-    m_waterEntity->SetWaterDensity(500.0f);
-    m_waterEntity->SetWaveSpeed(.1);
-    m_waterEntity->SetWaveTurbulence(0.0f);
-    m_waterEntity->SetTurbulenceAmplitude(.0f);
-    m_waterEntity->SetFoamColor(sf::Color(224,224,224,224));
-    rectNode->AttachObject(m_waterEntity);*/
 
 
-
-    rectNode = m_mainScene.GetRootNode()->CreateChildNode(-384+256,-768+1024+256,60);
-    m_waterEntity = m_mainScene.CreateIsoWaterEntity(sf::Vector2f(1024,1024));
-    m_waterEntity->SetTextureRect(sf::IntRect(0,0,512,512));
-    //m_waterEntity->SetWaterResolution(sf::Vector2u(1024,1024));
+    rectNode = m_mainScene.GetRootNode()->CreateChildNode(-384+256,-768+1024+256-1024,45);
+    m_waterEntity = m_mainScene.CreateIsoWaterEntity(sf::Vector2f(2048-128,1024*5));
+    m_waterEntity->SetTextureRect(sf::IntRect(0,0,1024-64,512*5));
+    m_waterEntity->SetWaterResolution(sf::Vector2u(1024,512));
     m_waterEntity->SetHeightFactor(50.0);
+    m_waterEntity->SetWaterColor(sf::Color(30,40,40,250));
 
    // m_waterEntity->SetWaveSteepness(10.0);
     m_waterEntity->SetWaveSteepness(10.0);
-    m_waterEntity->SetWaveLength(.5);
+    m_waterEntity->SetWaveLength(.25);
     m_waterEntity->SetWaveAmplitude(.8);
     m_waterEntity->SetWaterDensity(500.0f);
     m_waterEntity->SetWaveSpeed(.15);
@@ -221,6 +216,25 @@ void TestingState::Init()
 
     //waterEntity->SetVisible(false);
     rectNode->AttachObject(m_waterEntity);
+
+
+    rectNode = m_mainScene.GetRootNode()->CreateChildNode(-384+256+2048-128,-768+1024+256,45);
+    alag::IsoWaterEntity *waterEntity = m_mainScene.CreateIsoWaterEntity(sf::Vector2f(1024*4+128,1024*4));
+    waterEntity->SetTextureRect(sf::IntRect(-64,0,512*4,512*4));
+    waterEntity->SetHeightFactor(50.0);
+    waterEntity->SetWaveSteepness(0.0);
+    waterEntity->SetWaveLength(.5);
+    waterEntity->SetWaveAmplitude(.8);
+    waterEntity->SetWaterDensity(500.0f);
+    waterEntity->SetWaveSpeed(.15);
+    waterEntity->SetWaveTurbulence(0.015f);
+    waterEntity->SetTurbulenceAmplitude(.2f);
+    waterEntity->SetWaterColor(sf::Color(30,40,40,250));
+    waterEntity->CopyNoise(m_waterEntity);
+    rectNode->AttachObject(waterEntity);
+
+
+
 
 
     SceneNode* nodeGeoShaCas = m_mainScene.GetRootNode()->CreateChildNode(-86,-7);
@@ -486,14 +500,17 @@ void TestingState::Draw(sf::RenderTarget* renderer)
 
 
     {
-        sf::Glsl::Vec4 tab[96];
-        float xDistrib[96];
-        GenerateGerstnerWave(tab, xDistrib, 96, 8, 0, 2, m_waveTiming.asSeconds()*PI/5);
+        sf::Glsl::Vec4 tab[192];
+        float xDistrib[192];
+       // GenerateGerstnerWave(tab, xDistrib, 96, 8, 0, 2, m_waveTiming.asSeconds()*PI/5);
+        GenerateGerstnerWave(tab, xDistrib, 192, 10, 0, 4, m_waveTiming.asSeconds()*PI/5);
 
-        sf::Vertex lines[96];
-        for(size_t i = 0 ; i < 96 ; ++i)
+        sf::Vertex lines[192];
+        for(size_t i = 0 ; i < 192 ; ++i){
             lines[i] = sf::Vertex(sf::Vector2f( 128+xDistrib[i] *512.0, 600-tab[i].x*64.0),sf::Color(tab[i].w*255,255,255,255 ));
+            //    std::cout<<xDistrib[i]<<std::endl;
+        }
+        renderer->draw(lines, 192, sf::LineStrip);
 
-        renderer->draw(lines, 96, sf::LineStrip);
     }
 }
