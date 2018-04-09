@@ -1125,16 +1125,15 @@ void PBRIsoScene::SetShadowCasting(ShadowCastingType type)
 {
     DefaultScene::SetShadowCasting(type);
 
-
     if(type == AllShadows || type == DirectionnalShadow)
-        m_lightingShader.setUniform("enable_directionalShadows", true);
+        m_lightingShader.setUniform("enable_directionalShadows", 1);
     else
-        m_lightingShader.setUniform("enable_directionalShadows", false);
+        m_lightingShader.setUniform("enable_directionalShadows", 0);
 
     if(type == AllShadows || type == DynamicShadow)
-        m_lightingShader.setUniform("enable_dynamicShadows", true);
+        m_lightingShader.setUniform("enable_dynamicShadows", 1);
     else
-        m_lightingShader.setUniform("enable_dynamicShadows", false);
+        m_lightingShader.setUniform("enable_dynamicShadows", 0);
 }
 
 void PBRIsoScene::EnableGammaCorrection()

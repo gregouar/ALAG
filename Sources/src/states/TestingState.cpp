@@ -153,8 +153,9 @@ void TestingState::Init()
     IsoRectEntity *rectEntity = m_mainScene.CreateIsoRectEntity(sf::Vector2f(1155,4096));
     rectEntity->SetCenter(sf::Vector2f(512,  512));
    // rectEntity->SetTexture(PBRTextureHandler->LoadAssetFromFile("../data/wetsandXML.txt",LoadType_InThread));
+    rectEntity->SetTexture(TextureHandler->LoadAssetFromFile("../data/cliff_albedo.png",LoadType_InThread));
+    rectEntity->SetTexture(PBRTextureHandler->LoadAssetFromFile("../data/wallXML.txt"));
     rectEntity->SetTexture(PBRTextureHandler->LoadAssetFromFile("../data/cliffXML.txt",LoadType_InThread));
-    //rectEntity->SetTexture(PBRTextureHandler->LoadAssetFromFile("../data/wallXML.txt",LoadType_InThread));
     rectEntity->SetTextureRect(sf::IntRect(-128,0,1155,4096));
     rectEntity->SetParallax(true);
     //rectEntity->SetVisible(false);

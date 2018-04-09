@@ -289,7 +289,12 @@ void DefaultScene::DestroyCreatedObject(const ObjectTypeID &id)
 void DefaultScene::DestroyAllCreatedObjects()
 {
     while(!m_createdObjects.empty())
-        DestroyCreatedObject(m_createdObjects.begin()->first);
+    {
+        if(m_createdObjects.begin()->second != nullptr)
+            delete m_createdObjects.begin()->second;
+        m_createdObjects.erase(m_createdObjects.begin());
+    }
+      //  DestroyCreatedObject(m_createdObjects.begin()->first);
 }
 
 sf::View DefaultScene::GenerateView(Camera* cam)

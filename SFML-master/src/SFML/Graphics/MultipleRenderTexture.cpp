@@ -29,12 +29,15 @@ MultipleRenderTexture::MultipleRenderTexture() :
 
 MultipleRenderTexture::~MultipleRenderTexture()
 {
+
     if(m_context != NULL)
     {
         m_context->setActive(true);
 
+        if(m_textures != NULL)
+            delete m_textures;
+
         removeDepthBuffer();
-        //removeStencilBuffer();
 
         if (m_frameBuffer)
         {
@@ -44,9 +47,6 @@ MultipleRenderTexture::~MultipleRenderTexture()
 
         delete m_context;
     }
-
-    if(m_textures != NULL)
-        delete m_textures;
 }
 
 
@@ -58,12 +58,12 @@ bool MultipleRenderTexture::create(unsigned int width, unsigned int height)
     {
         m_context->setActive(true);
         removeDepthBuffer();
-        //removeStencilBuffer();
 
         if (m_frameBuffer)
         {
             GLuint frameBuffer = static_cast<GLuint>(m_frameBuffer);
             glCheck(GLEXT_glDeleteFramebuffers(1, &frameBuffer));
+            m_frameBuffer = 0;
         }
         delete m_context;
     }
@@ -490,6 +490,8 @@ bool MultipleRenderTexture::createFBO(unsigned int width, unsigned int height)
     glCheck(GLEXT_glBindFramebuffer(GLEXT_GL_FRAMEBUFFER, m_frameBuffer));
 
     RenderTarget::initialize();
+
+    return true;
 }
 
 
