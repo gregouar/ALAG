@@ -2,234 +2,14 @@
 <CodeBlocks_layout_file>
 	<FileVersion major="1" minor="0" />
 	<ActiveTarget name="Release" />
-	<File name="ALAGEngine\src\core\GApp.cpp" open="1" top="0" tabpos="42" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="2856" topLine="99" />
-		</Cursor>
-	</File>
-	<File name="ALAGEngine\src\gfx\QuadtreeNode.cpp" open="0" top="0" tabpos="41" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="162" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="ALAGEngine\include\ALAGE\Types.h" open="0" top="0" tabpos="8" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="695" topLine="22" />
-		</Cursor>
-	</File>
-	<File name="ALAGEngine\src\core\GState.cpp" open="0" top="0" tabpos="8" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="0" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="ALAGEngine\src\gfx\RectEntity.cpp" open="1" top="0" tabpos="10" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1532" topLine="42" />
-		</Cursor>
-	</File>
-	<File name="ALAGEngine\include\ALAGE\gfx\AnimatedSprite.h" open="1" top="0" tabpos="13" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="136" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="ALAGEngine\src\core\NotificationListener.cpp" open="0" top="0" tabpos="13" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="229" topLine="4" />
-		</Cursor>
-	</File>
-	<File name="ALAGEngine\src\gfx\SceneEntity.cpp" open="0" top="0" tabpos="11" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="907" topLine="39" />
-		</Cursor>
-	</File>
-	<File name="ALAGEngine\include\ALAGE\core\StateManager.h" open="0" top="0" tabpos="24" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="570" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="ALAGEngine\src\core\NotificationSender.cpp" open="0" top="0" tabpos="14" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="933" topLine="10" />
-		</Cursor>
-	</File>
-	<File name="ALAGEngine\src\gfx\SceneNode.cpp" open="1" top="0" tabpos="41" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="8835" topLine="336" />
-		</Cursor>
-	</File>
-	<File name="ALAGEngine\include\ALAGE\gfx\Light.h" open="0" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1071" topLine="27" />
-		</Cursor>
-	</File>
-	<File name="ALAGEngine\include\ALAGE\gfx\SceneObject.h" open="0" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="840" topLine="17" />
-		</Cursor>
-	</File>
-	<File name="ALAGEngine\src\core\StateManager.cpp" open="1" top="0" tabpos="43" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1313" topLine="49" />
-		</Cursor>
-	</File>
-	<File name="ALAGEngine\src\gfx\SceneObject.cpp" open="1" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="895" topLine="45" />
-		</Cursor>
-	</File>
-	<File name="ALAGEngine\include\ALAGE\core\Asset.h" open="0" top="0" tabpos="7" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="744" topLine="6" />
-		</Cursor>
-	</File>
-	<File name="ALAGEngine\include\ALAGE\gfx\ShadowCaster.h" open="0" top="0" tabpos="9" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="671" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="ALAGEngine\include\ALAGE\gfx\SpriteEntity.h" open="0" top="0" tabpos="23" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="957" topLine="14" />
-		</Cursor>
-	</File>
-	<File name="ALAGEngine\src\gfx\SpriteEntity.cpp" open="1" top="0" tabpos="40" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="3320" topLine="142" />
-		</Cursor>
-	</File>
-	<File name="ALAGEngine\include\ALAGE\gfx\TextureAsset.h" open="0" top="0" tabpos="29" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="405" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="ALAGEngine\src\gfx\TextureAsset.cpp" open="1" top="0" tabpos="45" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1026" topLine="46" />
-		</Cursor>
-	</File>
-	<File name="ALAGEngine\src\gfx\iso\IsoGeometricShadowCaster.cpp" open="1" top="0" tabpos="38" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="2191" topLine="42" />
-		</Cursor>
-	</File>
-	<File name="ALAGEngine\include\ALAGE\gfx\iso\IsoRectEntity.h" open="0" top="0" tabpos="14" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="318" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="include\states\TestingState.h" open="0" top="0" tabpos="20" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1272" topLine="30" />
-		</Cursor>
-	</File>
-	<File name="ALAGEngine\src\gfx\AnimatedSprite.cpp" open="1" top="0" tabpos="16" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="60" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="ALAGEngine\src\gfx\iso\IsoRectEntity.cpp" open="1" top="0" tabpos="9" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="834" topLine="18" />
-		</Cursor>
-	</File>
-	<File name="ALAGEngine\include\ALAGE\gfx\iso\IsoSpriteEntity.h" open="0" top="0" tabpos="18" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="218" topLine="14" />
-		</Cursor>
-	</File>
-	<File name="main.cpp" open="1" top="0" tabpos="7" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="308" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="ALAGEngine\src\gfx\Camera.cpp" open="0" top="0" tabpos="22" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="361" topLine="14" />
-		</Cursor>
-	</File>
-	<File name="ALAGEngine\src\gfx\iso\IsoSpriteEntity.cpp" open="1" top="0" tabpos="18" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="10297" topLine="210" />
-		</Cursor>
-	</File>
-	<File name="ALAGEngine\include\ALAGE\gfx\iso\IsoWaterEntity.h" open="1" top="0" tabpos="15" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="481" topLine="1" />
-		</Cursor>
-	</File>
-	<File name="src\states\TestingState.cpp" open="1" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="7093" topLine="152" />
-		</Cursor>
-	</File>
-	<File name="ALAGEngine\src\gfx\DefaultScene.cpp" open="1" top="0" tabpos="39" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="ALAGEngine\src\gfx\DefaultScene.cpp" open="0" top="0" tabpos="20" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
 			<Cursor1 position="8662" topLine="275" />
 		</Cursor>
 	</File>
-	<File name="ALAGEngine\src\gfx\iso\IsoWaterEntity.cpp" open="1" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="main.cpp" open="0" top="0" tabpos="7" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="4184" topLine="107" />
-		</Cursor>
-	</File>
-	<File name="ALAGEngine\include\ALAGE\gfx\iso\PBRIsoScene.h" open="1" top="0" tabpos="14" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="2281" topLine="54" />
-		</Cursor>
-	</File>
-	<File name="ALAGEngine\include\ALAGE\gfx\PBRTextureAsset.h" open="0" top="0" tabpos="7" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1071" topLine="9" />
-		</Cursor>
-	</File>
-	<File name="ALAGEngine\src\gfx\FontAsset.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="590" topLine="4" />
-		</Cursor>
-	</File>
-	<File name="ALAGEngine\src\gfx\iso\PBRIsoScene.cpp" open="1" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="2273" topLine="72" />
-		</Cursor>
-	</File>
-	<File name="ALAGEngine\include\ALAGE\utils\ListIterator.h" open="0" top="0" tabpos="47" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="451" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="ALAGEngine\include\ALAGE\gfx\GeometricShadowCaster.h" open="0" top="0" tabpos="35" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="439" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="ALAGEngine\src\gfx\GeometricShadowCaster.cpp" open="0" top="0" tabpos="9" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="342" topLine="19" />
-		</Cursor>
-	</File>
-	<File name="ALAGEngine\src\gfx\iso\PBRIsoShaders.cpp" open="1" top="1" tabpos="11" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="60014" topLine="1263" />
-		</Cursor>
-	</File>
-	<File name="ALAGEngine\include\ALAGE\utils\Logger.h" open="0" top="0" tabpos="46" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="144" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="ALAGEngine\include\ALAGE\core\Config.h" open="0" top="0" tabpos="15" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="252" topLine="14" />
-		</Cursor>
-	</File>
-	<File name="ALAGEngine\src\gfx\Light.cpp" open="0" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="2479" topLine="117" />
-		</Cursor>
-	</File>
-	<File name="ALAGEngine\src\utils\Logger.cpp" open="0" top="0" tabpos="21" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1798" topLine="57" />
+			<Cursor1 position="177" topLine="0" />
 		</Cursor>
 	</File>
 	<File name="ALAGEngine\include\ALAGE\utils\MapIterator.h" open="0" top="0" tabpos="26" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
@@ -237,67 +17,29 @@
 			<Cursor1 position="338" topLine="6" />
 		</Cursor>
 	</File>
-	<File name="ALAGEngine\include\ALAGE\gfx\RectEntity.h" open="0" top="0" tabpos="24" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="ALAGEngine\src\gfx\FontAsset.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="869" topLine="14" />
+			<Cursor1 position="590" topLine="4" />
 		</Cursor>
 	</File>
-	<File name="ALAGEngine\src\gfx\PBRTextureAsset.cpp" open="1" top="0" tabpos="8" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="src\states\TestingState.cpp" open="1" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="5743" topLine="160" />
+			<Cursor1 position="17752" topLine="431" />
 		</Cursor>
 	</File>
-	<File name="ALAGEngine\src\utils\Mathematics.cpp" open="1" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="ALAGEngine\src\gfx\GeometricShadowCaster.cpp" open="1" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="14431" topLine="104" />
-		</Cursor>
-		<Folding>
-			<Collapse line="37" />
-		</Folding>
-	</File>
-	<File name="ALAGEngine\include\ALAGE\utils\Mathematics.h" open="1" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="753" topLine="7" />
+			<Cursor1 position="1292" topLine="64" />
 		</Cursor>
 	</File>
-	<File name="ALAGEngine\include\ALAGE\core\EventManager.h" open="0" top="0" tabpos="34" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="ALAGEngine\include\ALAGE\gfx\iso\IsoRectEntity.h" open="0" top="0" tabpos="14" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="513" topLine="14" />
+			<Cursor1 position="318" topLine="0" />
 		</Cursor>
 	</File>
-	<File name="ALAGEngine\src\utils\Parser.cpp" open="1" top="0" tabpos="12" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="ALAGEngine\src\gfx\Light.cpp" open="0" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="765" topLine="26" />
-		</Cursor>
-	</File>
-	<File name="ALAGEngine\include\ALAGE\utils\Parser.h" open="0" top="0" tabpos="25" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="76" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="ALAGEngine\include\ALAGE\core\AssetHandler.h" open="0" top="0" tabpos="17" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1108" topLine="48" />
-		</Cursor>
-	</File>
-	<File name="ALAGEngine\include\ALAGE\gfx\DefaultScene.h" open="0" top="0" tabpos="11" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="2907" topLine="50" />
-		</Cursor>
-	</File>
-	<File name="ALAGEngine\src\utils\SingletonsCleaner.cpp" open="0" top="0" tabpos="24" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="203" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="ALAGEngine\include\ALAGE\utils\Singleton.h" open="0" top="0" tabpos="19" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1894" topLine="64" />
-		</Cursor>
-	</File>
-	<File name="ALAGEngine\src\utils\TextureModifier.cpp" open="1" top="0" tabpos="17" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="7543" topLine="193" />
+			<Cursor1 position="2479" topLine="117" />
 		</Cursor>
 	</File>
 	<File name="ALAGEngine\include\ALAGE\utils\SingletonsCleaner.h" open="0" top="0" tabpos="13" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
@@ -305,9 +47,64 @@
 			<Cursor1 position="315" topLine="2" />
 		</Cursor>
 	</File>
-	<File name="ALAGEngine\include\ALAGE\core\NotificationListener.h" open="0" top="0" tabpos="21" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="ALAGEngine\src\gfx\PBRTextureAsset.cpp" open="0" top="0" tabpos="8" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="383" topLine="0" />
+			<Cursor1 position="5743" topLine="160" />
+		</Cursor>
+	</File>
+	<File name="ALAGEngine\include\ALAGE\Types.h" open="0" top="0" tabpos="8" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="695" topLine="22" />
+		</Cursor>
+	</File>
+	<File name="ALAGEngine\src\gfx\QuadtreeNode.cpp" open="0" top="0" tabpos="41" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="162" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="ALAGEngine\include\ALAGE\gfx\DefaultScene.h" open="1" top="1" tabpos="7" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="106" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="ALAGEngine\src\gfx\RectEntity.cpp" open="0" top="0" tabpos="10" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1532" topLine="42" />
+		</Cursor>
+	</File>
+	<File name="ALAGEngine\include\ALAGE\gfx\SpriteEntity.h" open="0" top="0" tabpos="23" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="957" topLine="14" />
+		</Cursor>
+	</File>
+	<File name="ALAGEngine\src\gfx\SceneEntity.cpp" open="0" top="0" tabpos="11" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="907" topLine="39" />
+		</Cursor>
+	</File>
+	<File name="ALAGEngine\include\ALAGE\utils\Singleton.h" open="0" top="0" tabpos="19" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1894" topLine="64" />
+		</Cursor>
+	</File>
+	<File name="ALAGEngine\src\gfx\SceneNode.cpp" open="0" top="0" tabpos="22" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="8835" topLine="336" />
+		</Cursor>
+	</File>
+	<File name="ALAGEngine\include\ALAGE\gfx\SceneObject.h" open="1" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="787" topLine="12" />
+		</Cursor>
+	</File>
+	<File name="ALAGEngine\src\gfx\SceneObject.cpp" open="0" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="895" topLine="45" />
+		</Cursor>
+	</File>
+	<File name="ALAGEngine\include\ALAGE\core\Config.h" open="0" top="0" tabpos="15" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="252" topLine="14" />
 		</Cursor>
 	</File>
 	<File name="ALAGEngine\include\ALAGE\utils\TextureModifier.h" open="0" top="0" tabpos="49" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
@@ -315,9 +112,19 @@
 			<Cursor1 position="290" topLine="0" />
 		</Cursor>
 	</File>
-	<File name="ALAGEngine\include\ALAGE\core\GApp.h" open="0" top="0" tabpos="26" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="ALAGEngine\include\ALAGE\gfx\Camera.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="1071" topLine="28" />
+			<Cursor1 position="313" topLine="5" />
+		</Cursor>
+	</File>
+	<File name="ALAGEngine\src\gfx\ShadowCaster.cpp" open="1" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="0" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="ALAGEngine\include\ALAGE\gfx\iso\IsoWaterEntity.h" open="0" top="0" tabpos="15" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="481" topLine="1" />
 		</Cursor>
 	</File>
 	<File name="ALAGEngine\include\extlibs\tinystr.h" open="0" top="0" tabpos="27" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
@@ -325,14 +132,34 @@
 			<Cursor1 position="7444" topLine="266" />
 		</Cursor>
 	</File>
-	<File name="ALAGEngine\include\ALAGE\core\NotificationSender.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="ALAGEngine\include\ALAGE\gfx\AnimatedSprite.h" open="0" top="0" tabpos="13" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="523" topLine="7" />
+			<Cursor1 position="136" topLine="0" />
 		</Cursor>
 	</File>
-	<File name="ALAGEngine\include\ALAGE\gfx\Camera.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="ALAGEngine\src\gfx\SpriteEntity.cpp" open="0" top="0" tabpos="21" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="313" topLine="5" />
+			<Cursor1 position="3320" topLine="142" />
+		</Cursor>
+	</File>
+	<File name="ALAGEngine\include\ALAGE\core\EventManager.h" open="0" top="0" tabpos="34" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="513" topLine="14" />
+		</Cursor>
+	</File>
+	<File name="ALAGEngine\include\ALAGE\core\Asset.h" open="0" top="0" tabpos="7" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="744" topLine="6" />
+		</Cursor>
+	</File>
+	<File name="ALAGEngine\src\gfx\TextureAsset.cpp" open="0" top="0" tabpos="25" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1026" topLine="46" />
+		</Cursor>
+	</File>
+	<File name="ALAGEngine\include\ALAGE\core\AssetHandler.h" open="0" top="0" tabpos="17" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1108" topLine="48" />
 		</Cursor>
 	</File>
 	<File name="ALAGEngine\src\core\Asset.cpp" open="0" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
@@ -340,14 +167,14 @@
 			<Cursor1 position="2054" topLine="81" />
 		</Cursor>
 	</File>
-	<File name="ALAGEngine\include\ALAGE\gfx\SceneEntity.h" open="0" top="0" tabpos="8" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="ALAGEngine\include\ALAGE\utils\Parser.h" open="0" top="0" tabpos="25" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="775" topLine="27" />
+			<Cursor1 position="76" topLine="0" />
 		</Cursor>
 	</File>
-	<File name="ALAGEngine\src\core\AssetHandler.inc" open="0" top="0" tabpos="16" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="ALAGEngine\src\gfx\iso\IsoGeometricShadowCaster.cpp" open="1" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="6900" topLine="299" />
+			<Cursor1 position="1673" topLine="42" />
 		</Cursor>
 	</File>
 	<File name="ALAGEngine\include\ALAGE\gfx\QuadtreeNode.h" open="0" top="0" tabpos="40" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
@@ -355,14 +182,44 @@
 			<Cursor1 position="207" topLine="0" />
 		</Cursor>
 	</File>
+	<File name="ALAGEngine\src\core\AssetHandler.inc" open="0" top="0" tabpos="16" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="6900" topLine="299" />
+		</Cursor>
+	</File>
+	<File name="ALAGEngine\include\ALAGE\gfx\ShadowCaster.h" open="0" top="0" tabpos="9" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="671" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="ALAGEngine\src\gfx\iso\IsoRectEntity.cpp" open="0" top="0" tabpos="9" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="834" topLine="18" />
+		</Cursor>
+	</File>
+	<File name="ALAGEngine\include\ALAGE\gfx\SceneEntity.h" open="0" top="0" tabpos="8" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="775" topLine="27" />
+		</Cursor>
+	</File>
 	<File name="ALAGEngine\src\core\Config.cpp" open="0" top="0" tabpos="27" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
 			<Cursor1 position="1066" topLine="19" />
 		</Cursor>
 	</File>
-	<File name="ALAGEngine\include\ALAGE\core\GState.h" open="0" top="0" tabpos="13" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="ALAGEngine\include\ALAGE\gfx\SceneNode.h" open="0" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="0" topLine="0" />
+			<Cursor1 position="89" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="ALAGEngine\src\gfx\iso\IsoSpriteEntity.cpp" open="0" top="0" tabpos="18" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="10297" topLine="210" />
+		</Cursor>
+	</File>
+	<File name="ALAGEngine\include\ALAGE\core\NotificationListener.h" open="0" top="0" tabpos="21" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="383" topLine="0" />
 		</Cursor>
 	</File>
 	<File name="ALAGEngine\src\core\EventManager.cpp" open="0" top="0" tabpos="22" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
@@ -370,9 +227,157 @@
 			<Cursor1 position="472" topLine="1" />
 		</Cursor>
 	</File>
-	<File name="ALAGEngine\include\ALAGE\gfx\SceneNode.h" open="0" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="ALAGEngine\include\ALAGE\gfx\RectEntity.h" open="0" top="0" tabpos="24" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="89" topLine="0" />
+			<Cursor1 position="869" topLine="14" />
+		</Cursor>
+	</File>
+	<File name="ALAGEngine\src\gfx\iso\IsoWaterEntity.cpp" open="1" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="5160" topLine="140" />
+		</Cursor>
+	</File>
+	<File name="ALAGEngine\include\ALAGE\core\GApp.h" open="0" top="0" tabpos="26" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1071" topLine="28" />
+		</Cursor>
+	</File>
+	<File name="ALAGEngine\src\core\GApp.cpp" open="0" top="0" tabpos="23" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="2856" topLine="99" />
+		</Cursor>
+	</File>
+	<File name="ALAGEngine\include\ALAGE\gfx\Light.h" open="0" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1071" topLine="27" />
+		</Cursor>
+	</File>
+	<File name="ALAGEngine\src\gfx\iso\PBRIsoScene.cpp" open="0" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="2273" topLine="72" />
+		</Cursor>
+	</File>
+	<File name="ALAGEngine\include\ALAGE\core\NotificationSender.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="523" topLine="7" />
+		</Cursor>
+	</File>
+	<File name="ALAGEngine\src\core\GState.cpp" open="0" top="0" tabpos="8" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="0" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="ALAGEngine\src\gfx\iso\PBRIsoShaders.cpp" open="0" top="0" tabpos="11" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="58345" topLine="1243" />
+		</Cursor>
+	</File>
+	<File name="ALAGEngine\include\ALAGE\gfx\PBRTextureAsset.h" open="0" top="0" tabpos="7" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1071" topLine="9" />
+		</Cursor>
+	</File>
+	<File name="ALAGEngine\src\core\NotificationListener.cpp" open="0" top="0" tabpos="13" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="229" topLine="4" />
+		</Cursor>
+	</File>
+	<File name="ALAGEngine\src\utils\Logger.cpp" open="0" top="0" tabpos="21" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1798" topLine="57" />
+		</Cursor>
+	</File>
+	<File name="ALAGEngine\include\ALAGE\gfx\iso\PBRIsoScene.h" open="0" top="0" tabpos="14" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="2281" topLine="54" />
+		</Cursor>
+	</File>
+	<File name="ALAGEngine\src\core\NotificationSender.cpp" open="0" top="0" tabpos="14" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="933" topLine="10" />
+		</Cursor>
+	</File>
+	<File name="ALAGEngine\src\utils\Mathematics.cpp" open="0" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="14431" topLine="104" />
+		</Cursor>
+		<Folding>
+			<Collapse line="37" />
+		</Folding>
+	</File>
+	<File name="ALAGEngine\include\ALAGE\gfx\iso\IsoSpriteEntity.h" open="0" top="0" tabpos="18" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="218" topLine="14" />
+		</Cursor>
+	</File>
+	<File name="ALAGEngine\src\core\StateManager.cpp" open="0" top="0" tabpos="24" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1313" topLine="49" />
+		</Cursor>
+	</File>
+	<File name="ALAGEngine\src\utils\Parser.cpp" open="0" top="0" tabpos="12" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="765" topLine="26" />
+		</Cursor>
+	</File>
+	<File name="ALAGEngine\include\ALAGE\core\GState.h" open="0" top="0" tabpos="13" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="0" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="ALAGEngine\include\ALAGE\utils\ListIterator.h" open="0" top="0" tabpos="47" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="451" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="ALAGEngine\include\ALAGE\utils\Logger.h" open="0" top="0" tabpos="46" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="144" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="ALAGEngine\include\ALAGE\gfx\GeometricShadowCaster.h" open="0" top="0" tabpos="35" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="439" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="ALAGEngine\src\utils\SingletonsCleaner.cpp" open="0" top="0" tabpos="24" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="203" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="ALAGEngine\include\ALAGE\core\StateManager.h" open="0" top="0" tabpos="24" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="570" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="ALAGEngine\src\gfx\AnimatedSprite.cpp" open="0" top="0" tabpos="16" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="60" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="ALAGEngine\src\utils\TextureModifier.cpp" open="0" top="0" tabpos="17" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="7543" topLine="193" />
+		</Cursor>
+	</File>
+	<File name="ALAGEngine\include\ALAGE\gfx\TextureAsset.h" open="0" top="0" tabpos="29" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="405" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="ALAGEngine\src\gfx\Camera.cpp" open="0" top="0" tabpos="22" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="361" topLine="14" />
+		</Cursor>
+	</File>
+	<File name="include\states\TestingState.h" open="0" top="0" tabpos="20" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1069" topLine="30" />
+		</Cursor>
+	</File>
+	<File name="ALAGEngine\include\ALAGE\utils\Mathematics.h" open="0" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="753" topLine="7" />
 		</Cursor>
 	</File>
 </CodeBlocks_layout_file>

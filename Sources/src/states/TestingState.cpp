@@ -73,7 +73,7 @@ void TestingState::Init()
     //torusEntity->SetRotation(30);
 
     m_sarco3DNode = m_mainScene.GetRootNode()->CreateChildNode();
-    m_sarco3DNode->SetPosition(100,250,0);
+    m_sarco3DNode->SetPosition(100,250,80);
     SpriteEntity *sarco3DEntity = m_mainScene.CreateIsoSpriteEntity();
     sarco3DEntity->SetTexture(PBRTextureHandler->LoadAssetFromFile("../data/sarcoXML.txt",LoadType_InThread));
     sarco3DEntity->SetCenter(128,166);
@@ -82,16 +82,16 @@ void TestingState::Init()
     m_sarco3DNode->AttachObject(sarco3DEntity);
 
 
-    m_sarcoNode = m_mainScene.GetRootNode()->CreateChildNode();
-    m_sarcoNode->SetPosition(-100,-30);
+    /*m_sarcoNode = m_mainScene.GetRootNode()->CreateChildNode();
+    m_sarcoNode->SetPosition(-100,-30,80);
     IsoSpriteEntity *sarcoEntity = m_mainScene.CreateIsoSpriteEntity(sf::Vector2i(256,256));
     sarcoEntity->SetTexture(t3D);
     sarcoEntity->SetCenter(128,148);
     sarcoEntity->SetShadowCastingType(DirectionnalShadow);
-    m_sarcoNode->AttachObject(sarcoEntity);
+    m_sarcoNode->AttachObject(sarcoEntity);*/
 
 
-    IsoSpriteEntity *sarco3DEntitybis = m_mainScene.CreateIsoSpriteEntity(sf::Vector2i(256,256));
+    /*IsoSpriteEntity *sarco3DEntitybis = m_mainScene.CreateIsoSpriteEntity(sf::Vector2i(256,256));
     sarco3DEntitybis->SetTexture(t3D);
     //sarco3DEntitybis->SetTexture(PBRTextureHandler->LoadAssetFromFile("../data/sandXML.txt"));
     //sarco3DEntitybis->SetCenter(128,148);
@@ -107,7 +107,7 @@ void TestingState::Init()
     sarco3DEntityThird->SetCenter(128,148);
     sarco3DEntityThird->SetShadowCastingType(DirectionnalShadow);
     sarco3DEntityThird->SetStatic(true);
-    m_mainScene.GetRootNode()->CreateChildNode(sf::Vector2f(100,100))->AttachObject(sarco3DEntityThird);
+    m_mainScene.GetRootNode()->CreateChildNode(sf::Vector2f(100,100))->AttachObject(sarco3DEntityThird);*/
 
     m_sunLight = m_mainScene.CreateLight(DirectionnalLight,sf::Vector3f(.2 ,-1,-1), sf::Color(255,255,255));
    // m_sunLight = m_mainScene.CreateLight(DirectionnalLight,sf::Vector3f(.2 ,1,-1), sf::Color(255,255,255));
@@ -123,20 +123,20 @@ void TestingState::Init()
    // m_mainScene.SetAmbientLight(sf::Color(96,96,128));
     //m_mainScene.GetRootNode()->AttachObject(m_mainScene.CreateLight(DirectionnalLight,sf::Vector3f(0,-1,0), sf::Color::Red));
 
-    m_chene_node = m_mainScene.GetRootNode()->CreateChildNode(sf::Vector2f(150,-100));
+    m_chene_node = m_mainScene.GetRootNode()->CreateChildNode();
     IsoSpriteEntity *cheneEntity = m_mainScene.CreateIsoSpriteEntity();
     cheneEntity->SetTexture(PBRTextureHandler->LoadAssetFromFile("../data/treeXML.txt"));
     cheneEntity->SetCenter(256,526);
     cheneEntity->SetShadowCastingType(DirectionnalShadow);
     cheneEntity->SetShadowVolumeType(TwoSidedShadow);
     cheneEntity->SetStatic(true);
-    m_chene_node->SetPosition(150,-100,-78);
+    m_chene_node->SetPosition(150,-100,-78+80);
     m_chene_node->AttachObject(cheneEntity);
 
 
-    SceneNode* tree_shadow_node = m_chene_node->CreateChildNode(-12,-12,78);
+    SceneNode* tree_shadow_node = m_chene_node->CreateChildNode(-12,-12,78 - 80);
     IsoGeometricShadowCaster* tree_dynamic_shadow = m_mainScene.CreateIsoGeometricShadowCaster();
-    tree_dynamic_shadow->ConstructCylinder(12,70);
+    tree_dynamic_shadow->ConstructCylinder(12,70+80);
     tree_shadow_node->AttachObject(tree_dynamic_shadow);
 
 
@@ -145,24 +145,22 @@ void TestingState::Init()
     abbayeEntity->SetCenter(960,540);
     abbayeEntity->SetShadowCastingType(DirectionnalShadow);
      abbayeEntity->SetStatic(true);
-    m_mainScene.GetRootNode()->AttachObject(abbayeEntity);
+     SceneNode *abbayeNode =  m_mainScene.GetRootNode()->CreateChildNode(0,0,50);
+    abbayeNode->AttachObject(abbayeEntity);
     //m_mainScene.GetRootNode()->CreateChildNode(sf::Vector2f(0,0))->AttachObject(abbayeEntity);
 
 
-    SceneNode* rectNode = m_mainScene.GetRootNode()->CreateChildNode();
+    SceneNode* rectNode = m_mainScene.GetRootNode()->CreateChildNode(0,1024);
     IsoRectEntity *rectEntity = m_mainScene.CreateIsoRectEntity(sf::Vector2f(1155,4096));
     rectEntity->SetCenter(sf::Vector2f(512,  512));
-   // rectEntity->SetTexture(PBRTextureHandler->LoadAssetFromFile("../data/wetsandXML.txt",LoadType_InThread));
-    rectEntity->SetTexture(TextureHandler->LoadAssetFromFile("../data/cliff_albedo.png",LoadType_InThread));
-    rectEntity->SetTexture(PBRTextureHandler->LoadAssetFromFile("../data/wallXML.txt"));
     rectEntity->SetTexture(PBRTextureHandler->LoadAssetFromFile("../data/cliffXML.txt",LoadType_InThread));
-    rectEntity->SetTextureRect(sf::IntRect(-128,0,1155,4096));
+    rectEntity->SetTextureRect(sf::IntRect(-128,1024,1155,4096));
     rectEntity->SetParallax(true);
     //rectEntity->SetVisible(false);
     rectEntity->SetStatic(true);
     rectNode->AttachObject(rectEntity);
 
-    rectNode = rectNode->CreateChildNode(256, 1024, 20);
+    rectNode = rectNode->CreateChildNode(256, 512, 20);
     rectEntity = m_mainScene.CreateIsoRectEntity(sf::Vector2f(2048,1024));
     rectEntity->SetCenter(sf::Vector2f(1024,  512));
     rectEntity->SetTexture(PBRTextureHandler->LoadAssetFromFile("../data/wetsand2XML.txt",LoadType_InThread));
@@ -172,16 +170,25 @@ void TestingState::Init()
     rectEntity->SetStatic(true);
     rectNode->AttachObject(rectEntity);
 
-    rectNode = rectNode->CreateChildNode(1024,-1024, 0);
-    rectEntity = m_mainScene.CreateIsoRectEntity(sf::Vector2f(2048,4096));
+    rectNode = rectNode->CreateChildNode(0,-1024-512, 0);
+    rectEntity = m_mainScene.CreateIsoRectEntity(sf::Vector2f(4096,4096));
     rectEntity->SetCenter(sf::Vector2f(1024,  512));
     rectEntity->SetTexture(PBRTextureHandler->LoadAssetFromFile("../data/wetsandXML.txt",LoadType_InThread));
-    rectEntity->SetTextureRect(sf::IntRect(0,0,2048,4096));
+    rectEntity->SetTextureRect(sf::IntRect(0,0,4096,4096));
     //rectEntity->SetParallax(true);
     rectEntity->SetStatic(true);
     rectNode->AttachObject(rectEntity);
 
 
+
+    rectNode = m_mainScene.GetRootNode()->CreateChildNode(0,0, 80);
+    rectEntity = m_mainScene.CreateIsoRectEntity(sf::Vector2f(1024,1024));
+    rectEntity->SetCenter(sf::Vector2f(512,  512));
+    rectEntity->SetTexture(PBRTextureHandler->LoadAssetFromFile("../data/wetsandXML.txt",LoadType_InThread));
+    rectEntity->SetTextureRect(sf::IntRect(0,0,1024,1024));
+    //rectEntity->SetParallax(true);
+    rectEntity->SetStatic(true);
+    rectNode->AttachObject(rectEntity);
 
 
     rectNode = m_mainScene.GetRootNode()->CreateChildNode(-384+256,-768+1024+256-1024,45);
@@ -238,26 +245,26 @@ void TestingState::Init()
 
 
 
-    SceneNode* nodeGeoShaCas = m_mainScene.GetRootNode()->CreateChildNode(-86,-7);
+    SceneNode* nodeGeoShaCas = abbayeNode->CreateChildNode(-86,-7,-50);
     IsoGeometricShadowCaster* geoShaCas = m_mainScene.CreateIsoGeometricShadowCaster();
-    geoShaCas->ConstructCube(20,20,55);
+    geoShaCas->ConstructCube(20,20,55+50);
     nodeGeoShaCas->AttachObject(geoShaCas);
 
 
-    nodeGeoShaCas = m_mainScene.GetRootNode()->CreateChildNode(-86,-147);
+    nodeGeoShaCas = abbayeNode->CreateChildNode(-86,-147,-50);
     geoShaCas = m_mainScene.CreateIsoGeometricShadowCaster();
-    geoShaCas->ConstructCube(20,20,55);
+    geoShaCas->ConstructCube(20,20,55+50);
     nodeGeoShaCas->AttachObject(geoShaCas);
 
 
-    nodeGeoShaCas = m_mainScene.GetRootNode()->CreateChildNode(-86,136);
+    nodeGeoShaCas = abbayeNode->CreateChildNode(-86,136,-50);
     geoShaCas = m_mainScene.CreateIsoGeometricShadowCaster();
-    geoShaCas->ConstructCube(20,20,55);
+    geoShaCas->ConstructCube(20,20,55+50);
     nodeGeoShaCas->AttachObject(geoShaCas);
 
 
 
-    SceneNode *lightNode = m_mainScene.GetRootNode()->CreateChildNode();
+    SceneNode *lightNode = abbayeNode->CreateChildNode();
     Light* light = m_mainScene.CreateLight();
     light->SetDiffuseColor(sf::Color(255,190,64));
     light->SetIntensity(5);
@@ -265,12 +272,20 @@ void TestingState::Init()
     lightNode->SetPosition(130,720,75);
     lightNode->AttachObject(light);
 
-    lightNode = m_mainScene.GetRootNode()->CreateChildNode();
+    lightNode = abbayeNode->CreateChildNode();
     light = m_mainScene.CreateLight();
     light->SetDiffuseColor(sf::Color(255,190,64));
     light->SetIntensity(5);
     light->SetRadius(300);
     lightNode->SetPosition(50,-175,75);
+    lightNode->AttachObject(light);
+
+    lightNode = abbayeNode->CreateChildNode();
+    light = m_mainScene.CreateLight();
+    light->SetDiffuseColor(sf::Color(255,190,64));
+    light->SetIntensity(15);
+    light->SetRadius(300);
+    lightNode->SetPosition(600,300,75);
     lightNode->AttachObject(light);
 
 
@@ -367,10 +382,10 @@ void TestingState::HandleEvents(alag::EventManager *event_manager)
 
 
 
-    if(event_manager->KeyPressed(sf::Keyboard::A))
+    /*if(event_manager->KeyPressed(sf::Keyboard::A))
         m_sarco3DNode->Move(0,0,10);
     if(event_manager->KeyPressed(sf::Keyboard::Q))
-        m_sarco3DNode->Move(0,0,-10);
+        m_sarco3DNode->Move(0,0,-10);*/
 
 
     if(event_manager->KeyPressed(sf::Keyboard::E))
@@ -414,7 +429,7 @@ void TestingState::HandleEvents(alag::EventManager *event_manager)
     if(event_manager->MouseButtonIsPressed(sf::Mouse::Left))
     {
         sf::Vector2i p(event_manager->MousePosition());
-        m_sarco3DNode->SetPosition(m_mainScene.ConvertMouseToScene(p));
+        m_chene_node->SetPosition(m_mainScene.ConvertMouseToScene(p));
 
       //  std::cout<<m_mainScene.ConvertMouseToScene(p).x<<" "
                // <<m_mainScene.ConvertMouseToScene(p).y<<std::endl;
@@ -425,14 +440,15 @@ void TestingState::HandleEvents(alag::EventManager *event_manager)
         sf::Vector2i p(event_manager->MousePosition());
         //m_chene_node->SetPosition(m_mainScene.ConvertMouseToScene(p));
 
-        m_torusPos = sf::Vector2f(m_mainScene.ConvertMouseToScene(p)) + sf::Vector2f(512,512);
+        m_torusPos = sf::Vector2f(m_mainScene.ConvertMouseToScene(p)) - sf::Vector2f(-384+256+2048-128,-768+1024+256);
+
 
         //m_cameraNode->SetPosition(m_mainScene.ConvertMouseToScene(p)+sf::Vector2f(3000,3000));
     }
 
 
     sf::Vector2f p = m_mainScene.ConvertMouseToScene(event_manager->MousePosition());
-    m_lightNode->SetPosition(p.x,p.y,50);
+    m_lightNode->SetPosition(p.x+80,p.y+80,150);
 
     if(event_manager->IsAskingToClose())
         m_manager->Switch(nullptr);
@@ -454,7 +470,7 @@ void TestingState::Update(sf::Time time)
 
   //  m_cameraNode->Move(0,0,m_camMove.z *(500*time.asSeconds()));
 
-    m_sarcoNode->Move(20*time.asSeconds(),0,0);
+  //  m_sarcoNode->Move(20*time.asSeconds(),0,0);
 
   /*  if(m_waveTiming.asSeconds() > 10)
     {
@@ -475,7 +491,7 @@ void TestingState::Update(sf::Time time)
     sf::Vector3f p((p1.x+p2.x)/2, (p1.y+p2.y)/2, (p1.z+p2.z)/2);
     m_torusEntity->SetRotation(atan((p2.z-p1.z)/128.0)*180/PI);
     //m_torusEntity->Rotate(time.asMilliseconds()*0.05);
-    m_torusNode->SetPosition(p);
+    m_torusNode->SetPosition(p+sf::Vector3f(-384+256+2048-128,-768+1024+256,0));
   //  m_torusNode->Move(0,0,40);
 }
 
@@ -500,7 +516,7 @@ void TestingState::Draw(sf::RenderTarget* renderer)
 
 
 
-    {
+   /* {
         sf::Glsl::Vec4 tab[192];
         float xDistrib[192];
        // GenerateGerstnerWave(tab, xDistrib, 96, 8, 0, 2, m_waveTiming.asSeconds()*PI/5);
@@ -513,5 +529,5 @@ void TestingState::Draw(sf::RenderTarget* renderer)
         }
         renderer->draw(lines, 192, sf::LineStrip);
 
-    }
+    }*/
 }
