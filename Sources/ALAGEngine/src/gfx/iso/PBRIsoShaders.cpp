@@ -125,6 +125,7 @@ void PBRIsoScene::CompilePBRGeometryShader()
     "layout (location = 1) out vec4 NormalColor;"
     "layout (location = 2) out vec4 DepthColor;"
     "layout (location = 3) out vec4 MaterialColor;"*/
+    "#version 130 \n"
     "uniform bool p_alpha_pass;"
     "uniform sampler2D map_albedo;"  \
     "uniform bool enable_depthMap;" \
@@ -237,7 +238,7 @@ void PBRIsoScene::CompilePBRGeometryShader()
     "   vec3 depthPixel = texture2D(map_depth, coord - p).rgb;"
     "   if(p_isRepeated == false)"
     "       depthPixel *= insideBox(coord - p,vec2(0.0,0.0),vec2(1.0,1.0));"
-    "   vec3 oldHeight = 0.0;"
+    "   float oldHeight = 0.0;"
     "   float layerHeight = 1.0;"
     "   float curHeight = -dot(All33, depthPixel);"
     "   while(curHeight < layerHeight) {"
