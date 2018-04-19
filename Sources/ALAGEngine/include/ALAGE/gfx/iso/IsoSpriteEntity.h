@@ -27,6 +27,9 @@ class IsoSpriteEntity : public SpriteEntity
 
         void SetShadowVolumeType(ShadowVolumeType);
 
+        void SetDistortionIdentifier(TextureAsset *);
+        void SetWindVector(sf::Vector3f );
+
         //virtual void Notify(NotificationSender*, NotificationType);
 
     protected:
@@ -36,6 +39,8 @@ class IsoSpriteEntity : public SpriteEntity
 
     private:
         PBRIsoScene *m_scene;
+
+        TextureAsset* m_distortionIdentifier;
 };
 
 }

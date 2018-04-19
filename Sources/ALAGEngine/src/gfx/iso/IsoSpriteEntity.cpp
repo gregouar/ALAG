@@ -20,6 +20,7 @@ IsoSpriteEntity::IsoSpriteEntity(const sf::IntRect &r) : SpriteEntity(r)
 {
     m_scene = nullptr;
     m_shadowVolumeType = OneSidedShadow;
+    m_distortionIdentifier = nullptr;
 }
 
 
@@ -302,5 +303,16 @@ void IsoSpriteEntity::SetIsoScene(PBRIsoScene *scene)
     m_scene = scene;
 }
 
+void IsoSpriteEntity::SetDistortionIdentifier(TextureAsset *t)
+{
+    m_distortionIdentifier = t;
+}
+
+void IsoSpriteEntity::SetWindVector(sf::Vector3f v)
+{
 
 }
+
+
+}
+

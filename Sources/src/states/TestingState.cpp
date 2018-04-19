@@ -124,14 +124,32 @@ void TestingState::Init()
     //m_mainScene.GetRootNode()->AttachObject(m_mainScene.CreateLight(DirectionnalLight,sf::Vector3f(0,-1,0), sf::Color::Red));
 
     m_chene_node = m_mainScene.GetRootNode()->CreateChildNode();
+    m_chene_node->SetPosition(150,-100,-78+80);
+
     IsoSpriteEntity *cheneEntity = m_mainScene.CreateIsoSpriteEntity();
     cheneEntity->SetTexture(PBRTextureHandler->LoadAssetFromFile("../data/treeXML.txt"));
     cheneEntity->SetCenter(256,526);
     cheneEntity->SetShadowCastingType(DirectionnalShadow);
-    cheneEntity->SetShadowVolumeType(TwoSidedShadow);
+    cheneEntity->SetShadowVolumeType(OneSidedShadow);
     cheneEntity->SetStatic(true);
-    m_chene_node->SetPosition(150,-100,-78+80);
     m_chene_node->AttachObject(cheneEntity);
+
+    /*IsoSpriteEntity *cheneEntity = m_mainScene.CreateIsoSpriteEntity();
+    cheneEntity->SetTexture(PBRTextureHandler->LoadAssetFromFile("../data/treeTrunkXML.txt"));
+    cheneEntity->SetCenter(256,526);
+    cheneEntity->SetShadowCastingType(DirectionnalShadow);
+    cheneEntity->SetShadowVolumeType(OneSidedShadow);
+    cheneEntity->SetStatic(true);
+    m_chene_node->AttachObject(cheneEntity);
+
+    cheneEntity = m_mainScene.CreateIsoSpriteEntity();
+    cheneEntity->SetTexture(PBRTextureHandler->LoadAssetFromFile("../data/treeLeafXML.txt"));
+    cheneEntity->SetCenter(256,526);
+    cheneEntity->SetShadowCastingType(DirectionnalShadow);
+    cheneEntity->SetShadowVolumeType(TwoSidedShadow);
+    cheneEntity->SetStatic(false);
+    cheneEntity->SetDistortionIdentifier(TextureHandler->LoadAssetFromFile("../data/tree_windmap.png"));
+    m_chene_node->AttachObject(cheneEntity);*/
 
 
     SceneNode* tree_shadow_node = m_chene_node->CreateChildNode(-12,-12,78 - 80);
