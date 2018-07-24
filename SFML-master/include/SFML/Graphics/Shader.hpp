@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////
 //
 // SFML - Simple and Fast Multimedia Library
-// Copyright (C) 2007-2017 Laurent Gomila (laurent@sfml-dev.org)
+// Copyright (C) 2007-2018 Laurent Gomila (laurent@sfml-dev.org)
 //
 // This software is provided 'as-is', without any express or implied warranty.
 // In no event will the authors be held liable for any damages arising from the use of this software.
@@ -660,9 +660,6 @@ public:
     ////////////////////////////////////////////////////////////
     static void bind(const Shader* shader);
 
-
-    static void updateTextures(const Shader* shader, std::map<int, const Texture*> *oldTextures);
-
     ////////////////////////////////////////////////////////////
     /// \brief Tell whether or not the system supports shaders
     ///
@@ -696,8 +693,6 @@ public:
 
 private:
 
-    friend class RenderTarget;
-
     ////////////////////////////////////////////////////////////
     /// \brief Compile the shader(s) and create the program
     ///
@@ -721,8 +716,6 @@ private:
     ///
     ////////////////////////////////////////////////////////////
     void bindTextures() const;
-
-    void updateTextures(std::map<int, const Texture*> *oldTextures) const;
 
     ////////////////////////////////////////////////////////////
     /// \brief Get the location ID of a shader uniform
@@ -756,7 +749,6 @@ private:
     int          m_currentTexture; ///< Location of the current texture in the shader
     TextureTable m_textures;       ///< Texture variables in the shader, mapped to their location
     UniformTable m_uniforms;       ///< Parameters location cache
-    Uint64       m_cacheId;       ///< Unique number that identifies the shader to the render target's cache
 };
 
 } // namespace sf
@@ -830,7 +822,7 @@ private:
 /// object being drawn (which cannot be known in advance).
 ///
 /// To apply a shader to a drawable, you must pass it as an
-/// additional parameter to the \ref Window::draw() draw() function:
+/// additional parameter to the \ref RenderWindow::draw function:
 /// \code
 /// window.draw(sprite, &shader);
 /// \endcode

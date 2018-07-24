@@ -180,7 +180,8 @@ void PBRIsoScene::CompilePBRGeometryShader()
     ""
     "float GetDepth(vec2 p)"
     "{"
-    "       vec3 depthPixel   = texture2D(map_opaqueGeometry, p*view_ratio).rgb;" \
+    //"       vec3 depthPixel   = texture2DLod(map_opaqueGeometry, p*view_ratio,20).rgb;"
+    "       vec3 depthPixel   = texture2D(map_opaqueGeometry, p*view_ratio).rgb;"
     "       return  ((depthPixel.b*"<<1.0/255.0<<"+depthPixel.g)*"<<1.0/255.0<<"+depthPixel.r);"
    // "       return "<<0.5*PBRTextureAsset::DEPTH_BUFFER_NORMALISER_INV<<
    // "                          -depth*"<< PBRTextureAsset::DEPTH_BUFFER_NORMALISER_INV <<";"

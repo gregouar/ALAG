@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////
 //
 // SFML - Simple and Fast Multimedia Library
-// Copyright (C) 2007-2017 Laurent Gomila (laurent@sfml-dev.org)
+// Copyright (C) 2007-2018 Laurent Gomila (laurent@sfml-dev.org)
 //
 // This software is provided 'as-is', without any express or implied warranty.
 // In no event will the authors be held liable for any damages arising from the use of this software.
@@ -48,7 +48,9 @@ int sfogl_ext_ARB_texture_non_power_of_two = sfogl_LOAD_FAILED;
 int sfogl_ext_EXT_blend_equation_separate = sfogl_LOAD_FAILED;
 int sfogl_ext_EXT_texture_sRGB = sfogl_LOAD_FAILED;
 int sfogl_ext_EXT_framebuffer_object = sfogl_LOAD_FAILED;
+int sfogl_ext_EXT_packed_depth_stencil = sfogl_LOAD_FAILED;
 int sfogl_ext_EXT_framebuffer_blit = sfogl_LOAD_FAILED;
+int sfogl_ext_EXT_framebuffer_multisample = sfogl_LOAD_FAILED;
 int sfogl_ext_ARB_copy_buffer = sfogl_LOAD_FAILED;
 int sfogl_ext_ARB_geometry_shader4 = sfogl_LOAD_FAILED;
 
@@ -783,7 +785,6 @@ void (GL_FUNCPTR *sf_ptrc_glFramebufferTexture1DEXT)(GLenum, GLenum, GLenum, GLu
 void (GL_FUNCPTR *sf_ptrc_glFramebufferTexture2DEXT)(GLenum, GLenum, GLenum, GLuint, GLint) = NULL;
 void (GL_FUNCPTR *sf_ptrc_glFramebufferTexture3DEXT)(GLenum, GLenum, GLenum, GLuint, GLint, GLint) = NULL;
 void (GL_FUNCPTR *sf_ptrc_glGenFramebuffersEXT)(GLsizei, GLuint*) = NULL;
-void (GL_FUNCPTR *sf_ptrc_glDrawBuffersEXT)(GLsizei, const GLenum *) = NULL;
 void (GL_FUNCPTR *sf_ptrc_glGenRenderbuffersEXT)(GLsizei, GLuint*) = NULL;
 void (GL_FUNCPTR *sf_ptrc_glGenerateMipmapEXT)(GLenum) = NULL;
 void (GL_FUNCPTR *sf_ptrc_glGetFramebufferAttachmentParameterivEXT)(GLenum, GLenum, GLenum, GLint*) = NULL;
@@ -791,6 +792,7 @@ void (GL_FUNCPTR *sf_ptrc_glGetRenderbufferParameterivEXT)(GLenum, GLenum, GLint
 GLboolean (GL_FUNCPTR *sf_ptrc_glIsFramebufferEXT)(GLuint) = NULL;
 GLboolean (GL_FUNCPTR *sf_ptrc_glIsRenderbufferEXT)(GLuint) = NULL;
 void (GL_FUNCPTR *sf_ptrc_glRenderbufferStorageEXT)(GLenum, GLenum, GLsizei, GLsizei) = NULL;
+void (GL_FUNCPTR *sf_ptrc_glDrawBuffersEXT)(GLsizei, const GLenum *) = NULL;
 
 static int Load_EXT_framebuffer_object()
 {
@@ -836,10 +838,6 @@ static int Load_EXT_framebuffer_object()
     if (!sf_ptrc_glGenFramebuffersEXT)
         numFailed++;
 
-    sf_ptrc_glDrawBuffersEXT = reinterpret_cast<void (GL_FUNCPTR *)(GLsizei, const GLenum*)>(glLoaderGetProcAddress("glDrawBuffers"));
-    if (!sf_ptrc_glDrawBuffersEXT)
-        numFailed++;
-
     sf_ptrc_glGenRenderbuffersEXT = reinterpret_cast<void (GL_FUNCPTR *)(GLsizei, GLuint*)>(glLoaderGetProcAddress("glGenRenderbuffersEXT"));
     if (!sf_ptrc_glGenRenderbuffersEXT)
         numFailed++;
@@ -868,6 +866,11 @@ static int Load_EXT_framebuffer_object()
     if (!sf_ptrc_glRenderbufferStorageEXT)
         numFailed++;
 
+
+	sf_ptrc_glDrawBuffersEXT = reinterpret_cast<void (GL_FUNCPTR *)(GLsizei, const GLenum*)>(glLoaderGetProcAddress("glDrawBuffers"));
+    	if (!sf_ptrc_glDrawBuffersEXT)
+        	numFailed++;
+
     return numFailed;
 }
 
@@ -879,6 +882,19 @@ static int Load_EXT_framebuffer_blit()
 
     sf_ptrc_glBlitFramebufferEXT = reinterpret_cast<void (GL_FUNCPTR *)(GLint, GLint, GLint, GLint, GLint, GLint, GLint, GLint, GLbitfield, GLenum)>(glLoaderGetProcAddress("glBlitFramebufferEXT"));
     if (!sf_ptrc_glBlitFramebufferEXT)
+        numFailed++;
+
+    return numFailed;
+}
+
+void (GL_FUNCPTR *sf_ptrc_glRenderbufferStorageMultisampleEXT)(GLenum, GLsizei, GLenum, GLsizei, GLsizei) = NULL;
+
+static int Load_EXT_framebuffer_multisample()
+{
+    int numFailed = 0;
+
+    sf_ptrc_glRenderbufferStorageMultisampleEXT = reinterpret_cast<void (GL_FUNCPTR *)(GLenum, GLsizei, GLenum, GLsizei, GLsizei)>(glLoaderGetProcAddress("glRenderbufferStorageMultisampleEXT"));
+    if (!sf_ptrc_glRenderbufferStorageMultisampleEXT)
         numFailed++;
 
     return numFailed;
@@ -933,7 +949,7 @@ typedef struct sfogl_StrToExtMap_s
     PFN_LOADFUNCPOINTERS LoadExtension;
 } sfogl_StrToExtMap;
 
-static sfogl_StrToExtMap ExtensionMap[18] = {
+static sfogl_StrToExtMap ExtensionMap[20] = {
     {"GL_SGIS_texture_edge_clamp", &sfogl_ext_SGIS_texture_edge_clamp, NULL},
     {"GL_EXT_texture_edge_clamp", &sfogl_ext_EXT_texture_edge_clamp, NULL},
     {"GL_EXT_blend_minmax", &sfogl_ext_EXT_blend_minmax, Load_EXT_blend_minmax},
@@ -949,12 +965,14 @@ static sfogl_StrToExtMap ExtensionMap[18] = {
     {"GL_EXT_blend_equation_separate", &sfogl_ext_EXT_blend_equation_separate, Load_EXT_blend_equation_separate},
     {"GL_EXT_texture_sRGB", &sfogl_ext_EXT_texture_sRGB, NULL},
     {"GL_EXT_framebuffer_object", &sfogl_ext_EXT_framebuffer_object, Load_EXT_framebuffer_object},
+    {"GL_EXT_packed_depth_stencil", &sfogl_ext_EXT_packed_depth_stencil, NULL},
     {"GL_EXT_framebuffer_blit", &sfogl_ext_EXT_framebuffer_blit, Load_EXT_framebuffer_blit},
+    {"GL_EXT_framebuffer_multisample", &sfogl_ext_EXT_framebuffer_multisample, Load_EXT_framebuffer_multisample},
     {"GL_ARB_copy_buffer", &sfogl_ext_ARB_copy_buffer, Load_ARB_copy_buffer},
     {"GL_ARB_geometry_shader4", &sfogl_ext_ARB_geometry_shader4, Load_ARB_geometry_shader4}
 };
 
-static int g_extensionMapSize = 18;
+static int g_extensionMapSize = 20;
 
 
 static void ClearExtensionVars()
@@ -974,7 +992,9 @@ static void ClearExtensionVars()
     sfogl_ext_EXT_blend_equation_separate = sfogl_LOAD_FAILED;
     sfogl_ext_EXT_texture_sRGB = sfogl_LOAD_FAILED;
     sfogl_ext_EXT_framebuffer_object = sfogl_LOAD_FAILED;
+    sfogl_ext_EXT_packed_depth_stencil = sfogl_LOAD_FAILED;
     sfogl_ext_EXT_framebuffer_blit = sfogl_LOAD_FAILED;
+    sfogl_ext_EXT_framebuffer_multisample = sfogl_LOAD_FAILED;
     sfogl_ext_ARB_copy_buffer = sfogl_LOAD_FAILED;
     sfogl_ext_ARB_geometry_shader4 = sfogl_LOAD_FAILED;
 }

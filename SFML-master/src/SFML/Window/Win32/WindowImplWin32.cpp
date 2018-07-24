@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////
 //
 // SFML - Simple and Fast Multimedia Library
-// Copyright (C) 2007-2017 Laurent Gomila (laurent@sfml-dev.org)
+// Copyright (C) 2007-2018 Laurent Gomila (laurent@sfml-dev.org)
 //
 // This software is provided 'as-is', without any express or implied warranty.
 // In no event will the authors be held liable for any damages arising from the use of this software.
@@ -39,6 +39,10 @@
 #include <GL/gl.h>
 #include <SFML/System/Err.hpp>
 #include <SFML/System/Utf.hpp>
+// dbt.h is lowercase here, as a cross-compile on linux with mingw-w64
+// expects lowercase, and a native compile on windows, whether via msvc
+// or mingw-w64 addresses files in a case insensitive manner.
+#include <dbt.h>
 #include <vector>
 #include <cstring>
 
@@ -56,17 +60,14 @@
     #define MAPVK_VK_TO_VSC (0)
 #endif
 
-// Avoid including <Dbt.h> just for one define
-#ifndef DBT_DEVNODES_CHANGED
-    #define DBT_DEVNODES_CHANGED 0x0007
-#endif
-
 namespace
 {
     unsigned int               windowCount      = 0; // Windows owned by SFML
     unsigned int               handleCount      = 0; // All window handles
     const wchar_t*             className        = L"SFML_Window";
     sf::priv::WindowImplWin32* fullscreenWindow = NULL;
+
+    const GUID GUID_DEVINTERFACE_HID = {0x4d1e55b2, 0xf16f, 0x11cf, {0x88, 0xcb, 0x00, 0x11, 0x11, 0x00, 0x00, 0x30}};
 
     void setProcessDpiAware()
     {
@@ -215,6 +216,10 @@ m_cursorGrabbed   (m_fullscreen)
 
     // Create the window
     m_handle = CreateWindowW(className, title.toWideString().c_str(), win32Style, left, top, width, height, NULL, NULL, GetModuleHandle(NULL), this);
+
+    // Register to receive device interface change notifications (used for joystick connection handling)
+    DEV_BROADCAST_DEVICEINTERFACE deviceInterface = {sizeof(DEV_BROADCAST_DEVICEINTERFACE), DBT_DEVTYP_DEVICEINTERFACE, 0, GUID_DEVINTERFACE_HID, 0};
+    RegisterDeviceNotification(m_handle, &deviceInterface, DEVICE_NOTIFY_WINDOW_HANDLE);
 
     // If we're the first window handle, we only need to poll for joysticks when WM_DEVICECHANGE message is received
     if (m_handle)
@@ -983,8 +988,15 @@ void WindowImplWin32::processEvent(UINT message, WPARAM wParam, LPARAM lParam)
         case WM_DEVICECHANGE:
         {
             // Some sort of device change has happened, update joystick connections
-            if (wParam == DBT_DEVNODES_CHANGED)
-                JoystickImpl::updateConnections();
+            if ((wParam == DBT_DEVICEARRIVAL) || (wParam == DBT_DEVICEREMOVECOMPLETE))
+            {
+                // Some sort of device change has happened, update joystick connections if it is a device interface
+                DEV_BROADCAST_HDR* deviceBroadcastHeader = reinterpret_cast<DEV_BROADCAST_HDR*>(lParam);
+
+                if (deviceBroadcastHeader && (deviceBroadcastHeader->dbch_devicetype == DBT_DEVTYP_DEVICEINTERFACE))
+                    JoystickImpl::updateConnections();
+            }
+
             break;
         }
     }
@@ -1014,21 +1026,21 @@ Keyboard::Key WindowImplWin32::virtualKeyCodeToSF(WPARAM key, LPARAM flags)
         case VK_LWIN:       return Keyboard::LSystem;
         case VK_RWIN:       return Keyboard::RSystem;
         case VK_APPS:       return Keyboard::Menu;
-        case VK_OEM_1:      return Keyboard::SemiColon;
+        case VK_OEM_1:      return Keyboard::Semicolon;
         case VK_OEM_2:      return Keyboard::Slash;
         case VK_OEM_PLUS:   return Keyboard::Equal;
-        case VK_OEM_MINUS:  return Keyboard::Dash;
+        case VK_OEM_MINUS:  return Keyboard::Hyphen;
         case VK_OEM_4:      return Keyboard::LBracket;
         case VK_OEM_6:      return Keyboard::RBracket;
         case VK_OEM_COMMA:  return Keyboard::Comma;
         case VK_OEM_PERIOD: return Keyboard::Period;
         case VK_OEM_7:      return Keyboard::Quote;
-        case VK_OEM_5:      return Keyboard::BackSlash;
+        case VK_OEM_5:      return Keyboard::Backslash;
         case VK_OEM_3:      return Keyboard::Tilde;
         case VK_ESCAPE:     return Keyboard::Escape;
         case VK_SPACE:      return Keyboard::Space;
-        case VK_RETURN:     return Keyboard::Return;
-        case VK_BACK:       return Keyboard::BackSpace;
+        case VK_RETURN:     return Keyboard::Enter;
+        case VK_BACK:       return Keyboard::Backspace;
         case VK_TAB:        return Keyboard::Tab;
         case VK_PRIOR:      return Keyboard::PageUp;
         case VK_NEXT:       return Keyboard::PageDown;

@@ -14,7 +14,7 @@
 namespace alag
 {
 
-const bool DOFLUSH = false;
+//const bool /*DOFLUSH*/ = false;
 
 const IsoViewAngle PBRIsoScene::DEFAULT_ISO_VIEW_ANGLE = {.xyAngle = 0,
                                                              .zAngle = 90};
@@ -159,23 +159,22 @@ bool PBRIsoScene::InitRenderer(sf::Vector2u windowSize)
         CreatePBRScreen(&m_staticGeometryScreen[i], m_nbrTiles.x*SCREENTILE_SIZE,
                         m_nbrTiles.y*SCREENTILE_SIZE, true);
 
-        m_staticGeometryScreen[i].setActive(true);
+        /**m_staticGeometryScreen[i].setActive(true);
         glEnable(GL_DEPTH_TEST);
         glDepthFunc(GL_LEQUAL);
         glDepthMask(GL_TRUE);
         glEnable(GL_STENCIL_TEST);
-        //glStencilFunc(GL_EQUAL, 1, 1);
-        glStencilMask(1);
+        glStencilMask(1);**/
 
         CreatePBRScreen(&m_alpha_staticGeometryScreen[i], m_nbrTiles.x*SCREENTILE_SIZE,
                         m_nbrTiles.y*SCREENTILE_SIZE, true);
 
-        m_alpha_staticGeometryScreen[i].setActive(true);
+        /**m_alpha_staticGeometryScreen[i].setActive(true);
         glEnable(GL_DEPTH_TEST);
         glDepthFunc(GL_LEQUAL);
         glDepthMask(GL_TRUE);
         glEnable(GL_STENCIL_TEST);
-        glStencilFunc(GL_EQUAL, 1, 1);
+        glStencilFunc(GL_EQUAL, 1, 1);**/
 
         if(!m_SSAOScreen[i].create(windowSize.x*m_superSampling*SSAO_SCREEN_RATIO,
                                    windowSize.y*m_superSampling*SSAO_SCREEN_RATIO, true))
@@ -194,6 +193,7 @@ bool PBRIsoScene::InitRenderer(sf::Vector2u windowSize)
     }
 
     m_lightingShader.setUniform("map_opaqueGeometry_depth",*m_PBRScreen.getTexture(PBRDepthScreen));
+
     m_lightingShader.setUniform("map_SSRenv",m_environment_PBRScreen[0].getTexture());
     m_environment_PBRScreen[0].setSmooth(true);
 
@@ -348,7 +348,7 @@ void PBRIsoScene::RenderScene(sf::RenderTarget* w)
         m_renderer.setTexture(m_lighting_PBRScreen.getTexture(0));
         w->draw(m_renderer, &m_HDRBloomShader);
 
-        m_lighting_PBRScreen.display(DOFLUSH);
+        m_lighting_PBRScreen.display(/*DOFLUSH*/);
 
         w->setView(oldView);
     }
@@ -406,12 +406,12 @@ void PBRIsoScene::RenderEnvironmentMap()
     m_renderer.setTexture(m_lighting_PBRScreen.getTexture(0));
     m_blurShader.setUniform("offset",sf::Vector2f(0.5*ENVIRONMENT_BLUR/(float)m_lighting_PBRScreen.getSize().x,0));
     m_environment_PBRScreen[1].draw(m_renderer,&m_blurShader);
-    m_environment_PBRScreen[1].display(DOFLUSH);
+    m_environment_PBRScreen[1].display(/*DOFLUSH*/);
 
     m_renderer.setTexture(&m_environment_PBRScreen[1].getTexture());
     m_blurShader.setUniform("offset",sf::Vector2f(0,0.5*ENVIRONMENT_BLUR/(float)m_lighting_PBRScreen.getSize().x));
     m_environment_PBRScreen[0].draw(m_renderer,&m_blurShader);
-    m_environment_PBRScreen[0].display(DOFLUSH);
+    m_environment_PBRScreen[0].display(/*DOFLUSH*/);
 
     m_environment_PBRScreen[0].generateMipmap();
 }
@@ -643,9 +643,22 @@ void PBRIsoScene::RenderStaticGeometry(const sf::View &curView)
         sf::MultipleRenderTexture *renderTarget = nullptr;
 
         if(pass == 0)
+        {
             renderTarget = &m_staticGeometryScreen[m_swapStaticGeometryBuffers];
-        if(pass == 1)
+            glEnable(GL_DEPTH_TEST);
+            glDepthFunc(GL_LEQUAL);
+            glDepthMask(GL_TRUE);
+            glEnable(GL_STENCIL_TEST);
+            glStencilMask(1);
+        } else if(pass == 1)
+        {
             renderTarget = &m_alpha_staticGeometryScreen[m_swapStaticGeometryBuffers];
+            glEnable(GL_DEPTH_TEST);
+            glDepthFunc(GL_LEQUAL);
+            glDepthMask(GL_TRUE);
+            glEnable(GL_STENCIL_TEST);
+            glStencilFunc(GL_EQUAL, 1, 1);
+        }
 
         renderTarget->setActive(true);
         glClearStencil(0);
@@ -694,6 +707,8 @@ void PBRIsoScene::RenderStaticGeometry(const sf::View &curView)
             state.blendMode = sf::BlendNone;
         } else if(pass == 1) {
             m_PBRGeometryShader.setUniform("p_alpha_pass",true);
+
+            //m_staticGeometryScreen[m_swapStaticGeometryBuffers].getTexture(PBRDepthScreen)->generateMipmap();
             m_PBRGeometryShader.setUniform("map_opaqueGeometry",
                                            *m_staticGeometryScreen[m_swapStaticGeometryBuffers].getTexture(PBRDepthScreen));
             //m_PBRGeometryShader.setUniform("map_opaqueNormal",
@@ -708,30 +723,18 @@ void PBRIsoScene::RenderStaticGeometry(const sf::View &curView)
 
         for(renderIt = entitiesToRender.begin() ; renderIt != entitiesToRender.end() ; ++renderIt)
             RenderEntity(renderTarget,*renderIt);
-        /*{
-            sf::Vector3f globalPos(0,0,0);
 
-            SceneNode *node = (*renderIt)->GetParentNode();
-            if(node != nullptr)
-                globalPos = node->GetGlobalPosition();
-
-            sf::Vector3f v = m_isoToCartMat*globalPos;
-
-            state.transform = sf::Transform::Identity;
-            state.transform.translate(v.x, v.y);
-            state.transform *= m_TransformIsoToCart;
-
-            m_PBRGeometryShader.setUniform("p_zPos",globalPos.z*PBRTextureAsset::DEPTH_BUFFER_NORMALISER);
-            m_PBRGeometryShader.setUniform("p_normalProjMat",sf::Glsl::Mat3(m_normalProjMat.values));
-            (*renderIt)->PrepareShader(&m_PBRGeometryShader);
-            (*renderIt)->Render(renderTarget,state);
-        }*/
-        renderTarget->display(DOFLUSH);
+        renderTarget->display();
         renderTarget->setActive(false);
     }
 
     m_lastStaticRenderView = curView;
     m_firstStaticRender = false;
+
+
+    glDisable(GL_STENCIL_TEST);
+    glDisable(GL_DEPTH_TEST);
+    glDepthMask(GL_FALSE);
 
   /*  m_staticGeometryScreen[m_swapStaticGeometryBuffers].setActive(true);
     m_alpha_staticGeometryScreen[m_swapStaticGeometryBuffers].getTexture(PBRDepthScreen)->copyToImage().saveToFile("static0.png");
@@ -748,10 +751,6 @@ void PBRIsoScene::RenderDynamicGeometry(const sf::View &curView)
 
     for(int pass = 0 ; pass <= 1 ; ++pass)
     {
-       // sf::RenderStates state;
-       // state.shader = &m_PBRGeometryShader;
-
-
         sf::FloatRect sourceRect = sf::FloatRect(m_tilesShift.x,m_tilesShift.y,
                                                  m_PBRScreen.getSize().x,m_PBRScreen.getSize().y);
         sf::FloatRect targetRect = sf::FloatRect(0,0,m_PBRScreen.getSize().x,
@@ -765,9 +764,9 @@ void PBRIsoScene::RenderDynamicGeometry(const sf::View &curView)
             renderTarget = &m_PBRScreen;
            // state.blendMode = sf::BlendNone;
 
-           m_PBRScreen.setActive(true);
+          // m_PBRScreen.setActive(true);
 
-          /*  m_PBRScreen.copyDepthBuffer(&m_staticGeometryScreen[m_swapStaticGeometryBuffers], sourceRect, targetRect);
+            /*m_PBRScreen.copyDepthBuffer(&m_staticGeometryScreen[m_swapStaticGeometryBuffers], sourceRect, targetRect);
             m_PBRScreen.copyBuffer(&m_staticGeometryScreen[m_swapStaticGeometryBuffers],PBRAlbedoScreen,sourceRect,
                                    PBRAlbedoScreen, targetRect);
             m_PBRScreen.copyBuffer(&m_staticGeometryScreen[m_swapStaticGeometryBuffers],PBRDepthScreen,sourceRect,
@@ -782,6 +781,8 @@ void PBRIsoScene::RenderDynamicGeometry(const sf::View &curView)
 
             //m_PBRScreen.setActive(true);
             //m_PBRScreen.getTexture(0)->copyToImage().saveToFile("statiTest.png");
+
+            //m_staticGeometryScreen[m_swapStaticGeometryBuffers].getTexture(0)->copyToImage().saveToFile("statiTest.png");
 
         } else if(pass == 1) {
             Profiler::PushClock("Render alpha geometry");
@@ -798,6 +799,9 @@ void PBRIsoScene::RenderDynamicGeometry(const sf::View &curView)
 
             CopyPBRScreen(&m_alpha_staticGeometryScreen[m_swapStaticGeometryBuffers], sourceRect,
                           &m_alpha_PBRScreen, targetRect, m_PBRScreen.getTexture(PBRDepthScreen));
+
+
+            //m_alpha_PBRScreen.getTexture(0)->copyToImage().saveToFile("statiTestAlpha.png");
 
            /* m_alpha_PBRScreen.setActive(true);
            // m_alpha_PBRScreen.clear(sf::Color(0,0,0,0));
@@ -842,26 +846,29 @@ void PBRIsoScene::RenderDynamicGeometry(const sf::View &curView)
     //    if(!(*renderIt)->IsStatic())
             RenderEntity(renderTarget,*renderIt);
 
-        renderTarget->display(DOFLUSH);
+        glDisable(GL_DEPTH_TEST);
+        glDepthMask(GL_FALSE);
+
+        renderTarget->display(/*DOFLUSH*/);
        // renderTarget->setActive(false);
         Profiler::PopClock();
     }
 
-  //  m_PBRScreen.getTexture(PBRDepthScreen)->copyToImage().saveToFile("PBR2.png");
+   // m_PBRScreen.getTexture(PBRAlbedoScreen)->copyToImage().saveToFile("PBR0.png");
 }
 
 void PBRIsoScene::RenderLighting()
 {
-    m_lighting_PBRScreen.setActive(true);
+    //m_lighting_PBRScreen.setActive(true);
     m_lighting_PBRScreen.clear();
-   // glDisable(GL_DEPTH_TEST);
-    //glDepthMask(GL_FALSE);
 
     m_rendererStates.blendMode = sf::BlendNone;
 
     m_renderer.setTexture(m_PBRScreen.getTexture(PBRAlbedoScreen));
-    //m_PBRScreen.getTexture(PBRAlbedoScreen)->copyToImage().saveToFile("PBR0.png");
-    //m_PBRScreen.getTexture(PBRNormalScreen)->copyToImage().saveToFile("PBR1.png");
+    /*m_PBRScreen.getTexture(0)->copyToImage().saveToFile("PBR0.png");
+    m_PBRScreen.getTexture(1)->copyToImage().saveToFile("PBR1.png");
+    m_PBRScreen.getTexture(2)->copyToImage().saveToFile("PBR2.png");
+    m_PBRScreen.getTexture(3)->copyToImage().saveToFile("PBR3.png");*/
 
     m_lightingShader.setUniform("map_albedo",*m_PBRScreen.getTexture(PBRAlbedoScreen));
     m_lightingShader.setUniform("map_normal",*m_PBRScreen.getTexture(PBRNormalScreen));
@@ -870,17 +877,14 @@ void PBRIsoScene::RenderLighting()
    // m_lightingShader.setUniform("enable_SSR",m_enableSSR);
 
     m_lighting_PBRScreen.draw(m_renderer,m_rendererStates);
+   // m_lighting_PBRScreen.getTexture(0)->copyToImage().saveToFile("lightingScreen.png");
+    //m_lighting_PBRScreen.getTexture(0)->copyToImage().saveToFile("lightingScreen.png");
 
-    //m_lighting_PBRScreen.getTexture(1)->copyToImage().saveToFile("uv.png");
-    /*if(m_enableSSAO)
-    {
-        //m_SSAOScreen[0].getTexture().copyToImage().saveToFile("SSAO.png");
-        m_renderer.setTexture(&m_SSAOScreen[0].getTexture());
-        m_lighting_PBRScreen.draw(m_renderer,sf::BlendMultiply);
-    }*/
 
-   // m_alpha_PBRScreen.getTexture(PBRAlbedoScreen)->copyToImage().saveToFile("aPBR0.png");
-   // m_alpha_PBRScreen.getTexture(PBRDepthScreen)->copyToImage().saveToFile("aPBR1.png");
+    /*m_alpha_PBRScreen.getTexture(0)->copyToImage().saveToFile("aPBR0.png");
+    m_alpha_PBRScreen.getTexture(1)->copyToImage().saveToFile("aPBR1.png");
+    m_alpha_PBRScreen.getTexture(2)->copyToImage().saveToFile("aPBR2.png");
+    m_alpha_PBRScreen.getTexture(3)->copyToImage().saveToFile("aPBR3.png");*/
 
 
     m_rendererStates.blendMode = sf::BlendAlpha;
@@ -894,10 +898,7 @@ void PBRIsoScene::RenderLighting()
 
     m_lighting_PBRScreen.draw(m_renderer,m_rendererStates);
 
-
-
-
-    m_lighting_PBRScreen.display(DOFLUSH);
+    m_lighting_PBRScreen.display(/*DOFLUSH*/);
 }
 
 void PBRIsoScene::RenderBloom()
@@ -911,40 +912,43 @@ void PBRIsoScene::RenderBloom()
     screenToBloom.setSize(sf::Vector2f(m_bloomScreen[0].getSize()));
     m_blurShader.setUniform("offset",sf::Vector2f(BLOOM_BLUR/(float)m_PBRScreen.getSize().x,0));
     m_bloomScreen[0].draw(screenToBloom,&m_blurShader);
-    m_bloomScreen[0].display(DOFLUSH);
+    m_bloomScreen[0].display(/*DOFLUSH*/);
     m_bloomRect.setTexture(&m_bloomScreen[0].getTexture());
     m_blurShader.setUniform("offset",sf::Vector2f(0,BLOOM_BLUR/(float)m_PBRScreen.getSize().y));
     m_bloomScreen[1].draw(m_bloomRect,&m_blurShader);
-    m_bloomScreen[1].display(DOFLUSH);
+    m_bloomScreen[1].display(/*DOFLUSH*/);
 
     for(int i = 0 ; i < 2 ; ++i) {
         m_bloomRect.setTexture(&m_bloomScreen[1].getTexture());
         m_blurShader.setUniform("offset",sf::Vector2f(BLOOM_BLUR/(float)m_PBRScreen.getSize().x/(i+2),0));
         m_bloomScreen[0].draw(m_bloomRect,&m_blurShader);
-        m_bloomScreen[0].display(DOFLUSH);
+        m_bloomScreen[0].display(/*DOFLUSH*/);
         m_bloomRect.setTexture(&m_bloomScreen[0].getTexture());
         m_blurShader.setUniform("offset",sf::Vector2f(0,BLOOM_BLUR/(float)m_PBRScreen.getSize().y/(i+2)));
         m_bloomScreen[1].draw(m_bloomRect,&m_blurShader);
-        m_bloomScreen[1].display(DOFLUSH);
+        m_bloomScreen[1].display(/*DOFLUSH*/);
     }
    // m_bloomScreen[1].getTexture().copyToImage().saveToFile("Bloom.png");
 }
 
 void PBRIsoScene::RenderSSAO()
 {
+    m_SSAOScreen[0].clear();
+    m_SSAOScreen[1].clear();
+
     m_SSAOShader.setUniform("view_zoom",1.0f/m_currentCamera->GetZoom());
 
     m_SSAOScreen[0].draw(m_SSAOrenderer,&m_SSAOShader);
-    m_SSAOScreen[0].display(DOFLUSH);
+    m_SSAOScreen[0].display(/*DOFLUSH*/);
 
     m_SSAORect.setTexture(&m_SSAOScreen[0].getTexture());
     m_blurShader.setUniform("offset",sf::Vector2f(SSAO_BLUR*SSAO_SCREEN_RATIO/(float)m_SSAOScreen[0].getSize().x,0));
     m_SSAOScreen[1].draw(m_SSAORect,&m_blurShader);
-    m_SSAOScreen[1].display(DOFLUSH);
+    m_SSAOScreen[1].display(/*DOFLUSH*/);
     m_SSAORect.setTexture(&m_SSAOScreen[1].getTexture());
     m_blurShader.setUniform("offset",sf::Vector2f(0,SSAO_BLUR*SSAO_SCREEN_RATIO/(float)m_SSAOScreen[0].getSize().x));
     m_SSAOScreen[0].draw(m_SSAORect,&m_blurShader);
-    m_SSAOScreen[0].display(DOFLUSH);
+    m_SSAOScreen[0].display(/*DOFLUSH*/);
 
     //m_SSAOScreen[0].getTexture().copyToImage().saveToFile("SSAO.png");
 }
@@ -1334,9 +1338,11 @@ void PBRIsoScene::CopyPBRScreen(sf::MultipleRenderTexture *source, sf::FloatRect
         target->draw(rect,s);
         target->setView(oldView);
 
-        target->display(DOFLUSH);
+        target->display(/*DOFLUSH*/);
 
         glDepthFunc(GL_LEQUAL);
+        glDisable(GL_DEPTH_TEST);
+        glDepthMask(GL_FALSE);
     }
 }
 

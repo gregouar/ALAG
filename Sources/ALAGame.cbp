@@ -47,7 +47,6 @@
 					<Add library="sfml-system" />
 					<Add library="opengl32" />
 					<Add library="freetype" />
-					<Add library="jpeg" />
 				</Linker>
 			</Target>
 		</Build>
@@ -103,9 +102,7 @@
 		<Unit filename="ALAGEngine/include/extlibs/tinystr.h" />
 		<Unit filename="ALAGEngine/include/extlibs/tinyxml.h" />
 		<Unit filename="ALAGEngine/src/core/Asset.cpp" />
-		<Unit filename="ALAGEngine/src/core/AssetHandler.inc">
-			<Option link="1" />
-		</Unit>
+		<Unit filename="ALAGEngine/src/core/AssetHandler.inc" />
 		<Unit filename="ALAGEngine/src/core/Config.cpp" />
 		<Unit filename="ALAGEngine/src/core/EventManager.cpp" />
 		<Unit filename="ALAGEngine/src/core/GApp.cpp" />

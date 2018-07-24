@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////
 //
 // SFML - Simple and Fast Multimedia Library
-// Copyright (C) 2007-2017 Laurent Gomila (laurent@sfml-dev.org)
+// Copyright (C) 2007-2018 Laurent Gomila (laurent@sfml-dev.org)
 //
 // This software is provided 'as-is', without any express or implied warranty.
 // In no event will the authors be held liable for any damages arising from the use of this software.
@@ -58,21 +58,6 @@ namespace
 {
     sf::Mutex maxTextureUnitsMutex;
     sf::Mutex isAvailableMutex;
-
-
-    sf::Mutex idMutex;
-
-    // Thread-safe unique identifier generator,
-    // is used for states cache (see RenderTarget)
-    sf::Uint64 getUniqueId()
-    {
-        sf::Lock lock(idMutex);
-
-        static sf::Uint64 id = 1; // start at 1, zero is "no texture"
-
-        return id++;
-    }
-
 
     GLint checkMaxTextureUnits()
     {
@@ -238,8 +223,7 @@ Shader::Shader() :
 m_shaderProgram (0),
 m_currentTexture(-1),
 m_textures      (),
-m_uniforms      (),
-m_cacheId      (getUniqueId())
+m_uniforms      ()
 {
 }
 
@@ -787,42 +771,6 @@ void Shader::bind(const Shader* shader)
 
 
 ////////////////////////////////////////////////////////////
-void Shader::updateTextures(const Shader* shader, std::map<int, const Texture*> *oldTextures)
-{
-    TransientContextLock lock;
-
-    // Make sure that we can use shaders
-    if (!isAvailable())
-    {
-        err() << "Failed to bind or unbind shader: your system doesn't support shaders "
-              << "(you should test Shader::isAvailable() before trying to use the Shader class)" << std::endl;
-        return;
-    }
-
-    if (shader && shader->m_shaderProgram)
-    {
-      /*  // Enable the program
-        glCheck(GLEXT_glUseProgramObject(castToGlHandle(shader->m_shaderProgram)));
-
-        // Bind the textures
-        shader->bindTextures();
-
-        // Bind the current texture
-        if (shader->m_currentTexture != -1)
-            glCheck(GLEXT_glUniform1i(shader->m_currentTexture, 0));*/
-
-
-        shader->updateTextures(oldTextures);
-    }
-    else
-    {
-        // Bind no shader
-        glCheck(GLEXT_glUseProgramObject(0));
-    }
-}
-
-
-////////////////////////////////////////////////////////////
 bool Shader::isAvailable()
 {
     Lock lock(isAvailableMutex);
@@ -906,7 +854,6 @@ bool Shader::compile(const char* vertexShaderCode, const char* geometryShaderCod
     m_currentTexture = -1;
     m_textures.clear();
     m_uniforms.clear();
-    m_cacheId = getUniqueId();
 
     // Create the program
     GLEXT_GLhandle shaderProgram;
@@ -1013,7 +960,6 @@ bool Shader::compile(const char* vertexShaderCode, const char* geometryShaderCod
 
     m_shaderProgram = castFromGlHandle(shaderProgram);
 
-
     // Force an OpenGL flush, so that the shader will appear updated
     // in all contexts immediately (solves problems in multi-threaded apps)
     glCheck(glFlush());
@@ -1038,27 +984,6 @@ void Shader::bindTextures() const
     // Make sure that the texture unit which is left active is the number 0
     glCheck(GLEXT_glActiveTexture(GLEXT_GL_TEXTURE0));
 }
-////////////////////////////////////////////////////////////
-void Shader::updateTextures(std::map<int, const Texture*> *oldTextures) const
-{
-    TextureTable::const_iterator it = m_textures.begin();
-    for (std::size_t i = 0; i < m_textures.size(); ++i)
-    {
-        if((*oldTextures)[it->first] != it->second)
-        {
-            GLint index = static_cast<GLsizei>(i + 1);
-            glCheck(GLEXT_glUniform1i(it->first, index));
-            glCheck(GLEXT_glActiveTexture(GLEXT_GL_TEXTURE0 + index));
-            Texture::bind(it->second);
-        }
-
-        ++it;
-    }
-
-    // Make sure that the texture unit which is left active is the number 0
-    glCheck(GLEXT_glActiveTexture(GLEXT_GL_TEXTURE0));
-}
-
 
 
 ////////////////////////////////////////////////////////////

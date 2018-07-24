@@ -214,21 +214,26 @@ void Light::RenderShadowMap(const sf::View &view/*,const sf::Vector2u &screen_si
                             view.getSize().y+m_shadowMaxShift.height);
 
         m_shadowMap.setActive(true);
-            glClear(GL_DEPTH_BUFFER_BIT);
             glEnable(GL_DEPTH_TEST);
             glDepthMask(GL_TRUE);
+
             m_shadowMap.clear(sf::Color::White);
+            glClear(GL_DEPTH_BUFFER_BIT);
+
             m_shadowMap.setView(shadow_view);
 
             std::list<ShadowCaster *>::iterator casterIt;
             for(casterIt = m_shadowCasterList.begin() ; casterIt != m_shadowCasterList.end() ; ++casterIt)
                 (*casterIt)->RenderShadow(&m_shadowMap,this);
 
+            glDisable(GL_DEPTH_TEST);
+            glDepthMask(GL_FALSE);
+
             //m_shadowMap.display();
-            m_shadowMap.display(false);
+            m_shadowMap.display(/*false*/);
        // m_shadowMap.setActive(false);
 
-       //m_shadowMap.getTexture().copyToImage().saveToFile("shadowmap.png");
+      // m_shadowMap.getTexture().copyToImage().saveToFile("shadowmap.png");
 
     }
 }

@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////
 //
 // SFML - Simple and Fast Multimedia Library
-// Copyright (C) 2007-2017 Laurent Gomila (laurent@sfml-dev.org)
+// Copyright (C) 2007-2018 Laurent Gomila (laurent@sfml-dev.org)
 //
 // This software is provided 'as-is', without any express or implied warranty.
 // In no event will the authors be held liable for any damages arising from the use of this software.
@@ -580,6 +580,14 @@ private:
 /// OpenGL context attached to the window, with the sf::ContextSettings
 /// structure which is passed as an optional argument when creating the
 /// window.
+///
+/// On dual-graphics systems consisting of a low-power integrated GPU
+/// and a powerful discrete GPU, the driver picks which GPU will run an
+/// SFML application. In order to inform the driver that an SFML application
+/// can benefit from being run on the more powerful discrete GPU,
+/// #SFML_DEFINE_DISCRETE_GPU_PREFERENCE can be placed in a source file
+/// that is compiled and linked into the final application. The macro
+/// should be placed outside of any scopes in the global namespace.
 ///
 /// Usage example:
 /// \code

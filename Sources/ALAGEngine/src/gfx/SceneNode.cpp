@@ -181,7 +181,7 @@ bool SceneNode::DestroyChildNode(SceneNode* node)
 {
     if(node != nullptr && node->GetParent() == this)
         return DestroyChildNode(node->GetID());
-    return (nullptr);
+    return (false);
 }
 
 bool SceneNode::DestroyChildNode(const NodeTypeID& id)

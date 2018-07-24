@@ -31,6 +31,10 @@ elseif(CMAKE_SYSTEM_NAME MATCHES "^k?FreeBSD$")
     set(SFML_OS_FREEBSD 1)
     # don't use the OpenGL ES implementation on FreeBSD
     set(OPENGL_ES 0)
+elseif(CMAKE_SYSTEM_NAME MATCHES "^OpenBSD$")
+    set(SFML_OS_OPENBSD 1)
+    # don't use the OpenGL ES implementation on OpenBSD
+    set(OPENGL_ES 0)
 elseif(${CMAKE_SYSTEM_NAME} STREQUAL "Darwin")
     if(IOS)
         set(SFML_OS_IOS 1)
@@ -81,7 +85,7 @@ endif()
 # detect the compiler and its version
 # Note: on some platforms (OS X), CMAKE_COMPILER_IS_GNUCXX is true
 # even when CLANG is used, therefore the Clang test is done first
-if(CMAKE_CXX_COMPILER MATCHES ".*clang[+][+]" OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+if(CMAKE_CXX_COMPILER MATCHES "clang[+][+]" OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
    # CMAKE_CXX_COMPILER_ID is an internal CMake variable subject to change,
    # but there is no other way to detect CLang at the moment
    set(SFML_COMPILER_CLANG 1)
@@ -116,13 +120,4 @@ elseif(MSVC)
 else()
     message(FATAL_ERROR "Unsupported compiler")
     return()
-endif()
-
-# define the install directory for miscellaneous files
-if(SFML_OS_WINDOWS OR SFML_OS_IOS)
-    set(INSTALL_MISC_DIR .)
-elseif(SFML_OS_LINUX OR SFML_OS_FREEBSD OR SFML_OS_MACOSX)
-    set(INSTALL_MISC_DIR share/SFML)
-elseif(SFML_OS_ANDROID)
-    set(INSTALL_MISC_DIR ${ANDROID_NDK}/sources/sfml)
 endif()

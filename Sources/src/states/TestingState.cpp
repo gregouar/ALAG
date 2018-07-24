@@ -222,7 +222,7 @@ void TestingState::Init()
     m_waterEntity->SetWaveAmplitude(.8);
     m_waterEntity->SetWaterDensity(500.0f);
     m_waterEntity->SetWaveSpeed(.15);
-   // m_waterEntity->SetWaterColor(sf::Color(86,255,194,160));
+   // m_waterEntity->SetWaterColor(sf::Color(86,255,194,160)_);
     //waterEntity->SetWaterColor(sf::Color(0,224,0,224));
     //
     //m_waterEntity->SetWaveTurbulence(0.02f);

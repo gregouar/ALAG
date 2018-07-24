@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////
 //
 // SFML - Simple and Fast Multimedia Library
-// Copyright (C) 2007-2017 Laurent Gomila (laurent@sfml-dev.org)
+// Copyright (C) 2007-2018 Laurent Gomila (laurent@sfml-dev.org)
 //
 // This software is provided 'as-is', without any express or implied warranty.
 // In no event will the authors be held liable for any damages arising from the use of this software.
@@ -185,7 +185,9 @@ extern int sfogl_ext_ARB_texture_non_power_of_two;
 extern int sfogl_ext_EXT_blend_equation_separate;
 extern int sfogl_ext_EXT_texture_sRGB;
 extern int sfogl_ext_EXT_framebuffer_object;
+extern int sfogl_ext_EXT_packed_depth_stencil;
 extern int sfogl_ext_EXT_framebuffer_blit;
+extern int sfogl_ext_EXT_framebuffer_multisample;
 extern int sfogl_ext_ARB_copy_buffer;
 extern int sfogl_ext_ARB_geometry_shader4;
 
@@ -379,7 +381,6 @@ extern int sfogl_ext_ARB_geometry_shader4;
 #define GL_COLOR_ATTACHMENT8_EXT 0x8CE8
 #define GL_COLOR_ATTACHMENT9_EXT 0x8CE9
 #define GL_DEPTH_ATTACHMENT_EXT 0x8D00
-#define GL_DEPTH_STENCIL_ATTACHMENT_EXT 0x821A
 #define GL_FRAMEBUFFER_ATTACHMENT_OBJECT_NAME_EXT 0x8CD1
 #define GL_FRAMEBUFFER_ATTACHMENT_OBJECT_TYPE_EXT 0x8CD0
 #define GL_FRAMEBUFFER_ATTACHMENT_TEXTURE_3D_ZOFFSET_EXT 0x8CD4
@@ -415,10 +416,19 @@ extern int sfogl_ext_ARB_geometry_shader4;
 #define GL_STENCIL_INDEX4_EXT 0x8D47
 #define GL_STENCIL_INDEX8_EXT 0x8D48
 
+#define GL_DEPTH24_STENCIL8_EXT 0x88F0
+#define GL_DEPTH_STENCIL_EXT 0x84F9
+#define GL_TEXTURE_STENCIL_SIZE_EXT 0x88F1
+#define GL_UNSIGNED_INT_24_8_EXT 0x84FA
+
 #define GL_DRAW_FRAMEBUFFER_BINDING_EXT 0x8CA6
 #define GL_DRAW_FRAMEBUFFER_EXT 0x8CA9
 #define GL_READ_FRAMEBUFFER_BINDING_EXT 0x8CAA
 #define GL_READ_FRAMEBUFFER_EXT 0x8CA8
+
+#define GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE_EXT 0x8D56
+#define GL_MAX_SAMPLES_EXT 0x8D57
+#define GL_RENDERBUFFER_SAMPLES_EXT 0x8CAB
 
 #define GL_COPY_READ_BUFFER 0x8F36
 #define GL_COPY_WRITE_BUFFER 0x8F37
@@ -857,9 +867,6 @@ extern int sfogl_ext_ARB_geometry_shader4;
 #define GL_RGBA2 0x8055
 #define GL_RGBA4 0x8056
 #define GL_RGBA8 0x8058
-#define GL_RGB16F_EXT 0x881B
-#define GL_RGBA16F_EXT 0x881A
-#define GL_DEPTH24_STENCIL8_EXT 0x88F0
 #define GL_RGBA_MODE 0x0C31
 #define GL_RIGHT 0x0407
 #define GL_S 0x2000
@@ -976,7 +983,10 @@ extern int sfogl_ext_ARB_geometry_shader4;
 #define GL_ZOOM_X 0x0D16
 #define GL_ZOOM_Y 0x0D17
 
-
+// Added for MultiRenderTarget
+    #define GL_RGBA16F_EXT 0x881A
+    #define GL_DEPTH_STENCIL_ATTACHMENT_EXT 0x821A
+    #define GL_DEPTH24_STENCIL8_EXT 0x88F0
 
 #ifndef GL_EXT_blend_minmax
 #define GL_EXT_blend_minmax 1
@@ -1299,8 +1309,6 @@ extern void (GL_FUNCPTR *sf_ptrc_glFramebufferTexture3DEXT)(GLenum, GLenum, GLen
 #define glFramebufferTexture3DEXT sf_ptrc_glFramebufferTexture3DEXT
 extern void (GL_FUNCPTR *sf_ptrc_glGenFramebuffersEXT)(GLsizei, GLuint*);
 #define glGenFramebuffersEXT sf_ptrc_glGenFramebuffersEXT
-extern void (GL_FUNCPTR *sf_ptrc_glDrawBuffersEXT)(GLsizei, const GLenum*);
-#define glDrawBuffersEXT sf_ptrc_glDrawBuffersEXT
 extern void (GL_FUNCPTR *sf_ptrc_glGenRenderbuffersEXT)(GLsizei, GLuint*);
 #define glGenRenderbuffersEXT sf_ptrc_glGenRenderbuffersEXT
 extern void (GL_FUNCPTR *sf_ptrc_glGenerateMipmapEXT)(GLenum);
@@ -1315,13 +1323,22 @@ extern GLboolean (GL_FUNCPTR *sf_ptrc_glIsRenderbufferEXT)(GLuint);
 #define glIsRenderbufferEXT sf_ptrc_glIsRenderbufferEXT
 extern void (GL_FUNCPTR *sf_ptrc_glRenderbufferStorageEXT)(GLenum, GLenum, GLsizei, GLsizei);
 #define glRenderbufferStorageEXT sf_ptrc_glRenderbufferStorageEXT
+extern void (GL_FUNCPTR *sf_ptrc_glDrawBuffersEXT)(GLsizei, const GLenum*);
+#define glDrawBuffersEXT sf_ptrc_glDrawBuffersEXT
 #endif // GL_EXT_framebuffer_object
+
 
 #ifndef GL_EXT_framebuffer_blit
 #define GL_EXT_framebuffer_blit 1
 extern void (GL_FUNCPTR *sf_ptrc_glBlitFramebufferEXT)(GLint, GLint, GLint, GLint, GLint, GLint, GLint, GLint, GLbitfield, GLenum);
 #define glBlitFramebufferEXT sf_ptrc_glBlitFramebufferEXT
 #endif // GL_EXT_framebuffer_blit
+
+#ifndef GL_EXT_framebuffer_multisample
+#define GL_EXT_framebuffer_multisample 1
+extern void (GL_FUNCPTR *sf_ptrc_glRenderbufferStorageMultisampleEXT)(GLenum, GLsizei, GLenum, GLsizei, GLsizei);
+#define glRenderbufferStorageMultisampleEXT sf_ptrc_glRenderbufferStorageMultisampleEXT
+#endif // GL_EXT_framebuffer_multisample
 
 #ifndef GL_ARB_copy_buffer
 #define GL_ARB_copy_buffer 1
@@ -1397,7 +1414,6 @@ GLAPI void APIENTRY glDepthMask(GLboolean);
 GLAPI void APIENTRY glDepthRange(GLdouble, GLdouble);
 GLAPI void APIENTRY glDisable(GLenum);
 GLAPI void APIENTRY glDrawBuffer(GLenum);
-GLAPI void APIENTRY glDrawBuffers(GLsizei, const GLenum *);
 GLAPI void APIENTRY glDrawPixels(GLsizei, GLsizei, GLenum, GLenum, const void*);
 GLAPI void APIENTRY glEdgeFlag(GLboolean);
 GLAPI void APIENTRY glEdgeFlagv(const GLboolean*);
@@ -1679,6 +1695,8 @@ GLAPI void APIENTRY glTexCoordPointer(GLint, GLenum, GLsizei, const void*);
 GLAPI void APIENTRY glTexSubImage1D(GLenum, GLint, GLint, GLsizei, GLenum, GLenum, const void*);
 GLAPI void APIENTRY glTexSubImage2D(GLenum, GLint, GLint, GLint, GLsizei, GLsizei, GLenum, GLenum, const void*);
 GLAPI void APIENTRY glVertexPointer(GLint, GLenum, GLsizei, const void*);
+
+GLAPI void APIENTRY glDrawBuffers(GLsizei, const GLenum *);
 
 enum sfogl_LoadStatus
 {

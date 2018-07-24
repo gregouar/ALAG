@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////
 //
 // SFML - Simple and Fast Multimedia Library
-// Copyright (C) 2007-2017 Laurent Gomila (laurent@sfml-dev.org)
+// Copyright (C) 2007-2018 Laurent Gomila (laurent@sfml-dev.org)
 //
 // This software is provided 'as-is', without any express or implied warranty.
 // In no event will the authors be held liable for any damages arising from the use of this software.
@@ -322,7 +322,7 @@ Ftp::Response Ftp::download(const std::string& remoteFile, const std::string& lo
 
 
 ////////////////////////////////////////////////////////////
-Ftp::Response Ftp::upload(const std::string& localFile, const std::string& remotePath, TransferMode mode)
+Ftp::Response Ftp::upload(const std::string& localFile, const std::string& remotePath, TransferMode mode, bool append)
 {
     // Get the contents of the file to send
     std::ifstream file(localFile.c_str(), std::ios_base::binary);
@@ -346,7 +346,7 @@ Ftp::Response Ftp::upload(const std::string& localFile, const std::string& remot
     if (response.isOk())
     {
         // Tell the server to start the transfer
-        response = sendCommand("STOR", path + filename);
+        response = sendCommand(append ? "APPE" : "STOR", path + filename);
         if (response.isOk())
         {
             // Send the file data

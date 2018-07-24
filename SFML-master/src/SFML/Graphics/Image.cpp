@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////
 //
 // SFML - Simple and Fast Multimedia Library
-// Copyright (C) 2007-2017 Laurent Gomila (laurent@sfml-dev.org)
+// Copyright (C) 2007-2018 Laurent Gomila (laurent@sfml-dev.org)
 //
 // This software is provided 'as-is', without any express or implied warranty.
 // In no event will the authors be held liable for any damages arising from the use of this software.
@@ -41,23 +41,14 @@ namespace sf
 Image::Image() :
 m_size(0, 0)
 {
-    #ifdef SFML_SYSTEM_ANDROID
 
-    m_stream = NULL;
-
-    #endif
 }
 
 
 ////////////////////////////////////////////////////////////
 Image::~Image()
 {
-    #ifdef SFML_SYSTEM_ANDROID
 
-        if (m_stream)
-            delete (priv::ResourceStream*)m_stream;
-
-    #endif
 }
 
 
@@ -135,11 +126,8 @@ bool Image::loadFromFile(const std::string& filename)
 
     #else
 
-        if (m_stream)
-            delete (priv::ResourceStream*)m_stream;
-
-        m_stream = new priv::ResourceStream(filename);
-        return loadFromStream(*(priv::ResourceStream*)m_stream);
+        priv::ResourceStream stream(filename);
+        return loadFromStream(stream);
 
     #endif
 }

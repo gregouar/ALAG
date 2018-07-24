@@ -77,7 +77,7 @@ int GApp::Run(GState *state)
 {
     m_running = true;
 
-    if(!Init())
+    if(!this->Init())
     {
         Logger::FatalError("Could not initialize application");
         return 1;
@@ -87,7 +87,7 @@ int GApp::Run(GState *state)
 
     Logger::Write("Starting application");
 
-    return Loop();
+    return this->Loop();
 }
 
 void GApp::Stop()
@@ -113,7 +113,7 @@ int GApp::Loop()
         m_window.clear();
 
         if(m_stateManager.Peek() == nullptr)
-            Stop();
+            this->Stop();
         else {
             m_stateManager.HandleEvents(&m_eventManager);
 

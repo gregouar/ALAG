@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////
 //
 // SFML - Simple and Fast Multimedia Library
-// Copyright (C) 2007-2017 Laurent Gomila (laurent@sfml-dev.org)
+// Copyright (C) 2007-2018 Laurent Gomila (laurent@sfml-dev.org)
 //
 // This software is provided 'as-is', without any express or implied warranty.
 // In no event will the authors be held liable for any damages arising from the use of this software.
@@ -60,6 +60,21 @@ namespace
     }
     void close(FT_Stream)
     {
+    }
+
+    // Helper to intepret memory as a specific type
+    template <typename T, typename U>
+    inline T reinterpret(const U& input)
+    {
+        T output;
+        std::memcpy(&output, &input, sizeof(U));
+        return output;
+    }
+
+    // Combine outline thickness, boldness and codepoint into a single 64-bit key
+    sf::Uint64 combine(float outlineThickness, bool bold, sf::Uint32 codePoint)
+    {
+        return (static_cast<sf::Uint64>(reinterpret<sf::Uint32>(outlineThickness)) << 32) | (static_cast<sf::Uint64>(bold) << 31) | codePoint;
     }
 }
 
@@ -332,9 +347,7 @@ const Glyph& Font::getGlyph(Uint32 codePoint, unsigned int characterSize, bool b
     GlyphTable& glyphs = m_pages[characterSize].glyphs;
 
     // Build the key by combining the code point, bold flag, and outline thickness
-    Uint64 key = (static_cast<Uint64>(*reinterpret_cast<Uint32*>(&outlineThickness)) << 32)
-               | (static_cast<Uint64>(bold ? 1 : 0) << 31)
-               |  static_cast<Uint64>(codePoint);
+    Uint64 key = combine(outlineThickness, bold, codePoint);
 
     // Search the glyph into the cache
     GlyphTable::const_iterator it = glyphs.find(key);
@@ -558,7 +571,7 @@ Glyph Font::loadGlyph(Uint32 codePoint, unsigned int characterSize, bool bold, f
             FT_Stroker stroker = static_cast<FT_Stroker>(m_stroker);
 
             FT_Stroker_Set(stroker, static_cast<FT_Fixed>(outlineThickness * static_cast<float>(1 << 6)), FT_STROKER_LINECAP_ROUND, FT_STROKER_LINEJOIN_ROUND, 0);
-            FT_Glyph_Stroke(&glyphDesc, stroker, false);
+            FT_Glyph_Stroke(&glyphDesc, stroker, true);
         }
     }
 
